@@ -1,6 +1,6 @@
 # Rocker
 
-Separate your UI into functional domains and requse precompiled code in different products and usecases.
+Separate your UI into functional domains and reuse precompiled code in different products and usecases.
 
 What it can do?
 
@@ -19,7 +19,7 @@ What it can do?
 
 Q: Wait so this is code splitting?
 
-A: nope code splitting (even React.lazy and React.suspense) are approaches to top-down separation of big SPA into smaller chunks, because its top-down you cannot reuse any chunks generated from this approach in other products.
+A: No, code splitting (even React.lazy and React.suspense) are approaches to top-down separation of big SPA into smaller chunks, because its top-down you cannot reuse any chunks generated from this approach in other products.
 
 ---
 
