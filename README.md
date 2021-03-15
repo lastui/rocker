@@ -37,7 +37,7 @@ A: Probably not if you have single SPA that compiles into one monolith. But if y
 
 Q: I noticed that dependencies are part of platform code, can I supply mine
 
-A: Yes, but you need to contain them into single chunk (module) that you will compile, and you are locked into versions of react, redux, ... that is provided by platform. Imagine it like Android OS or iOS, your modules have some features and essentials provided and both runtime and functionality musi reference these same essential instances. You can control your module compatibility by using appropriate version of `@lastui/rocker` platform. And you can bundle any necessary dependencies if you'll need into your modules. JavaScript does not have SPIs and DLLs are functionaly closes stable thing for that bottom-up compilation usecase.
+A: Yes, but you need to contain them into single chunk (module) that you will compile, and you are locked into versions of react, redux, ... that is provided by platform. Imagine it like Android OS or iOS, your modules have some [features and essentials provided](https://github.com/lastui/dependencies) and both runtime and functionality musi reference these same essential instances. You can control your module compatibility by using appropriate version of `@lastui/rocker` platform. And you can bundle any necessary dependencies if you'll need into your modules. JavaScript does not have SPIs and DLLs are functionaly closes stable thing for that bottom-up compilation usecase.
 
 ---
 
