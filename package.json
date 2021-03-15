@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "scripts": {
     "build:dependencies": "cd dependencies && npm run build",
     "build:platform": "cd platform && npm run build"
@@ -48,6 +48,7 @@
     "object-assign": "4.1.1",
     "os-browserify": "0.3.0",
     "path-browserify": "1.0.1",
+    "react-hot-loader": "4.13.0",
     "stream-browserify": "3.0.0",
     "terser-webpack-plugin": "5.1.1",
     "util": "0.12.3",
@@ -58,12 +59,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lastui/webpack.git"
+    "url": "git+https://github.com/lastui/rocker.git"
   },
   "author": "jan.cajthaml@gmail.com",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/lastui/webpack/issues"
+    "url": "https://github.com/lastui/rocker/issues"
   },
-  "homepage": "https://github.com/lastui/webpack#readme"
+  "homepage": "https://github.com/lastui/rocker#readme"
 }
