@@ -43,4 +43,4 @@ A: Yes, but you need to contain them into single chunk (module) that you will co
 
 Q: Whats with the name
 
-A: Rocket like [D]ocker for [R]eact UIs
+A: Rocker like [D]ocker for [R]eact UIs
