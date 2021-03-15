@@ -1,1 +1,2 @@
-# rocker
+# Rocket (docker for react)
+

@@ -1,0 +1,18 @@
+{
+	"scripts": {
+		"build:prod": "NODE_ENV=production node ../bin/webpack.js",
+		"build:dev": "NODE_ENV=development node ../bin/webpack.js"
+	},
+	"dependencies": {
+		"connected-react-router": "6.9.1",
+		"history": "4.10.1",
+		"loose-envify": "1.1.0",
+		"object-assign": "4.1.1",
+		"react": "17.0.1",
+		"react-dom": "17.0.1",
+		"react-redux": "7.2.2",
+		"react-router": "5.2.0",
+		"react-router-dom": "5.2.0",
+		"redux": "4.0.5"
+	}
+}
