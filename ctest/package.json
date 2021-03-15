@@ -8,9 +8,6 @@
     "start": "NODE_ENV=development node ../bin/webpack.js serve --config ./webpack.module.config.js"
   },
   "dependencies": {
-    "loose-envify": "1.1.0",
-    "object-assign": "4.1.1",
-    "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "@lastui/dependencies": "1.0.0"
   }
 }
