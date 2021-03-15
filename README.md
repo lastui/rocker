@@ -1,4 +1,4 @@
-# Rocket
+# Rocker
 
 Separate your UI into functional domains and requse precompiled code in different products and usecases.
 
