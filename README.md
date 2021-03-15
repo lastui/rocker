@@ -1,4 +1,4 @@
-# Rocket (docker for react)
+# Rocket
 
 Separate your UI into functional domains and requse precompiled code in different products and usecases.
 
@@ -41,6 +41,6 @@ A: Yes, but you need to contain them into single chunk (module) that you will co
 
 ---
 
-Q: I like it
+Q: Whats with the name
 
-A: Thats not a question, but thank you.
+A: Rocket like [D]ocker for [R]eact UIs
