@@ -1,4 +1,4 @@
-# Rocker
+# Rocker 🤘
 
 Separate your UI into functional domains and reuse precompiled code in different products and usecases.
 
