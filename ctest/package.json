@@ -1,0 +1,13 @@
+{
+  "name": "ctest",
+  "version": "1.0.0",
+  "scripts": {
+    "build:dll:prod": "NODE_ENV=production node ../bin/webpack.js --config ./webpack.dll.config.js",
+    "build:dll:dev": "NODE_ENV=development node ../bin/webpack.js --config ./webpack.dll.config.js",
+    "build:module": "NODE_ENV=production node ../bin/webpack.js --config ./webpack.module.config.js",
+    "start": "NODE_ENV=development node ../bin/webpack.js serve --config ./webpack.module.config.js"
+  },
+  "dependencies": {
+    "@lastui/dependencies": "1.0.1"
+  }
+}

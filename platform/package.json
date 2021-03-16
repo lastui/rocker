@@ -1,0 +1,10 @@
+{
+	"scripts": {
+		"build": "npm run build:dev && npm run build:prod",
+		"build:prod": "NODE_ENV=production node ../bin/webpack.js",
+		"build:dev": "NODE_ENV=development node ../bin/webpack.js"
+	},
+	"dependencies": {
+		"@lastui/dependencies": "1.0.1"
+	}
+}
