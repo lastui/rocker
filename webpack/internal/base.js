@@ -1,63 +1,57 @@
-const path = require('path');
-const webpack = require('webpack');
-const settings = require(path.resolve(__dirname, '../settings'));
+const path = require("path");
+const webpack = require("webpack");
+const settings = require(path.resolve(__dirname, "../settings"));
 
 const implicits = {
-	'process.env': {
-		'NODE_ENV': settings.DEVELOPMENT ? `"development"` : `"production"`,
+	"process.env": {
+		NODE_ENV: settings.DEVELOPMENT ? `"development"` : `"production"`,
 	},
 };
 
 if (settings.DEVELOPMENT) {
-	implicits['__SANDBOX_SCOPE__'] = {};
+	implicits["__SANDBOX_SCOPE__"] = {};
 }
 
 module.exports = {
 	bail: false,
-	target: 'web',
-	mode: settings.DEVELOPMENT ? 'development' : 'production',
+	target: "web",
+	mode: settings.DEVELOPMENT ? "development" : "production",
 	filename: __dirname,
 	output: {
 		pathinfo: true,
-		chunkLoadingGlobal: 'lastuiJsonp',
-		chunkLoading: 'jsonp',
+		chunkLoadingGlobal: "lastuiJsonp",
+		chunkLoading: "jsonp",
 		path: settings.PROJECT_BUILD_PATH,
-		publicPath: '/',
+		publicPath: "/",
 	},
 	module: {
 		strictExportPresence: true,
 	},
 	resolve: {
 		unsafeCache: false,
-		modules: [
-			settings.PROJECT_SRC_PATH,
-			'node_modules',
-		],
-		extensions: [
-			'.js',
-			'.jsx',
-		],
-		mainFields: ['browser', 'main'],
+		modules: [settings.PROJECT_SRC_PATH, "node_modules"],
+		extensions: [".js", ".jsx"],
+		mainFields: ["browser", "main"],
 		enforceExtension: false,
 		fallback: {
-			util: require.resolve('util/'),
+			util: require.resolve("util/"),
 			process: false,
-			os: require.resolve('os-browserify'),
-			stream: require.resolve('stream-browserify'),
-			buffer: require.resolve('buffer/'),
-			path: require.resolve('path-browserify'),
+			os: require.resolve("os-browserify"),
+			stream: require.resolve("stream-browserify"),
+			buffer: require.resolve("buffer/"),
+			path: require.resolve("path-browserify"),
 		},
 	},
 	cache: settings.DEVELOPMENT,
 	plugins: [
 		new webpack.ProvidePlugin({
-			Buffer: ['buffer', 'Buffer'],
-			process: ['process'],
+			Buffer: ["buffer", "Buffer"],
+			process: ["process"],
 		}),
 		new webpack.DefinePlugin(implicits),
 		new webpack.EnvironmentPlugin([
 			...Object.keys(process.env),
-			'NODE_ENV',
+			"NODE_ENV",
 		]),
 	],
-}
+};

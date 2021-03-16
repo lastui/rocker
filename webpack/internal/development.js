@@ -1,11 +1,11 @@
-const { Readable } = require("stream")
+const { Readable } = require("stream");
 
-const path = require('path');
-const webpack = require('webpack');
+const path = require("path");
+const webpack = require("webpack");
 
-const settings = require(path.resolve(__dirname, '../settings'));
+const settings = require(path.resolve(__dirname, "../settings"));
 
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
 	performance: {
@@ -24,7 +24,7 @@ module.exports = {
 	devServer: {
 		compress: false,
 		clientLogLevel: settings.LOG_LEVEL,
-		host: '0.0.0.0',
+		host: "0.0.0.0",
 		port: 5000,
 		hot: false,
 		open: false,
@@ -32,18 +32,18 @@ module.exports = {
 		https: false,
 		quiet: false,
 		noInfo: false,
-		contentBase: path.resolve(settings.PROJECT_BUILD_PATH, 'dev'),
+		contentBase: path.resolve(settings.PROJECT_BUILD_PATH, "dev"),
 		historyApiFallback: {
-			index: '/',
+			index: "/",
 			disableDotRule: true,
 		},
 		before: (app, server, compiler) => {
-		  app.get('/context', (req, res) => {
-			res.json({
-				available: [],
-				entrypoint: 'main',
+			app.get("/context", (req, res) => {
+				res.json({
+					available: [],
+					entrypoint: "main",
+				});
 			});
-		  });
 		},
 		overlay: {
 			errors: true,
@@ -56,18 +56,16 @@ module.exports = {
 			followSymlinks: false,
 		},
 	},
-	devtool: 'eval-cheap-module-source-map',
+	devtool: "eval-cheap-module-source-map",
 	plugins: [
 		new webpack.ProgressPlugin(),
 		new CleanWebpackPlugin({
 			root: settings.PROJECT_BUILD_PATH,
-			cleanOnceBeforeBuildPatterns: [
-				'**/*',
-			],
+			cleanOnceBeforeBuildPatterns: ["**/*"],
 			cleanStaleWebpackAssets: true,
 			dangerouslyAllowCleanPatternsOutsideProject: false,
 			verbose: false,
 			dry: false,
 		}),
 	],
-}
+};
