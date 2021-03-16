@@ -182,8 +182,7 @@ var LOAD_MODULE = '@@platform/LOAD_MODULE';
 var SHUTDOWN = '@@platform/SHUTDOWN';
 var MODULE_LOADED = '@@modules/LOADED';
 var MODULE_UNLOADED = '@@modules/UNLOADED';
-var MODULE_NOT_AVAILABLE = '@@modules/NOT_AVAILABLE'; //export const MODULES_UPDATED = '@@modules/UPDATED';
-
+var MODULE_NOT_AVAILABLE = '@@modules/NOT_AVAILABLE';
 var MODULES_READY = '@@modules/READY';
 ;
 
@@ -271,13 +270,9 @@ function configureStore() {
 }
 
 function registerModule(scope) {
-  //console.log('in Development registerModule', scope)
   var node = document.createElement('div');
   var View = scope.MainView;
-  var store = configureStore({}, scope.reducer); //console.log('node', node)
-  //console.log('View', View)
-  //console.log('store', store)
-  // FIXME shim store getState
+  var store = configureStore({}, scope.reducer); // FIXME shim store getState
 
   react_dom__WEBPACK_IMPORTED_MODULE_2__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_5__.Provider, {
     store: store
@@ -411,7 +406,7 @@ var _default = {
 /* harmony export */   "moduleLoaderMiddleware": () => (/* binding */ moduleLoaderMiddleware),
 /* harmony export */   "createModuleLoader": () => (/* binding */ createModuleLoader)
 /* harmony export */ });
-/* unused harmony exports moduleNotAvailable, moduleLoaded, moduleUnloaded, registerModule */
+/* unused harmony export registerModule */
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
 /* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
@@ -458,38 +453,6 @@ var MOUNTED_MODULES = 'mountedModules';
 var REDUCERS = 'reducers';
 var CACHE = 'cache';
 var READY = 'ready';
-
-var createNode = function createNode(module, parent) {
-  return {
-    id: module.name,
-    data: module,
-    parent: parent,
-    children: []
-  };
-};
-
-var addChildrenToNode = function addChildrenToNode(node, child) {
-  return node.children.push(child);
-};
-
-var moduleNotAvailable = function moduleNotAvailable(name) {
-  return {
-    type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_NOT_AVAILABLE,
-    name: name
-  };
-};
-var moduleLoaded = function moduleLoaded(name) {
-  return {
-    type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_LOADED,
-    name: name
-  };
-};
-var moduleUnloaded = function moduleUnloaded(name) {
-  return {
-    type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_UNLOADED,
-    name: name
-  };
-};
 function registerModule(scope) {
   if (scope.MainView) {
     this.MainView = scope.MainView;
@@ -572,7 +535,7 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var addReducer = function addReducer(name, reducer) {
-    return moduleState[REDUCERS][name] = (0,redux__WEBPACK_IMPORTED_MODULE_8__.combineReducers)(reducer);
+    return moduleState[REDUCERS][name] = reducer;
   };
 
   var setCache = function setCache(key, value) {
@@ -596,10 +559,6 @@ var createModuleLoader = function createModuleLoader() {
     });
   };
 
-  var isReady = function isReady() {
-    return moduleState[READY];
-  };
-
   var cachePromise = function cachePromise(cacheKey, promise) {
     return promise.then(function (data) {
       return Promise.resolve(setCache(cacheKey, data));
@@ -608,11 +567,9 @@ var createModuleLoader = function createModuleLoader() {
 
   var connectModule = function connectModule(name) {
     var scope = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-    console.log('connecting module', name, scope); //console.log('registering module', name, 'its scope is', scope)
 
     if (scope.reducer) {
-      //console.log('adding reducer of', name)
-      addReducer(name, scope.reducer);
+      addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_8__.combineReducers)(scope.reducer));
     }
 
     var module = {
@@ -621,7 +578,12 @@ var createModuleLoader = function createModuleLoader() {
     };
     moduleState[LOADED_MODULES][name] = module;
     delete moduleState[LOADING_MODULES][name];
-    return moduleLoaded(name);
+    return moduleLoaded({
+      type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_LOADED,
+      payload: {
+        name: name
+      }
+    });
   };
 
   var loadModuleFile = function loadModuleFile(uri) {
@@ -677,7 +639,12 @@ var createModuleLoader = function createModuleLoader() {
       var module = getAvailableModule(name);
 
       if (!module) {
-        store.dispatch(moduleNotAvailable(name));
+        store.dispatch({
+          type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_NOT_AVAILABLE,
+          payload: {
+            name: name
+          }
+        });
         return Promise.resolve(null);
       }
 
@@ -698,9 +665,14 @@ var createModuleLoader = function createModuleLoader() {
     }
   };
 
-  var unloadModule = function unloadModule(moduleName) {
-    delete moduleState[LOADED_MODULES][moduleName];
-    store.dispatch(moduleUnloaded(moduleName));
+  var unloadModule = function unloadModule(name) {
+    delete moduleState[LOADED_MODULES][name];
+    store.dispatch({
+      type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_UNLOADED,
+      payload: {
+        name: name
+      }
+    });
   };
 
   var getReducer = function getReducer() {
@@ -709,8 +681,8 @@ var createModuleLoader = function createModuleLoader() {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
 
-      if (!isReady()) {
-        console.log('dynamic reducer not ready, not reducing');
+      if (!moduleState[READY]) {
+        //console.log('dynamic reducer not ready, not reducing')
         return state;
       }
 
@@ -728,16 +700,16 @@ var createModuleLoader = function createModuleLoader() {
         var _moduleLoaded = isModuleLoaded(name);
 
         if (!_moduleLoaded) {
-          console.log('>>> will NOT propagate action', action.type, 'to module', name, 'reducer'); //newState[name] = state[name]
-
+          //console.log('>>> will NOT propagate action', action.type, 'to module', name, 'reducer')
+          //newState[name] = state[name]
           continue;
         }
 
         if (action.type.startsWith('@@router/')) {
-          console.log('>>> will propagate action broadcast', action.type, 'to module', name, 'reducer');
+          //console.log('>>> will propagate action broadcast', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name], action);
         } else if (action.type.startsWith('@' + name + '/')) {
-          console.log('>>> will propagate action module', action.type, 'to module', name, 'reducer');
+          //console.log('>>> will propagate action module', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name], _objectSpread(_objectSpread({}, action), {}, {
             type: action.type.slice(('@' + name + '/').length)
           }));
@@ -765,7 +737,7 @@ var createModuleLoader = function createModuleLoader() {
         key: "render",
         value: function render() {
           // INFO tracing why flickerring when chaning navigation happens
-          console.log('rendering ModuleWrapper of', name);
+          //console.log('rendering ModuleWrapper of', name)
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_7__.Provider, {
             store: {
               dispatch: function dispatch(action) {
@@ -783,9 +755,8 @@ var createModuleLoader = function createModuleLoader() {
               },
               subscribe: store.subscribe,
               replaceReducer: function replaceReducer(newReducer) {
-                console.log('module', name, 'wants to replace reducer with', newReducer); // INFO replace module reducer instead of doing nothing
-              } //store.replaceReducer, // probably should not allow should provide shim that does noop
-
+                addReducer(name, newReducer);
+              }
             }
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6__.createElement(Component, this.props));
         }
@@ -821,23 +792,9 @@ var createModuleLoader = function createModuleLoader() {
       });
       Object.keys(getLoadedModules()).forEach(function (moduleName) {
         if (!isModuleAvailable(moduleName)) {
-          //console.log('unloading loaded module', moduleName)
           _this.unloadModule(moduleName);
         }
       });
-      /*
-      modules.forEach((module) => {
-        switch (module.strategy) {
-          case "prefetch": {
-            this.loadModule(module)
-            break
-          }
-          default: {
-            return
-          }
-        }
-      })*/
-
       setReady(true);
     },
     getLoadedModule: getLoadedModule,
@@ -871,11 +828,6 @@ var createModuleLoader = function createModuleLoader() {
   reactHotLoader.register(REDUCERS, "REDUCERS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(CACHE, "CACHE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(READY, "READY", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(createNode, "createNode", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(addChildrenToNode, "addChildrenToNode", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(moduleNotAvailable, "moduleNotAvailable", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(moduleLoaded, "moduleLoaded", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(moduleUnloaded, "moduleUnloaded", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(registerModule, "registerModule", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(moduleLoaderMiddleware, "moduleLoaderMiddleware", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(createModuleLoader, "createModuleLoader", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");

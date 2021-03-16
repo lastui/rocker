@@ -2,7 +2,7 @@ import React from 'react'
 import { Provider } from 'react-redux';
 import { combineReducers } from 'redux';
 
-import * as C from './constants';
+import * as constants from './constants';
 
 const LOADED_MODULES = 'loadedModules'
 const AVAILABLE_MODULES = 'availableModules'
@@ -11,31 +11,6 @@ const MOUNTED_MODULES = 'mountedModules'
 const REDUCERS = 'reducers'
 const CACHE = 'cache'
 const READY = 'ready' 
-
-const createNode = (module, parent) => ({
-  id: module.name,
-  data: module,
-  parent,
-  children: []
-})
-
-const addChildrenToNode = (node, child) =>
-  node.children.push(child)
-
-export const moduleNotAvailable = name => ({
-  type: C.MODULE_NOT_AVAILABLE,
-  name,
-})
-
-export const moduleLoaded = (name) => ({
-  type: C.MODULE_LOADED,
-  name,
-})
-
-export const moduleUnloaded = (name) => ({
-  type: C.MODULE_UNLOADED,
-  name,
-})
 
 export function registerModule(scope) {
   if (scope.MainView) {
@@ -48,10 +23,10 @@ export function registerModule(scope) {
 
 export const moduleLoaderMiddleware = (loader) => (store) => (next) => (action) => {
   switch (action.type) {
-    case C.SET_AVAILABLE_MODULES: {
+    case constants.SET_AVAILABLE_MODULES: {
       return loader.setAvailableModules(action.payload.modules)
     }
-    case C.SET_ENTRYPOINT_MODULE: {
+    case constants.SET_ENTRYPOINT_MODULE: {
       return loader.loadModule(action.payload.entrypoint).then(() => next(action))
     }
     default: {
@@ -102,7 +77,7 @@ export const createModuleLoader = () => {
   const getReducers = () => moduleState[REDUCERS]
 
   const addReducer = (name, reducer) => 
-    moduleState[REDUCERS][name] = combineReducers(reducer)
+    moduleState[REDUCERS][name] = reducer
 
   const setCache = (key, value) => {
     moduleState[CACHE][key] = value
@@ -116,22 +91,17 @@ export const createModuleLoader = () => {
   const setReady = (isReady) => {
     moduleState[READY] = isReady
     store.dispatch({
-      type: C.MODULES_READY,
+      type: constants.MODULES_READY,
       payload: isReady,
     })
   }
-
-  const isReady = () => moduleState[READY]
 
   const cachePromise = (cacheKey, promise) =>
     promise.then(data => Promise.resolve(setCache(cacheKey, data)))
 
   const connectModule = (name, scope = {}) => {
-    console.log('connecting module', name, scope)
-    //console.log('registering module', name, 'its scope is', scope)
     if (scope.reducer) {
-      //console.log('adding reducer of', name)
-      addReducer(name, scope.reducer)
+      addReducer(name, combineReducers(scope.reducer))
     }
     const module = {
       name,
@@ -139,7 +109,13 @@ export const createModuleLoader = () => {
     }
     moduleState[LOADED_MODULES][name] = module
     delete moduleState[LOADING_MODULES][name]
-    return moduleLoaded(name)
+
+    return moduleLoaded({
+      type: constants.MODULE_LOADED,
+      payload: {
+        name,
+      },
+    })
   }
 
   const loadModuleFile = (uri) => 
@@ -182,7 +158,12 @@ export const createModuleLoader = () => {
     if (!isModuleLoaded(name) && !isModuleLoading(name)) {
       const module = getAvailableModule(name)
       if (!module) {
-        store.dispatch(moduleNotAvailable(name))
+        store.dispatch({
+          type: constants.MODULE_NOT_AVAILABLE,
+          payload: {
+            name,
+          },
+        })
         return Promise.resolve(null)
       }
       module.lastError = undefined
@@ -202,17 +183,22 @@ export const createModuleLoader = () => {
     }
   }
 
-  const unloadModule = (moduleName) => {
-    delete moduleState[LOADED_MODULES][moduleName]
-    store.dispatch(moduleUnloaded(moduleName))
+  const unloadModule = (name) => {
+    delete moduleState[LOADED_MODULES][name]
+    store.dispatch({
+      type: constants.MODULE_UNLOADED,
+      payload: {
+        name,
+      },
+    })
   }
 
   const getReducer = () => {
     //const dynamicReducers = getReducers()
 
     return (state = {}, action) => {
-      if (!isReady()) {
-        console.log('dynamic reducer not ready, not reducing')
+      if (!moduleState[READY]) {
+        //console.log('dynamic reducer not ready, not reducing')
         return state
       }
 
@@ -232,16 +218,16 @@ export const createModuleLoader = () => {
         const moduleLoaded = isModuleLoaded(name)
 
         if (!moduleLoaded) {
-          console.log('>>> will NOT propagate action', action.type, 'to module', name, 'reducer')
+          //console.log('>>> will NOT propagate action', action.type, 'to module', name, 'reducer')
           //newState[name] = state[name]
           continue
         }
 
         if (action.type.startsWith('@@router/')) {
-          console.log('>>> will propagate action broadcast', action.type, 'to module', name, 'reducer')
+          //console.log('>>> will propagate action broadcast', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name], action)  
         } else if (action.type.startsWith('@' + name + '/')) {
-          console.log('>>> will propagate action module', action.type, 'to module', name, 'reducer')
+          //console.log('>>> will propagate action module', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name],
             {
               ...action,
@@ -263,7 +249,7 @@ export const createModuleLoader = () => {
 
       render() {
         // INFO tracing why flickerring when chaning navigation happens
-        console.log('rendering ModuleWrapper of', name)
+        //console.log('rendering ModuleWrapper of', name)
         return (
           <Provider
             store={{
@@ -283,10 +269,8 @@ export const createModuleLoader = () => {
               },
               subscribe: store.subscribe,
               replaceReducer: function(newReducer) {
-                console.log('module', name, 'wants to replace reducer with', newReducer)
-                // INFO replace module reducer instead of doing nothing
-
-              }, //store.replaceReducer, // probably should not allow should provide shim that does noop
+                addReducer(name, newReducer)
+              },
             }}
           >
             <Component {...this.props} />
@@ -312,22 +296,9 @@ export const createModuleLoader = () => {
       })
       Object.keys(getLoadedModules()).forEach((moduleName) => {
         if (!isModuleAvailable(moduleName)) {
-          //console.log('unloading loaded module', moduleName)
           this.unloadModule(moduleName)
         }
       })
-      /*
-      modules.forEach((module) => {
-        switch (module.strategy) {
-          case "prefetch": {
-            this.loadModule(module)
-            break
-          }
-          default: {
-            return
-          }
-        }
-      })*/
       setReady(true)
     },
     getLoadedModule,

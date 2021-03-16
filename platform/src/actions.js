@@ -1,13 +1,13 @@
-import * as C from './constants';
+import * as constants from './constants';
 
 export const init = () =>
   ({
-      type: C.INIT,
+      type: constants.INIT,
   })
 
 export const setAvailableModules = (modules = []) =>
   ({
-      type: C.SET_AVAILABLE_MODULES,
+      type: constants.SET_AVAILABLE_MODULES,
       payload: {
         modules,
       },
@@ -15,7 +15,7 @@ export const setAvailableModules = (modules = []) =>
 
 export const setEntryPointModule = (entrypoint) =>
   ({
-      type: C.SET_ENTRYPOINT_MODULE,
+      type: constants.SET_ENTRYPOINT_MODULE,
       payload: {
         entrypoint,
       },
@@ -23,7 +23,7 @@ export const setEntryPointModule = (entrypoint) =>
 
 export const loadModule = (name) =>
   ({
-      type: C.LOAD_MODULE,
+      type: constants.LOAD_MODULE,
       payload: {
         name,
       },

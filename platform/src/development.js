@@ -28,16 +28,10 @@ function configureStore(initialState = {}, rootReducer = {}) {
 }
 
 export function registerModule(scope) {
-  //console.log('in Development registerModule', scope)
-
 	const node = document.createElement('div');
 	const View = scope.MainView;
 
 	const store = configureStore({}, scope.reducer)
-	
-  //console.log('node', node)
-  //console.log('View', View)
-  //console.log('store', store)
 
   // FIXME shim store getState
 	ReactDOM.render(
