@@ -113,12 +113,12 @@ export const createModuleLoader = () => {
     moduleState[LOADED_MODULES][name] = module;
     delete moduleState[LOADING_MODULES][name];
 
-    return moduleLoaded({
+    return {
       type: constants.MODULE_LOADED,
       payload: {
         name,
       },
-    });
+    };
   };
 
   const loadModuleFile = (uri) =>
@@ -299,11 +299,11 @@ export const createModuleLoader = () => {
       modules.forEach((module) => {
         moduleState[AVAILABLE_MODULES][module.name] = module;
       });
-      Object.keys(getLoadedModules()).forEach((moduleName) => {
+      for (const name in moduleState[LOADED_MODULES]) {
         if (!isModuleAvailable(moduleName)) {
           this.unloadModule(moduleName);
         }
-      });
+      }
       setReady(true);
     },
     getLoadedModule,

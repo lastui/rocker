@@ -578,12 +578,12 @@ var createModuleLoader = function createModuleLoader() {
     };
     moduleState[LOADED_MODULES][name] = module;
     delete moduleState[LOADING_MODULES][name];
-    return moduleLoaded({
+    return {
       type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_LOADED,
       payload: {
         name: name
       }
-    });
+    };
   };
 
   var loadModuleFile = function loadModuleFile(uri) {
@@ -697,9 +697,9 @@ var createModuleLoader = function createModuleLoader() {
 
 
       for (var name in moduleState[REDUCERS]) {
-        var _moduleLoaded = isModuleLoaded(name);
+        var moduleLoaded = isModuleLoaded(name);
 
-        if (!_moduleLoaded) {
+        if (!moduleLoaded) {
           //console.log('>>> will NOT propagate action', action.type, 'to module', name, 'reducer')
           //newState[name] = state[name]
           continue;
@@ -782,19 +782,19 @@ var createModuleLoader = function createModuleLoader() {
       }
     },
     setAvailableModules: function setAvailableModules() {
-      var _this = this;
-
       var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
       setReady(false);
       moduleState[AVAILABLE_MODULES] = {};
       modules.forEach(function (module) {
         moduleState[AVAILABLE_MODULES][module.name] = module;
       });
-      Object.keys(getLoadedModules()).forEach(function (moduleName) {
+
+      for (var name in moduleState[LOADED_MODULES]) {
         if (!isModuleAvailable(moduleName)) {
-          _this.unloadModule(moduleName);
+          this.unloadModule(moduleName);
         }
-      });
+      }
+
       setReady(true);
     },
     getLoadedModule: getLoadedModule,
