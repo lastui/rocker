@@ -82,7 +82,6 @@ export const createModuleLoader = () => {
 
   const addReducer = (name, reducer) => {
     moduleState[REDUCERS][name] = reducer;
-    reducer(undefined, { type: constants.MODULE_INIT });
   };
 
   const setCache = (key, value) => {
@@ -109,6 +108,7 @@ export const createModuleLoader = () => {
     console.log("connecting module", name, "with scope", scope);
     if (scope.reducer) {
       console.log("adding reducer of", name);
+      scope.reducer.router = {};
       addReducer(name, combineReducers(scope.reducer));
     }
     const module = {
@@ -134,15 +134,13 @@ export const createModuleLoader = () => {
           __SANDBOX_SCOPE__: {},
         };
         // FIXME try without "with(this)"
-        const r = new Function("with(this) {" + data + ";}").call(
-          sandbox
-        );
+        const r = new Function("with(this) {" + data + ";}").call(sandbox);
         if (r !== undefined) {
-          console.log("leak while evaluating sandbox", r);
+          //console.log("leak while evaluating sandbox", r);
           return {};
         }
         //console.log('')
-        console.log("sandbox value after evaluation is", sandbox);
+        //console.log("sandbox value after evaluation is", sandbox);
         return sandbox.__SANDBOX_SCOPE__;
       });
 
@@ -223,11 +221,8 @@ export const createModuleLoader = () => {
         return state;
       }
 
-      if (action.type.startsWith("@@module")) {
+      if (action.type.startsWith("@@module/")) {
         //        console.log('>>> will NOT propagate action', action.type, 'to module reducers')
-        return state;
-      } else if (action.type.startsWith("@@redux")) {
-        //console.log('>>> will NOT propagate action', action.type, 'to module reducers')
         return state;
       }
 
@@ -282,7 +277,9 @@ export const createModuleLoader = () => {
               },
               getState: () => {
                 const state = store.getState();
-                return state.modules[name] || {};
+                const isolatedState = state.modules[name] || {};
+                isolatedState.router = state.router;
+                return isolatedState;
               },
               subscribe: store.subscribe,
               replaceReducer: function (newReducer) {
