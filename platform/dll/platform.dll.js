@@ -570,8 +570,13 @@ var createModuleLoader = function createModuleLoader() {
     console.log("connecting module", name, "with scope", scope);
 
     if (scope.reducer) {
-      console.log("adding reducer of", name);
-      scope.reducer.router = {};
+      console.log("adding reducer of", name, "is", scope.reducer);
+
+      scope.reducer.router = function (state, action) {
+        return state;
+      };
+
+      console.log("after patching router in its", scope.reducer);
       addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_8__.combineReducers)(scope.reducer));
     }
 
