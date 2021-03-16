@@ -82,7 +82,7 @@ export const createModuleLoader = () => {
 
   const addReducer = (name, reducer) => {
     moduleState[REDUCERS][name] = reducer;
-    reducer(undefined, { type: constants.MODULE_INIT });
+    reducer({}, { type: constants.MODULE_INIT });
   };
 
   const setCache = (key, value) => {

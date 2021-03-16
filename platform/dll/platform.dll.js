@@ -539,7 +539,7 @@ var createModuleLoader = function createModuleLoader() {
 
   var addReducer = function addReducer(name, reducer) {
     moduleState[REDUCERS][name] = reducer;
-    reducer(void 0, {
+    reducer({}, {
       type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_INIT
     });
   };
