@@ -82,6 +82,7 @@ export const createModuleLoader = () => {
 
   const addReducer = (name, reducer) => {
     moduleState[REDUCERS][name] = reducer;
+    reducer(undefined, { type: constants.MODULE_INIT });
   };
 
   const setCache = (key, value) => {
@@ -277,9 +278,13 @@ export const createModuleLoader = () => {
                 }
               },
               getState: () => {
+                console.log("requesting state of", name);
                 const state = store.getState();
+                console.log("global state", state);
                 const isolatedState = state.modules[name] || {};
+                console.log("isolated state namespace", isolatedState);
                 isolatedState.router = state.router;
+                console.log("isolated state after injection", isolatedState);
                 return isolatedState;
               },
               subscribe: store.subscribe,

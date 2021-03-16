@@ -160,6 +160,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "SET_ENTRYPOINT_MODULE": () => (/* binding */ SET_ENTRYPOINT_MODULE),
 /* harmony export */   "LOAD_MODULE": () => (/* binding */ LOAD_MODULE),
 /* harmony export */   "SHUTDOWN": () => (/* binding */ SHUTDOWN),
+/* harmony export */   "MODULE_INIT": () => (/* binding */ MODULE_INIT),
 /* harmony export */   "MODULE_LOADED": () => (/* binding */ MODULE_LOADED),
 /* harmony export */   "MODULE_UNLOADED": () => (/* binding */ MODULE_UNLOADED),
 /* harmony export */   "MODULE_NOT_AVAILABLE": () => (/* binding */ MODULE_NOT_AVAILABLE),
@@ -180,6 +181,7 @@ var SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
 var SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
 var LOAD_MODULE = "@@platform/LOAD_MODULE";
 var SHUTDOWN = "@@platform/SHUTDOWN";
+var MODULE_INIT = "@@modules/INIT";
 var MODULE_LOADED = "@@modules/LOADED";
 var MODULE_UNLOADED = "@@modules/UNLOADED";
 var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
@@ -198,6 +200,7 @@ var MODULES_READY = "@@modules/READY";
   reactHotLoader.register(SET_ENTRYPOINT_MODULE, "SET_ENTRYPOINT_MODULE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(LOAD_MODULE, "LOAD_MODULE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(SHUTDOWN, "SHUTDOWN", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(MODULE_INIT, "MODULE_INIT", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_LOADED, "MODULE_LOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_UNLOADED, "MODULE_UNLOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_NOT_AVAILABLE, "MODULE_NOT_AVAILABLE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
@@ -536,6 +539,9 @@ var createModuleLoader = function createModuleLoader() {
 
   var addReducer = function addReducer(name, reducer) {
     moduleState[REDUCERS][name] = reducer;
+    reducer(void 0, {
+      type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_INIT
+    });
   };
 
   var setCache = function setCache(key, value) {
@@ -761,9 +767,13 @@ var createModuleLoader = function createModuleLoader() {
                 }
               },
               getState: function getState() {
+                console.log("requesting state of", name);
                 var state = store.getState();
+                console.log("global state", state);
                 var isolatedState = state.modules[name] || {};
+                console.log("isolated state namespace", isolatedState);
                 isolatedState.router = state.router;
+                console.log("isolated state after injection", isolatedState);
                 return isolatedState;
               },
               subscribe: store.subscribe,
