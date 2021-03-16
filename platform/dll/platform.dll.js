@@ -160,6 +160,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "SET_ENTRYPOINT_MODULE": () => (/* binding */ SET_ENTRYPOINT_MODULE),
 /* harmony export */   "LOAD_MODULE": () => (/* binding */ LOAD_MODULE),
 /* harmony export */   "SHUTDOWN": () => (/* binding */ SHUTDOWN),
+/* harmony export */   "MODULE_INIT": () => (/* binding */ MODULE_INIT),
 /* harmony export */   "MODULE_LOADED": () => (/* binding */ MODULE_LOADED),
 /* harmony export */   "MODULE_UNLOADED": () => (/* binding */ MODULE_UNLOADED),
 /* harmony export */   "MODULE_NOT_AVAILABLE": () => (/* binding */ MODULE_NOT_AVAILABLE),
@@ -180,6 +181,7 @@ var SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
 var SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
 var LOAD_MODULE = "@@platform/LOAD_MODULE";
 var SHUTDOWN = "@@platform/SHUTDOWN";
+var MODULE_INIT = "@@modules/INIT";
 var MODULE_LOADED = "@@modules/LOADED";
 var MODULE_UNLOADED = "@@modules/UNLOADED";
 var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
@@ -198,6 +200,7 @@ var MODULES_READY = "@@modules/READY";
   reactHotLoader.register(SET_ENTRYPOINT_MODULE, "SET_ENTRYPOINT_MODULE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(LOAD_MODULE, "LOAD_MODULE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(SHUTDOWN, "SHUTDOWN", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(MODULE_INIT, "MODULE_INIT", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_LOADED, "MODULE_LOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_UNLOADED, "MODULE_UNLOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_NOT_AVAILABLE, "MODULE_NOT_AVAILABLE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
@@ -535,7 +538,10 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var addReducer = function addReducer(name, reducer) {
-    return moduleState[REDUCERS][name] = reducer;
+    moduleState[REDUCERS][name] = reducer;
+    reducer(void 0, {
+      type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_INIT
+    });
   };
 
   var setCache = function setCache(key, value) {
@@ -567,8 +573,10 @@ var createModuleLoader = function createModuleLoader() {
 
   var connectModule = function connectModule(name) {
     var scope = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+    console.log("connecting module", name, "with scope", scope);
 
     if (scope.reducer) {
+      console.log("adding reducer of", name);
       addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_8__.combineReducers)(scope.reducer));
     }
 
@@ -594,13 +602,15 @@ var createModuleLoader = function createModuleLoader() {
         __SANDBOX_SCOPE__: {}
       }; // FIXME try without "with(this)"
 
-      var r = new Function("with(this) { return " + data + "}").call(sandbox);
+      var r = new Function("with(this) {" + data + ";}").call(sandbox);
 
-      if (r != void 0) {
+      if (r !== void 0) {
+        console.log("leak while evaluating sandbox", r);
         return {};
-      } //console.log('sandbox value after evaluation is', sandbox)
+      } //console.log('')
 
 
+      console.log("sandbox value after evaluation is", sandbox);
       return sandbox.__SANDBOX_SCOPE__;
     });
   };
@@ -634,35 +644,39 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var loadModule = function loadModule(name) {
-    //console.log('load module', name, 'called')
-    if (!isModuleLoaded(name) && !isModuleLoading(name)) {
-      var module = getAvailableModule(name);
+    console.log("load module", name, "called");
 
-      if (!module) {
-        store.dispatch({
-          type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_NOT_AVAILABLE,
-          payload: {
-            name: name
-          }
-        });
-        return Promise.resolve(null);
-      }
-
-      module.lastError = void 0;
-      return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
-        return store.dispatch(connectModule(name, data));
-      })).catch(function (error) {
-        console.log("load module", name, "error", error);
-        module.lastError = error;
-        delete moduleState[LOADING_MODULES][name];
-      });
-    } else {
-      if (isModuleLoading(name)) {
-        return moduleState[LOADING_MODULES][name];
-      }
-
+    if (isModuleLoaded(name)) {
+      console.log("module", name, "already loaded");
       return Promise.resolve(getLoadedModule(name));
     }
+
+    if (isModuleLoading(name)) {
+      console.log("module", name, "is currently loading");
+      return moduleState[LOADING_MODULES][name];
+    }
+
+    var module = getAvailableModule(name);
+
+    if (!module) {
+      console.log("module", name, "is is not available");
+      store.dispatch({
+        type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_NOT_AVAILABLE,
+        payload: {
+          name: name
+        }
+      });
+      return Promise.resolve(null);
+    }
+
+    console.log("module", name, "will be loaded");
+    return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
+      return store.dispatch(connectModule(name, data));
+    })).catch(function (error) {
+      console.log("load module", name, "error", error);
+      delete moduleState[LOADING_MODULES][name];
+      return Promise.resolve(null);
+    });
   };
 
   var unloadModule = function unloadModule(name) {
@@ -682,7 +696,7 @@ var createModuleLoader = function createModuleLoader() {
       var action = arguments.length > 1 ? arguments[1] : void 0;
 
       if (!moduleState[READY]) {
-        //console.log('dynamic reducer not ready, not reducing')
+        console.log("dynamic reducer not ready, not reducing", action);
         return state;
       }
 

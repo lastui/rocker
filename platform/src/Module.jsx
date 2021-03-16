@@ -35,6 +35,7 @@ const Module = (props) => {
   }
 
   if (!loadedModule.root) {
+    console.log('loadedModule is', loadedModule)
     return <div>{`Module [${props.name}] is missing MainView ...`}</div>;
   }
 

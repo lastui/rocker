@@ -80,7 +80,10 @@ export const createModuleLoader = () => {
 
   const getReducers = () => moduleState[REDUCERS];
 
-  const addReducer = (name, reducer) => (moduleState[REDUCERS][name] = reducer);
+  const addReducer = (name, reducer) => {
+    moduleState[REDUCERS][name] = reducer;
+    reducer(undefined, { type: constants.MODULE_INIT });
+  };
 
   const setCache = (key, value) => {
     moduleState[CACHE][key] = value;
@@ -103,7 +106,9 @@ export const createModuleLoader = () => {
     promise.then((data) => Promise.resolve(setCache(cacheKey, data)));
 
   const connectModule = (name, scope = {}) => {
+    console.log("connecting module", name, "with scope", scope);
     if (scope.reducer) {
+      console.log("adding reducer of", name);
       addReducer(name, combineReducers(scope.reducer));
     }
     const module = {
@@ -129,13 +134,15 @@ export const createModuleLoader = () => {
           __SANDBOX_SCOPE__: {},
         };
         // FIXME try without "with(this)"
-        const r = new Function("with(this) { return " + data + "}").call(
+        const r = new Function("with(this) {" + data + ";}").call(
           sandbox
         );
-        if (r != undefined) {
+        if (r !== undefined) {
+          console.log("leak while evaluating sandbox", r);
           return {};
         }
-        //console.log('sandbox value after evaluation is', sandbox)
+        //console.log('')
+        console.log("sandbox value after evaluation is", sandbox);
         return sandbox.__SANDBOX_SCOPE__;
       });
 
@@ -161,35 +168,40 @@ export const createModuleLoader = () => {
     moduleState[AVAILABLE_MODULES][name] !== undefined;
 
   const loadModule = (name) => {
-    //console.log('load module', name, 'called')
-    if (!isModuleLoaded(name) && !isModuleLoading(name)) {
-      const module = getAvailableModule(name);
-      if (!module) {
-        store.dispatch({
-          type: constants.MODULE_NOT_AVAILABLE,
-          payload: {
-            name,
-          },
-        });
-        return Promise.resolve(null);
-      }
-      module.lastError = undefined;
-      return setLoadingModule(
-        name,
-        loadModuleFile(module.url).then((data) =>
-          store.dispatch(connectModule(name, data))
-        )
-      ).catch((error) => {
-        console.log("load module", name, "error", error);
-        module.lastError = error;
-        delete moduleState[LOADING_MODULES][name];
-      });
-    } else {
-      if (isModuleLoading(name)) {
-        return moduleState[LOADING_MODULES][name];
-      }
+    console.log("load module", name, "called");
+
+    if (isModuleLoaded(name)) {
+      console.log("module", name, "already loaded");
       return Promise.resolve(getLoadedModule(name));
     }
+    if (isModuleLoading(name)) {
+      console.log("module", name, "is currently loading");
+      return moduleState[LOADING_MODULES][name];
+    }
+
+    const module = getAvailableModule(name);
+    if (!module) {
+      console.log("module", name, "is is not available");
+      store.dispatch({
+        type: constants.MODULE_NOT_AVAILABLE,
+        payload: {
+          name,
+        },
+      });
+      return Promise.resolve(null);
+    }
+
+    console.log("module", name, "will be loaded");
+    return setLoadingModule(
+      name,
+      loadModuleFile(module.url).then((data) =>
+        store.dispatch(connectModule(name, data))
+      )
+    ).catch((error) => {
+      console.log("load module", name, "error", error);
+      delete moduleState[LOADING_MODULES][name];
+      return Promise.resolve(null);
+    });
   };
 
   const unloadModule = (name) => {
@@ -207,7 +219,7 @@ export const createModuleLoader = () => {
 
     return (state = {}, action) => {
       if (!moduleState[READY]) {
-        //console.log('dynamic reducer not ready, not reducing')
+        console.log("dynamic reducer not ready, not reducing", action);
         return state;
       }
 
