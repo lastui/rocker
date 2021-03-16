@@ -1,7 +1,8 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "scripts": {
+    "build": "npm run build:dependencies && npm run build:platform",
     "build:dependencies": "cd dependencies && npm run build",
     "build:platform": "cd platform && npm run build"
   },
@@ -45,11 +46,7 @@
     "add-asset-html-webpack-plugin": "3.2.0",
     "buffer": "6.0.3",
     "clean-webpack-plugin": "3.0.0",
-    "connected-react-router": "6.9.1",
-    "history": "4.10.1",
     "html-webpack-plugin": "5.3.1",
-    "loose-envify": "1.1.0",
-    "object-assign": "4.1.1",
     "os-browserify": "0.3.0",
     "path-browserify": "1.0.1",
     "react-hot-loader": "4.13.0",

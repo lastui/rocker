@@ -4,6 +4,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const settings = require(path.resolve(__dirname, '../settings'));
 
 module.exports = {
+	bail: true,
 	performance: {
 		hints: 'warning',
 	},

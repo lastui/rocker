@@ -43,12 +43,17 @@ module.exports = new Config()
 					minifyURLs: false,
 				},
 				inject: 'body',
+				scriptLoading: 'blocking',
 			}),
-			new AddAssetHtmlPlugin({
-				filepath: path.resolve(__dirname, '../../dependencies/dll/dependencies.dll.js'),
-			}),
-			new AddAssetHtmlPlugin({
-				filepath: path.resolve(__dirname, '../../platform/dll/platform.dll.js'),
-			}),
+			new AddAssetHtmlPlugin([
+				{
+					filepath: path.resolve(__dirname, '../../dependencies/dll/dependencies.dll.min.js'),
+					typeOfAsset: 'js',
+				},
+				{
+					filepath: path.resolve(__dirname, '../../platform/dll/platform.dll.min.js'),
+					typeOfAsset: 'js',
+				},
+			]),
 		],
 	})

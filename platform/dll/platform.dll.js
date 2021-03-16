@@ -3,6 +3,9 @@ var platform_dll;
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./node_modules/@lastui/rocker/platform/ModuleContext.jsx":
+/*!****************************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/ModuleContext.jsx ***!
+  \****************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -10,7 +13,7 @@ var platform_dll;
 /* harmony export */   "ModuleContextProvider": () => (/* binding */ ModuleContextProvider),
 /* harmony export */   "useModuleLoader": () => (/* binding */ useModuleLoader)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
 (function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
@@ -64,6 +67,9 @@ var _default = ModuleContextProvider;
 /***/ }),
 
 /***/ "./node_modules/@lastui/rocker/platform/actions.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/actions.js ***!
+  \*********************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -74,7 +80,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "setEntryPointModule": () => (/* binding */ setEntryPointModule),
 /* harmony export */   "loadModule": () => (/* binding */ loadModule)
 /* harmony export */ });
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/@lastui/rocker/platform/constants.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
 (function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
@@ -141,6 +147,9 @@ var loadModule = function loadModule(name) {
 /***/ }),
 
 /***/ "./node_modules/@lastui/rocker/platform/constants.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/constants.js ***!
+  \***********************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -206,6 +215,9 @@ var MODULES_READY = '@@modules/READY';
 /***/ }),
 
 /***/ "./node_modules/@lastui/rocker/platform/development.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/development.js ***!
+  \*************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -213,14 +225,14 @@ var MODULES_READY = '@@modules/READY';
 /* harmony export */   "registerModule": () => (/* binding */ registerModule),
 /* harmony export */   "Module": () => (/* binding */ Module)
 /* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/react/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/react-dom/index.js");
-/* harmony import */ var connected_react_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/connected-react-router/lib/index.js");
-/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/react-router/index.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/react-redux/lib/index.js");
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/redux/lib/redux.js");
-/* harmony import */ var _routing__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./node_modules/@lastui/rocker/platform/routing.js");
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var connected_react_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! connected-react-router */ "./node_modules/connected-react-router/lib/index.js");
+/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/index.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
+/* harmony import */ var _routing__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./routing */ "./node_modules/@lastui/rocker/platform/routing.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
 
 
@@ -311,6 +323,9 @@ var Module = function Module(props) {
 /***/ }),
 
 /***/ "./node_modules/@lastui/rocker/platform/index.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/index.js ***!
+  \*******************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -327,11 +342,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "registerModule": () => (/* binding */ registerModule),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/@lastui/rocker/platform/actions.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/@lastui/rocker/platform/constants.js");
-/* harmony import */ var _routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/@lastui/rocker/platform/routing.js");
-/* harmony import */ var _ModuleContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/@lastui/rocker/platform/ModuleContext.jsx");
-/* harmony import */ var _modules__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/@lastui/rocker/platform/modules.js");
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./node_modules/@lastui/rocker/platform/actions.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
+/* harmony import */ var _routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./routing */ "./node_modules/@lastui/rocker/platform/routing.js");
+/* harmony import */ var _ModuleContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ModuleContext */ "./node_modules/@lastui/rocker/platform/ModuleContext.jsx");
+/* harmony import */ var _modules__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules */ "./node_modules/@lastui/rocker/platform/modules.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
 (function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
@@ -347,8 +362,8 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
 
 
 
-var registerModule =  false ? 0 : __webpack_require__("./node_modules/@lastui/rocker/platform/development.js").registerModule;
-var Module =  false ? 0 : __webpack_require__("./node_modules/@lastui/rocker/platform/development.js").Module;
+var registerModule =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modules/@lastui/rocker/platform/development.js").registerModule;
+var Module =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modules/@lastui/rocker/platform/development.js").Module;
 
 var _default = {
   Module: Module,
@@ -386,6 +401,9 @@ var _default = {
 /***/ }),
 
 /***/ "./node_modules/@lastui/rocker/platform/modules.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/modules.js ***!
+  \*********************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -394,16 +412,16 @@ var _default = {
 /* harmony export */   "createModuleLoader": () => (/* binding */ createModuleLoader)
 /* harmony export */ });
 /* unused harmony exports moduleNotAvailable, moduleLoaded, moduleUnloaded, registerModule */
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("./node_modules/@babel/runtime/helpers/esm/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("./node_modules/@babel/runtime/helpers/esm/inherits.js");
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("./node_modules/react/index.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("./node_modules/react-redux/lib/index.js");
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("./node_modules/redux/lib/redux.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("./node_modules/@lastui/rocker/platform/constants.js");
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
 
 
@@ -873,13 +891,16 @@ var createModuleLoader = function createModuleLoader() {
 /***/ }),
 
 /***/ "./node_modules/@lastui/rocker/platform/routing.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/routing.js ***!
+  \*********************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "history": () => (/* binding */ history)
 /* harmony export */ });
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./node_modules/history/index.js");
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
 /* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history__WEBPACK_IMPORTED_MODULE_0__);
 /* module decorator */ module = __webpack_require__.hmd(module);
 (function () {
@@ -915,6 +936,9 @@ var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
 /***/ }),
 
 /***/ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/classCallCheck.js ***!
+  \*******************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -930,6 +954,9 @@ function _classCallCheck(instance, Constructor) {
 /***/ }),
 
 /***/ "./node_modules/@babel/runtime/helpers/esm/createClass.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/createClass.js ***!
+  \****************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -955,6 +982,9 @@ function _createClass(Constructor, protoProps, staticProps) {
 /***/ }),
 
 /***/ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/defineProperty.js ***!
+  \*******************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -979,6 +1009,9 @@ function _defineProperty(obj, key, value) {
 /***/ }),
 
 /***/ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js ***!
+  \*******************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -995,6 +1028,9 @@ function _getPrototypeOf(o) {
 /***/ }),
 
 /***/ "./node_modules/@babel/runtime/helpers/esm/inherits.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/inherits.js + 1 modules ***!
+  \*************************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1033,6 +1069,9 @@ function _inherits(subClass, superClass) {
 /***/ }),
 
 /***/ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js + 2 modules ***!
+  \******************************************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1080,55 +1119,79 @@ function _possibleConstructorReturn(self, call) {
 /***/ }),
 
 /***/ "./node_modules/connected-react-router/lib/index.js":
+/*!********************************************************************************************************!*\
+  !*** delegated ./node_modules/connected-react-router/lib/index.js from dll-reference dependencies_dll ***!
+  \********************************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__("dll-reference dependencies_dll"))("./node_modules/connected-react-router/lib/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/connected-react-router/lib/index.js");
 
 /***/ }),
 
 /***/ "./node_modules/history/index.js":
+/*!*************************************************************************************!*\
+  !*** delegated ./node_modules/history/index.js from dll-reference dependencies_dll ***!
+  \*************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__("dll-reference dependencies_dll"))("./node_modules/history/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/index.js");
 
 /***/ }),
 
 /***/ "./node_modules/react-dom/index.js":
+/*!***************************************************************************************!*\
+  !*** delegated ./node_modules/react-dom/index.js from dll-reference dependencies_dll ***!
+  \***************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__("dll-reference dependencies_dll"))("./node_modules/react-dom/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/react-dom/index.js");
 
 /***/ }),
 
 /***/ "./node_modules/react-redux/lib/index.js":
+/*!*********************************************************************************************!*\
+  !*** delegated ./node_modules/react-redux/lib/index.js from dll-reference dependencies_dll ***!
+  \*********************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__("dll-reference dependencies_dll"))("./node_modules/react-redux/lib/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/react-redux/lib/index.js");
 
 /***/ }),
 
 /***/ "./node_modules/react-router/index.js":
+/*!******************************************************************************************!*\
+  !*** delegated ./node_modules/react-router/index.js from dll-reference dependencies_dll ***!
+  \******************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__("dll-reference dependencies_dll"))("./node_modules/react-router/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/react-router/index.js");
 
 /***/ }),
 
 /***/ "./node_modules/react/index.js":
+/*!***********************************************************************************!*\
+  !*** delegated ./node_modules/react/index.js from dll-reference dependencies_dll ***!
+  \***********************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__("dll-reference dependencies_dll"))("./node_modules/react/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/react/index.js");
 
 /***/ }),
 
 /***/ "./node_modules/redux/lib/redux.js":
+/*!***************************************************************************************!*\
+  !*** delegated ./node_modules/redux/lib/redux.js from dll-reference dependencies_dll ***!
+  \***************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__("dll-reference dependencies_dll"))("./node_modules/redux/lib/redux.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/redux/lib/redux.js");
 
 /***/ }),
 
 /***/ "?5991":
+/*!********************!*\
+  !*** dll platform ***!
+  \********************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 module.exports = __webpack_require__;
@@ -1136,6 +1199,9 @@ module.exports = __webpack_require__;
 /***/ }),
 
 /***/ "dll-reference dependencies_dll":
+/*!***********************************!*\
+  !*** external "dependencies_dll" ***!
+  \***********************************/
 /***/ ((module) => {
 
 "use strict";

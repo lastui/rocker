@@ -3,9 +3,21 @@ const webpack = require('webpack');
 
 const settings = require(path.resolve(__dirname, '../settings'));
 
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 module.exports = {
 	performance: {
 		hints: false,
+	},
+	stats: {
+		colors: true,
+		all: true,
+		assets: true,
+		modules: true,
+		timings: true,
+		errors: true,
+		errorDetails: true,
+		errorStack: true,
 	},
 	devServer: {
 		compress: false,
@@ -18,9 +30,9 @@ module.exports = {
 		https: false,
 		quiet: false,
 		noInfo: false,
-		contentBase: settings.PROJECT_BUILD_PATH,
+		contentBase: path.resolve(settings.PROJECT_BUILD_PATH, 'dev'),
 		historyApiFallback: {
-			index: '',
+			index: '/',
 			disableDotRule: true,
 		},
 		overlay: {
@@ -37,5 +49,15 @@ module.exports = {
 	devtool: 'eval-cheap-module-source-map',
 	plugins: [
 		new webpack.ProgressPlugin(),
+		new CleanWebpackPlugin({
+			root: settings.PROJECT_BUILD_PATH,
+			cleanOnceBeforeBuildPatterns: [
+				'**/*',
+			],
+			cleanStaleWebpackAssets: true,
+			dangerouslyAllowCleanPatternsOutsideProject: false,
+			verbose: false,
+			dry: false,
+		}),
 	],
 }

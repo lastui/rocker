@@ -13,16 +13,16 @@ if (settings.DEVELOPMENT) {
 }
 
 module.exports = {
-	bail: true,
+	bail: false,
 	target: 'web',
 	mode: settings.DEVELOPMENT ? 'development' : 'production',
 	filename: __dirname,
 	output: {
-		pathinfo: false,
-		chunkLoadingGlobal: 'lastui_jsonp',
+		pathinfo: true,
+		chunkLoadingGlobal: 'lastuiJsonp',
 		chunkLoading: 'jsonp',
 		path: settings.PROJECT_BUILD_PATH,
-		publicPath: '',
+		publicPath: '/',
 	},
 	module: {
 		strictExportPresence: true,
@@ -40,11 +40,11 @@ module.exports = {
 		mainFields: ['browser', 'main'],
 		enforceExtension: false,
 		fallback: {
-			util: require.resolve('util'),
+			util: require.resolve('util/'),
 			process: false,
 			os: require.resolve('os-browserify'),
 			stream: require.resolve('stream-browserify'),
-			buffer: require.resolve('buffer'),
+			buffer: require.resolve('buffer/'),
 			path: require.resolve('path-browserify'),
 		},
 	},
