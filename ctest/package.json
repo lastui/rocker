@@ -6,6 +6,6 @@
     "start": "NODE_ENV=development node ../bin/webpack.js serve --config ./webpack.module.config.js"
   },
   "dependencies": {
-    "@lastui/dependencies": "1.0.1"
+    "@lastui/dependencies": "1.0.2"
   }
 }

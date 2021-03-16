@@ -175,15 +175,15 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
   return a;
 };
 
-var INIT = '@@platform/INIT';
-var SET_AVAILABLE_MODULES = '@@platform/SET_AVAILABLE_MODULES';
-var SET_ENTRYPOINT_MODULE = '@@platform/SET_ENTRYPOINT_MODULE';
-var LOAD_MODULE = '@@platform/LOAD_MODULE';
-var SHUTDOWN = '@@platform/SHUTDOWN';
-var MODULE_LOADED = '@@modules/LOADED';
-var MODULE_UNLOADED = '@@modules/UNLOADED';
-var MODULE_NOT_AVAILABLE = '@@modules/NOT_AVAILABLE';
-var MODULES_READY = '@@modules/READY';
+var INIT = "@@platform/INIT";
+var SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
+var SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
+var LOAD_MODULE = "@@platform/LOAD_MODULE";
+var SHUTDOWN = "@@platform/SHUTDOWN";
+var MODULE_LOADED = "@@modules/LOADED";
+var MODULE_UNLOADED = "@@modules/UNLOADED";
+var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
+var MODULES_READY = "@@modules/READY";
 ;
 
 (function () {
@@ -270,7 +270,7 @@ function configureStore() {
 }
 
 function registerModule(scope) {
-  var node = document.createElement('div');
+  var node = document.createElement("div");
   var View = scope.MainView;
   var store = configureStore({}, scope.reducer); // FIXME shim store getState
 
@@ -284,13 +284,13 @@ function registerModule(scope) {
 var Module = function Module(props) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", {
     style: {
-      boxSizing: 'border-box',
-      border: '1px dashed rgba(0,0,0,.5)',
-      height: '100%',
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+      boxSizing: "border-box",
+      border: "1px dashed rgba(0,0,0,.5)",
+      height: "100%",
+      width: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
     }
   }, "[".concat(props.name, "]"));
 };
@@ -446,13 +446,13 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
 
 
 
-var LOADED_MODULES = 'loadedModules';
-var AVAILABLE_MODULES = 'availableModules';
-var LOADING_MODULES = 'loadingModules';
-var MOUNTED_MODULES = 'mountedModules';
-var REDUCERS = 'reducers';
-var CACHE = 'cache';
-var READY = 'ready';
+var LOADED_MODULES = "loadedModules";
+var AVAILABLE_MODULES = "availableModules";
+var LOADING_MODULES = "loadingModules";
+var MOUNTED_MODULES = "mountedModules";
+var REDUCERS = "reducers";
+var CACHE = "cache";
+var READY = "ready";
 function registerModule(scope) {
   if (scope.MainView) {
     this.MainView = scope.MainView;
@@ -493,14 +493,14 @@ var createModuleLoader = function createModuleLoader() {
 
   var store = {
     dispatch: function dispatch() {
-      console.error('Redux store is not provided!');
+      console.error("Redux store is not provided!");
     },
     getState: function getState() {
-      console.error('Redux store is not provided!');
+      console.error("Redux store is not provided!");
       return {};
     },
     subscribe: function subscribe() {
-      console.error('Redux store is not provided!');
+      console.error("Redux store is not provided!");
     }
   };
   var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, REDUCERS, {}), _moduleState);
@@ -652,7 +652,7 @@ var createModuleLoader = function createModuleLoader() {
       return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
         return store.dispatch(connectModule(name, data));
       })).catch(function (error) {
-        console.log('load module', name, 'error', error);
+        console.log("load module", name, "error", error);
         module.lastError = error;
         delete moduleState[LOADING_MODULES][name];
       });
@@ -686,10 +686,10 @@ var createModuleLoader = function createModuleLoader() {
         return state;
       }
 
-      if (action.type.startsWith('@@module')) {
+      if (action.type.startsWith("@@module")) {
         //        console.log('>>> will NOT propagate action', action.type, 'to module reducers')
         return state;
-      } else if (action.type.startsWith('@@redux')) {
+      } else if (action.type.startsWith("@@redux")) {
         //console.log('>>> will NOT propagate action', action.type, 'to module reducers')
         return state;
       } //const newState = {}
@@ -705,13 +705,13 @@ var createModuleLoader = function createModuleLoader() {
           continue;
         }
 
-        if (action.type.startsWith('@@router/')) {
+        if (action.type.startsWith("@@router/")) {
           //console.log('>>> will propagate action broadcast', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name], action);
-        } else if (action.type.startsWith('@' + name + '/')) {
+        } else if (action.type.startsWith("@" + name + "/")) {
           //console.log('>>> will propagate action module', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name], _objectSpread(_objectSpread({}, action), {}, {
-            type: action.type.slice(('@' + name + '/').length)
+            type: action.type.slice(("@" + name + "/").length)
           }));
         }
       }
@@ -741,11 +741,11 @@ var createModuleLoader = function createModuleLoader() {
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_7__.Provider, {
             store: {
               dispatch: function dispatch(action) {
-                if (action.type.startsWith('@@')) {
+                if (action.type.startsWith("@@")) {
                   return store.dispatch(action);
                 } else {
                   return store.dispatch(_objectSpread(_objectSpread({}, action), {}, {
-                    type: '@' + name + '/' + action.type
+                    type: "@" + name + "/" + action.type
                   }));
                 }
               },
@@ -853,7 +853,6 @@ var createModuleLoader = function createModuleLoader() {
 /* harmony export */   "history": () => (/* binding */ history)
 /* harmony export */ });
 /* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history__WEBPACK_IMPORTED_MODULE_0__);
 /* module decorator */ module = __webpack_require__.hmd(module);
 (function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
@@ -1191,18 +1190,6 @@ module.exports = dependencies_dll;
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports

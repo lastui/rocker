@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { /*ModuleContextProvider, */ useModuleLoader } from "./ModuleContext";
+import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 
 const Module = (props) => {
   const moduleLoader = useModuleLoader();
@@ -34,24 +34,17 @@ const Module = (props) => {
     return <div>{`Module [${props.name}] load failed ...`}</div>;
   }
 
+  if (!loadedModule.root) {
+    return <div>{`Module [${props.name}] is missing MainView ...`}</div>;
+  }
+
   const ModuleComponent = loadedModule.root;
 
-  return ModuleComponent ? (
-    <ModuleComponent {...props.options} />
-  ) : (
-    <div>{`Module [${props.name}] is missing root view ...`}</div>
+  return (
+    <ModuleContextProvider moduleLoader={moduleLoader}>
+      <ModuleComponent {...props.options} />
+    </ModuleContextProvider>
   );
-
-  /*
-  const ModuleComponent = loadedModule.root
-  return ModuleComponent
-    ? (
-        <ModuleContextProvider moduleLoader={moduleLoader}>
-          <ModuleComponent {...props.options} />
-        </ModuleContextProvider>
-      )
-    : <div>{`Module [${props.name}] is missing root view ...`}</div>
-  */
 };
 
 export default Module;
