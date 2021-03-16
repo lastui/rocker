@@ -81,8 +81,10 @@ export const createModuleLoader = () => {
   const getReducers = () => moduleState[REDUCERS];
 
   const addReducer = (name, reducer) => {
+    console.log("adding reducer", reducer, "to", name);
+    const r = reducer({}, { type: constants.MODULE_INIT });
+    console.log("ran reducer yielded", r);
     moduleState[REDUCERS][name] = reducer;
-    reducer({}, { type: constants.MODULE_INIT });
   };
 
   const setCache = (key, value) => {
@@ -109,7 +111,7 @@ export const createModuleLoader = () => {
     console.log("connecting module", name, "with scope", scope);
     if (scope.reducer) {
       console.log("adding reducer of", name, "is", scope.reducer);
-      scope.reducer.router = (state, action) => state;
+      scope.reducer.router = () => ({});
       console.log("after patching router in its", scope.reducer);
       addReducer(name, combineReducers(scope.reducer));
     }

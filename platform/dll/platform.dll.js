@@ -538,10 +538,12 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var addReducer = function addReducer(name, reducer) {
-    moduleState[REDUCERS][name] = reducer;
-    reducer({}, {
+    console.log("adding reducer", reducer, "to", name);
+    var r = reducer({}, {
       type: _constants__WEBPACK_IMPORTED_MODULE_9__.MODULE_INIT
     });
+    console.log("ran reducer yielded", r);
+    moduleState[REDUCERS][name] = reducer;
   };
 
   var setCache = function setCache(key, value) {
@@ -578,8 +580,8 @@ var createModuleLoader = function createModuleLoader() {
     if (scope.reducer) {
       console.log("adding reducer of", name, "is", scope.reducer);
 
-      scope.reducer.router = function (state, action) {
-        return state;
+      scope.reducer.router = function () {
+        return {};
       };
 
       console.log("after patching router in its", scope.reducer);
