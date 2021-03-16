@@ -148,11 +148,11 @@ export const createModuleLoader = () => {
 
   const getMountedModules = () => moduleState[MOUNTED_MODULES];
 
-  const setModuleMountState = (moduleName, mounted) => {
+  const setModuleMountState = (name, mounted) => {
     if (!mounted) {
-      delete moduleState[MOUNTED_MODULES][moduleName];
+      delete moduleState[MOUNTED_MODULES][name];
     } else {
-      moduleState[MOUNTED_MODULES][moduleName] = true;
+      moduleState[MOUNTED_MODULES][name] = true;
     }
   };
 
@@ -312,8 +312,8 @@ export const createModuleLoader = () => {
         moduleState[AVAILABLE_MODULES][module.name] = module;
       });
       for (const name in moduleState[LOADED_MODULES]) {
-        if (!isModuleAvailable(moduleName)) {
-          this.unloadModule(moduleName);
+        if (!isModuleAvailable(name)) {
+          this.unloadModule(name);
         }
       }
       setReady(true);

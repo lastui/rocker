@@ -619,11 +619,11 @@ var createModuleLoader = function createModuleLoader() {
     return moduleState[MOUNTED_MODULES];
   };
 
-  var setModuleMountState = function setModuleMountState(moduleName, mounted) {
+  var setModuleMountState = function setModuleMountState(name, mounted) {
     if (!mounted) {
-      delete moduleState[MOUNTED_MODULES][moduleName];
+      delete moduleState[MOUNTED_MODULES][name];
     } else {
-      moduleState[MOUNTED_MODULES][moduleName] = true;
+      moduleState[MOUNTED_MODULES][name] = true;
     }
   };
 
@@ -804,8 +804,8 @@ var createModuleLoader = function createModuleLoader() {
       });
 
       for (var name in moduleState[LOADED_MODULES]) {
-        if (!isModuleAvailable(moduleName)) {
-          this.unloadModule(moduleName);
+        if (!isModuleAvailable(name)) {
+          this.unloadModule(name);
         }
       }
 
