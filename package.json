@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "scripts": {
     "build:dependencies": "cd dependencies && npm run build",
     "build:platform": "cd platform && npm run build"
@@ -11,6 +11,9 @@
     "webpack/config/module.js",
     "webpack/config/module.development.js",
     "webpack/config/module.production.js",
+    "webpack/config/runtime.js",
+    "webpack/config/runtime.development.js",
+    "webpack/config/runtime.production.js",
     "webpack/internal/base.js",
     "webpack/internal/loaders.js",
     "webpack/internal/build.js",
@@ -39,6 +42,7 @@
   ],
   "dependencies": {
     "@lastui/babylon": "1.0.0",
+    "add-asset-html-webpack-plugin": "3.2.0",
     "buffer": "6.0.3",
     "clean-webpack-plugin": "3.0.0",
     "connected-react-router": "6.9.1",
