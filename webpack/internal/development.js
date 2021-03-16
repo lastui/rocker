@@ -1,3 +1,5 @@
+const { Readable } = require("stream")
+
 const path = require('path');
 const webpack = require('webpack');
 
@@ -11,8 +13,8 @@ module.exports = {
 	},
 	stats: {
 		colors: true,
-		all: true,
-		assets: true,
+		all: false,
+		assets: false,
 		modules: true,
 		timings: true,
 		errors: true,
@@ -34,6 +36,14 @@ module.exports = {
 		historyApiFallback: {
 			index: '/',
 			disableDotRule: true,
+		},
+		before: (app, server, compiler) => {
+		  app.get('/context', (req, res) => {
+			res.json({
+				available: [],
+				entrypoint: 'main',
+			});
+		  });
 		},
 		overlay: {
 			errors: true,
