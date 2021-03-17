@@ -1,31 +1,14 @@
-const path = require("path");
-const webpack = require("webpack");
-const settings = require(path.resolve(__dirname, "../settings"));
-
-const implicits = {
-	"process.env": {
-		NODE_ENV: settings.DEVELOPMENT ? `"development"` : `"production"`,
-	},
-};
-
-if (settings.DEVELOPMENT) {
-	implicits["__SANDBOX_SCOPE__"] = {};
-}
+const settings = require("../settings");
 
 module.exports = {
-	bail: false,
 	target: "web",
 	mode: settings.DEVELOPMENT ? "development" : "production",
-	filename: __dirname,
 	output: {
 		pathinfo: true,
 		chunkLoadingGlobal: "lastuiJsonp",
 		chunkLoading: "jsonp",
 		path: settings.PROJECT_BUILD_PATH,
 		publicPath: "/",
-	},
-	module: {
-		strictExportPresence: true,
 	},
 	resolve: {
 		unsafeCache: false,
@@ -43,15 +26,4 @@ module.exports = {
 		},
 	},
 	cache: settings.DEVELOPMENT,
-	plugins: [
-		new webpack.ProvidePlugin({
-			Buffer: ["buffer", "Buffer"],
-			process: ["process"],
-		}),
-		new webpack.DefinePlugin(implicits),
-		new webpack.EnvironmentPlugin([
-			...Object.keys(process.env),
-			"NODE_ENV",
-		]),
-	],
 };

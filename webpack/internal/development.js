@@ -1,13 +1,12 @@
-const { Readable } = require("stream");
-
+const webpack = require("webpack");
 const path = require("path");
 const webpack = require("webpack");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const settings = require(path.resolve(__dirname, "../settings"));
 
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-
 module.exports = {
+	bail: false,
 	performance: {
 		hints: false,
 	},
@@ -58,6 +57,20 @@ module.exports = {
 	},
 	devtool: "eval-cheap-module-source-map",
 	plugins: [
+		new webpack.ProvidePlugin({
+			Buffer: ["buffer", "Buffer"],
+			process: ["process"],
+		}),
+		new webpack.DefinePlugin({
+			"process.env": {
+				NODE_ENV: `"development"`,
+			},
+			"__SANDBOX_SCOPE__": {}
+		}),
+		new webpack.EnvironmentPlugin([
+			...Object.keys(process.env),
+			"NODE_ENV",
+		]),
 		new webpack.ProgressPlugin(),
 		new CleanWebpackPlugin({
 			root: settings.PROJECT_BUILD_PATH,

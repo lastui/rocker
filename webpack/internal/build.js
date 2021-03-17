@@ -1,10 +1,9 @@
-const path = require("path");
+const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
 
-const settings = require(path.resolve(__dirname, "../settings"));
+const settings = require("../settings");
 
 module.exports = {
-	bail: true,
 	performance: {
 		hints: "warning",
 	},
@@ -53,4 +52,19 @@ module.exports = {
 					}),
 			  ],
 	},
+	plugins: [
+		new webpack.ProvidePlugin({
+			Buffer: ["buffer", "Buffer"],
+			process: ["process"],
+		}),
+		new webpack.DefinePlugin({
+			"process.env": {
+				NODE_ENV: settings.DEVELOPMENT ? `"development"` : `"production"`,
+			},
+		}),
+		new webpack.EnvironmentPlugin([
+			...Object.keys(process.env),
+			"NODE_ENV",
+		]),
+	],
 };

@@ -27,11 +27,9 @@ function configureStore(initialState = {}, rootReducer = {}) {
 
 export function registerModule(scope) {
   const node = document.createElement("div");
+  const store = configureStore({}, scope.reducer);
   const View = scope.MainView;
 
-  const store = configureStore({}, scope.reducer);
-
-  // FIXME shim store getState
   ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>

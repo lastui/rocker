@@ -1,10 +1,10 @@
-const path = require("path");
 const babel = require("@lastui/babylon");
 
-const settings = require(path.resolve(__dirname, "../settings"));
+const settings = require("../settings");
 
 module.exports = {
 	module: {
+		strictExportPresence: true,
 		rules: [
 			{
 				test: /\.jsx?$/,
@@ -23,5 +23,5 @@ module.exports = {
 				},
 			},
 		],
-	},
+	}
 };

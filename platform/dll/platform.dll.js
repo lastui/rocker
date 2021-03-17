@@ -25,7 +25,7 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
 };
 
 
-var ModuleContext = react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
+var ModuleContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
 
 var ModuleContextProvider = function ModuleContextProvider(props) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(ModuleContext.Provider, {
@@ -274,9 +274,8 @@ function configureStore() {
 
 function registerModule(scope) {
   var node = document.createElement("div");
+  var store = configureStore({}, scope.reducer);
   var View = scope.MainView;
-  var store = configureStore({}, scope.reducer); // FIXME shim store getState
-
   react_dom__WEBPACK_IMPORTED_MODULE_2__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_5__.Provider, {
     store: store
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(connected_react_router__WEBPACK_IMPORTED_MODULE_3__.ConnectedRouter, {
