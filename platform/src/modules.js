@@ -223,15 +223,16 @@ export const createModuleLoader = () => {
   };
 
   const loadSaga = (name, saga) => {
-    console.log("injecting saga under", name);
-    if (SAGAS[name]) {
+    if (moduleState[SAGAS][name]) {
+      //console.log(" saga under", name);
       return;
     }
-    SAGAS[name] = sagaRunner(saga);
+    console.log("injecting saga under", name, 'as', sagaRunner);
+    moduleState[SAGAS][name] = sagaRunner(saga);
   };
 
   const unloadSaga = (name) => {
-    if (!SAGAS[name]) {
+    if (!moduleState[SAGAS][name]) {
       return;
     }
     // FIXME cancel saga now
