@@ -7,6 +7,8 @@
     "build:platform": "cd platform && npm run build"
   },
   "files": [
+    "package-lock.json",
+    "package.json",
     "bin/webpack.js",
     "webpack/config/dll.js",
     "webpack/config/module.js",
@@ -19,7 +21,6 @@
     "webpack/internal/loaders.js",
     "webpack/internal/build.js",
     "webpack/internal/development.js",
-    "webpack/internal/dll.js",
     "webpack/settings/index.js",
     "dependencies/dll/dependencies-dev-manifest.json",
     "dependencies/dll/dependencies-prod-manifest.json",
