@@ -7,7 +7,7 @@ module.exports = {
 		strictExportPresence: true,
 		rules: [
 			{
-				test: /\.jsx?$/,
+				test: /\.[j|t]sx?$/,
 				enforce: "pre",
 				include: [settings.PROJECT_SRC_PATH, /node_modules\/\@lastui*/],
 				exclude: [/node_modules\/(?!(\@lastui*))/],
