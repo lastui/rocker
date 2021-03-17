@@ -12,9 +12,7 @@ const config = {
 	...require("../internal/development.js"),
 };
 
-config.output = {
-	filename: `[name].[fullhash].js`,
-};
+config.output.filename = '[name].[fullhash].js';
 
 config.plugins.push(
 	...[

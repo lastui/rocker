@@ -9,9 +9,7 @@ const config = {
 	...require("../internal/build.js"),
 };
 
-config.output = {
-	filename: `[name].min.js`,
-};
+config.output.filename = '[name].min.js';
 
 config.plugins.push(
 	...[

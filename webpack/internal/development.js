@@ -1,7 +1,7 @@
-const webpack = require("webpack");
 const path = require("path");
 const webpack = require("webpack");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const { WebpackPluginServe } = require('webpack-plugin-serve');
 
 const settings = require(path.resolve(__dirname, "../settings"));
 
@@ -19,41 +19,6 @@ module.exports = {
 		errors: true,
 		errorDetails: true,
 		errorStack: true,
-	},
-	devServer: {
-		compress: false,
-		clientLogLevel: settings.LOG_LEVEL,
-		host: "0.0.0.0",
-		port: 5000,
-		hot: false,
-		open: false,
-		watchContentBase: true,
-		https: false,
-		quiet: false,
-		noInfo: false,
-		contentBase: path.resolve(settings.PROJECT_BUILD_PATH, "dev"),
-		historyApiFallback: {
-			index: "/",
-			disableDotRule: true,
-		},
-		before: (app, server, compiler) => {
-			app.get("/context", (req, res) => {
-				res.json({
-					available: [],
-					entrypoint: "main",
-				});
-			});
-		},
-		overlay: {
-			errors: true,
-			warnings: true,
-		},
-		watchOptions: {
-			ignored: /node_modules/,
-			aggregateTimeout: 1000,
-			poll: 1000,
-			followSymlinks: false,
-		},
 	},
 	devtool: "eval-cheap-module-source-map",
 	plugins: [
@@ -80,5 +45,20 @@ module.exports = {
 			verbose: false,
 			dry: false,
 		}),
+		new WebpackPluginServe({
+			hmr: false,
+      		historyFallback: true,
+      		host: '0.0.0.0',
+      		port: 5000,
+      		liveReload: true,
+      		log: {
+      			level: settings.LOG_LEVEL,
+      		},
+      		static: settings.PROJECT_BUILD_PATH,
+      		client: {
+      			silent: false,
+      		},
+		}),
 	],
+	watch: true,
 };

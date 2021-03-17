@@ -12,9 +12,7 @@ const config = {
 	...require("../internal/build.js"),
 };
 
-config.output = {
-	filename: "[name].js",
-};
+config.output.filename = "[name].js";
 
 config.plugins.push(
 	...[
