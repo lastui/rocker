@@ -45,14 +45,14 @@ config.plugins.push(
 			{
 				filepath: path.resolve(
 					__dirname,
-					"../../dependencies/dll/dependencies.dll.min.js"
+					"../../dependencies/dll/dependencies.dll.js"
 				),
 				typeOfAsset: "js",
 			},
 			{
 				filepath: path.resolve(
 					__dirname,
-					"../../platform/dll/platform.dll.min.js"
+					"../../platform/dll/platform.dll.js"
 				),
 				typeOfAsset: "js",
 			},

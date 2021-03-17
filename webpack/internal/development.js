@@ -11,7 +11,7 @@ module.exports = {
 		pathinfo: true,
 		chunkLoadingGlobal: "lastuiJsonp",
 		chunkLoading: "jsonp",
-		path: path.join(settings.PROJECT_BUILD_PATH, 'dev'),
+		path: settings.PROJECT_DEV_PATH,
 		publicPath: "/",
 	},
 	performance: {
@@ -44,7 +44,7 @@ module.exports = {
 			"NODE_ENV",
 		]),
 		new CleanWebpackPlugin({
-			root: path.join(settings.PROJECT_BUILD_PATH, '/dev'),
+			root: settings.PROJECT_DEV_PATH,
 			cleanOnceBeforeBuildPatterns: ["**/*"],
 			cleanStaleWebpackAssets: true,
 			dangerouslyAllowCleanPatternsOutsideProject: false,
@@ -63,7 +63,7 @@ module.exports = {
       		log: {
       			level: settings.LOG_LEVEL,
       		},
-      		static: path.join(settings.PROJECT_BUILD_PATH, '/dev'),
+      		static: settings.PROJECT_DEV_PATH,
       		client: {
       			silent: false,
       		},
