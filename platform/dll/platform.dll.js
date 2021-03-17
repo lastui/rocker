@@ -452,6 +452,7 @@ var LOADED_MODULES = "loadedModules";
 var AVAILABLE_MODULES = "availableModules";
 var LOADING_MODULES = "loadingModules";
 var MOUNTED_MODULES = "mountedModules";
+var SAGAS = "sagas";
 var REDUCERS = "reducers";
 var CACHE = "cache";
 var READY = "ready";
@@ -505,7 +506,12 @@ var createModuleLoader = function createModuleLoader() {
       console.error("Redux store is not provided!");
     }
   };
-  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, REDUCERS, {}), _moduleState);
+
+  var sagaRunner = function sagaRunner() {
+    console.log("Sagas runnner not provided!");
+  };
+
+  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, SAGAS, {}), _moduleState);
 
   var getAvailableModules = function getAvailableModules() {
     return moduleState[AVAILABLE_MODULES];
@@ -696,6 +702,26 @@ var createModuleLoader = function createModuleLoader() {
     });
   };
 
+  var loadSaga = function loadSaga(name, saga) {
+    console.log("injecting saga under", name);
+
+    if (SAGAS[name]) {
+      return;
+    }
+
+    SAGAS[name] = sagaRunner(saga);
+  };
+
+  var unloadSaga = function unloadSaga(name) {
+    if (!SAGAS[name]) {
+      return;
+    } // FIXME cancel saga now
+    //SAGAS[name] = runner(saga);
+
+
+    console.log("ejecting saga under", name);
+  };
+
   var getReducer = function getReducer() {
     //const dynamicReducers = getReducers()
     return function () {
@@ -800,9 +826,14 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   return {
-    setStore: function setStore(reduxStore) {
-      if (reduxStore) {
-        store = reduxStore;
+    setSagaRunner: function setSagaRunner(nextSagaRunner) {
+      if (nextSagaRunner) {
+        sagaRunner = nextSagaRunner;
+      }
+    },
+    setStore: function setStore(nextStore) {
+      if (nextStore) {
+        store = nextStore;
       }
     },
     setAvailableModules: function setAvailableModules() {
@@ -821,6 +852,8 @@ var createModuleLoader = function createModuleLoader() {
 
       setReady(true);
     },
+    loadSaga: loadSaga,
+    unloadSaga: unloadSaga,
     getLoadedModule: getLoadedModule,
     getLoadedModules: getLoadedModules,
     getLoadingModules: getLoadingModules,
@@ -849,6 +882,7 @@ var createModuleLoader = function createModuleLoader() {
   reactHotLoader.register(AVAILABLE_MODULES, "AVAILABLE_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(LOADING_MODULES, "LOADING_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(MOUNTED_MODULES, "MOUNTED_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
+  reactHotLoader.register(SAGAS, "SAGAS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(REDUCERS, "REDUCERS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(CACHE, "CACHE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(READY, "READY", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");

@@ -8,6 +8,7 @@ const LOADED_MODULES = "loadedModules";
 const AVAILABLE_MODULES = "availableModules";
 const LOADING_MODULES = "loadingModules";
 const MOUNTED_MODULES = "mountedModules";
+const SAGAS = "sagas";
 const REDUCERS = "reducers";
 const CACHE = "cache";
 const READY = "ready";
@@ -53,6 +54,10 @@ export const createModuleLoader = () => {
     },
   };
 
+  let sagaRunner = () => {
+    console.log("Sagas runnner not provided!");
+  };
+
   const moduleState = {
     [CACHE]: {},
     [AVAILABLE_MODULES]: {},
@@ -61,6 +66,7 @@ export const createModuleLoader = () => {
     [MOUNTED_MODULES]: {},
     [READY]: true,
     [REDUCERS]: {},
+    [SAGAS]: {},
   };
 
   const getAvailableModules = () => moduleState[AVAILABLE_MODULES];
@@ -216,6 +222,23 @@ export const createModuleLoader = () => {
     });
   };
 
+  const loadSaga = (name, saga) => {
+    console.log("injecting saga under", name);
+    if (SAGAS[name]) {
+      return;
+    }
+    SAGAS[name] = sagaRunner(saga);
+  };
+
+  const unloadSaga = (name) => {
+    if (!SAGAS[name]) {
+      return;
+    }
+    // FIXME cancel saga now
+    //SAGAS[name] = runner(saga);
+    console.log("ejecting saga under", name);
+  };
+
   const getReducer = () => {
     //const dynamicReducers = getReducers()
 
@@ -305,9 +328,14 @@ export const createModuleLoader = () => {
   };
 
   return {
-    setStore(reduxStore) {
-      if (reduxStore) {
-        store = reduxStore;
+    setSagaRunner(nextSagaRunner) {
+      if (nextSagaRunner) {
+        sagaRunner = nextSagaRunner;
+      }
+    },
+    setStore(nextStore) {
+      if (nextStore) {
+        store = nextStore;
       }
     },
     setAvailableModules(modules = []) {
@@ -323,6 +351,8 @@ export const createModuleLoader = () => {
       }
       setReady(true);
     },
+    loadSaga,
+    unloadSaga,
     getLoadedModule,
     getLoadedModules,
     getLoadingModules,
