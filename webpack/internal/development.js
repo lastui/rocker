@@ -12,7 +12,7 @@ module.exports = {
 		chunkLoadingGlobal: "lastuiJsonp",
 		chunkLoading: "jsonp",
 		path: path.join(settings.PROJECT_BUILD_PATH, 'dev'),
-		publicPath: "/dev",
+		publicPath: "/",
 	},
 	performance: {
 		hints: false,
@@ -43,7 +43,6 @@ module.exports = {
 			...Object.keys(process.env),
 			"NODE_ENV",
 		]),
-		//new webpack.ProgressPlugin(),
 		new CleanWebpackPlugin({
 			root: path.join(settings.PROJECT_BUILD_PATH, '/dev'),
 			cleanOnceBeforeBuildPatterns: ["**/*"],
@@ -53,12 +52,12 @@ module.exports = {
 			dry: false,
 		}),
 		new WebpackPluginServe({
-			hmr: true,
+			hmr: false,
       		historyFallback: true,
       		host: '0.0.0.0',
       		port: 5000,
       		status: true,
-      		//ramdisk: false,
+      		ramdisk: false,
       		liveReload: true,
       		waitForBuild: true,
       		log: {
