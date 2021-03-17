@@ -464,6 +464,10 @@ function registerModule(scope) {
   if (scope.reducer) {
     this.reducer = scope.reducer;
   }
+
+  if (scope.saga) {
+    this.saga = scope.saga;
+  }
 }
 var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
   return function (store) {
@@ -551,6 +555,26 @@ var createModuleLoader = function createModuleLoader() {
     moduleState[REDUCERS][name] = reducer;
   };
 
+  var loadSaga = function loadSaga(name, saga) {
+    if (moduleState[SAGAS][name]) {
+      //console.log(" saga under", name);
+      return;
+    }
+
+    console.log("injecting saga under", name, "as", sagaRunner);
+    moduleState[SAGAS][name] = sagaRunner(saga);
+  };
+
+  var unloadSaga = function unloadSaga(name) {
+    if (!moduleState[SAGAS][name]) {
+      return;
+    } // FIXME cancel saga now
+    //SAGAS[name] = runner(saga);
+
+
+    console.log("ejecting saga under", name);
+  };
+
   var setCache = function setCache(key, value) {
     moduleState[CACHE][key] = value;
     return value;
@@ -591,6 +615,11 @@ var createModuleLoader = function createModuleLoader() {
 
       console.log("after patching router in its", scope.reducer);
       addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_8__.combineReducers)(scope.reducer));
+    }
+
+    if (scope.saga) {
+      console.log("adding saga of", name, "is", scope.saga);
+      loadSaga(name, scope.saga);
     }
 
     var module = {
@@ -700,26 +729,6 @@ var createModuleLoader = function createModuleLoader() {
         name: name
       }
     });
-  };
-
-  var loadSaga = function loadSaga(name, saga) {
-    if (moduleState[SAGAS][name]) {
-      //console.log(" saga under", name);
-      return;
-    }
-
-    console.log("injecting saga under", name, 'as', sagaRunner);
-    moduleState[SAGAS][name] = sagaRunner(saga);
-  };
-
-  var unloadSaga = function unloadSaga(name) {
-    if (!moduleState[SAGAS][name]) {
-      return;
-    } // FIXME cancel saga now
-    //SAGAS[name] = runner(saga);
-
-
-    console.log("ejecting saga under", name);
   };
 
   var getReducer = function getReducer() {

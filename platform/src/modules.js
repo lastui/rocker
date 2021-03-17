@@ -20,6 +20,9 @@ export function registerModule(scope) {
   if (scope.reducer) {
     this.reducer = scope.reducer;
   }
+  if (scope.saga) {
+    this.saga = scope.saga;
+  }
 }
 
 export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
@@ -93,6 +96,24 @@ export const createModuleLoader = () => {
     moduleState[REDUCERS][name] = reducer;
   };
 
+  const loadSaga = (name, saga) => {
+    if (moduleState[SAGAS][name]) {
+      //console.log(" saga under", name);
+      return;
+    }
+    console.log("injecting saga under", name, "as", sagaRunner);
+    moduleState[SAGAS][name] = sagaRunner(saga);
+  };
+
+  const unloadSaga = (name) => {
+    if (!moduleState[SAGAS][name]) {
+      return;
+    }
+    // FIXME cancel saga now
+    //SAGAS[name] = runner(saga);
+    console.log("ejecting saga under", name);
+  };
+
   const setCache = (key, value) => {
     moduleState[CACHE][key] = value;
     return value;
@@ -120,6 +141,10 @@ export const createModuleLoader = () => {
       scope.reducer.router = () => ({});
       console.log("after patching router in its", scope.reducer);
       addReducer(name, combineReducers(scope.reducer));
+    }
+    if (scope.saga) {
+      console.log("adding saga of", name, "is", scope.saga);
+      loadSaga(name, scope.saga);
     }
     const module = {
       name,
@@ -220,24 +245,6 @@ export const createModuleLoader = () => {
         name,
       },
     });
-  };
-
-  const loadSaga = (name, saga) => {
-    if (moduleState[SAGAS][name]) {
-      //console.log(" saga under", name);
-      return;
-    }
-    console.log("injecting saga under", name, 'as', sagaRunner);
-    moduleState[SAGAS][name] = sagaRunner(saga);
-  };
-
-  const unloadSaga = (name) => {
-    if (!moduleState[SAGAS][name]) {
-      return;
-    }
-    // FIXME cancel saga now
-    //SAGAS[name] = runner(saga);
-    console.log("ejecting saga under", name);
   };
 
   const getReducer = () => {
