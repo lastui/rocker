@@ -4,6 +4,14 @@ const TerserPlugin = require("terser-webpack-plugin");
 const settings = require("../settings");
 
 module.exports = {
+	bail: true,
+	output: {
+		pathinfo: true,
+		chunkLoadingGlobal: "lastuiJsonp",
+		chunkLoading: "jsonp",
+		path: settings.PROJECT_BUILD_PATH,
+		publicPath: "/",
+	},
 	performance: {
 		hints: "warning",
 	},
@@ -59,7 +67,9 @@ module.exports = {
 		}),
 		new webpack.DefinePlugin({
 			"process.env": {
-				NODE_ENV: settings.DEVELOPMENT ? `"development"` : `"production"`,
+				NODE_ENV: settings.DEVELOPMENT
+					? `"development"`
+					: `"production"`,
 			},
 		}),
 		new webpack.EnvironmentPlugin([

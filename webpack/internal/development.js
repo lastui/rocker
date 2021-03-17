@@ -7,6 +7,13 @@ const settings = require(path.resolve(__dirname, "../settings"));
 
 module.exports = {
 	bail: false,
+	output: {
+		pathinfo: true,
+		chunkLoadingGlobal: "lastuiJsonp",
+		chunkLoading: "jsonp",
+		path: path.join(settings.PROJECT_BUILD_PATH, 'dev'),
+		publicPath: "/dev",
+	},
 	performance: {
 		hints: false,
 	},
@@ -36,9 +43,9 @@ module.exports = {
 			...Object.keys(process.env),
 			"NODE_ENV",
 		]),
-		new webpack.ProgressPlugin(),
+		//new webpack.ProgressPlugin(),
 		new CleanWebpackPlugin({
-			root: settings.PROJECT_BUILD_PATH,
+			root: path.join(settings.PROJECT_BUILD_PATH, '/dev'),
 			cleanOnceBeforeBuildPatterns: ["**/*"],
 			cleanStaleWebpackAssets: true,
 			dangerouslyAllowCleanPatternsOutsideProject: false,
@@ -46,15 +53,18 @@ module.exports = {
 			dry: false,
 		}),
 		new WebpackPluginServe({
-			hmr: false,
+			hmr: true,
       		historyFallback: true,
       		host: '0.0.0.0',
       		port: 5000,
+      		status: true,
+      		//ramdisk: false,
       		liveReload: true,
+      		waitForBuild: true,
       		log: {
       			level: settings.LOG_LEVEL,
       		},
-      		static: settings.PROJECT_BUILD_PATH,
+      		static: path.join(settings.PROJECT_BUILD_PATH, '/dev'),
       		client: {
       			silent: false,
       		},

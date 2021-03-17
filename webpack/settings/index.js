@@ -10,10 +10,3 @@ exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 exports.DLL_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dll");
 exports.PROJECT_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "build");
 exports.PROJECT_SRC_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "src");
-
-exports.withHot = (config) => {
-	for (const entrypoint in config.entry) {
-		config.entry[entrypoint].push("webpack-plugin-serve/client");
-	}
-	return config;
-};

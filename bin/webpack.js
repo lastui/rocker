@@ -1,15 +1,49 @@
 #!/usr/bin/env node
 
+const chalk = require('chalk');
 const path = require('path');
-const { spawn } = require('child_process');
+const { run } = require('webpack-nano/lib/compiler');
+const args = require('webpack-nano/argv');
 
-const binary = path.resolve(path.dirname(require.resolve('webpack-nano/argv')), 'bin/wp.js');
+const end = () => process.exit(0);
 
-const env = Object.create(process.env);
-const args = process.argv.slice(2, process.argv.length);
+process.on('SIGINT', end);
+process.on('SIGTERM', end);
 
-spawn(binary, args, {
-	stdio: 'inherit',
-	cwd: process.cwd(),
-	env
-})
+if (process.env.NODE_ENV !== 'production') {
+	process.env.NODE_ENV = 'development';
+};
+
+const config = require(path.resolve(args.config === undefined
+	? './webpack.config.js'
+	: args.config));
+
+if (config.watch) {
+	for (const entrypoint in config.entry) {
+		config.entry[entrypoint] = [
+			"webpack-plugin-serve/client",
+			...config.entry[entrypoint],
+		];
+	}
+}
+
+const logPrefix = {
+	ok: chalk.blue('⬡ webpack:'),
+	whoops: chalk.red('⬢ webpack:'),
+};
+
+const log = {
+	error: (...args) => {
+	  args.unshift(logPrefix.whoops);
+	  console.error(...args);
+	},
+	info: (...args) => {
+	  args.unshift(logPrefix.ok);
+	  console.error(...args);
+	}
+};
+
+run({
+	config,
+	watchConfig: config.watch ? config : undefined,
+}, log);

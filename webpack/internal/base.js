@@ -3,13 +3,6 @@ const settings = require("../settings");
 module.exports = {
 	target: "web",
 	mode: settings.DEVELOPMENT ? "development" : "production",
-	output: {
-		pathinfo: true,
-		chunkLoadingGlobal: "lastuiJsonp",
-		chunkLoading: "jsonp",
-		path: settings.PROJECT_BUILD_PATH,
-		publicPath: "/",
-	},
 	resolve: {
 		unsafeCache: false,
 		modules: [settings.PROJECT_SRC_PATH, "node_modules"],

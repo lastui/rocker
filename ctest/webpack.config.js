@@ -7,4 +7,4 @@ config.entry =  {
 	main: ['./src/index.js'],
 };
 
-module.exports = settings.withHot(config);
+module.exports = config;
