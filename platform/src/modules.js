@@ -1,5 +1,6 @@
 import React from "react";
 import { Provider } from "react-redux";
+import { cancel } from "redux-saga/effects";
 import { combineReducers } from "redux";
 
 import * as constants from "./constants";
@@ -112,6 +113,8 @@ export const createModuleLoader = () => {
     // FIXME cancel saga now
     //SAGAS[name] = runner(saga);
     console.log("ejecting saga under", name);
+    cancel(moduleState[SAGAS][name]);
+    delete moduleState[SAGAS][name];
   };
 
   const setCache = (key, value) => {
@@ -239,6 +242,8 @@ export const createModuleLoader = () => {
 
   const unloadModule = (name) => {
     delete moduleState[LOADED_MODULES][name];
+    delete moduleState[REDUCERS][name];
+    unloadSaga(name);
     store.dispatch({
       type: constants.MODULE_UNLOADED,
       payload: {
