@@ -574,7 +574,7 @@ var createModuleLoader = function createModuleLoader() {
 
     console.log("module", name, "removing saga");
     console.log("before cancel");
-    (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_8__.cancel)(moduleState[SAGAS][name]).next();
+    sagaRunner((0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_8__.cancel)(moduleState[SAGAS][name]));
     console.log("after cancel");
     console.log("canceled daga");
     delete moduleState[SAGAS][name];

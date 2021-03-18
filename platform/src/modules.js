@@ -111,7 +111,7 @@ export const createModuleLoader = () => {
     }
     console.log("module", name, "removing saga");
     console.log("before cancel");
-    cancel(moduleState[SAGAS][name]).next();
+    sagaRunner(cancel(moduleState[SAGAS][name]));
     console.log("after cancel");
     console.log("canceled daga");
     delete moduleState[SAGAS][name];
