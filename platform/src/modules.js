@@ -370,8 +370,8 @@ export const createModuleLoader = () => {
       }
       setReady(true);
     },
-    loadSaga,
-    unloadSaga,
+    addSaga,
+    removeSaga,
     getLoadedModule,
     getLoadedModules,
     getLoadingModules,

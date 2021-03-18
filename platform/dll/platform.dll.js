@@ -871,8 +871,8 @@ var createModuleLoader = function createModuleLoader() {
 
       setReady(true);
     },
-    loadSaga: loadSaga,
-    unloadSaga: unloadSaga,
+    addSaga: addSaga,
+    removeSaga: removeSaga,
     getLoadedModule: getLoadedModule,
     getLoadedModules: getLoadedModules,
     getLoadingModules: getLoadingModules,
