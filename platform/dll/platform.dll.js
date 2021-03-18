@@ -549,35 +549,38 @@ var createModuleLoader = function createModuleLoader() {
     return moduleState[REDUCERS];
   };
 
-  var addReducer = function addReducer(name, reducer) {
-    console.log("adding reducer", reducer, "to", name);
-    var r = reducer({}, {
-      type: _constants__WEBPACK_IMPORTED_MODULE_10__.MODULE_INIT
-    });
-    console.log("ran reducer yielded", r);
-    moduleState[REDUCERS][name] = reducer;
-  };
-
-  var loadSaga = function loadSaga(name, saga) {
-    if (moduleState[SAGAS][name]) {
-      //console.log(" saga under", name);
+  var removeReducer = function removeReducer(name) {
+    if (!moduleState[REDUCERS][name]) {
       return;
     }
 
-    console.log("injecting saga under", name, "as", sagaRunner);
-    moduleState[SAGAS][name] = sagaRunner(saga);
+    console.log("module", name, "removing reducer");
+    delete moduleState[REDUCERS][name];
   };
 
-  var unloadSaga = function unloadSaga(name) {
+  var addReducer = function addReducer(name, reducer) {
+    removeReducer(name);
+    console.log("module", name, "adding reducer");
+    var r = reducer({}, {
+      type: _constants__WEBPACK_IMPORTED_MODULE_10__.MODULE_INIT
+    });
+    moduleState[REDUCERS][name] = reducer;
+  };
+
+  var removeSaga = function removeSaga(name) {
     if (!moduleState[SAGAS][name]) {
       return;
-    } // FIXME cancel saga now
-    //SAGAS[name] = runner(saga);
+    }
 
-
-    console.log("ejecting saga under", name);
+    console.log("module", name, "removing saga");
     (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_8__.cancel)(moduleState[SAGAS][name]);
     delete moduleState[SAGAS][name];
+  };
+
+  var addSaga = function addSaga(name, saga) {
+    removeSaga(name);
+    console.log("module", name, "adding saga");
+    moduleState[SAGAS][name] = sagaRunner(saga);
   };
 
   var setCache = function setCache(key, value) {
@@ -609,22 +612,21 @@ var createModuleLoader = function createModuleLoader() {
 
   var connectModule = function connectModule(name) {
     var scope = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-    console.log("connecting module", name, "with scope", scope);
 
+    //console.log("connecting module", name, "with scope", scope);
     if (scope.reducer) {
-      console.log("adding reducer of", name, "is", scope.reducer);
-
+      //console.log("adding reducer of", name, "is", scope.reducer);
       scope.reducer.router = function () {
         return {};
-      };
+      }; //console.log("after patching router in its", scope.reducer);
 
-      console.log("after patching router in its", scope.reducer);
+
       addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_9__.combineReducers)(scope.reducer));
     }
 
     if (scope.saga) {
-      console.log("adding saga of", name, "is", scope.saga);
-      loadSaga(name, scope.saga);
+      //console.log("adding saga of", name, "is", scope.saga);
+      addSaga(name, scope.saga);
     }
 
     var module = {
@@ -691,22 +693,22 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var loadModule = function loadModule(name) {
-    console.log("load module", name, "called");
+    console.log('loading module', name); //console.log("load module", name, "called");
 
     if (isModuleLoaded(name)) {
-      console.log("module", name, "already loaded");
+      //console.log("module", name, "already loaded");
       return Promise.resolve(getLoadedModule(name));
     }
 
     if (isModuleLoading(name)) {
-      console.log("module", name, "is currently loading");
+      //console.log("module", name, "is currently loading");
       return moduleState[LOADING_MODULES][name];
     }
 
     var module = getAvailableModule(name);
 
     if (!module) {
-      console.log("module", name, "is is not available");
+      //console.log("module", name, "is is not available");
       store.dispatch({
         type: _constants__WEBPACK_IMPORTED_MODULE_10__.MODULE_NOT_AVAILABLE,
         payload: {
@@ -714,22 +716,23 @@ var createModuleLoader = function createModuleLoader() {
         }
       });
       return Promise.resolve(null);
-    }
+    } //console.log("module", name, "will be loaded");
 
-    console.log("module", name, "will be loaded");
+
     return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
       return store.dispatch(connectModule(name, data));
     })).catch(function (error) {
-      console.log("load module", name, "error", error);
+      //console.log("load module", name, "error", error);
       delete moduleState[LOADING_MODULES][name];
       return Promise.resolve(null);
     });
   };
 
   var unloadModule = function unloadModule(name) {
+    console.log('unloading module', name);
+    removeReducer(name);
+    removeSaga(name);
     delete moduleState[LOADED_MODULES][name];
-    delete moduleState[REDUCERS][name];
-    unloadSaga(name);
     store.dispatch({
       type: _constants__WEBPACK_IMPORTED_MODULE_10__.MODULE_UNLOADED,
       payload: {
@@ -745,7 +748,7 @@ var createModuleLoader = function createModuleLoader() {
       var action = arguments.length > 1 ? arguments[1] : void 0;
 
       if (!moduleState[READY]) {
-        console.log("dynamic reducer not ready, not reducing", action);
+        //console.log("dynamic reducer not ready, not reducing", action);
         return state;
       }
 
@@ -810,13 +813,13 @@ var createModuleLoader = function createModuleLoader() {
                 }
               },
               getState: function getState() {
-                console.log("requesting state of", name);
-                var state = store.getState();
-                console.log("global state", state);
-                var isolatedState = state.modules[name] || {};
-                console.log("isolated state namespace", isolatedState);
-                isolatedState.router = state.router;
-                console.log("isolated state after injection", isolatedState);
+                //console.log("requesting state of", name);
+                var state = store.getState(); //console.log("global state", state);
+
+                var isolatedState = state.modules[name] || {}; //console.log("isolated state namespace", isolatedState);
+
+                isolatedState.router = state.router; //console.log("isolated state after injection", isolatedState);
+
                 return isolatedState;
               },
               subscribe: store.subscribe,

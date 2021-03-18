@@ -90,31 +90,35 @@ export const createModuleLoader = () => {
 
   const getReducers = () => moduleState[REDUCERS];
 
+
+  const removeReducer = (name) => {
+    if (!moduleState[REDUCERS][name]) {
+      return;
+    }
+    console.log("module", name, "removing reducer");
+    delete moduleState[REDUCERS][name];
+  };
+
   const addReducer = (name, reducer) => {
-    console.log("adding reducer", reducer, "to", name);
+    removeReducer(name);
+    console.log("module", name, "adding reducer");
     const r = reducer({}, { type: constants.MODULE_INIT });
-    console.log("ran reducer yielded", r);
     moduleState[REDUCERS][name] = reducer;
   };
 
-  const loadSaga = (name, saga) => {
-    if (moduleState[SAGAS][name]) {
-      //console.log(" saga under", name);
-      return;
-    }
-    console.log("injecting saga under", name, "as", sagaRunner);
-    moduleState[SAGAS][name] = sagaRunner(saga);
-  };
-
-  const unloadSaga = (name) => {
+  const removeSaga = (name) => {
     if (!moduleState[SAGAS][name]) {
       return;
     }
-    // FIXME cancel saga now
-    //SAGAS[name] = runner(saga);
-    console.log("ejecting saga under", name);
+    console.log("module", name, "removing saga")
     cancel(moduleState[SAGAS][name]);
     delete moduleState[SAGAS][name];
+  };
+
+  const addSaga = (name, saga) => {
+    removeSaga(name);
+    console.log("module", name, "adding saga")
+    moduleState[SAGAS][name] = sagaRunner(saga);
   };
 
   const setCache = (key, value) => {
@@ -138,16 +142,16 @@ export const createModuleLoader = () => {
     promise.then((data) => Promise.resolve(setCache(cacheKey, data)));
 
   const connectModule = (name, scope = {}) => {
-    console.log("connecting module", name, "with scope", scope);
+    //console.log("connecting module", name, "with scope", scope);
     if (scope.reducer) {
-      console.log("adding reducer of", name, "is", scope.reducer);
+      //console.log("adding reducer of", name, "is", scope.reducer);
       scope.reducer.router = () => ({});
-      console.log("after patching router in its", scope.reducer);
+      //console.log("after patching router in its", scope.reducer);
       addReducer(name, combineReducers(scope.reducer));
     }
     if (scope.saga) {
-      console.log("adding saga of", name, "is", scope.saga);
-      loadSaga(name, scope.saga);
+      //console.log("adding saga of", name, "is", scope.saga);
+      addSaga(name, scope.saga);
     }
     const module = {
       name,
@@ -204,20 +208,21 @@ export const createModuleLoader = () => {
     moduleState[AVAILABLE_MODULES][name] !== undefined;
 
   const loadModule = (name) => {
-    console.log("load module", name, "called");
+    console.log('loading module', name)
+    //console.log("load module", name, "called");
 
     if (isModuleLoaded(name)) {
-      console.log("module", name, "already loaded");
+      //console.log("module", name, "already loaded");
       return Promise.resolve(getLoadedModule(name));
     }
     if (isModuleLoading(name)) {
-      console.log("module", name, "is currently loading");
+      //console.log("module", name, "is currently loading");
       return moduleState[LOADING_MODULES][name];
     }
 
     const module = getAvailableModule(name);
     if (!module) {
-      console.log("module", name, "is is not available");
+      //console.log("module", name, "is is not available");
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
@@ -227,23 +232,24 @@ export const createModuleLoader = () => {
       return Promise.resolve(null);
     }
 
-    console.log("module", name, "will be loaded");
+    //console.log("module", name, "will be loaded");
     return setLoadingModule(
       name,
       loadModuleFile(module.url).then((data) =>
         store.dispatch(connectModule(name, data))
       )
     ).catch((error) => {
-      console.log("load module", name, "error", error);
+      //console.log("load module", name, "error", error);
       delete moduleState[LOADING_MODULES][name];
       return Promise.resolve(null);
     });
   };
 
   const unloadModule = (name) => {
+    console.log('unloading module', name)
+    removeReducer(name);
+    removeSaga(name);
     delete moduleState[LOADED_MODULES][name];
-    delete moduleState[REDUCERS][name];
-    unloadSaga(name);
     store.dispatch({
       type: constants.MODULE_UNLOADED,
       payload: {
@@ -257,7 +263,7 @@ export const createModuleLoader = () => {
 
     return (state = {}, action) => {
       if (!moduleState[READY]) {
-        console.log("dynamic reducer not ready, not reducing", action);
+        //console.log("dynamic reducer not ready, not reducing", action);
         return state;
       }
 
@@ -316,13 +322,13 @@ export const createModuleLoader = () => {
                 }
               },
               getState: () => {
-                console.log("requesting state of", name);
+                //console.log("requesting state of", name);
                 const state = store.getState();
-                console.log("global state", state);
+                //console.log("global state", state);
                 const isolatedState = state.modules[name] || {};
-                console.log("isolated state namespace", isolatedState);
+                //console.log("isolated state namespace", isolatedState);
                 isolatedState.router = state.router;
-                console.log("isolated state after injection", isolatedState);
+                //console.log("isolated state after injection", isolatedState);
                 return isolatedState;
               },
               subscribe: store.subscribe,
