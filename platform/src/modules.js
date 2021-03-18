@@ -101,7 +101,7 @@ export const createModuleLoader = () => {
   const addReducer = (name, reducer) => {
     removeReducer(name);
     console.log("module", name, "adding reducer");
-    const r = reducer({}, { type: constants.MODULE_INIT });
+    reducer({}, { type: constants.MODULE_INIT });
     moduleState[REDUCERS][name] = reducer;
   };
 
@@ -111,16 +111,21 @@ export const createModuleLoader = () => {
     }
     console.log("module", name, "removing saga");
     console.log("before cancel");
-    sagaRunner(cancel(moduleState[SAGAS][name]));
+    sagaRunner(function*() {
+      yield cancel(moduleState[SAGAS][name]);
+    });
     console.log("after cancel");
-    console.log("canceled daga");
+    console.log("module", name, "removed saga");
     delete moduleState[SAGAS][name];
   };
 
   const addSaga = (name, saga) => {
     removeSaga(name);
     console.log("module", name, "adding saga");
-    moduleState[SAGAS][name] = sagaRunner(saga);
+    moduleState[SAGAS][name] = sagaRunner(function*() {
+      yield fork(saga);
+    });
+    console.log("module", name, "added saga");
   };
 
   const setCache = (key, value) => {
