@@ -1,6 +1,6 @@
 import React from "react";
 import { Provider } from "react-redux";
-import { cancel } from "redux-saga/effects";
+import { cancel, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
 
 import * as constants from "./constants";

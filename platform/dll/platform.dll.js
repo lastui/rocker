@@ -607,7 +607,7 @@ var createModuleLoader = function createModuleLoader() {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return fork(saga);
+              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_9__.fork)(saga);
 
             case 2:
             case "end":
