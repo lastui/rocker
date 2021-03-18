@@ -2,7 +2,6 @@ const path = require("path");
 const webpack = require("webpack");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const { WebpackPluginServe } = require('webpack-plugin-serve');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const settings = require(path.resolve(__dirname, "../settings"));
 
