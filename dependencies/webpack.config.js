@@ -10,7 +10,20 @@ const config = require(path.resolve(
 ));
 
 config.entry = {
-	dependencies: Object.keys(manifest.dependencies),
+	dependencies: [
+	    "connected-react-router",
+	    "history",
+	    "loose-envify",
+	    "object-assign",
+	    "react",
+	    "react-dom",
+	    "react-redux",
+	    "react-router",
+	    "react-router-dom",
+	    "redux",
+	    "redux-saga",
+		"redux-saga/effects",
+	],
 };
 
 module.exports = config;

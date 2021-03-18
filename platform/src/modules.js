@@ -110,11 +110,10 @@ export const createModuleLoader = () => {
       return;
     }
     console.log("module", name, "removing saga");
-    (function* () {
-      console.log("before cancel");
-      yield cancel(moduleState[SAGAS][name]);
-      console.log("after cancel");
-    })().next();
+    console.log("before cancel");
+    cancel(moduleState[SAGAS][name]).next();
+    console.log("after cancel");
+    console.log("canceled daga");
     delete moduleState[SAGAS][name];
   };
 
