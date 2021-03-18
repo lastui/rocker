@@ -90,7 +90,6 @@ export const createModuleLoader = () => {
 
   const getReducers = () => moduleState[REDUCERS];
 
-
   const removeReducer = (name) => {
     if (!moduleState[REDUCERS][name]) {
       return;
@@ -110,14 +109,18 @@ export const createModuleLoader = () => {
     if (!moduleState[SAGAS][name]) {
       return;
     }
-    console.log("module", name, "removing saga")
-    cancel(moduleState[SAGAS][name]);
+    console.log("module", name, "removing saga");
+    (function* () {
+      console.log("before cancel");
+      yield cancel(moduleState[SAGAS][name]);
+      console.log("after cancel");
+    })().next();
     delete moduleState[SAGAS][name];
   };
 
   const addSaga = (name, saga) => {
     removeSaga(name);
-    console.log("module", name, "adding saga")
+    console.log("module", name, "adding saga");
     moduleState[SAGAS][name] = sagaRunner(saga);
   };
 
@@ -208,7 +211,7 @@ export const createModuleLoader = () => {
     moduleState[AVAILABLE_MODULES][name] !== undefined;
 
   const loadModule = (name) => {
-    console.log('loading module', name)
+    console.log("loading module", name);
     //console.log("load module", name, "called");
 
     if (isModuleLoaded(name)) {
@@ -246,7 +249,7 @@ export const createModuleLoader = () => {
   };
 
   const unloadModule = (name) => {
-    console.log('unloading module', name)
+    console.log("unloading module", name);
     removeReducer(name);
     removeSaga(name);
     delete moduleState[LOADED_MODULES][name];
