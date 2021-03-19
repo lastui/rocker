@@ -6,32 +6,29 @@ const Module = (props = {}) => {
 
   const moduleLoader = useModuleLoader();
 
-  let [ready, setReady] = useState(false);
+  // flickering because of this (render miss always)
+  //let [ready, setReady] = useState(false);
 
   useEffect(() => {
-    console.log("use effect observed update", moduleLoader, props.name);
-    if (moduleLoader !== null && props.name) {
+    console.log("use effect observed update", props.name);
+    if (props.name) {
       moduleLoader.loadModule(props.name).then(() => {
         moduleLoader.setModuleMountState(props.name, true);
-        setReady(true);
+        //setReady(true);
       });
     }
     return () => {
-      if (moduleLoader !== null && props.name) {
+      if (props.name) {
         moduleLoader.setModuleMountState(props.name, false);
       }
     };
   }, [props.name]);
 
-  if (moduleLoader == null || !ready) {
-    console.log("moduleLoader not available or not ready", moduleLoader, ready);
-    return <React.Fragment />;
-  }
-
   const loadedModule = moduleLoader.getLoadedModule(props.name);
 
   if (!loadedModule) {
-    return <div>{`Module [${props.name}] load failed ...`}</div>;
+    console.log('module', props, 'not loaded')
+    return <React.Fragment />;
   }
 
   if (!loadedModule.root) {

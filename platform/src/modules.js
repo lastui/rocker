@@ -311,13 +311,13 @@ export const createModuleLoader = () => {
   };
 
   const isolateModule = (name, Component) => {
-    console.log('isolating module', name)
+    //console.log('isolating module', name)
 
     class ModuleWrapper extends React.Component {
 
       render() {
         // INFO tracing why flickerring when chaning navigation happens
-        console.log('rendering ModuleWrapper of', name, 'with props', this.props);
+        //console.log('rendering ModuleWrapper of', name, 'with props', this.props);
         return (
           <Provider
             store={{

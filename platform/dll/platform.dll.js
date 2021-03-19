@@ -30,7 +30,7 @@ var ModuleContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContex
 var ModuleContextProvider = function ModuleContextProvider(props) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(ModuleContext.Provider, {
     value: props.moduleLoader || null
-  }, props.children);
+  }, props.moduleLoader ? props.children : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null));
 };
 
 var useModuleLoader = function useModuleLoader() {
@@ -827,8 +827,7 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var isolateModule = function isolateModule(name, Component) {
-    console.log('isolating module', name);
-
+    //console.log('isolating module', name)
     var ModuleWrapper = /*#__PURE__*/function (_React$Component) {
       (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__.default)(ModuleWrapper, _React$Component);
 
@@ -844,7 +843,7 @@ var createModuleLoader = function createModuleLoader() {
         key: "render",
         value: function render() {
           // INFO tracing why flickerring when chaning navigation happens
-          console.log('rendering ModuleWrapper of', name, 'with props', this.props);
+          //console.log('rendering ModuleWrapper of', name, 'with props', this.props);
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_8__.Provider, {
             store: {
               dispatch: function dispatch(action) {
