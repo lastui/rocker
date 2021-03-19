@@ -11,7 +11,8 @@ const Module = (props = {}) => {
     moduleLoader.getLoadedModule(props.name)
   );
 
-  useEffect((name) => {
+  useEffect(() => {
+    const name = props.name
     console.log('mount', name)
     if (name) {
       moduleLoader.loadModule(name).then((module) => {
