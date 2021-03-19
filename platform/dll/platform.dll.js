@@ -839,14 +839,18 @@ var createModuleLoader = function createModuleLoader() {
                 }
               },
               getState: function getState() {
+                console.log("get state called for", name);
                 var state = store.getState();
                 var isolatedState = state.modules[name] || {};
                 isolatedState.router = state.router;
                 return isolatedState;
               },
-              subscribe: store.subscribe,
-              // FIXME do not listen to other module
+              subscribe: function subscribe(listener) {
+                console.log("subscribing to events at", name, "with", listener);
+                return store.subscribe(listener); // FIXME do not listen to other modules events
+              },
               replaceReducer: function replaceReducer(newReducer) {
+                console.log("replaceReducer called for", name);
                 addReducer(name, newReducer);
               }
             }

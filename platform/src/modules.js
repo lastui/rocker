@@ -239,7 +239,7 @@ export const createModuleLoader = () => {
     return setLoadingModule(
       name,
       loadModuleFile(module.url).then((data) => {
-        store.dispatch(connectModule(name, data))
+        store.dispatch(connectModule(name, data));
         return getLoadedModule(name);
       })
     ).catch((error) => {
@@ -262,7 +262,6 @@ export const createModuleLoader = () => {
   };
 
   const getReducer = () => {
-
     return (state = {}, action) => {
       if (!moduleState[READY]) {
         return state;
@@ -293,7 +292,6 @@ export const createModuleLoader = () => {
 
   const isolateModule = (name, Component) => {
     class ModuleWrapper extends React.Component {
-
       render() {
         return (
           <Provider
@@ -309,13 +307,18 @@ export const createModuleLoader = () => {
                 }
               },
               getState: () => {
+                console.log("get state called for", name);
                 const state = store.getState();
                 const isolatedState = state.modules[name] || {};
                 isolatedState.router = state.router;
                 return isolatedState;
               },
-              subscribe: store.subscribe, // FIXME do not listen to other module
+              subscribe: function (listener) {
+                console.log("subscribing to events at", name, "with", listener);
+                return store.subscribe(listener); // FIXME do not listen to other modules events
+              },
               replaceReducer: function (newReducer) {
+                console.log("replaceReducer called for", name);
                 addReducer(name, newReducer);
               },
             }}
