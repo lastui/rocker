@@ -842,14 +842,14 @@ var createModuleLoader = function createModuleLoader() {
                         listener();
                         console.log("notified", n, "about dispatch with listener", listener);
                       } catch (error) {
-                        console.error("unable to notify listener for", n);
+                        console.error("unable to notify listener for", n, "with", error);
                       }
                     }
                   }
                 } else {
                   store.dispatch(_objectSpread(_objectSpread({}, action), {}, {
                     type: "@" + name + "/" + action.type
-                  })); // FIXME array
+                  }));
 
                   if (moduleState[LISTENERS][name]) {
                     for (var _listener in moduleState[LISTENERS][name]) {

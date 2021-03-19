@@ -315,7 +315,7 @@ export const createModuleLoader = () => {
                           listener
                         );
                       } catch (error) {
-                        console.error("unable to notify listener for", n);
+                        console.error("unable to notify listener for", n, "with", error);
                       }
                     }
                   }
@@ -324,7 +324,6 @@ export const createModuleLoader = () => {
                     ...action,
                     type: "@" + name + "/" + action.type,
                   });
-                  // FIXME array
                   if (moduleState[LISTENERS][name]) {
                     for (const listener in moduleState[LISTENERS][name]) {
                       console.log(
