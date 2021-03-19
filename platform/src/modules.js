@@ -12,6 +12,7 @@ const MOUNTED_MODULES = "mountedModules";
 const SAGAS = "sagas";
 //const LISTENERS = "listeners";
 const REDUCERS = "reducers";
+const MODULES = "modules";
 const CACHE = "cache";
 const READY = "ready";
 
@@ -257,7 +258,13 @@ export const createModuleLoader = () => {
 
   const getReducer = () => {
     return (state = {}, action) => {
+      if (action.type == constants.MODULE_UNLOADED) {
+        delete moduleState[REDUCERS][name];
+        delete state[MODULES][name];
+      }
+
       console.log("action in reducer", action.type);
+      console.log("platform reducer observed", action.type);
 
       if (!moduleState[READY]) {
         return state;
@@ -268,9 +275,12 @@ export const createModuleLoader = () => {
         if (!moduleLoaded) {
           continue;
         }
-        console.log('before changing state of', name)
-        state[name] = moduleState[REDUCERS][name](state[name], action);
-        console.log('after changing state of', name)
+        console.log("before changing state of", name);
+        state[MODULES][name] = moduleState[REDUCERS][name](
+          state[MODULES][name],
+          action
+        );
+        console.log("after changing state of", name);
       }
 
       return state;
@@ -285,7 +295,8 @@ export const createModuleLoader = () => {
     getState: () => {
       console.log("get state called for", name);
       const state = store.getState();
-      const isolatedState = state.modules[name] || {};
+      console.log("global state is", state);
+      const isolatedState = state[MODULES][name] || {};
       isolatedState.router = state.router;
       return isolatedState;
     },
@@ -306,7 +317,7 @@ export const createModuleLoader = () => {
         <Component {...props} />
       </Provider>
     );
-    console.log('isolatedModule for', name, 'will be', ModuleWrapper);
+    console.log("isolatedModule for", name, "will be", ModuleWrapper);
     return ModuleWrapper;
   };
 

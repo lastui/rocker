@@ -450,6 +450,7 @@ var MOUNTED_MODULES = "mountedModules";
 var SAGAS = "sagas"; //const LISTENERS = "listeners";
 
 var REDUCERS = "reducers";
+var MODULES = "modules";
 var CACHE = "cache";
 var READY = "ready";
 function registerModule(scope) {
@@ -759,22 +760,29 @@ var createModuleLoader = function createModuleLoader() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
+
+      if (action.type == _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_UNLOADED) {
+        delete moduleState[REDUCERS][name];
+        delete state[MODULES][name];
+      }
+
       console.log("action in reducer", action.type);
+      console.log("platform reducer observed", action.type);
 
       if (!moduleState[READY]) {
         return state;
       }
 
-      for (var name in moduleState[REDUCERS]) {
-        var moduleLoaded = isModuleLoaded(name);
+      for (var _name in moduleState[REDUCERS]) {
+        var moduleLoaded = isModuleLoaded(_name);
 
         if (!moduleLoaded) {
           continue;
         }
 
-        console.log('before changing state of', name);
-        state[name] = moduleState[REDUCERS][name](state[name], action);
-        console.log('after changing state of', name);
+        console.log("before changing state of", _name);
+        state[MODULES][_name] = moduleState[REDUCERS][_name](state[MODULES][_name], action);
+        console.log("after changing state of", _name);
       }
 
       return state;
@@ -790,7 +798,8 @@ var createModuleLoader = function createModuleLoader() {
       getState: function getState() {
         console.log("get state called for", name);
         var state = store.getState();
-        var isolatedState = state.modules[name] || {};
+        console.log("global state is", state);
+        var isolatedState = state[MODULES][name] || {};
         isolatedState.router = state.router;
         return isolatedState;
       },
@@ -814,7 +823,7 @@ var createModuleLoader = function createModuleLoader() {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.createElement(Component, props));
     };
 
-    console.log('isolatedModule for', name, 'will be', ModuleWrapper);
+    console.log("isolatedModule for", name, "will be", ModuleWrapper);
     return ModuleWrapper;
   };
 
@@ -848,9 +857,9 @@ var createModuleLoader = function createModuleLoader() {
         _iterator.f();
       }
 
-      for (var name in moduleState[LOADED_MODULES]) {
-        if (!isModuleAvailable(name)) {
-          this.unloadModule(name);
+      for (var _name2 in moduleState[LOADED_MODULES]) {
+        if (!isModuleAvailable(_name2)) {
+          this.unloadModule(_name2);
         }
       }
 
@@ -878,6 +887,7 @@ var createModuleLoader = function createModuleLoader() {
   reactHotLoader.register(MOUNTED_MODULES, "MOUNTED_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(SAGAS, "SAGAS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(REDUCERS, "REDUCERS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
+  reactHotLoader.register(MODULES, "MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(CACHE, "CACHE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(READY, "READY", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(registerModule, "registerModule", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");

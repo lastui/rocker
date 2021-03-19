@@ -11,17 +11,18 @@ const Module = (props = {}) => {
     moduleLoader.getLoadedModule(props.name)
   );
 
-  useEffect(() => {
-    console.log("use effect observed update", props.name);
-    if (props.name) {
-      moduleLoader.loadModule(props.name).then((module) => {
-        moduleLoader.setModuleMountState(props.name, true);
+  useEffect((name) => {
+    console.log('mount', name)
+    if (name) {
+      moduleLoader.loadModule(name).then((module) => {
+        moduleLoader.setModuleMountState(name, true);
         setLoadedModule(module);
       });
     }
     return () => {
-      if (props.name) {
-        moduleLoader.setModuleMountState(props.name, false);
+      console.log('unmount', name)
+      if (name) {
+        moduleLoader.setModuleMountState(name, false);
       }
     };
   }, [props.name]);
@@ -36,9 +37,11 @@ const Module = (props = {}) => {
   }
 
   if (!loadedModule.root) {
-    console.log("loadedModule is", loadedModule);
-    return <div>{`Module [${props.name}] is missing MainView ...`}</div>;
+    console.log("module", props, "not does not have component");
+    return <React.Fragment />;
   }
+
+  // FIXME if children?
 
   const ModuleComponent = loadedModule.root;
 
@@ -49,5 +52,5 @@ const Module = (props = {}) => {
   );
 };
 
-export default Module;
+export default React.memo(Module);
 //export default React.memo(Module, (props, nextProps) => !nextProps.frozen);
