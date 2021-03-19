@@ -10,6 +10,7 @@ const AVAILABLE_MODULES = "availableModules";
 const LOADING_MODULES = "loadingModules";
 const MOUNTED_MODULES = "mountedModules";
 const SAGAS = "sagas";
+//const LISTENERS = "listeners";
 const REDUCERS = "reducers";
 const CACHE = "cache";
 const READY = "ready";
@@ -77,14 +78,9 @@ export const createModuleLoader = () => {
 
   const getAvailableModule = (name) => moduleState[AVAILABLE_MODULES][name];
 
-  const getModuleComponent = (name) => {
-    const module = moduleState[LOADED_MODULES][name];
-    if (!module) {
-      return null;
-    }
-    console.log('will return', module.root, 'for module', name);
-    return module.root;
-  };
+  const getLoadedModules = () => moduleState[LOADED_MODULES];
+
+  const getLoadedModule = (name) => moduleState[LOADED_MODULES][name];
 
   const getLoadingModules = () => moduleState[LOADING_MODULES];
 
@@ -161,10 +157,11 @@ export const createModuleLoader = () => {
     if (scope.saga) {
       addSaga(name, scope.saga);
     }
-    moduleState[LOADED_MODULES][name] = {
+    const module = {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
     };
+    moduleState[LOADED_MODULES][name] = module;
     delete moduleState[LOADING_MODULES][name];
 
     return {
@@ -213,7 +210,7 @@ export const createModuleLoader = () => {
 
   const loadModule = (name) => {
     if (isModuleLoaded(name)) {
-      return Promise.resolve(getModuleComponent(name));
+      return Promise.resolve(getLoadedModule(name));
     }
 
     console.log("loading module", name);
@@ -237,7 +234,7 @@ export const createModuleLoader = () => {
       name,
       loadModuleFile(module.url).then((data) => {
         store.dispatch(connectModule(name, data));
-        return getModuleComponent(name);
+        return getLoadedModule(name);
       })
     ).catch((error) => {
       delete moduleState[LOADING_MODULES][name];
@@ -260,6 +257,8 @@ export const createModuleLoader = () => {
 
   const getReducer = () => {
     return (state = {}, action) => {
+      console.log("action in reducer", action.type);
+
       if (!moduleState[READY]) {
         return state;
       }
@@ -269,10 +268,9 @@ export const createModuleLoader = () => {
         if (!moduleLoaded) {
           continue;
         }
-        console.log("before changing state of", name);
-        // info touching state might trigger observe
+        console.log('before changing state of', name)
         state[name] = moduleState[REDUCERS][name](state[name], action);
-        console.log("after changing state of", name);
+        console.log('after changing state of', name)
       }
 
       return state;
@@ -292,7 +290,7 @@ export const createModuleLoader = () => {
       return isolatedState;
     },
     subscribe: function (listener) {
-      console.log("module", name, "subscribed to global state");
+      console.log("module", name, "wanted to subscribe", listener);
       return store.subscribe(listener);
     },
     replaceReducer: function (newReducer) {
@@ -308,6 +306,7 @@ export const createModuleLoader = () => {
         <Component {...props} />
       </Provider>
     );
+    console.log('isolatedModule for', name, 'will be', ModuleWrapper);
     return ModuleWrapper;
   };
 
@@ -337,7 +336,7 @@ export const createModuleLoader = () => {
     },
     loadModule,
     unloadModule,
-    getModuleComponent,
+    getLoadedModule,
     setModuleMountState,
     getReducer,
   };

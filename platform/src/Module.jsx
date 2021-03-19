@@ -1,42 +1,47 @@
 import React, { useEffect, useState } from "react";
 import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 
-const Module = (props) => {
+const Module = (props = {}) => {
+  console.log("in render of", props);
+
   const moduleLoader = useModuleLoader();
 
-  let [moduleComponent, setModuleComponent] = useState(
-    moduleLoader.getModuleComponent(props.name)
+  // flickering because of this (render miss always)
+  let [loadedModule, setLoadedModule] = useState(
+    moduleLoader.getLoadedModule(props.name)
   );
 
   useEffect(() => {
-    console.log("mount", props.name);
-    //console.log("use effect observed update", props.name);
+    console.log("use effect observed update", props.name);
     if (props.name) {
       moduleLoader.loadModule(props.name).then((module) => {
         moduleLoader.setModuleMountState(props.name, true);
-        setModuleComponent(module);
+        setLoadedModule(module);
       });
     }
     return () => {
       if (props.name) {
-        console.log("unmount", props.name);
         moduleLoader.setModuleMountState(props.name, false);
       }
     };
   }, [props.name]);
 
-  if (!moduleComponent) {
-    console.log('module', props.name, 'does not have component or is not loaded')
-    return (
-      <ModuleContextProvider moduleLoader={moduleLoader}>
-        {props.children}
-      </ModuleContextProvider>
-    );
+  //const loadedModule = moduleLoader.getLoadedModule(props.name);
+
+  //console.log("module", props, "loadedModule", loadedModule);
+  if (!loadedModule) {
+    // FIXME does not update need to store loadedModule in state
+    console.log("module", props, "not loaded");
+    return <React.Fragment />;
   }
 
-  console.log('module', props.name, 'rendering', moduleComponent)
+  if (!loadedModule.root) {
+    console.log("loadedModule is", loadedModule);
+    return <div>{`Module [${props.name}] is missing MainView ...`}</div>;
+  }
 
-  const ModuleComponent = moduleComponent;
+  const ModuleComponent = loadedModule.root;
+
   return (
     <ModuleContextProvider moduleLoader={moduleLoader}>
       <ModuleComponent {...props.options} />
@@ -45,5 +50,4 @@ const Module = (props) => {
 };
 
 export default Module;
-//export default React.memo(Module);
 //export default React.memo(Module, (props, nextProps) => !nextProps.frozen);

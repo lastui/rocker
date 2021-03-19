@@ -447,7 +447,8 @@ var LOADED_MODULES = "loadedModules";
 var AVAILABLE_MODULES = "availableModules";
 var LOADING_MODULES = "loadingModules";
 var MOUNTED_MODULES = "mountedModules";
-var SAGAS = "sagas";
+var SAGAS = "sagas"; //const LISTENERS = "listeners";
+
 var REDUCERS = "reducers";
 var CACHE = "cache";
 var READY = "ready";
@@ -520,15 +521,12 @@ var createModuleLoader = function createModuleLoader() {
     return moduleState[AVAILABLE_MODULES][name];
   };
 
-  var getModuleComponent = function getModuleComponent(name) {
-    var module = moduleState[LOADED_MODULES][name];
+  var getLoadedModules = function getLoadedModules() {
+    return moduleState[LOADED_MODULES];
+  };
 
-    if (!module) {
-      return null;
-    }
-
-    console.log('will return', module.root, 'for module', name);
-    return module.root;
+  var getLoadedModule = function getLoadedModule(name) {
+    return moduleState[LOADED_MODULES][name];
   };
 
   var getLoadingModules = function getLoadingModules() {
@@ -652,10 +650,11 @@ var createModuleLoader = function createModuleLoader() {
       addSaga(name, scope.saga);
     }
 
-    moduleState[LOADED_MODULES][name] = {
+    var module = {
       name: name,
       root: scope.MainView && isolateModule(name, scope.MainView)
     };
+    moduleState[LOADED_MODULES][name] = module;
     delete moduleState[LOADING_MODULES][name];
     return {
       type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_LOADED,
@@ -713,7 +712,7 @@ var createModuleLoader = function createModuleLoader() {
 
   var loadModule = function loadModule(name) {
     if (isModuleLoaded(name)) {
-      return Promise.resolve(getModuleComponent(name));
+      return Promise.resolve(getLoadedModule(name));
     }
 
     console.log("loading module", name);
@@ -736,7 +735,7 @@ var createModuleLoader = function createModuleLoader() {
 
     return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
       store.dispatch(connectModule(name, data));
-      return getModuleComponent(name);
+      return getLoadedModule(name);
     })).catch(function (error) {
       delete moduleState[LOADING_MODULES][name];
       return Promise.resolve(null);
@@ -760,6 +759,7 @@ var createModuleLoader = function createModuleLoader() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
+      console.log("action in reducer", action.type);
 
       if (!moduleState[READY]) {
         return state;
@@ -772,10 +772,9 @@ var createModuleLoader = function createModuleLoader() {
           continue;
         }
 
-        console.log("before changing state of", name); // info touching state might trigger observe
-
+        console.log('before changing state of', name);
         state[name] = moduleState[REDUCERS][name](state[name], action);
-        console.log("after changing state of", name);
+        console.log('after changing state of', name);
       }
 
       return state;
@@ -796,7 +795,7 @@ var createModuleLoader = function createModuleLoader() {
         return isolatedState;
       },
       subscribe: function subscribe(listener) {
-        console.log("module", name, "subscribed to global state");
+        console.log("module", name, "wanted to subscribe", listener);
         return store.subscribe(listener);
       },
       replaceReducer: function replaceReducer(newReducer) {
@@ -815,6 +814,7 @@ var createModuleLoader = function createModuleLoader() {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.createElement(Component, props));
     };
 
+    console.log('isolatedModule for', name, 'will be', ModuleWrapper);
     return ModuleWrapper;
   };
 
@@ -858,7 +858,7 @@ var createModuleLoader = function createModuleLoader() {
     },
     loadModule: loadModule,
     unloadModule: unloadModule,
-    getModuleComponent: getModuleComponent,
+    getLoadedModule: getLoadedModule,
     setModuleMountState: setModuleMountState,
     getReducer: getReducer
   };
