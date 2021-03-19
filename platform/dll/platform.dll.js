@@ -466,6 +466,7 @@ var AVAILABLE_MODULES = "availableModules";
 var LOADING_MODULES = "loadingModules";
 var MOUNTED_MODULES = "mountedModules";
 var SAGAS = "sagas";
+var LISTENERS = "listeners";
 var REDUCERS = "reducers";
 var CACHE = "cache";
 var READY = "ready";
@@ -777,6 +778,7 @@ var createModuleLoader = function createModuleLoader() {
         name: name
       }
     });
+    delete moduleState[LISTENERS][name];
   };
 
   var getReducer = function getReducer() {
@@ -833,24 +835,29 @@ var createModuleLoader = function createModuleLoader() {
                 console.log("dispatch", name, "action", action.type);
 
                 if (action.type.startsWith("@@")) {
-                  store.dispatch(action);
+                  store.dispatch(action); // FIXME check if its loaded
 
                   for (var n in moduleState[LISTENERS]) {
-                    try {
-                      moduleState[LISTENERS][n]();
-                      console.log('notified', n, 'about dispatch');
-                    } catch (error) {
-                      console.error('unable to notify listener for', n);
+                    for (var listener in moduleState[LISTENERS][n]) {
+                      try {
+                        listener();
+                        console.log('notified', n, 'about dispatch with listener', listener);
+                      } catch (error) {
+                        console.error('unable to notify listener for', n);
+                      }
                     }
                   }
                 } else {
                   store.dispatch(_objectSpread(_objectSpread({}, action), {}, {
                     type: "@" + name + "/" + action.type
-                  }));
+                  })); // FIXME array
 
                   if (moduleState[LISTENERS][name]) {
-                    console.log('notified', name, 'about dispatch');
-                    moduleState[LISTENERS][name]();
+                    for (var _listener in moduleState[LISTENERS][name]) {
+                      console.log('notified', name, 'about dispatch with listener', _listener);
+
+                      _listener();
+                    }
                   }
                 }
               },
@@ -865,10 +872,17 @@ var createModuleLoader = function createModuleLoader() {
                 console.log("subscribing to events at", name, "with", listener); // fixme subscribe returns function to unsuscribe
                 // listener function should be invoked after event is dispatched
                 // some namespacing control is needed
+                // FIXME array
 
-                moduleState[LISTENERS][name] = listener;
+                if (!moduleState[LISTENERS][name]) {
+                  moduleState[LISTENERS][name] = [];
+                }
+
+                moduleState[LISTENERS][name].push(listener);
                 return function () {
-                  delete moduleState[LISTENERS][name];
+                  var index = moduleState[LISTENERS].indexOf(listener);
+                  moduleState[LISTENERS].splice(index, 1); //if ()
+                  //delete moduleState[LISTENERS][name];
                 }; //return store.subscribe(listener); // FIXME do not listen to other modules events
               },
               replaceReducer: function replaceReducer(newReducer) {
@@ -952,6 +966,7 @@ var createModuleLoader = function createModuleLoader() {
   reactHotLoader.register(LOADING_MODULES, "LOADING_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(MOUNTED_MODULES, "MOUNTED_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(SAGAS, "SAGAS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
+  reactHotLoader.register(LISTENERS, "LISTENERS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(REDUCERS, "REDUCERS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(CACHE, "CACHE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(READY, "READY", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");

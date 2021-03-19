@@ -10,6 +10,7 @@ const AVAILABLE_MODULES = "availableModules";
 const LOADING_MODULES = "loadingModules";
 const MOUNTED_MODULES = "mountedModules";
 const SAGAS = "sagas";
+const LISTENERS = "listeners";
 const REDUCERS = "reducers";
 const CACHE = "cache";
 const READY = "ready";
@@ -260,6 +261,7 @@ export const createModuleLoader = () => {
         name,
       },
     });
+    delete moduleState[LISTENERS][name];
   };
 
   const getReducer = () => {
@@ -292,6 +294,7 @@ export const createModuleLoader = () => {
   };
 
   const isolateModule = (name, Component) => {
+
     class ModuleWrapper extends React.Component {
       render() {
         return (
@@ -301,12 +304,15 @@ export const createModuleLoader = () => {
                 console.log("dispatch", name, "action", action.type);
                 if (action.type.startsWith("@@")) {
                   store.dispatch(action);
+                  // FIXME check if its loaded
                   for (const n in moduleState[LISTENERS]) {
-                    try {
-                      moduleState[LISTENERS][n]();
-                      console.log('notified', n, 'about dispatch');
-                    } catch(error) {
-                      console.error('unable to notify listener for', n);
+                    for (const listener in moduleState[LISTENERS][n]) {
+                      try {
+                        listener();
+                        console.log('notified', n, 'about dispatch with listener', listener);
+                      } catch(error) {
+                        console.error('unable to notify listener for', n);
+                      }
                     }
                   }
                 } else {
@@ -314,9 +320,12 @@ export const createModuleLoader = () => {
                     ...action,
                     type: "@" + name + "/" + action.type,
                   });
+                  // FIXME array
                   if (moduleState[LISTENERS][name]) {
-                    console.log('notified', name, 'about dispatch');
-                    moduleState[LISTENERS][name]()
+                    for (const listener in moduleState[LISTENERS][name]) {
+                      console.log('notified', name, 'about dispatch with listener', listener);
+                      listener()
+                    }
                   }
                 }
               },
@@ -333,9 +342,16 @@ export const createModuleLoader = () => {
                 // listener function should be invoked after event is dispatched
                 // some namespacing control is needed
 
-                moduleState[LISTENERS][name] = listener;
+                // FIXME array
+                if (!moduleState[LISTENERS][name]) {
+                  moduleState[LISTENERS][name] = [];
+                }
+                moduleState[LISTENERS][name].push(listener);
                 return () => {
-                  delete moduleState[LISTENERS][name];
+                  const index = moduleState[LISTENERS].indexOf(listener)
+                  moduleState[LISTENERS].splice(index, 1)
+                  //if ()
+                  //delete moduleState[LISTENERS][name];
                 };
                 //return store.subscribe(listener); // FIXME do not listen to other modules events
               },
