@@ -29,7 +29,7 @@ var ModuleContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContex
 
 var ModuleContextProvider = function ModuleContextProvider(props) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(ModuleContext.Provider, {
-    value: props.moduleLoader
+    value: props.moduleLoader || null
   }, props.children);
 };
 

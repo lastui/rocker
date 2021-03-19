@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 
 const Module = (props) => {
+  console.log('in render of', props)
+
   const moduleLoader = useModuleLoader();
 
   let [ready, setReady] = useState(false);
@@ -24,7 +26,7 @@ const Module = (props) => {
     };
   }, [props.name]);
 
-  if (!moduleLoader || !ready) {
+  if (moduleLoader == null || !ready) {
     return <React.Fragment />;
   }
 

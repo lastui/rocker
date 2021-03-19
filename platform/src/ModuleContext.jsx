@@ -4,7 +4,7 @@ const ModuleContext = React.createContext(null);
 
 const ModuleContextProvider = (props) => (
   <ModuleContext.Provider
-    value={props.moduleLoader}
+    value={props.moduleLoader || null}
   >
     {props.children}
   </ModuleContext.Provider>
