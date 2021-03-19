@@ -447,8 +447,7 @@ var LOADED_MODULES = "loadedModules";
 var AVAILABLE_MODULES = "availableModules";
 var LOADING_MODULES = "loadingModules";
 var MOUNTED_MODULES = "mountedModules";
-var SAGAS = "sagas"; //const LISTENERS = "listeners";
-
+var SAGAS = "sagas";
 var REDUCERS = "reducers";
 var CACHE = "cache";
 var READY = "ready";

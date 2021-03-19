@@ -10,7 +10,6 @@ const AVAILABLE_MODULES = "availableModules";
 const LOADING_MODULES = "loadingModules";
 const MOUNTED_MODULES = "mountedModules";
 const SAGAS = "sagas";
-//const LISTENERS = "listeners";
 const REDUCERS = "reducers";
 const CACHE = "cache";
 const READY = "ready";
