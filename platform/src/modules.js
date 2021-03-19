@@ -314,11 +314,6 @@ export const createModuleLoader = () => {
     console.log('isolating module', name)
 
     class ModuleWrapper extends React.Component {
-      shouldComponentUpdate(nextProps, nextState) {
-        console.log("checking if", name, "should update");
-        console.log("is ready?", moduleState[READY]);
-        return moduleState[READY] && super.shouldComponentUpdate(nextProps, nextState);
-      }
 
       render() {
         // INFO tracing why flickerring when chaning navigation happens
