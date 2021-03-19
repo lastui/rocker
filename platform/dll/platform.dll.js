@@ -775,10 +775,6 @@ var createModuleLoader = function createModuleLoader() {
         return state;
       }
 
-      if (action.type.startsWith("@@module/")) {
-        return state;
-      }
-
       for (var name in moduleState[REDUCERS]) {
         var moduleLoaded = isModuleLoaded(name);
 
@@ -786,7 +782,7 @@ var createModuleLoader = function createModuleLoader() {
           continue;
         }
 
-        if (action.type.startsWith("@@router/")) {
+        if (action.type.startsWith("@@")) {
           state[name] = moduleState[REDUCERS][name](state[name], action);
         } else if (action.type.startsWith("@" + name + "/")) {
           state[name] = moduleState[REDUCERS][name](state[name], _objectSpread(_objectSpread({}, action), {}, {
