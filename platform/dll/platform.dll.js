@@ -770,6 +770,7 @@ var createModuleLoader = function createModuleLoader() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
+      console.log('action in reducer', action.type);
 
       if (!moduleState[READY]) {
         return state;

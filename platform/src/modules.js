@@ -71,7 +71,6 @@ export const createModuleLoader = () => {
     [MOUNTED_MODULES]: {},
     [READY]: true,
     [REDUCERS]: {},
-    //[LISTENERS]: {},
     [SAGAS]: {},
   };
 
@@ -266,6 +265,8 @@ export const createModuleLoader = () => {
 
   const getReducer = () => {
     return (state = {}, action) => {
+      console.log('action in reducer', action.type);
+
       if (!moduleState[READY]) {
         return state;
       }
