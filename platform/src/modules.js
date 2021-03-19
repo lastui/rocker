@@ -78,13 +78,12 @@ export const createModuleLoader = () => {
 
   const getAvailableModule = (name) => moduleState[AVAILABLE_MODULES][name];
 
-  const getLoadedModules = () => moduleState[LOADED_MODULES];
-
   const getModuleComponent = (name) => {
     const module = moduleState[LOADED_MODULES][name];
     if (!module) {
       return null;
     }
+    console.log('will return', module.root, 'for module', name);
     return module.root;
   };
 
@@ -163,11 +162,10 @@ export const createModuleLoader = () => {
     if (scope.saga) {
       addSaga(name, scope.saga);
     }
-    const module = {
+    moduleState[LOADED_MODULES][name] = {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
     };
-    moduleState[LOADED_MODULES][name] = module;
     delete moduleState[LOADING_MODULES][name];
 
     return {

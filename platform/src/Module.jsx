@@ -27,6 +27,7 @@ const Module = (props) => {
 
   const result = useMemo(() => {
     const { children, ...restProps } = props;
+    console.log('thing', props, 'will render with', moduleComponent);
     return (
       <ModuleContextProvider moduleLoader={moduleLoader}>
         {moduleComponent

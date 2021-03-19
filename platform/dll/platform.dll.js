@@ -521,10 +521,6 @@ var createModuleLoader = function createModuleLoader() {
     return moduleState[AVAILABLE_MODULES][name];
   };
 
-  var getLoadedModules = function getLoadedModules() {
-    return moduleState[LOADED_MODULES];
-  };
-
   var getModuleComponent = function getModuleComponent(name) {
     var module = moduleState[LOADED_MODULES][name];
 
@@ -532,6 +528,7 @@ var createModuleLoader = function createModuleLoader() {
       return null;
     }
 
+    console.log('will return', module.root, 'for module', name);
     return module.root;
   };
 
@@ -656,11 +653,10 @@ var createModuleLoader = function createModuleLoader() {
       addSaga(name, scope.saga);
     }
 
-    var module = {
+    moduleState[LOADED_MODULES][name] = {
       name: name,
       root: scope.MainView && isolateModule(name, scope.MainView)
     };
-    moduleState[LOADED_MODULES][name] = module;
     delete moduleState[LOADING_MODULES][name];
     return {
       type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_LOADED,
