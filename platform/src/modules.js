@@ -196,10 +196,13 @@ export const createModuleLoader = () => {
   const setModuleMountState = (name, mounted) => {
     if (!mounted) {
       delete moduleState[MOUNTED_MODULES][name];
+      console.log('module', name, 'ack unmount')
       if (!moduleState[LOADED_MODULES][name]) {
+        console.log('module', name, 'is now dangling and needs cleanup');
         moduleState[DANGLING_MODULES][name] = true;
       }
     } else {
+      console.log('module', name, 'ack mount')
       moduleState[MOUNTED_MODULES][name] = true;
     }
   };
@@ -266,7 +269,7 @@ export const createModuleLoader = () => {
     return (state = {}, action) => {
       console.log("platform reducer observed", action);
 
-      for (const name in moduleState[DANGLING_MODULES][name]) {
+      for (const name in moduleState[DANGLING_MODULES]) {
         console.log('evicting dangling module redux state', name)
         delete state[name];
       }

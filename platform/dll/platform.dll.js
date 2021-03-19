@@ -692,11 +692,14 @@ var createModuleLoader = function createModuleLoader() {
   var setModuleMountState = function setModuleMountState(name, mounted) {
     if (!mounted) {
       delete moduleState[MOUNTED_MODULES][name];
+      console.log('module', name, 'ack unmount');
 
       if (!moduleState[LOADED_MODULES][name]) {
+        console.log('module', name, 'is now dangling and needs cleanup');
         moduleState[DANGLING_MODULES][name] = true;
       }
     } else {
+      console.log('module', name, 'ack mount');
       moduleState[MOUNTED_MODULES][name] = true;
     }
   };
@@ -768,7 +771,7 @@ var createModuleLoader = function createModuleLoader() {
       var action = arguments.length > 1 ? arguments[1] : void 0;
       console.log("platform reducer observed", action);
 
-      for (var name in moduleState[DANGLING_MODULES][name]) {
+      for (var name in moduleState[DANGLING_MODULES]) {
         console.log('evicting dangling module redux state', name);
         delete state[name];
       }
