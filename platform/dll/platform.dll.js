@@ -511,7 +511,7 @@ var createModuleLoader = function createModuleLoader() {
     console.log("Sagas runnner not provided!");
   };
 
-  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, SAGAS, {}), _moduleState);
+  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, DANGLING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, SAGAS, {}), _moduleState);
 
   var getAvailableModules = function getAvailableModules() {
     return moduleState[AVAILABLE_MODULES];
@@ -691,6 +691,10 @@ var createModuleLoader = function createModuleLoader() {
   var setModuleMountState = function setModuleMountState(name, mounted) {
     if (!mounted) {
       delete moduleState[MOUNTED_MODULES][name];
+
+      if (!moduleState[LOADED_MODULES][name]) {
+        moduleState[DANGLING_MODULES][name] = true;
+      }
     } else {
       moduleState[MOUNTED_MODULES][name] = true;
     }
@@ -763,27 +767,25 @@ var createModuleLoader = function createModuleLoader() {
       var action = arguments.length > 1 ? arguments[1] : void 0;
       console.log("platform reducer observed", action);
 
-      if (action.type == _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_UNLOADED) {
-        console.log("evicting", action.payload.name, "recucer");
-        delete moduleState[REDUCERS][action.payload.name];
-        console.log("evicting", action.payload.name, "redux state");
-        delete state[action.payload.name];
+      for (var name in moduleState[DANGLING_MODULES][name]) {
+        console.log('evicting dangling module redux state', name);
+        delete state[name];
       }
 
       if (!moduleState[READY]) {
         return state;
       }
 
-      for (var name in moduleState[REDUCERS]) {
-        var moduleLoaded = isModuleLoaded(name);
+      for (var _name in moduleState[REDUCERS]) {
+        var moduleLoaded = isModuleLoaded(_name);
 
         if (!moduleLoaded) {
           continue;
         }
 
-        console.log("before changing state of", name);
-        state[name] = moduleState[REDUCERS][name](state[name], action);
-        console.log("after changing state of", name);
+        console.log("before changing state of", _name);
+        state[_name] = moduleState[REDUCERS][_name](state[_name], action);
+        console.log("after changing state of", _name);
       }
 
       return state;

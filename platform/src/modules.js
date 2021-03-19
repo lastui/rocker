@@ -68,6 +68,7 @@ export const createModuleLoader = () => {
     [AVAILABLE_MODULES]: {},
     [LOADED_MODULES]: {},
     [LOADING_MODULES]: {},
+    [DANGLING_MODULES]: {},
     [MOUNTED_MODULES]: {},
     [READY]: true,
     [REDUCERS]: {},
@@ -194,6 +195,9 @@ export const createModuleLoader = () => {
   const setModuleMountState = (name, mounted) => {
     if (!mounted) {
       delete moduleState[MOUNTED_MODULES][name];
+      if (!moduleState[LOADED_MODULES][name]) {
+        moduleState[DANGLING_MODULES][name] = true;
+      }
     } else {
       moduleState[MOUNTED_MODULES][name] = true;
     }
@@ -261,11 +265,9 @@ export const createModuleLoader = () => {
     return (state = {}, action) => {
       console.log("platform reducer observed", action);
 
-      if (action.type == constants.MODULE_UNLOADED) {
-        console.log("evicting", action.payload.name, "recucer");
-        delete moduleState[REDUCERS][action.payload.name];
-        console.log("evicting", action.payload.name, "redux state");
-        delete state[action.payload.name];
+      for (const name in moduleState[DANGLING_MODULES][name]) {
+        console.log('evicting dangling module redux state', name)
+        delete state[name];
       }
 
       if (!moduleState[READY]) {
