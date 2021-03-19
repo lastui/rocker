@@ -10,7 +10,6 @@ const AVAILABLE_MODULES = "availableModules";
 const LOADING_MODULES = "loadingModules";
 const MOUNTED_MODULES = "mountedModules";
 const SAGAS = "sagas";
-//const LISTENERS = "listeners";
 const REDUCERS = "reducers";
 const MODULES = "modules";
 const CACHE = "cache";
@@ -143,7 +142,9 @@ export const createModuleLoader = () => {
     moduleState[READY] = isReady;
     store.dispatch({
       type: constants.MODULES_READY,
-      payload: isReady,
+      payload: {
+        isReady,
+      },
     });
   };
 
@@ -260,11 +261,10 @@ export const createModuleLoader = () => {
     return (state = {}, action) => {
       if (action.type == constants.MODULE_UNLOADED) {
         delete moduleState[REDUCERS][name];
-        delete state[MODULES][name];
+        delete state[name];
       }
 
-      console.log("action in reducer", action.type);
-      console.log("platform reducer observed", action.type);
+      console.log("platform reducer observed", action);
 
       if (!moduleState[READY]) {
         return state;
@@ -276,8 +276,8 @@ export const createModuleLoader = () => {
           continue;
         }
         console.log("before changing state of", name);
-        state[MODULES][name] = moduleState[REDUCERS][name](
-          state[MODULES][name],
+        state[name] = moduleState[REDUCERS][name](
+          state[name],
           action
         );
         console.log("after changing state of", name);

@@ -447,8 +447,7 @@ var LOADED_MODULES = "loadedModules";
 var AVAILABLE_MODULES = "availableModules";
 var LOADING_MODULES = "loadingModules";
 var MOUNTED_MODULES = "mountedModules";
-var SAGAS = "sagas"; //const LISTENERS = "listeners";
-
+var SAGAS = "sagas";
 var REDUCERS = "reducers";
 var MODULES = "modules";
 var CACHE = "cache";
@@ -626,7 +625,9 @@ var createModuleLoader = function createModuleLoader() {
     moduleState[READY] = isReady;
     store.dispatch({
       type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULES_READY,
-      payload: isReady
+      payload: {
+        isReady: isReady
+      }
     });
   };
 
@@ -763,11 +764,10 @@ var createModuleLoader = function createModuleLoader() {
 
       if (action.type == _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_UNLOADED) {
         delete moduleState[REDUCERS][name];
-        delete state[MODULES][name];
+        delete state[name];
       }
 
-      console.log("action in reducer", action.type);
-      console.log("platform reducer observed", action.type);
+      console.log("platform reducer observed", action);
 
       if (!moduleState[READY]) {
         return state;
@@ -781,7 +781,7 @@ var createModuleLoader = function createModuleLoader() {
         }
 
         console.log("before changing state of", _name);
-        state[MODULES][_name] = moduleState[REDUCERS][_name](state[MODULES][_name], action);
+        state[_name] = moduleState[REDUCERS][_name](state[_name], action);
         console.log("after changing state of", _name);
       }
 
