@@ -4,8 +4,8 @@ import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 const Module = (props) => {
   const moduleLoader = useModuleLoader();
 
-  let [loadedModule, setLoadedModule] = useState(
-    moduleLoader.getLoadedModule(props.name)
+  let [moduleComponent, setModuleComponent] = useState(
+    moduleLoader.getModuleComponent(props.name)
   );
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const Module = (props) => {
     if (props.name) {
       moduleLoader.loadModule(props.name).then((module) => {
         moduleLoader.setModuleMountState(props.name, true);
-        setLoadedModule(module);
+        setModuleComponent(module);
       });
     }
     return () => {
@@ -25,21 +25,20 @@ const Module = (props) => {
     };
   }, [props.name]);
 
-  if (!loadedModule) {  // FIXME props.loading like react suspense
-    return <React.Fragment />;
-  }
-
-  return useMemo(() => {
+  const result = useMemo(() => {
     const { children, ...restProps } = props;
     return (
       <ModuleContextProvider moduleLoader={moduleLoader}>
-        {loadedModule.root
-          ? React.createElement(loadedModule.root, restProps, children)
+        {moduleComponent
+          ? React.createElement(moduleComponent, restProps, children)
           : children
         }
       </ModuleContextProvider>
     )
-  }, [props, loadedModule.root]);
+  }, [props, moduleComponent]);
+
+
+  return result;
 };
 
 export default Module;

@@ -80,7 +80,13 @@ export const createModuleLoader = () => {
 
   const getLoadedModules = () => moduleState[LOADED_MODULES];
 
-  const getLoadedModule = (name) => moduleState[LOADED_MODULES][name];
+  const getModuleComponent = (name) => {
+    const module = moduleState[LOADED_MODULES][name];
+    if (!module) {
+      return null;
+    }
+    return module.root;
+  };
 
   const getLoadingModules = () => moduleState[LOADING_MODULES];
 
@@ -210,7 +216,7 @@ export const createModuleLoader = () => {
 
   const loadModule = (name) => {
     if (isModuleLoaded(name)) {
-      return Promise.resolve(getLoadedModule(name));
+      return Promise.resolve(getModuleComponent(name));
     }
 
     console.log("loading module", name);
@@ -234,7 +240,7 @@ export const createModuleLoader = () => {
       name,
       loadModuleFile(module.url).then((data) => {
         store.dispatch(connectModule(name, data));
-        return getLoadedModule(name);
+        return getModuleComponent(name);
       })
     ).catch((error) => {
       delete moduleState[LOADING_MODULES][name];
@@ -266,10 +272,10 @@ export const createModuleLoader = () => {
         if (!moduleLoaded) {
           continue;
         }
-        console.log('before changing state of', name)
+        console.log("before changing state of", name);
         // info touching state might trigger observe
         state[name] = moduleState[REDUCERS][name](state[name], action);
-        console.log('after changing state of', name)
+        console.log("after changing state of", name);
       }
 
       return state;
@@ -334,7 +340,7 @@ export const createModuleLoader = () => {
     },
     loadModule,
     unloadModule,
-    getLoadedModule,
+    getModuleComponent,
     setModuleMountState,
     getReducer,
   };

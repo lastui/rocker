@@ -525,8 +525,14 @@ var createModuleLoader = function createModuleLoader() {
     return moduleState[LOADED_MODULES];
   };
 
-  var getLoadedModule = function getLoadedModule(name) {
-    return moduleState[LOADED_MODULES][name];
+  var getModuleComponent = function getModuleComponent(name) {
+    var module = moduleState[LOADED_MODULES][name];
+
+    if (!module) {
+      return null;
+    }
+
+    return module.root;
   };
 
   var getLoadingModules = function getLoadingModules() {
@@ -712,7 +718,7 @@ var createModuleLoader = function createModuleLoader() {
 
   var loadModule = function loadModule(name) {
     if (isModuleLoaded(name)) {
-      return Promise.resolve(getLoadedModule(name));
+      return Promise.resolve(getModuleComponent(name));
     }
 
     console.log("loading module", name);
@@ -735,7 +741,7 @@ var createModuleLoader = function createModuleLoader() {
 
     return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
       store.dispatch(connectModule(name, data));
-      return getLoadedModule(name);
+      return getModuleComponent(name);
     })).catch(function (error) {
       delete moduleState[LOADING_MODULES][name];
       return Promise.resolve(null);
@@ -771,10 +777,10 @@ var createModuleLoader = function createModuleLoader() {
           continue;
         }
 
-        console.log('before changing state of', name); // info touching state might trigger observe
+        console.log("before changing state of", name); // info touching state might trigger observe
 
         state[name] = moduleState[REDUCERS][name](state[name], action);
-        console.log('after changing state of', name);
+        console.log("after changing state of", name);
       }
 
       return state;
@@ -857,7 +863,7 @@ var createModuleLoader = function createModuleLoader() {
     },
     loadModule: loadModule,
     unloadModule: unloadModule,
-    getLoadedModule: getLoadedModule,
+    getModuleComponent: getModuleComponent,
     setModuleMountState: setModuleMountState,
     getReducer: getReducer
   };
