@@ -340,8 +340,10 @@ export const createModuleLoader = () => {
       getState: () => {
         console.log("get state called for", name);
         const state = store.getState();
+        console.log('full state is', state);
         const isolatedState = state.modules[name] || {};
         isolatedState.router = state.router;
+        console.log('isolated state is'. state);
         return isolatedState;
       },
       subscribe: function (listener) {
