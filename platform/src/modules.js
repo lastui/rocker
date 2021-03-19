@@ -290,6 +290,8 @@ export const createModuleLoader = () => {
   };
 
   const isolateStore = (name) => {
+    //const listeners = [];
+
     return {
       dispatch: (action) => {
         console.log("dispatch", name, "action", action.type);
@@ -336,14 +338,15 @@ export const createModuleLoader = () => {
       getState: () => {
         console.log("get state called for", name);
         const state = store.getState();
-        console.log('full state is', state);
+        //console.log('full state is', state);
         const isolatedState = state.modules[name] || {};
         isolatedState.router = state.router;
-        console.log('isolated state is'. state);
+        //console.log('isolated state is'. state);
         return isolatedState;
       },
       subscribe: function (listener) {
         console.log("module", name, "wanted to subscribe", listener);
+        return store.subscribe(listener);
         //console.log("subscribing to events at", name, "with", listener);
         // fixme subscribe returns function to unsuscribe
         // listener function should be invoked after event is dispatched

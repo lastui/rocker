@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 
-const Module = (props = {}) => {
+const Module = (props) => {
   const moduleLoader = useModuleLoader();
 
   let [loadedModule, setLoadedModule] = useState(
@@ -25,7 +25,7 @@ const Module = (props = {}) => {
     };
   }, [props.name]);
 
-  if (!loadedModule) {  // FIXME props.loading
+  if (!loadedModule) {  // FIXME props.loading like react suspense
     return <React.Fragment />;
   }
 

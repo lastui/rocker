@@ -796,6 +796,7 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var isolateStore = function isolateStore(name) {
+    //const listeners = [];
     return {
       dispatch: function dispatch(action) {
         console.log("dispatch", name, "action", action.type);
@@ -841,15 +842,16 @@ var createModuleLoader = function createModuleLoader() {
       },
       getState: function getState() {
         console.log("get state called for", name);
-        var state = store.getState();
-        console.log('full state is', state);
+        var state = store.getState(); //console.log('full state is', state);
+
         var isolatedState = state.modules[name] || {};
-        isolatedState.router = state.router;
-        console.log('isolated state is'.state);
+        isolatedState.router = state.router; //console.log('isolated state is'. state);
+
         return isolatedState;
       },
       subscribe: function subscribe(listener) {
-        console.log("module", name, "wanted to subscribe", listener); //console.log("subscribing to events at", name, "with", listener);
+        console.log("module", name, "wanted to subscribe", listener);
+        return store.subscribe(listener); //console.log("subscribing to events at", name, "with", listener);
         // fixme subscribe returns function to unsuscribe
         // listener function should be invoked after event is dispatched
         // some namespacing control is needed
