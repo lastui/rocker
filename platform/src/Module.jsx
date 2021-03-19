@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 
 const Module = (props) => {
@@ -29,22 +29,17 @@ const Module = (props) => {
     return <React.Fragment />;
   }
 
-  if (!loadedModule.root) {
+  return useMemo(() => {
+    const { children, ...restProps } = props;
     return (
       <ModuleContextProvider moduleLoader={moduleLoader}>
-        {props.children}
+        {loadedModule.root
+          ? React.createElement(loadedModule.root, restProps, children)
+          : children
+        }
       </ModuleContextProvider>
-    );
-  }
-
-  const ModuleComponent = loadedModule.root;
-
-  return (
-    <ModuleContextProvider moduleLoader={moduleLoader}>
-      <ModuleComponent {...props.options} />
-    </ModuleContextProvider>
-  );
+    )
+  }, [props, loadedModule.root]);
 };
 
 export default Module;
-//export default React.memo(Module, (props, nextProps) => !nextProps.frozen);

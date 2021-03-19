@@ -282,7 +282,7 @@ export const createModuleLoader = () => {
       store.dispatch(action);
     },
     getState: () => {
-      console.log("get state called for", name, "by", arguments.callee.caller);
+      console.log("get state called for", name);
       const state = store.getState();
       const isolatedState = state.modules[name] || {};
       isolatedState.router = state.router;

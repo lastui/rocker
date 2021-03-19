@@ -420,7 +420,6 @@ var _default = {
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
 
-var _arguments = arguments;
 
 (function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
@@ -789,7 +788,7 @@ var createModuleLoader = function createModuleLoader() {
         store.dispatch(action);
       },
       getState: function getState() {
-        console.log("get state called for", name, "by", _arguments.callee.caller);
+        console.log("get state called for", name);
         var state = store.getState();
         var isolatedState = state.modules[name] || {};
         isolatedState.router = state.router;
