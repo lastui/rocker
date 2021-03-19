@@ -259,12 +259,14 @@ export const createModuleLoader = () => {
 
   const getReducer = () => {
     return (state = {}, action) => {
-      if (action.type == constants.MODULE_UNLOADED) {
-        delete moduleState[REDUCERS][name];
-        delete state[name];
-      }
-
       console.log("platform reducer observed", action);
+
+      if (action.type == constants.MODULE_UNLOADED) {
+        console.log("evicting", action.payload.name, "recucer");
+        delete moduleState[REDUCERS][action.payload.name];
+        console.log("evicting", action.payload.name, "redux state");
+        delete state[action.payload.name];
+      }
 
       if (!moduleState[READY]) {
         return state;

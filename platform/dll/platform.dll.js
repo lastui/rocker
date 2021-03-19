@@ -761,28 +761,29 @@ var createModuleLoader = function createModuleLoader() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
+      console.log("platform reducer observed", action);
 
       if (action.type == _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_UNLOADED) {
-        delete moduleState[REDUCERS][name];
-        delete state[name];
+        console.log("evicting", action.payload.name, "recucer");
+        delete moduleState[REDUCERS][action.payload.name];
+        console.log("evicting", action.payload.name, "redux state");
+        delete state[action.payload.name];
       }
-
-      console.log("platform reducer observed", action);
 
       if (!moduleState[READY]) {
         return state;
       }
 
-      for (var _name in moduleState[REDUCERS]) {
-        var moduleLoaded = isModuleLoaded(_name);
+      for (var name in moduleState[REDUCERS]) {
+        var moduleLoaded = isModuleLoaded(name);
 
         if (!moduleLoaded) {
           continue;
         }
 
-        console.log("before changing state of", _name);
-        state[_name] = moduleState[REDUCERS][_name](state[_name], action);
-        console.log("after changing state of", _name);
+        console.log("before changing state of", name);
+        state[name] = moduleState[REDUCERS][name](state[name], action);
+        console.log("after changing state of", name);
       }
 
       return state;
@@ -857,9 +858,9 @@ var createModuleLoader = function createModuleLoader() {
         _iterator.f();
       }
 
-      for (var _name2 in moduleState[LOADED_MODULES]) {
-        if (!isModuleAvailable(_name2)) {
-          this.unloadModule(_name2);
+      for (var name in moduleState[LOADED_MODULES]) {
+        if (!isModuleAvailable(name)) {
+          this.unloadModule(name);
         }
       }
 
