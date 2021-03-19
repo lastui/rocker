@@ -381,6 +381,7 @@ export const createModuleLoader = () => {
         <Component {...props} />
       </Provider>
     );
+    return ModuleWrapper;
   };
 
   return {
