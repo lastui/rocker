@@ -1,6 +1,5 @@
 const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
-//const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const settings = require("../settings");
 
@@ -62,27 +61,6 @@ module.exports = {
 			  ],
 	},
 	plugins: [
-		/*
-		new ForkTsCheckerWebpackPlugin({
-			async: false,
-			logger: {
-				infrastructure: 'console',
-				issues: 'console',
-				devServer: false,
-			},
-			typescript: {
-				enabled: true,
-				build: false,
-				profile: false,
-				mode: 'readonly',
-				context: settings.PROJECT_SRC_PATH,
-				configOverwrite: {
-
-				},
-				typescriptPath: require.resolve('typescript')
-			}
-		}),
-		*/
 		new webpack.ProvidePlugin({
 			Buffer: ["buffer", "Buffer"],
 			process: ["process"],
