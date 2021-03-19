@@ -9,7 +9,8 @@ const Module = (props = {}) => {
   );
 
   useEffect(() => {
-    console.log("use effect observed update", props.name);
+    console.log("mount", props.name);
+    //console.log("use effect observed update", props.name);
     if (props.name) {
       moduleLoader.loadModule(props.name).then((module) => {
         moduleLoader.setModuleMountState(props.name, true);
@@ -18,6 +19,7 @@ const Module = (props = {}) => {
     }
     return () => {
       if (props.name) {
+        console.log("unmount", props.name);
         moduleLoader.setModuleMountState(props.name, false);
       }
     };

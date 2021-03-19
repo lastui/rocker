@@ -409,26 +409,16 @@ var _default = {
 /* harmony export */   "createModuleLoader": () => (/* binding */ createModuleLoader)
 /* harmony export */ });
 /* unused harmony export registerModule */
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
-/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! redux-saga/effects */ "./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
-/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(redux_saga_effects__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
+/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! redux-saga/effects */ "./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
+/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(redux_saga_effects__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
-
-
-
-
-
 
 
 (function () {
@@ -442,13 +432,9 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0,_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__.default)(this, result); }; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 
 
@@ -465,8 +451,8 @@ var LOADED_MODULES = "loadedModules";
 var AVAILABLE_MODULES = "availableModules";
 var LOADING_MODULES = "loadingModules";
 var MOUNTED_MODULES = "mountedModules";
-var SAGAS = "sagas";
-var LISTENERS = "listeners";
+var SAGAS = "sagas"; //const LISTENERS = "listeners";
+
 var REDUCERS = "reducers";
 var CACHE = "cache";
 var READY = "ready";
@@ -488,12 +474,12 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
     return function (next) {
       return function (action) {
         switch (action.type) {
-          case _constants__WEBPACK_IMPORTED_MODULE_11__.SET_AVAILABLE_MODULES:
+          case _constants__WEBPACK_IMPORTED_MODULE_6__.SET_AVAILABLE_MODULES:
             {
               return loader.setAvailableModules(action.payload.modules);
             }
 
-          case _constants__WEBPACK_IMPORTED_MODULE_11__.SET_ENTRYPOINT_MODULE:
+          case _constants__WEBPACK_IMPORTED_MODULE_6__.SET_ENTRYPOINT_MODULE:
             {
               return loader.loadModule(action.payload.entrypoint).then(function () {
                 return next(action);
@@ -529,7 +515,7 @@ var createModuleLoader = function createModuleLoader() {
     console.log("Sagas runnner not provided!");
   };
 
-  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LISTENERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, SAGAS, {}), _moduleState);
+  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, SAGAS, {}), _moduleState);
 
   var getAvailableModules = function getAvailableModules() {
     return moduleState[AVAILABLE_MODULES];
@@ -573,7 +559,7 @@ var createModuleLoader = function createModuleLoader() {
     removeReducer(name);
     console.log("module", name, "adding reducer");
     reducer({}, {
-      type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULE_INIT
+      type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_INIT
     });
     moduleState[REDUCERS][name] = reducer;
   };
@@ -585,13 +571,13 @@ var createModuleLoader = function createModuleLoader() {
 
     console.log("module", name, "removing saga");
     console.log("before cancel");
-    sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default().mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default().wrap(function _callee$(_context) {
+    sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_9__.cancel)(moduleState[SAGAS][name]);
+              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_4__.cancel)(moduleState[SAGAS][name]);
 
             case 2:
             case "end":
@@ -608,13 +594,13 @@ var createModuleLoader = function createModuleLoader() {
   var addSaga = function addSaga(name, saga) {
     removeSaga(name);
     console.log("module", name, "adding saga");
-    moduleState[SAGAS][name] = sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default().mark(function _callee2() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default().wrap(function _callee2$(_context2) {
+    moduleState[SAGAS][name] = sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee2() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_9__.fork)(saga);
+              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_4__.fork)(saga);
 
             case 2:
             case "end":
@@ -642,7 +628,7 @@ var createModuleLoader = function createModuleLoader() {
   var setReady = function setReady(isReady) {
     moduleState[READY] = isReady;
     store.dispatch({
-      type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULES_READY,
+      type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULES_READY,
       payload: isReady
     });
   };
@@ -664,7 +650,7 @@ var createModuleLoader = function createModuleLoader() {
       }; //console.log("after patching router in its", scope.reducer);
 
 
-      addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_10__.combineReducers)(scope.reducer));
+      addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_5__.combineReducers)(scope.reducer));
     }
 
     if (scope.saga) {
@@ -679,7 +665,7 @@ var createModuleLoader = function createModuleLoader() {
     moduleState[LOADED_MODULES][name] = module;
     delete moduleState[LOADING_MODULES][name];
     return {
-      type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULE_LOADED,
+      type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_LOADED,
       payload: {
         name: name
       }
@@ -750,7 +736,7 @@ var createModuleLoader = function createModuleLoader() {
 
     if (!module) {
       store.dispatch({
-        type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULE_NOT_AVAILABLE,
+        type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_NOT_AVAILABLE,
         payload: {
           name: name
         }
@@ -773,7 +759,7 @@ var createModuleLoader = function createModuleLoader() {
     removeSaga(name);
     delete moduleState[LOADED_MODULES][name];
     store.dispatch({
-      type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULE_UNLOADED,
+      type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_UNLOADED,
       payload: {
         name: name
       }
@@ -813,100 +799,94 @@ var createModuleLoader = function createModuleLoader() {
     };
   };
 
-  var isolateModule = function isolateModule(name, Component) {
-    var ModuleWrapper = /*#__PURE__*/function (_React$Component) {
-      (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__.default)(ModuleWrapper, _React$Component);
+  var isolateStore = function isolateStore(name) {
+    return {
+      dispatch: function dispatch(action) {
+        console.log("dispatch", name, "action", action.type);
 
-      var _super = _createSuper(ModuleWrapper);
-
-      function ModuleWrapper() {
-        (0,_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__.default)(this, ModuleWrapper);
-
-        return _super.apply(this, arguments);
-      }
-
-      (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__.default)(ModuleWrapper, [{
-        key: "render",
-        value: function render() {
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_8__.Provider, {
-            store: {
-              dispatch: function dispatch(action) {
-                console.log("dispatch", name, "action", action.type);
-
-                if (action.type.startsWith("@@")) {
-                  store.dispatch(action); // FIXME check if its loaded
-
-                  for (var n in moduleState[LISTENERS]) {
-                    for (var listener in moduleState[LISTENERS][n]) {
-                      try {
-                        listener();
-                        console.log("notified", n, "about dispatch with listener", listener);
-                      } catch (error) {
-                        console.error("unable to notify listener for", n, "with", error);
-                      }
-                    }
-                  }
-                } else {
-                  store.dispatch(_objectSpread(_objectSpread({}, action), {}, {
-                    type: "@" + name + "/" + action.type
-                  }));
-
-                  if (moduleState[LISTENERS][name]) {
-                    for (var _listener in moduleState[LISTENERS][name]) {
-                      console.log("notified", name, "about dispatch with listener", _listener);
-
-                      _listener();
-                    }
-                  }
-                }
-              },
-              getState: function getState() {
-                console.log("get state called for", name);
-                var state = store.getState();
-                var isolatedState = state.modules[name] || {};
-                isolatedState.router = state.router;
-                return isolatedState;
-              },
-              subscribe: function subscribe(listener) {
-                console.log("subscribing to events at", name, "with", listener); // fixme subscribe returns function to unsuscribe
-                // listener function should be invoked after event is dispatched
-                // some namespacing control is needed
-                // FIXME array
-
-                if (!moduleState[LISTENERS][name]) {
-                  moduleState[LISTENERS][name] = [];
-                }
-
-                moduleState[LISTENERS][name].push(listener);
-                return function () {
-                  var index = moduleState[LISTENERS][name].indexOf(listener);
-                  moduleState[LISTENERS][name].splice(index, 1);
-
-                  if (moduleState[LISTENERS][name].length == 0) {
-                    delete moduleState[LISTENERS][name];
-                  }
-                }; //return store.subscribe(listener); // FIXME do not listen to other modules events
-              },
-              replaceReducer: function replaceReducer(newReducer) {
-                console.log("replaceReducer called for", name);
-                addReducer(name, newReducer);
+        if (action.type.startsWith("@@")) {
+          store.dispatch(action);
+          /*
+          // FIXME check if its loaded
+          for (const n in moduleState[LISTENERS]) {
+            for (const listener in moduleState[LISTENERS][n]) {
+              try {
+                console.log('listener', n, 'as', listener);
+                listener();
+                console.log(
+                  "notified",
+                  n,
+                  "about dispatch with listener",
+                  listener
+                );
+              } catch (error) {
+                console.error("unable to notify listener for", n, "with", error);
               }
             }
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(Component, this.props));
+          }
+          */
+        } else {
+          store.dispatch(_objectSpread(_objectSpread({}, action), {}, {
+            type: "@" + name + "/" + action.type
+          }));
+          /*
+          if (moduleState[LISTENERS][name]) {
+            for (const listener in moduleState[LISTENERS][name]) {
+              console.log(
+                "notified",
+                name,
+                "about dispatch with listener",
+                listener
+              );
+              listener();
+            }
+          }*/
         }
-      }, {
-        key: "__reactstandin__regenerateByEval",
-        value: // @ts-ignore
-        function __reactstandin__regenerateByEval(key, code) {
-          // @ts-ignore
-          this[key] = eval(code);
+      },
+      getState: function getState() {
+        console.log("get state called for", name);
+        var state = store.getState();
+        var isolatedState = state.modules[name] || {};
+        isolatedState.router = state.router;
+        return isolatedState;
+      },
+      subscribe: function subscribe(listener) {
+        console.log("module", name, "wanted to subscribe", listener); //console.log("subscribing to events at", name, "with", listener);
+        // fixme subscribe returns function to unsuscribe
+        // listener function should be invoked after event is dispatched
+        // some namespacing control is needed
+        // FIXME array
+
+        /*
+        if (!moduleState[LISTENERS][name]) {
+          moduleState[LISTENERS][name] = [];
         }
-      }]);
+        moduleState[LISTENERS][name].push(listener);
+        return () => {
+          const index = moduleState[LISTENERS][name].indexOf(listener);
+          moduleState[LISTENERS][name].splice(index, 1);
+          if (moduleState[LISTENERS][name].length == 0) {
+            delete moduleState[LISTENERS][name];
+          }
+        };
+        */
+        //return store.subscribe(listener); // FIXME do not listen to other modules events
+      },
+      replaceReducer: function replaceReducer(newReducer) {
+        console.log("replaceReducer called for", name);
+        addReducer(name, newReducer);
+      }
+    };
+  };
 
-      return ModuleWrapper;
-    }(react__WEBPACK_IMPORTED_MODULE_7__.Component);
+  var isolateModule = function isolateModule(name, Component) {
+    var isolatedStore = isolateStore(name);
 
-    return ModuleWrapper;
+    var ModuleWrapper = function ModuleWrapper(props) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__.Provider, {
+        store: isolatedStore
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.createElement(Component, props));
+    };
   };
 
   return {
@@ -968,7 +948,6 @@ var createModuleLoader = function createModuleLoader() {
   reactHotLoader.register(LOADING_MODULES, "LOADING_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(MOUNTED_MODULES, "MOUNTED_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(SAGAS, "SAGAS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(LISTENERS, "LISTENERS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(REDUCERS, "REDUCERS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(CACHE, "CACHE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(READY, "READY", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
@@ -1030,52 +1009,6 @@ var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
 
 /***/ }),
 
-/***/ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/classCallCheck.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _classCallCheck)
-/* harmony export */ });
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/createClass.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/createClass.js ***!
-  \****************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _createClass)
-/* harmony export */ });
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-/***/ }),
-
 /***/ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js":
 /*!*******************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/defineProperty.js ***!
@@ -1099,116 +1032,6 @@ function _defineProperty(obj, key, value) {
   }
 
   return obj;
-}
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _getPrototypeOf)
-/* harmony export */ });
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/inherits.js":
-/*!*************************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/inherits.js + 1 modules ***!
-  \*************************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "default": () => (/* binding */ _inherits)
-});
-
-;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/inherits.js
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
-}
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js":
-/*!******************************************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js + 2 modules ***!
-  \******************************************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "default": () => (/* binding */ _possibleConstructorReturn)
-});
-
-;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/typeof.js
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js
-
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === "object" || typeof call === "function")) {
-    return call;
-  }
-
-  return _assertThisInitialized(self);
 }
 
 /***/ }),

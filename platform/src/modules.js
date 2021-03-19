@@ -10,7 +10,7 @@ const AVAILABLE_MODULES = "availableModules";
 const LOADING_MODULES = "loadingModules";
 const MOUNTED_MODULES = "mountedModules";
 const SAGAS = "sagas";
-const LISTENERS = "listeners";
+//const LISTENERS = "listeners";
 const REDUCERS = "reducers";
 const CACHE = "cache";
 const READY = "ready";
@@ -71,7 +71,7 @@ export const createModuleLoader = () => {
     [MOUNTED_MODULES]: {},
     [READY]: true,
     [REDUCERS]: {},
-    [LISTENERS]: {},
+    //[LISTENERS]: {},
     [SAGAS]: {},
   };
 
@@ -293,90 +293,94 @@ export const createModuleLoader = () => {
     };
   };
 
+  const isolateStore = (name) => {
+    return {
+      dispatch: (action) => {
+        console.log("dispatch", name, "action", action.type);
+        if (action.type.startsWith("@@")) {
+          store.dispatch(action);
+          /*
+          // FIXME check if its loaded
+          for (const n in moduleState[LISTENERS]) {
+            for (const listener in moduleState[LISTENERS][n]) {
+              try {
+                console.log('listener', n, 'as', listener);
+                listener();
+                console.log(
+                  "notified",
+                  n,
+                  "about dispatch with listener",
+                  listener
+                );
+              } catch (error) {
+                console.error("unable to notify listener for", n, "with", error);
+              }
+            }
+          }
+          */
+        } else {
+          store.dispatch({
+            ...action,
+            type: "@" + name + "/" + action.type,
+          });
+          /*
+          if (moduleState[LISTENERS][name]) {
+            for (const listener in moduleState[LISTENERS][name]) {
+              console.log(
+                "notified",
+                name,
+                "about dispatch with listener",
+                listener
+              );
+              listener();
+            }
+          }*/
+        }
+      },
+      getState: () => {
+        console.log("get state called for", name);
+        const state = store.getState();
+        const isolatedState = state.modules[name] || {};
+        isolatedState.router = state.router;
+        return isolatedState;
+      },
+      subscribe: function (listener) {
+        console.log("module", name, "wanted to subscribe", listener);
+        //console.log("subscribing to events at", name, "with", listener);
+        // fixme subscribe returns function to unsuscribe
+        // listener function should be invoked after event is dispatched
+        // some namespacing control is needed
+
+        // FIXME array
+        /*
+        if (!moduleState[LISTENERS][name]) {
+          moduleState[LISTENERS][name] = [];
+        }
+        moduleState[LISTENERS][name].push(listener);
+        return () => {
+          const index = moduleState[LISTENERS][name].indexOf(listener);
+          moduleState[LISTENERS][name].splice(index, 1);
+          if (moduleState[LISTENERS][name].length == 0) {
+            delete moduleState[LISTENERS][name];
+          }
+        };
+        */
+        //return store.subscribe(listener); // FIXME do not listen to other modules events
+      },
+      replaceReducer: function (newReducer) {
+        console.log("replaceReducer called for", name);
+        addReducer(name, newReducer);
+      },
+    };
+  };
+
   const isolateModule = (name, Component) => {
-    class ModuleWrapper extends React.Component {
-      render() {
-        return (
-          <Provider
-            store={{
-              dispatch: (action) => {
-                console.log("dispatch", name, "action", action.type);
-                if (action.type.startsWith("@@")) {
-                  store.dispatch(action);
-                  // FIXME check if its loaded
-                  for (const n in moduleState[LISTENERS]) {
-                    for (const listener in moduleState[LISTENERS][n]) {
-                      try {
-                        listener();
-                        console.log(
-                          "notified",
-                          n,
-                          "about dispatch with listener",
-                          listener
-                        );
-                      } catch (error) {
-                        console.error("unable to notify listener for", n, "with", error);
-                      }
-                    }
-                  }
-                } else {
-                  store.dispatch({
-                    ...action,
-                    type: "@" + name + "/" + action.type,
-                  });
-                  if (moduleState[LISTENERS][name]) {
-                    for (const listener in moduleState[LISTENERS][name]) {
-                      console.log(
-                        "notified",
-                        name,
-                        "about dispatch with listener",
-                        listener
-                      );
-                      listener();
-                    }
-                  }
-                }
-              },
-              getState: () => {
-                console.log("get state called for", name);
-                const state = store.getState();
-                const isolatedState = state.modules[name] || {};
-                isolatedState.router = state.router;
-                return isolatedState;
-              },
-              subscribe: function (listener) {
-                console.log("subscribing to events at", name, "with", listener);
-                // fixme subscribe returns function to unsuscribe
-                // listener function should be invoked after event is dispatched
-                // some namespacing control is needed
-
-                // FIXME array
-                if (!moduleState[LISTENERS][name]) {
-                  moduleState[LISTENERS][name] = [];
-                }
-                moduleState[LISTENERS][name].push(listener);
-                return () => {
-                  const index = moduleState[LISTENERS][name].indexOf(listener);
-                  moduleState[LISTENERS][name].splice(index, 1);
-                  if (moduleState[LISTENERS][name].length == 0) {
-                    delete moduleState[LISTENERS][name];
-                  }
-                };
-                //return store.subscribe(listener); // FIXME do not listen to other modules events
-              },
-              replaceReducer: function (newReducer) {
-                console.log("replaceReducer called for", name);
-                addReducer(name, newReducer);
-              },
-            }}
-          >
-            <Component {...this.props} />
-          </Provider>
-        );
-      }
-    }
-
-    return ModuleWrapper;
+    const isolatedStore = isolateStore(name);
+    const ModuleWrapper = (props) => (
+      <Provider store={isolatedStore}>
+        <Component {...props} />
+      </Provider>
+    );
   };
 
   return {
