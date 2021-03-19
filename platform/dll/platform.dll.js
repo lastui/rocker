@@ -923,10 +923,6 @@ var createModuleLoader = function createModuleLoader() {
 
       setReady(true);
     },
-    addSaga: addSaga,
-    // FIXME ideally remove
-    removeSaga: removeSaga,
-    // FIXME ideally remove
     loadModule: loadModule,
     unloadModule: unloadModule,
     getLoadedModule: getLoadedModule,

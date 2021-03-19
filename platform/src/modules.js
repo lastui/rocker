@@ -377,8 +377,6 @@ export const createModuleLoader = () => {
       }
       setReady(true);
     },
-    addSaga, // FIXME ideally remove
-    removeSaga, // FIXME ideally remove
     loadModule,
     unloadModule,
     getLoadedModule,
