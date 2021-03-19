@@ -70,6 +70,7 @@ export const createModuleLoader = () => {
     [MOUNTED_MODULES]: {},
     [READY]: true,
     [REDUCERS]: {},
+    [LISTENERS]: {},
     [SAGAS]: {},
   };
 
@@ -297,13 +298,26 @@ export const createModuleLoader = () => {
           <Provider
             store={{
               dispatch: (action) => {
+                console.log("dispatch", name, "action", action.type);
                 if (action.type.startsWith("@@")) {
-                  return store.dispatch(action);
+                  store.dispatch(action);
+                  for (const n in moduleState[LISTENERS]) {
+                    try {
+                      moduleState[LISTENERS][n]();
+                      console.log('notified', n, 'about dispatch');
+                    } catch(error) {
+                      console.error('unable to notify listener for', n);
+                    }
+                  }
                 } else {
-                  return store.dispatch({
+                  store.dispatch({
                     ...action,
                     type: "@" + name + "/" + action.type,
                   });
+                  if (moduleState[LISTENERS][name]) {
+                    console.log('notified', name, 'about dispatch');
+                    moduleState[LISTENERS][name]()
+                  }
                 }
               },
               getState: () => {
@@ -315,7 +329,15 @@ export const createModuleLoader = () => {
               },
               subscribe: function (listener) {
                 console.log("subscribing to events at", name, "with", listener);
-                return store.subscribe(listener); // FIXME do not listen to other modules events
+                // fixme subscribe returns function to unsuscribe
+                // listener function should be invoked after event is dispatched
+                // some namespacing control is needed
+
+                moduleState[LISTENERS][name] = listener;
+                return () => {
+                  delete moduleState[LISTENERS][name];
+                };
+                //return store.subscribe(listener); // FIXME do not listen to other modules events
               },
               replaceReducer: function (newReducer) {
                 console.log("replaceReducer called for", name);

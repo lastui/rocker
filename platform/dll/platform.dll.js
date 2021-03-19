@@ -528,7 +528,7 @@ var createModuleLoader = function createModuleLoader() {
     console.log("Sagas runnner not provided!");
   };
 
-  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, SAGAS, {}), _moduleState);
+  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LISTENERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, SAGAS, {}), _moduleState);
 
   var getAvailableModules = function getAvailableModules() {
     return moduleState[AVAILABLE_MODULES];
@@ -830,12 +830,28 @@ var createModuleLoader = function createModuleLoader() {
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_8__.Provider, {
             store: {
               dispatch: function dispatch(action) {
+                console.log("dispatch", name, "action", action.type);
+
                 if (action.type.startsWith("@@")) {
-                  return store.dispatch(action);
+                  store.dispatch(action);
+
+                  for (var n in moduleState[LISTENERS]) {
+                    try {
+                      moduleState[LISTENERS][n]();
+                      console.log('notified', n, 'about dispatch');
+                    } catch (error) {
+                      console.error('unable to notify listener for', n);
+                    }
+                  }
                 } else {
-                  return store.dispatch(_objectSpread(_objectSpread({}, action), {}, {
+                  store.dispatch(_objectSpread(_objectSpread({}, action), {}, {
                     type: "@" + name + "/" + action.type
                   }));
+
+                  if (moduleState[LISTENERS][name]) {
+                    console.log('notified', name, 'about dispatch');
+                    moduleState[LISTENERS][name]();
+                  }
                 }
               },
               getState: function getState() {
@@ -846,8 +862,14 @@ var createModuleLoader = function createModuleLoader() {
                 return isolatedState;
               },
               subscribe: function subscribe(listener) {
-                console.log("subscribing to events at", name, "with", listener);
-                return store.subscribe(listener); // FIXME do not listen to other modules events
+                console.log("subscribing to events at", name, "with", listener); // fixme subscribe returns function to unsuscribe
+                // listener function should be invoked after event is dispatched
+                // some namespacing control is needed
+
+                moduleState[LISTENERS][name] = listener;
+                return function () {
+                  delete moduleState[LISTENERS][name];
+                }; //return store.subscribe(listener); // FIXME do not listen to other modules events
               },
               replaceReducer: function replaceReducer(newReducer) {
                 console.log("replaceReducer called for", name);
