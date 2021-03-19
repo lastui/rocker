@@ -829,7 +829,8 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var isolateModule = function isolateModule(name, Component) {
-    // console.log('isolating module', name)
+    console.log('isolating module', name);
+
     var ModuleWrapper = /*#__PURE__*/function (_React$Component) {
       (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__.default)(ModuleWrapper, _React$Component);
 
@@ -845,14 +846,14 @@ var createModuleLoader = function createModuleLoader() {
         key: "shouldComponentUpdate",
         value: function shouldComponentUpdate(nextProps, nextState) {
           console.log("checking if", name, "should update");
-          console.log("state transition of", this.state, nextState);
-          return moduleState[READY] && (0,_babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_2__.default)((0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__.default)(ModuleWrapper.prototype), "shouldComponentUpdate", this).call(this);
+          console.log("is ready?", moduleState[READY]);
+          return moduleState[READY] && (0,_babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_2__.default)((0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__.default)(ModuleWrapper.prototype), "shouldComponentUpdate", this).call(this, nextProps, nextState);
         }
       }, {
         key: "render",
         value: function render() {
           // INFO tracing why flickerring when chaning navigation happens
-          console.log('rendering ModuleWrapper of', name);
+          console.log('rendering ModuleWrapper of', name, 'with props', this.props);
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_9__.Provider, {
             store: {
               dispatch: function dispatch(action) {

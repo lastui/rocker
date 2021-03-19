@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 
-const Module = (props) => {
+const Module = (props = {}) => {
   console.log("in render of", props);
 
   const moduleLoader = useModuleLoader();
@@ -21,7 +21,7 @@ const Module = (props) => {
         moduleLoader.setModuleMountState(props.name, false);
       }
     };
-  }, [moduleLoader, props.name]);
+  }, [props.name]);
 
   if (moduleLoader == null || !ready) {
     console.log("moduleLoader not available or not ready", moduleLoader, ready);
