@@ -411,19 +411,21 @@ var _default = {
 /* unused harmony export registerModule */
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
-/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! redux-saga/effects */ "./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
-/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(redux_saga_effects__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
+/* harmony import */ var _babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/get */ "./node_modules/@babel/runtime/helpers/esm/get.js");
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
+/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! redux-saga/effects */ "./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
+/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(redux_saga_effects__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
+
 
 
 
@@ -436,13 +438,19 @@ var _default = {
   enterModule && enterModule(module);
 })();
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0,_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__.default)(this, result); }; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0,_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__.default)(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 
 
@@ -481,12 +489,12 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
     return function (next) {
       return function (action) {
         switch (action.type) {
-          case _constants__WEBPACK_IMPORTED_MODULE_11__.SET_AVAILABLE_MODULES:
+          case _constants__WEBPACK_IMPORTED_MODULE_12__.SET_AVAILABLE_MODULES:
             {
               return loader.setAvailableModules(action.payload.modules);
             }
 
-          case _constants__WEBPACK_IMPORTED_MODULE_11__.SET_ENTRYPOINT_MODULE:
+          case _constants__WEBPACK_IMPORTED_MODULE_12__.SET_ENTRYPOINT_MODULE:
             {
               return loader.loadModule(action.payload.entrypoint).then(function () {
                 return next(action);
@@ -522,7 +530,7 @@ var createModuleLoader = function createModuleLoader() {
     console.log("Sagas runnner not provided!");
   };
 
-  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_5__.default)(_moduleState, SAGAS, {}), _moduleState);
+  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_6__.default)(_moduleState, SAGAS, {}), _moduleState);
 
   var getAvailableModules = function getAvailableModules() {
     return moduleState[AVAILABLE_MODULES];
@@ -566,7 +574,7 @@ var createModuleLoader = function createModuleLoader() {
     removeReducer(name);
     console.log("module", name, "adding reducer");
     reducer({}, {
-      type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULE_INIT
+      type: _constants__WEBPACK_IMPORTED_MODULE_12__.MODULE_INIT
     });
     moduleState[REDUCERS][name] = reducer;
   };
@@ -578,13 +586,13 @@ var createModuleLoader = function createModuleLoader() {
 
     console.log("module", name, "removing saga");
     console.log("before cancel");
-    sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default().mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default().wrap(function _callee$(_context) {
+    sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_7___default().mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_7___default().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_9__.cancel)(moduleState[SAGAS][name]);
+              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_10__.cancel)(moduleState[SAGAS][name]);
 
             case 2:
             case "end":
@@ -601,13 +609,13 @@ var createModuleLoader = function createModuleLoader() {
   var addSaga = function addSaga(name, saga) {
     removeSaga(name);
     console.log("module", name, "adding saga");
-    moduleState[SAGAS][name] = sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default().mark(function _callee2() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default().wrap(function _callee2$(_context2) {
+    moduleState[SAGAS][name] = sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_7___default().mark(function _callee2() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_7___default().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_9__.fork)(saga);
+              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_10__.fork)(saga);
 
             case 2:
             case "end":
@@ -635,7 +643,7 @@ var createModuleLoader = function createModuleLoader() {
   var setReady = function setReady(isReady) {
     moduleState[READY] = isReady;
     store.dispatch({
-      type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULES_READY,
+      type: _constants__WEBPACK_IMPORTED_MODULE_12__.MODULES_READY,
       payload: isReady
     });
   };
@@ -657,7 +665,7 @@ var createModuleLoader = function createModuleLoader() {
       }; //console.log("after patching router in its", scope.reducer);
 
 
-      addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_10__.combineReducers)(scope.reducer));
+      addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_11__.combineReducers)(scope.reducer));
     }
 
     if (scope.saga) {
@@ -672,7 +680,7 @@ var createModuleLoader = function createModuleLoader() {
     moduleState[LOADED_MODULES][name] = module;
     delete moduleState[LOADING_MODULES][name];
     return {
-      type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULE_LOADED,
+      type: _constants__WEBPACK_IMPORTED_MODULE_12__.MODULE_LOADED,
       payload: {
         name: name
       }
@@ -729,12 +737,13 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var loadModule = function loadModule(name) {
-    console.log("loading module", name); //console.log("load module", name, "called");
-
+    //console.log("load module", name, "called");
     if (isModuleLoaded(name)) {
       //console.log("module", name, "already loaded");
       return Promise.resolve(getLoadedModule(name));
     }
+
+    console.log("loading module", name);
 
     if (isModuleLoading(name)) {
       //console.log("module", name, "is currently loading");
@@ -746,7 +755,7 @@ var createModuleLoader = function createModuleLoader() {
     if (!module) {
       //console.log("module", name, "is is not available");
       store.dispatch({
-        type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULE_NOT_AVAILABLE,
+        type: _constants__WEBPACK_IMPORTED_MODULE_12__.MODULE_NOT_AVAILABLE,
         payload: {
           name: name
         }
@@ -770,7 +779,7 @@ var createModuleLoader = function createModuleLoader() {
     removeSaga(name);
     delete moduleState[LOADED_MODULES][name];
     store.dispatch({
-      type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULE_UNLOADED,
+      type: _constants__WEBPACK_IMPORTED_MODULE_12__.MODULE_UNLOADED,
       payload: {
         name: name
       }
@@ -822,7 +831,7 @@ var createModuleLoader = function createModuleLoader() {
   var isolateModule = function isolateModule(name, Component) {
     // console.log('isolating module', name)
     var ModuleWrapper = /*#__PURE__*/function (_React$Component) {
-      (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__.default)(ModuleWrapper, _React$Component);
+      (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__.default)(ModuleWrapper, _React$Component);
 
       var _super = _createSuper(ModuleWrapper);
 
@@ -833,11 +842,18 @@ var createModuleLoader = function createModuleLoader() {
       }
 
       (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__.default)(ModuleWrapper, [{
+        key: "shouldComponentUpdate",
+        value: function shouldComponentUpdate(nextProps, nextState) {
+          console.log("checking if", name, "should update");
+          console.log("state transition of", this.state, nextState);
+          return moduleState[READY] && (0,_babel_runtime_helpers_get__WEBPACK_IMPORTED_MODULE_2__.default)((0,_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__.default)(ModuleWrapper.prototype), "shouldComponentUpdate", this).call(this);
+        }
+      }, {
         key: "render",
         value: function render() {
           // INFO tracing why flickerring when chaning navigation happens
-          //console.log('rendering ModuleWrapper of', name)
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_8__.Provider, {
+          console.log('rendering ModuleWrapper of', name);
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_9__.Provider, {
             store: {
               dispatch: function dispatch(action) {
                 if (action.type.startsWith("@@")) {
@@ -849,21 +865,18 @@ var createModuleLoader = function createModuleLoader() {
                 }
               },
               getState: function getState() {
-                //console.log("requesting state of", name);
-                var state = store.getState(); //console.log("global state", state);
-
-                var isolatedState = state.modules[name] || {}; //console.log("isolated state namespace", isolatedState);
-
-                isolatedState.router = state.router; //console.log("isolated state after injection", isolatedState);
-
+                var state = store.getState();
+                var isolatedState = state.modules[name] || {};
+                isolatedState.router = state.router;
                 return isolatedState;
               },
               subscribe: store.subscribe,
+              // FIXME do not listen to other module
               replaceReducer: function replaceReducer(newReducer) {
                 addReducer(name, newReducer);
               }
             }
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(Component, this.props));
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8__.createElement(Component, this.props));
         }
       }, {
         key: "__reactstandin__regenerateByEval",
@@ -875,7 +888,7 @@ var createModuleLoader = function createModuleLoader() {
       }]);
 
       return ModuleWrapper;
-    }(react__WEBPACK_IMPORTED_MODULE_7__.Component);
+    }(react__WEBPACK_IMPORTED_MODULE_8__.Component);
 
     return ModuleWrapper;
   };
@@ -895,9 +908,20 @@ var createModuleLoader = function createModuleLoader() {
       var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
       setReady(false);
       moduleState[AVAILABLE_MODULES] = {};
-      modules.forEach(function (module) {
-        moduleState[AVAILABLE_MODULES][module.name] = module;
-      });
+
+      var _iterator = _createForOfIteratorHelper(modules),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var module = _step.value;
+          moduleState[AVAILABLE_MODULES][module.name] = module;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
 
       for (var name in moduleState[LOADED_MODULES]) {
         if (!isModuleAvailable(name)) {
@@ -908,19 +932,12 @@ var createModuleLoader = function createModuleLoader() {
       setReady(true);
     },
     addSaga: addSaga,
+    // FIXME ideally remove
     removeSaga: removeSaga,
-    getLoadedModule: getLoadedModule,
-    getLoadedModules: getLoadedModules,
-    getLoadingModules: getLoadingModules,
-    getAvailableModules: getAvailableModules,
-    isModuleLoaded: isModuleLoaded,
-    isModuleLoading: isModuleLoading,
-    isModuleAvailable: isModuleAvailable,
-    isModuleMounted: isModuleMounted,
+    // FIXME ideally remove
     loadModule: loadModule,
     unloadModule: unloadModule,
     setModuleMountState: setModuleMountState,
-    clearCache: clearCache,
     getReducer: getReducer
   };
 };
@@ -1068,6 +1085,55 @@ function _defineProperty(obj, key, value) {
   }
 
   return obj;
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/get.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/get.js + 1 modules ***!
+  \********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "default": () => (/* binding */ _get)
+});
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js
+var getPrototypeOf = __webpack_require__("./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/superPropBase.js
+
+function _superPropBase(object, property) {
+  while (!Object.prototype.hasOwnProperty.call(object, property)) {
+    object = (0,getPrototypeOf.default)(object);
+    if (object === null) break;
+  }
+
+  return object;
+}
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/get.js
+
+function _get(target, property, receiver) {
+  if (typeof Reflect !== "undefined" && Reflect.get) {
+    _get = Reflect.get;
+  } else {
+    _get = function _get(target, property, receiver) {
+      var base = _superPropBase(target, property);
+      if (!base) return;
+      var desc = Object.getOwnPropertyDescriptor(base, property);
+
+      if (desc.get) {
+        return desc.get.call(receiver);
+      }
+
+      return desc.value;
+    };
+  }
+
+  return _get(target, property, receiver || target);
 }
 
 /***/ }),

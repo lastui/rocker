@@ -10,14 +10,10 @@ const Module = (props) => {
 
   useEffect(() => {
     if (moduleLoader !== null && props.name) {
-      if (moduleLoader.isModuleLoaded(props.name)) {
+      moduleLoader.loadModule(props.name).then(() => {
+        moduleLoader.setModuleMountState(props.name, true);
         setReady(true);
-      } else {
-        moduleLoader.loadModule(props.name).then(() => {
-          moduleLoader.setModuleMountState(props.name, true);
-          setReady(true);
-        });
-      }
+      });
     }
     return () => {
       if (moduleLoader !== null && props.name) {

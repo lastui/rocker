@@ -111,7 +111,7 @@ export const createModuleLoader = () => {
     }
     console.log("module", name, "removing saga");
     console.log("before cancel");
-    sagaRunner(function*() {
+    sagaRunner(function* () {
       yield cancel(moduleState[SAGAS][name]);
     });
     console.log("after cancel");
@@ -122,7 +122,7 @@ export const createModuleLoader = () => {
   const addSaga = (name, saga) => {
     removeSaga(name);
     console.log("module", name, "adding saga");
-    moduleState[SAGAS][name] = sagaRunner(function*() {
+    moduleState[SAGAS][name] = sagaRunner(function* () {
       yield fork(saga);
     });
     console.log("module", name, "added saga");
@@ -215,13 +215,15 @@ export const createModuleLoader = () => {
     moduleState[AVAILABLE_MODULES][name] !== undefined;
 
   const loadModule = (name) => {
-    console.log("loading module", name);
     //console.log("load module", name, "called");
 
     if (isModuleLoaded(name)) {
       //console.log("module", name, "already loaded");
       return Promise.resolve(getLoadedModule(name));
     }
+
+    console.log("loading module", name);
+
     if (isModuleLoading(name)) {
       //console.log("module", name, "is currently loading");
       return moduleState[LOADING_MODULES][name];
@@ -312,9 +314,15 @@ export const createModuleLoader = () => {
     // console.log('isolating module', name)
 
     class ModuleWrapper extends React.Component {
+      shouldComponentUpdate(nextProps, nextState) {
+        console.log("checking if", name, "should update");
+        console.log("state transition of", this.state, nextState)
+        return moduleState[READY] && super.shouldComponentUpdate();
+      }
+
       render() {
         // INFO tracing why flickerring when chaning navigation happens
-        //console.log('rendering ModuleWrapper of', name)
+        console.log('rendering ModuleWrapper of', name)
         return (
           <Provider
             store={{
@@ -329,16 +337,12 @@ export const createModuleLoader = () => {
                 }
               },
               getState: () => {
-                //console.log("requesting state of", name);
                 const state = store.getState();
-                //console.log("global state", state);
                 const isolatedState = state.modules[name] || {};
-                //console.log("isolated state namespace", isolatedState);
                 isolatedState.router = state.router;
-                //console.log("isolated state after injection", isolatedState);
                 return isolatedState;
               },
-              subscribe: store.subscribe,
+              subscribe: store.subscribe, // FIXME do not listen to other module
               replaceReducer: function (newReducer) {
                 addReducer(name, newReducer);
               },
@@ -367,9 +371,9 @@ export const createModuleLoader = () => {
     setAvailableModules(modules = []) {
       setReady(false);
       moduleState[AVAILABLE_MODULES] = {};
-      modules.forEach((module) => {
+      for (const module of modules) {
         moduleState[AVAILABLE_MODULES][module.name] = module;
-      });
+      }
       for (const name in moduleState[LOADED_MODULES]) {
         if (!isModuleAvailable(name)) {
           this.unloadModule(name);
@@ -377,20 +381,11 @@ export const createModuleLoader = () => {
       }
       setReady(true);
     },
-    addSaga,
-    removeSaga,
-    getLoadedModule,
-    getLoadedModules,
-    getLoadingModules,
-    getAvailableModules,
-    isModuleLoaded,
-    isModuleLoading,
-    isModuleAvailable,
-    isModuleMounted,
+    addSaga, // FIXME ideally remove
+    removeSaga, // FIXME ideally remove
     loadModule,
     unloadModule,
     setModuleMountState,
-    clearCache,
     getReducer,
   };
 };
