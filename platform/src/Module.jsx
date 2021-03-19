@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 
 const Module = (props) => {
-  console.log('in render of', props)
+  console.log("in render of", props);
 
   const moduleLoader = useModuleLoader();
 
   let [ready, setReady] = useState(false);
 
   useEffect(() => {
+    console.log("use effect observed update", moduleLoader, props.name);
     if (moduleLoader !== null && props.name) {
       moduleLoader.loadModule(props.name).then(() => {
         moduleLoader.setModuleMountState(props.name, true);
@@ -20,9 +21,10 @@ const Module = (props) => {
         moduleLoader.setModuleMountState(props.name, false);
       }
     };
-  }, [props.name]);
+  }, [moduleLoader, props.name]);
 
   if (moduleLoader == null || !ready) {
+    console.log("moduleLoader not available or not ready", moduleLoader, ready);
     return <React.Fragment />;
   }
 
@@ -33,7 +35,7 @@ const Module = (props) => {
   }
 
   if (!loadedModule.root) {
-    console.log('loadedModule is', loadedModule)
+    console.log("loadedModule is", loadedModule);
     return <div>{`Module [${props.name}] is missing MainView ...`}</div>;
   }
 

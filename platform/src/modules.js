@@ -385,6 +385,7 @@ export const createModuleLoader = () => {
     removeSaga, // FIXME ideally remove
     loadModule,
     unloadModule,
+    getLoadedModule,
     setModuleMountState,
     getReducer,
   };

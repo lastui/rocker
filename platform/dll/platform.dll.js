@@ -937,6 +937,7 @@ var createModuleLoader = function createModuleLoader() {
     // FIXME ideally remove
     loadModule: loadModule,
     unloadModule: unloadModule,
+    getLoadedModule: getLoadedModule,
     setModuleMountState: setModuleMountState,
     getReducer: getReducer
   };
