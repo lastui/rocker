@@ -777,8 +777,7 @@ var createModuleLoader = function createModuleLoader() {
       payload: {
         name: name
       }
-    });
-    delete moduleState[LISTENERS][name];
+    }); //delete moduleState[LISTENERS][name];
   };
 
   var getReducer = function getReducer() {
@@ -841,9 +840,9 @@ var createModuleLoader = function createModuleLoader() {
                     for (var listener in moduleState[LISTENERS][n]) {
                       try {
                         listener();
-                        console.log('notified', n, 'about dispatch with listener', listener);
+                        console.log("notified", n, "about dispatch with listener", listener);
                       } catch (error) {
-                        console.error('unable to notify listener for', n);
+                        console.error("unable to notify listener for", n);
                       }
                     }
                   }
@@ -854,7 +853,7 @@ var createModuleLoader = function createModuleLoader() {
 
                   if (moduleState[LISTENERS][name]) {
                     for (var _listener in moduleState[LISTENERS][name]) {
-                      console.log('notified', name, 'about dispatch with listener', _listener);
+                      console.log("notified", name, "about dispatch with listener", _listener);
 
                       _listener();
                     }
@@ -880,9 +879,12 @@ var createModuleLoader = function createModuleLoader() {
 
                 moduleState[LISTENERS][name].push(listener);
                 return function () {
-                  var index = moduleState[LISTENERS].indexOf(listener);
-                  moduleState[LISTENERS].splice(index, 1); //if ()
-                  //delete moduleState[LISTENERS][name];
+                  var index = moduleState[LISTENERS][name].indexOf(listener);
+                  moduleState[LISTENERS][name].splice(index, 1);
+
+                  if (moduleState[LISTENERS][name].length == 0) {
+                    delete moduleState[LISTENERS][name];
+                  }
                 }; //return store.subscribe(listener); // FIXME do not listen to other modules events
               },
               replaceReducer: function replaceReducer(newReducer) {

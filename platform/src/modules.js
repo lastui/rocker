@@ -261,7 +261,7 @@ export const createModuleLoader = () => {
         name,
       },
     });
-    delete moduleState[LISTENERS][name];
+    //delete moduleState[LISTENERS][name];
   };
 
   const getReducer = () => {
@@ -294,7 +294,6 @@ export const createModuleLoader = () => {
   };
 
   const isolateModule = (name, Component) => {
-
     class ModuleWrapper extends React.Component {
       render() {
         return (
@@ -309,9 +308,14 @@ export const createModuleLoader = () => {
                     for (const listener in moduleState[LISTENERS][n]) {
                       try {
                         listener();
-                        console.log('notified', n, 'about dispatch with listener', listener);
-                      } catch(error) {
-                        console.error('unable to notify listener for', n);
+                        console.log(
+                          "notified",
+                          n,
+                          "about dispatch with listener",
+                          listener
+                        );
+                      } catch (error) {
+                        console.error("unable to notify listener for", n);
                       }
                     }
                   }
@@ -323,8 +327,13 @@ export const createModuleLoader = () => {
                   // FIXME array
                   if (moduleState[LISTENERS][name]) {
                     for (const listener in moduleState[LISTENERS][name]) {
-                      console.log('notified', name, 'about dispatch with listener', listener);
-                      listener()
+                      console.log(
+                        "notified",
+                        name,
+                        "about dispatch with listener",
+                        listener
+                      );
+                      listener();
                     }
                   }
                 }
@@ -348,10 +357,11 @@ export const createModuleLoader = () => {
                 }
                 moduleState[LISTENERS][name].push(listener);
                 return () => {
-                  const index = moduleState[LISTENERS].indexOf(listener)
-                  moduleState[LISTENERS].splice(index, 1)
-                  //if ()
-                  //delete moduleState[LISTENERS][name];
+                  const index = moduleState[LISTENERS][name].indexOf(listener);
+                  moduleState[LISTENERS][name].splice(index, 1);
+                  if (moduleState[LISTENERS][name].length == 0) {
+                    delete moduleState[LISTENERS][name];
+                  }
                 };
                 //return store.subscribe(listener); // FIXME do not listen to other modules events
               },
