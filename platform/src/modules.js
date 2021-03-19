@@ -9,6 +9,7 @@ const LOADED_MODULES = "loadedModules";
 const AVAILABLE_MODULES = "availableModules";
 const LOADING_MODULES = "loadingModules";
 const MOUNTED_MODULES = "mountedModules";
+const DANGLING_MODULES = "danglingModules";
 const SAGAS = "sagas";
 const REDUCERS = "reducers";
 const MODULES = "modules";

@@ -447,6 +447,7 @@ var LOADED_MODULES = "loadedModules";
 var AVAILABLE_MODULES = "availableModules";
 var LOADING_MODULES = "loadingModules";
 var MOUNTED_MODULES = "mountedModules";
+var DANGLING_MODULES = "danglingModules";
 var SAGAS = "sagas";
 var REDUCERS = "reducers";
 var MODULES = "modules";
@@ -888,6 +889,7 @@ var createModuleLoader = function createModuleLoader() {
   reactHotLoader.register(AVAILABLE_MODULES, "AVAILABLE_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(LOADING_MODULES, "LOADING_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(MOUNTED_MODULES, "MOUNTED_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
+  reactHotLoader.register(DANGLING_MODULES, "DANGLING_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(SAGAS, "SAGAS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(REDUCERS, "REDUCERS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(MODULES, "MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
