@@ -25,20 +25,24 @@ const Module = (props) => {
     };
   }, [props.name]);
 
-  const { children, ...restProps } = props;
-
-  if (!moduleComponent && !children) {
-    return <React.Fragment />
+  if (!moduleComponent) {
+    console.log('module', props.name, 'does not have component or is not loaded')
+    return (
+      <ModuleContextProvider moduleLoader={moduleLoader}>
+        {props.children}
+      </ModuleContextProvider>
+    );
   }
 
+  console.log('module', props.name, 'rendering')
+
+  const ModuleComponent = moduleComponent;
   return (
     <ModuleContextProvider moduleLoader={moduleLoader}>
-      {moduleComponent
-        ? React.createElement(moduleComponent, restProps, children)
-        : children
-      }
+      <ModuleComponent {...props.options} />
     </ModuleContextProvider>
-  )
+  );
 };
 
 export default React.memo(Module);
+//export default React.memo(Module, (props, nextProps) => !nextProps.frozen);
