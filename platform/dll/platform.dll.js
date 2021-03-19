@@ -432,10 +432,6 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
 
 
 var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
@@ -642,19 +638,15 @@ var createModuleLoader = function createModuleLoader() {
   var connectModule = function connectModule(name) {
     var scope = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
 
-    //console.log("connecting module", name, "with scope", scope);
     if (scope.reducer) {
-      //console.log("adding reducer of", name, "is", scope.reducer);
       scope.reducer.router = function () {
         return {};
-      }; //console.log("after patching router in its", scope.reducer);
-
+      };
 
       addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_5__.combineReducers)(scope.reducer));
     }
 
     if (scope.saga) {
-      //console.log("adding saga of", name, "is", scope.saga);
       addSaga(name, scope.saga);
     }
 
@@ -683,11 +675,8 @@ var createModuleLoader = function createModuleLoader() {
       var r = new Function("with(this) {" + data + ";}").call(sandbox);
 
       if (r !== void 0) {
-        //console.log("leak while evaluating sandbox", r);
         return {};
-      } //console.log('')
-      //console.log("sandbox value after evaluation is", sandbox);
-
+      }
 
       return sandbox.__SANDBOX_SCOPE__;
     });
@@ -763,14 +752,14 @@ var createModuleLoader = function createModuleLoader() {
       payload: {
         name: name
       }
-    }); //delete moduleState[LISTENERS][name];
+    });
   };
 
   var getReducer = function getReducer() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
-      console.log('action in reducer', action.type);
+      console.log("action in reducer", action.type);
 
       if (!moduleState[READY]) {
         return state;
@@ -783,13 +772,7 @@ var createModuleLoader = function createModuleLoader() {
           continue;
         }
 
-        if (action.type.startsWith("@@")) {
-          state[name] = moduleState[REDUCERS][name](state[name], action);
-        } else if (action.type.startsWith("@" + name + "/")) {
-          state[name] = moduleState[REDUCERS][name](state[name], _objectSpread(_objectSpread({}, action), {}, {
-            type: action.type.slice(("@" + name + "/").length)
-          }));
-        }
+        state[name] = moduleState[REDUCERS][name](state[name], action);
       }
 
       return state;
@@ -797,81 +780,21 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var isolateStore = function isolateStore(name) {
-    //const listeners = [];
     return {
       dispatch: function dispatch(action) {
         console.log("dispatch", name, "action", action.type);
-
-        if (action.type.startsWith("@@")) {
-          store.dispatch(action);
-          /*
-          // FIXME check if its loaded
-          for (const n in moduleState[LISTENERS]) {
-            for (const listener in moduleState[LISTENERS][n]) {
-              try {
-                console.log('listener', n, 'as', listener);
-                listener();
-                console.log(
-                  "notified",
-                  n,
-                  "about dispatch with listener",
-                  listener
-                );
-              } catch (error) {
-                console.error("unable to notify listener for", n, "with", error);
-              }
-            }
-          }
-          */
-        } else {
-          store.dispatch(_objectSpread(_objectSpread({}, action), {}, {
-            type: "@" + name + "/" + action.type
-          }));
-          /*
-          if (moduleState[LISTENERS][name]) {
-            for (const listener in moduleState[LISTENERS][name]) {
-              console.log(
-                "notified",
-                name,
-                "about dispatch with listener",
-                listener
-              );
-              listener();
-            }
-          }*/
-        }
+        store.dispatch(action);
       },
       getState: function getState() {
         console.log("get state called for", name);
-        var state = store.getState(); //console.log('full state is', state);
-
+        var state = store.getState();
         var isolatedState = state.modules[name] || {};
-        isolatedState.router = state.router; //console.log('isolated state is'. state);
-
+        isolatedState.router = state.router;
         return isolatedState;
       },
       subscribe: function subscribe(listener) {
         console.log("module", name, "wanted to subscribe", listener);
-        return store.subscribe(listener); //console.log("subscribing to events at", name, "with", listener);
-        // fixme subscribe returns function to unsuscribe
-        // listener function should be invoked after event is dispatched
-        // some namespacing control is needed
-        // FIXME array
-
-        /*
-        if (!moduleState[LISTENERS][name]) {
-          moduleState[LISTENERS][name] = [];
-        }
-        moduleState[LISTENERS][name].push(listener);
-        return () => {
-          const index = moduleState[LISTENERS][name].indexOf(listener);
-          moduleState[LISTENERS][name].splice(index, 1);
-          if (moduleState[LISTENERS][name].length == 0) {
-            delete moduleState[LISTENERS][name];
-          }
-        };
-        */
-        //return store.subscribe(listener); // FIXME do not listen to other modules events
+        return store.subscribe(listener);
       },
       replaceReducer: function replaceReducer(newReducer) {
         console.log("replaceReducer called for", name);

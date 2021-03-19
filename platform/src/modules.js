@@ -150,15 +150,11 @@ export const createModuleLoader = () => {
     promise.then((data) => Promise.resolve(setCache(cacheKey, data)));
 
   const connectModule = (name, scope = {}) => {
-    //console.log("connecting module", name, "with scope", scope);
     if (scope.reducer) {
-      //console.log("adding reducer of", name, "is", scope.reducer);
       scope.reducer.router = () => ({});
-      //console.log("after patching router in its", scope.reducer);
       addReducer(name, combineReducers(scope.reducer));
     }
     if (scope.saga) {
-      //console.log("adding saga of", name, "is", scope.saga);
       addSaga(name, scope.saga);
     }
     const module = {
@@ -186,11 +182,8 @@ export const createModuleLoader = () => {
         // FIXME try without "with(this)"
         const r = new Function("with(this) {" + data + ";}").call(sandbox);
         if (r !== undefined) {
-          //console.log("leak while evaluating sandbox", r);
           return {};
         }
-        //console.log('')
-        //console.log("sandbox value after evaluation is", sandbox);
         return sandbox.__SANDBOX_SCOPE__;
       });
 
@@ -260,12 +253,11 @@ export const createModuleLoader = () => {
         name,
       },
     });
-    //delete moduleState[LISTENERS][name];
   };
 
   const getReducer = () => {
     return (state = {}, action) => {
-      console.log('action in reducer', action.type);
+      console.log("action in reducer", action.type);
 
       if (!moduleState[READY]) {
         return state;
@@ -276,105 +268,34 @@ export const createModuleLoader = () => {
         if (!moduleLoaded) {
           continue;
         }
-        if (action.type.startsWith("@@")) {
-          state[name] = moduleState[REDUCERS][name](state[name], action);
-        } else if (action.type.startsWith("@" + name + "/")) {
-          state[name] = moduleState[REDUCERS][name](state[name], {
-            ...action,
-            type: action.type.slice(("@" + name + "/").length),
-          });
-        }
+        state[name] = moduleState[REDUCERS][name](state[name], action);
       }
 
       return state;
     };
   };
 
-  const isolateStore = (name) => {
-    //const listeners = [];
-
-    return {
-      dispatch: (action) => {
-        console.log("dispatch", name, "action", action.type);
-        if (action.type.startsWith("@@")) {
-          store.dispatch(action);
-          /*
-          // FIXME check if its loaded
-          for (const n in moduleState[LISTENERS]) {
-            for (const listener in moduleState[LISTENERS][n]) {
-              try {
-                console.log('listener', n, 'as', listener);
-                listener();
-                console.log(
-                  "notified",
-                  n,
-                  "about dispatch with listener",
-                  listener
-                );
-              } catch (error) {
-                console.error("unable to notify listener for", n, "with", error);
-              }
-            }
-          }
-          */
-        } else {
-          store.dispatch({
-            ...action,
-            type: "@" + name + "/" + action.type,
-          });
-          /*
-          if (moduleState[LISTENERS][name]) {
-            for (const listener in moduleState[LISTENERS][name]) {
-              console.log(
-                "notified",
-                name,
-                "about dispatch with listener",
-                listener
-              );
-              listener();
-            }
-          }*/
-        }
-      },
-      getState: () => {
-        console.log("get state called for", name);
-        const state = store.getState();
-        //console.log('full state is', state);
-        const isolatedState = state.modules[name] || {};
-        isolatedState.router = state.router;
-        //console.log('isolated state is'. state);
-        return isolatedState;
-      },
-      subscribe: function (listener) {
-        console.log("module", name, "wanted to subscribe", listener);
-        return store.subscribe(listener);
-        //console.log("subscribing to events at", name, "with", listener);
-        // fixme subscribe returns function to unsuscribe
-        // listener function should be invoked after event is dispatched
-        // some namespacing control is needed
-
-        // FIXME array
-        /*
-        if (!moduleState[LISTENERS][name]) {
-          moduleState[LISTENERS][name] = [];
-        }
-        moduleState[LISTENERS][name].push(listener);
-        return () => {
-          const index = moduleState[LISTENERS][name].indexOf(listener);
-          moduleState[LISTENERS][name].splice(index, 1);
-          if (moduleState[LISTENERS][name].length == 0) {
-            delete moduleState[LISTENERS][name];
-          }
-        };
-        */
-        //return store.subscribe(listener); // FIXME do not listen to other modules events
-      },
-      replaceReducer: function (newReducer) {
-        console.log("replaceReducer called for", name);
-        addReducer(name, newReducer);
-      },
-    };
-  };
+  const isolateStore = (name) => ({
+    dispatch: (action) => {
+      console.log("dispatch", name, "action", action.type);
+      store.dispatch(action);
+    },
+    getState: () => {
+      console.log("get state called for", name);
+      const state = store.getState();
+      const isolatedState = state.modules[name] || {};
+      isolatedState.router = state.router;
+      return isolatedState;
+    },
+    subscribe: function (listener) {
+      console.log("module", name, "wanted to subscribe", listener);
+      return store.subscribe(listener);
+    },
+    replaceReducer: function (newReducer) {
+      console.log("replaceReducer called for", name);
+      addReducer(name, newReducer);
+    },
+  });
 
   const isolateModule = (name, Component) => {
     const isolatedStore = isolateStore(name);
