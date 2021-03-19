@@ -7,13 +7,14 @@ const Module = (props = {}) => {
   const moduleLoader = useModuleLoader();
 
   // flickering because of this (render miss always)
-  //let [ready, setReady] = useState(false);
+  let [loadedModule, setLoadedModule] = useState(moduleLoader.getLoadedModule(props.name));
 
   useEffect(() => {
     console.log("use effect observed update", props.name);
     if (props.name) {
-      moduleLoader.loadModule(props.name).then(() => {
+      moduleLoader.loadModule(props.name).then((module) => {
         moduleLoader.setModuleMountState(props.name, true);
+        setLoadedModule(module);
         //setReady(true);
       });
     }
@@ -24,9 +25,11 @@ const Module = (props = {}) => {
     };
   }, [props.name]);
 
-  const loadedModule = moduleLoader.getLoadedModule(props.name);
+  //const loadedModule = moduleLoader.getLoadedModule(props.name);
 
+  console.log("module", props, "loadedModule", loadedModule)
   if (!loadedModule) {
+    // FIXME does not update need to store loadedModule in state
     console.log('module', props, 'not loaded')
     return <React.Fragment />;
   }

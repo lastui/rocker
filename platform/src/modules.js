@@ -244,9 +244,10 @@ export const createModuleLoader = () => {
     //console.log("module", name, "will be loaded");
     return setLoadingModule(
       name,
-      loadModuleFile(module.url).then((data) =>
+      loadModuleFile(module.url).then((data) => {
         store.dispatch(connectModule(name, data))
-      )
+        return getLoadedModule(name);
+      })
     ).catch((error) => {
       //console.log("load module", name, "error", error);
       delete moduleState[LOADING_MODULES][name];

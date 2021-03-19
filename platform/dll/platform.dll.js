@@ -763,7 +763,8 @@ var createModuleLoader = function createModuleLoader() {
 
 
     return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
-      return store.dispatch(connectModule(name, data));
+      store.dispatch(connectModule(name, data));
+      return getLoadedModule(name);
     })).catch(function (error) {
       //console.log("load module", name, "error", error);
       delete moduleState[LOADING_MODULES][name];
