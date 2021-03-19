@@ -420,6 +420,7 @@ var _default = {
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
 
+var _arguments = arguments;
 
 (function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
@@ -759,7 +760,6 @@ var createModuleLoader = function createModuleLoader() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
-      console.log("action in reducer", action.type);
 
       if (!moduleState[READY]) {
         return state;
@@ -772,7 +772,10 @@ var createModuleLoader = function createModuleLoader() {
           continue;
         }
 
+        console.log('before changing state of', name); // info touching state might trigger observe
+
         state[name] = moduleState[REDUCERS][name](state[name], action);
+        console.log('after changing state of', name);
       }
 
       return state;
@@ -786,14 +789,14 @@ var createModuleLoader = function createModuleLoader() {
         store.dispatch(action);
       },
       getState: function getState() {
-        console.log("get state called for", name);
+        console.log("get state called for", name, "by", _arguments.callee.caller);
         var state = store.getState();
         var isolatedState = state.modules[name] || {};
         isolatedState.router = state.router;
         return isolatedState;
       },
       subscribe: function subscribe(listener) {
-        console.log("module", name, "wanted to subscribe", listener);
+        console.log("module", name, "subscribed to global state");
         return store.subscribe(listener);
       },
       replaceReducer: function replaceReducer(newReducer) {

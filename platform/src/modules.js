@@ -257,8 +257,6 @@ export const createModuleLoader = () => {
 
   const getReducer = () => {
     return (state = {}, action) => {
-      console.log("action in reducer", action.type);
-
       if (!moduleState[READY]) {
         return state;
       }
@@ -268,7 +266,10 @@ export const createModuleLoader = () => {
         if (!moduleLoaded) {
           continue;
         }
+        console.log('before changing state of', name)
+        // info touching state might trigger observe
         state[name] = moduleState[REDUCERS][name](state[name], action);
+        console.log('after changing state of', name)
       }
 
       return state;
@@ -281,14 +282,14 @@ export const createModuleLoader = () => {
       store.dispatch(action);
     },
     getState: () => {
-      console.log("get state called for", name);
+      console.log("get state called for", name, "by", arguments.callee.caller);
       const state = store.getState();
       const isolatedState = state.modules[name] || {};
       isolatedState.router = state.router;
       return isolatedState;
     },
     subscribe: function (listener) {
-      console.log("module", name, "wanted to subscribe", listener);
+      console.log("module", name, "subscribed to global state");
       return store.subscribe(listener);
     },
     replaceReducer: function (newReducer) {
