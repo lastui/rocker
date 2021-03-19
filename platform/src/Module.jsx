@@ -34,7 +34,7 @@ const Module = (props) => {
     );
   }
 
-  console.log('module', props.name, 'rendering')
+  console.log('module', props.name, 'rendering', moduleComponent)
 
   const ModuleComponent = moduleComponent;
   return (
@@ -44,5 +44,6 @@ const Module = (props) => {
   );
 };
 
-export default React.memo(Module);
+export default Module;
+//export default React.memo(Module);
 //export default React.memo(Module, (props, nextProps) => !nextProps.frozen);
