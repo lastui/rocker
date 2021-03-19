@@ -735,23 +735,19 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var loadModule = function loadModule(name) {
-    //console.log("load module", name, "called");
     if (isModuleLoaded(name)) {
-      //console.log("module", name, "already loaded");
       return Promise.resolve(getLoadedModule(name));
     }
 
     console.log("loading module", name);
 
     if (isModuleLoading(name)) {
-      //console.log("module", name, "is currently loading");
       return moduleState[LOADING_MODULES][name];
     }
 
     var module = getAvailableModule(name);
 
     if (!module) {
-      //console.log("module", name, "is is not available");
       store.dispatch({
         type: _constants__WEBPACK_IMPORTED_MODULE_11__.MODULE_NOT_AVAILABLE,
         payload: {
@@ -759,14 +755,12 @@ var createModuleLoader = function createModuleLoader() {
         }
       });
       return Promise.resolve(null);
-    } //console.log("module", name, "will be loaded");
-
+    }
 
     return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
       store.dispatch(connectModule(name, data));
       return getLoadedModule(name);
     })).catch(function (error) {
-      //console.log("load module", name, "error", error);
       delete moduleState[LOADING_MODULES][name];
       return Promise.resolve(null);
     });
@@ -786,37 +780,28 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var getReducer = function getReducer() {
-    //const dynamicReducers = getReducers()
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
 
       if (!moduleState[READY]) {
-        //console.log("dynamic reducer not ready, not reducing", action);
         return state;
       }
 
       if (action.type.startsWith("@@module/")) {
-        //        console.log('>>> will NOT propagate action', action.type, 'to module reducers')
         return state;
-      } //const newState = {}
-      //console.log('entering iteration of', moduleState[REDUCERS])
-
+      }
 
       for (var name in moduleState[REDUCERS]) {
         var moduleLoaded = isModuleLoaded(name);
 
         if (!moduleLoaded) {
-          //console.log('>>> will NOT propagate action', action.type, 'to module', name, 'reducer')
-          //newState[name] = state[name]
           continue;
         }
 
         if (action.type.startsWith("@@router/")) {
-          //console.log('>>> will propagate action broadcast', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name], action);
         } else if (action.type.startsWith("@" + name + "/")) {
-          //console.log('>>> will propagate action module', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name], _objectSpread(_objectSpread({}, action), {}, {
             type: action.type.slice(("@" + name + "/").length)
           }));
@@ -828,7 +813,6 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var isolateModule = function isolateModule(name, Component) {
-    //console.log('isolating module', name)
     var ModuleWrapper = /*#__PURE__*/function (_React$Component) {
       (0,_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_2__.default)(ModuleWrapper, _React$Component);
 
@@ -843,8 +827,6 @@ var createModuleLoader = function createModuleLoader() {
       (0,_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__.default)(ModuleWrapper, [{
         key: "render",
         value: function render() {
-          // INFO tracing why flickerring when chaning navigation happens
-          //console.log('rendering ModuleWrapper of', name, 'with props', this.props);
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_8__.Provider, {
             store: {
               dispatch: function dispatch(action) {

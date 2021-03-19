@@ -215,23 +215,18 @@ export const createModuleLoader = () => {
     moduleState[AVAILABLE_MODULES][name] !== undefined;
 
   const loadModule = (name) => {
-    //console.log("load module", name, "called");
-
     if (isModuleLoaded(name)) {
-      //console.log("module", name, "already loaded");
       return Promise.resolve(getLoadedModule(name));
     }
 
     console.log("loading module", name);
 
     if (isModuleLoading(name)) {
-      //console.log("module", name, "is currently loading");
       return moduleState[LOADING_MODULES][name];
     }
 
     const module = getAvailableModule(name);
     if (!module) {
-      //console.log("module", name, "is is not available");
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
@@ -241,7 +236,6 @@ export const createModuleLoader = () => {
       return Promise.resolve(null);
     }
 
-    //console.log("module", name, "will be loaded");
     return setLoadingModule(
       name,
       loadModuleFile(module.url).then((data) => {
@@ -249,7 +243,6 @@ export const createModuleLoader = () => {
         return getLoadedModule(name);
       })
     ).catch((error) => {
-      //console.log("load module", name, "error", error);
       delete moduleState[LOADING_MODULES][name];
       return Promise.resolve(null);
     });
@@ -269,37 +262,24 @@ export const createModuleLoader = () => {
   };
 
   const getReducer = () => {
-    //const dynamicReducers = getReducers()
 
     return (state = {}, action) => {
       if (!moduleState[READY]) {
-        //console.log("dynamic reducer not ready, not reducing", action);
         return state;
       }
 
       if (action.type.startsWith("@@module/")) {
-        //        console.log('>>> will NOT propagate action', action.type, 'to module reducers')
         return state;
       }
 
-      //const newState = {}
-
-      //console.log('entering iteration of', moduleState[REDUCERS])
-
       for (const name in moduleState[REDUCERS]) {
         const moduleLoaded = isModuleLoaded(name);
-
         if (!moduleLoaded) {
-          //console.log('>>> will NOT propagate action', action.type, 'to module', name, 'reducer')
-          //newState[name] = state[name]
           continue;
         }
-
         if (action.type.startsWith("@@router/")) {
-          //console.log('>>> will propagate action broadcast', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name], action);
         } else if (action.type.startsWith("@" + name + "/")) {
-          //console.log('>>> will propagate action module', action.type, 'to module', name, 'reducer')
           state[name] = moduleState[REDUCERS][name](state[name], {
             ...action,
             type: action.type.slice(("@" + name + "/").length),
@@ -312,13 +292,9 @@ export const createModuleLoader = () => {
   };
 
   const isolateModule = (name, Component) => {
-    //console.log('isolating module', name)
-
     class ModuleWrapper extends React.Component {
 
       render() {
-        // INFO tracing why flickerring when chaning navigation happens
-        //console.log('rendering ModuleWrapper of', name, 'with props', this.props);
         return (
           <Provider
             store={{
