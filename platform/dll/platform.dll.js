@@ -514,24 +514,8 @@ var createModuleLoader = function createModuleLoader() {
 
   var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, DANGLING_MODULES, []), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, SAGAS, {}), _moduleState);
 
-  var getAvailableModules = function getAvailableModules() {
-    return moduleState[AVAILABLE_MODULES];
-  };
-
-  var getAvailableModule = function getAvailableModule(name) {
-    return moduleState[AVAILABLE_MODULES][name];
-  };
-
-  var getLoadedModules = function getLoadedModules() {
-    return moduleState[LOADED_MODULES];
-  };
-
   var getLoadedModule = function getLoadedModule(name) {
     return moduleState[LOADED_MODULES][name];
-  };
-
-  var getLoadingModules = function getLoadingModules() {
-    return moduleState[LOADING_MODULES];
   };
 
   var setLoadingModule = function setLoadingModule(name, promise) {
@@ -731,7 +715,7 @@ var createModuleLoader = function createModuleLoader() {
       return moduleState[LOADING_MODULES][name];
     }
 
-    var module = getAvailableModule(name);
+    var module = moduleState[AVAILABLE_MODULES][name];
 
     if (!module) {
       store.dispatch({

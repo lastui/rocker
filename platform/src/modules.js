@@ -76,15 +76,7 @@ export const createModuleLoader = () => {
     [SAGAS]: {},
   };
 
-  const getAvailableModules = () => moduleState[AVAILABLE_MODULES];
-
-  const getAvailableModule = (name) => moduleState[AVAILABLE_MODULES][name];
-
-  const getLoadedModules = () => moduleState[LOADED_MODULES];
-
   const getLoadedModule = (name) => moduleState[LOADED_MODULES][name];
-
-  const getLoadingModules = () => moduleState[LOADING_MODULES];
 
   const setLoadingModule = (name, promise) => {
     moduleState[LOADING_MODULES][name] = promise;
@@ -229,7 +221,7 @@ export const createModuleLoader = () => {
       return moduleState[LOADING_MODULES][name];
     }
 
-    const module = getAvailableModule(name);
+    const module = moduleState[AVAILABLE_MODULES][name];
     if (!module) {
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
