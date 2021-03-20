@@ -1,9 +1,13 @@
-const path = require('path');
+const path = require("path");
 
-exports.DEVELOPMENT = process.env.NODE_ENV === 'development';
-exports.LOG_LEVEL = 'debug';
-exports.PROJECT_ROOT_PATH = path.resolve('./');
-exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, '..');
-exports.DLL_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, 'dll');
-exports.PROJECT_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, 'build');
-exports.PROJECT_SRC_PATH = path.resolve(exports.PROJECT_ROOT_PATH, 'src');
+exports.LOG_LEVEL = "debug";
+
+exports.DEVELOPMENT = process.env.NODE_ENV === "development";
+
+exports.PROJECT_ROOT_PATH = path.resolve("./");
+exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
+
+exports.DLL_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dll");
+exports.PROJECT_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "build");
+exports.PROJECT_DEV_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dev");
+exports.PROJECT_SRC_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "src");

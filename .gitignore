@@ -1,4 +1,7 @@
 node_modules
 ctest/build
+ctest/dev
 ctest/dll
-package-lock.json
+dependencies/package-lock.json
+ctest/package-lock.json
+platform/package-lock.json

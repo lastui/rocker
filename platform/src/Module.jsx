@@ -1,54 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { ModuleContextProvider, useModuleLoader } from './ModuleContext';
+import React, { useEffect, useState } from "react";
+import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 
-const Module = (props) => {
-	const moduleLoader = useModuleLoader()
+const Module = (props = {}) => {
+  console.log("in render of", props);
 
-  let [ready, setReady] = useState(false);
+  const moduleLoader = useModuleLoader();
 
-	useEffect(() => {
-		if (moduleLoader !== null && props.name) {
-      if (moduleLoader.isModuleLoaded(props.name)) {
-        setReady(true);
-      } else {
-	      moduleLoader.loadModule(props.name).then(() => {
-	        moduleLoader.setModuleMountState(props.name, true)
-          setReady(true);
-	      });
-	    }
+  // flickering because of this (render miss always)
+  let [loadedModule, setLoadedModule] = useState(
+    moduleLoader.getLoadedModule(props.name)
+  );
+
+  useEffect(() => {
+    const name = props.name
+    console.log('mount', name)
+    if (name) {
+      moduleLoader.loadModule(name).then((module) => {
+        moduleLoader.setModuleMountState(name, true);
+        setLoadedModule(module);
+      });
     }
-  	return () => {
-  		if (moduleLoader !== null && props.name) {
-  			moduleLoader.setModuleMountState(props.name, false)
-  		}
-  	};
-	}, [props.name]);
+    return () => {
+      console.log('unmount', name)
+      if (name) {
+        moduleLoader.setModuleMountState(name, false);
+      }
+    };
+  }, [props.name]);
 
+  //const loadedModule = moduleLoader.getLoadedModule(props.name);
 
-  if (!moduleLoader || !ready) {
-  	return <React.Fragment />
+  //console.log("module", props, "loadedModule", loadedModule);
+  if (!loadedModule) {
+    // FIXME does not update need to store loadedModule in state
+    console.log("module", props, "not loaded");
+    return <React.Fragment />;
   }
 
-  //console.log('module', props.name, 'now ready lets render')
-  const loadedModule = moduleLoader.getLoadedModule(props.name)
-
-  if (loadedModule) {
-    const ModuleComponent = loadedModule.root
-    return ModuleComponent
-      ? (
-          <ModuleContextProvider moduleLoader={moduleLoader}>
-            <ModuleComponent {...props.options} />
-          </ModuleContextProvider>
-        )
-      : <div>{`Module [${props.name}] is missing root view ...`}</div>
-  } else {
-    return (
-      <div>
-        {`Module [${props.name}] load failed ...`}
-      </div>
-    )
+  if (!loadedModule.root) {
+    console.log("module", props, "not does not have component");
+    return <React.Fragment />;
   }
-}
 
-export default Module;
+  // FIXME if children?
+
+  const ModuleComponent = loadedModule.root;
+
+  return (
+    <ModuleContextProvider moduleLoader={moduleLoader}>
+      <ModuleComponent {...props.options} />
+    </ModuleContextProvider>
+  );
+};
+
+export default React.memo(Module);
 //export default React.memo(Module, (props, nextProps) => !nextProps.frozen);

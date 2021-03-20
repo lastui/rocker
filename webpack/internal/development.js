@@ -1,13 +1,19 @@
-const { Readable } = require("stream")
+const path = require("path");
+const webpack = require("webpack");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const { WebpackPluginServe } = require('webpack-plugin-serve');
 
-const path = require('path');
-const webpack = require('webpack');
-
-const settings = require(path.resolve(__dirname, '../settings'));
-
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const settings = require(path.resolve(__dirname, "../settings"));
 
 module.exports = {
+	bail: false,
+	output: {
+		pathinfo: true,
+		chunkLoadingGlobal: "lastuiJsonp",
+		chunkLoading: "jsonp",
+		path: settings.PROJECT_DEV_PATH,
+		publicPath: "/",
+	},
 	performance: {
 		hints: false,
 	},
@@ -21,53 +27,47 @@ module.exports = {
 		errorDetails: true,
 		errorStack: true,
 	},
-	devServer: {
-		compress: false,
-		clientLogLevel: settings.LOG_LEVEL,
-		host: '0.0.0.0',
-		port: 5000,
-		hot: false,
-		open: false,
-		watchContentBase: true,
-		https: false,
-		quiet: false,
-		noInfo: false,
-		contentBase: path.resolve(settings.PROJECT_BUILD_PATH, 'dev'),
-		historyApiFallback: {
-			index: '/',
-			disableDotRule: true,
-		},
-		before: (app, server, compiler) => {
-		  app.get('/context', (req, res) => {
-			res.json({
-				available: [],
-				entrypoint: 'main',
-			});
-		  });
-		},
-		overlay: {
-			errors: true,
-			warnings: true,
-		},
-		watchOptions: {
-			ignored: /node_modules/,
-			aggregateTimeout: 1000,
-			poll: 1000,
-			followSymlinks: false,
-		},
-	},
-	devtool: 'eval-cheap-module-source-map',
+	devtool: "eval-cheap-module-source-map",
 	plugins: [
-		new webpack.ProgressPlugin(),
+		new webpack.ProvidePlugin({
+			Buffer: ["buffer", "Buffer"],
+			process: ["process"],
+		}),
+		new webpack.DefinePlugin({
+			"process.env": {
+				NODE_ENV: `"development"`,
+			},
+			"__SANDBOX_SCOPE__": {}
+		}),
+		new webpack.EnvironmentPlugin([
+			...Object.keys(process.env),
+			"NODE_ENV",
+		]),
 		new CleanWebpackPlugin({
-			root: settings.PROJECT_BUILD_PATH,
-			cleanOnceBeforeBuildPatterns: [
-				'**/*',
-			],
+			root: settings.PROJECT_DEV_PATH,
+			cleanOnceBeforeBuildPatterns: ["**/*"],
 			cleanStaleWebpackAssets: true,
 			dangerouslyAllowCleanPatternsOutsideProject: false,
 			verbose: false,
 			dry: false,
 		}),
+		new WebpackPluginServe({
+			hmr: false,
+			historyFallback: true,
+			host: '0.0.0.0',
+			port: 5000,
+			status: true,
+			ramdisk: false,
+			liveReload: true,
+			waitForBuild: true,
+			log: {
+				level: settings.LOG_LEVEL,
+			},
+			static: settings.PROJECT_DEV_PATH,
+			client: {
+				silent: false,
+			},
+		}),
 	],
-}
+	watch: true,
+};
