@@ -753,7 +753,6 @@ var createModuleLoader = function createModuleLoader() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
-      console.log("platform reducer observed", action);
 
       while (moduleState[DANGLING_MODULES].length) {
         var name = moduleState[DANGLING_MODULES].pop();
@@ -772,9 +771,7 @@ var createModuleLoader = function createModuleLoader() {
           continue;
         }
 
-        console.log("before changing state of", _name);
         state[_name] = moduleState[REDUCERS][_name](state[_name], action);
-        console.log("after changing state of", _name);
       }
 
       return state;
@@ -784,23 +781,18 @@ var createModuleLoader = function createModuleLoader() {
   var isolateStore = function isolateStore(name) {
     return {
       dispatch: function dispatch(action) {
-        console.log("dispatch", name, "action", action.type);
         store.dispatch(action);
       },
       getState: function getState() {
-        console.log("get state called for", name);
         var state = store.getState();
-        console.log("global state is", state);
         var isolatedState = state[MODULES][name] || {};
         isolatedState.router = state.router;
         return isolatedState;
       },
       subscribe: function subscribe(listener) {
-        console.log("module", name, "wanted to subscribe", listener);
         return store.subscribe(listener);
       },
       replaceReducer: function replaceReducer(newReducer) {
-        console.log("replaceReducer called for", name);
         addReducer(name, newReducer);
       }
     };
@@ -815,7 +807,6 @@ var createModuleLoader = function createModuleLoader() {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.createElement(Component, props));
     };
 
-    console.log("isolatedModule for", name, "will be", ModuleWrapper);
     return ModuleWrapper;
   };
 

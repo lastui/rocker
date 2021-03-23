@@ -259,8 +259,6 @@ export const createModuleLoader = () => {
 
   const getReducer = () => {
     return (state = {}, action) => {
-      console.log("platform reducer observed", action);
-
       while (moduleState[DANGLING_MODULES].length) {
         const name = moduleState[DANGLING_MODULES].pop()
         console.log('evicting dangling module redux state', name)
@@ -276,12 +274,10 @@ export const createModuleLoader = () => {
         if (!moduleLoaded) {
           continue;
         }
-        console.log("before changing state of", name);
         state[name] = moduleState[REDUCERS][name](
           state[name],
           action
         );
-        console.log("after changing state of", name);
       }
 
       return state;
@@ -290,23 +286,18 @@ export const createModuleLoader = () => {
 
   const isolateStore = (name) => ({
     dispatch: (action) => {
-      console.log("dispatch", name, "action", action.type);
       store.dispatch(action);
     },
     getState: () => {
-      console.log("get state called for", name);
       const state = store.getState();
-      console.log("global state is", state);
       const isolatedState = state[MODULES][name] || {};
       isolatedState.router = state.router;
       return isolatedState;
     },
     subscribe: function (listener) {
-      console.log("module", name, "wanted to subscribe", listener);
       return store.subscribe(listener);
     },
     replaceReducer: function (newReducer) {
-      console.log("replaceReducer called for", name);
       addReducer(name, newReducer);
     },
   });
@@ -318,7 +309,6 @@ export const createModuleLoader = () => {
         <Component {...props} />
       </Provider>
     );
-    console.log("isolatedModule for", name, "will be", ModuleWrapper);
     return ModuleWrapper;
   };
 
