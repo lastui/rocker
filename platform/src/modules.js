@@ -215,8 +215,6 @@ export const createModuleLoader = () => {
       return Promise.resolve(getLoadedModule(name));
     }
 
-    console.log("loading module", name);
-
     if (isModuleLoading(name)) {
       return moduleState[LOADING_MODULES][name];
     }
@@ -249,6 +247,7 @@ export const createModuleLoader = () => {
     removeReducer(name);
     removeSaga(name);
     delete moduleState[LOADED_MODULES][name];
+    console.log("dispatching unload module action", name)
     store.dispatch({
       type: constants.MODULE_UNLOADED,
       payload: {

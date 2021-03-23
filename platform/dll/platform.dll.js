@@ -709,8 +709,6 @@ var createModuleLoader = function createModuleLoader() {
       return Promise.resolve(getLoadedModule(name));
     }
 
-    console.log("loading module", name);
-
     if (isModuleLoading(name)) {
       return moduleState[LOADING_MODULES][name];
     }
@@ -741,6 +739,7 @@ var createModuleLoader = function createModuleLoader() {
     removeReducer(name);
     removeSaga(name);
     delete moduleState[LOADED_MODULES][name];
+    console.log("dispatching unload module action", name);
     store.dispatch({
       type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_UNLOADED,
       payload: {
