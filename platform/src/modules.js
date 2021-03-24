@@ -157,6 +157,12 @@ export const createModuleLoader = () => {
 
     const module = availableModules[name];
     if (!module) {
+      console.log(
+        "module",
+        name,
+        "is not available, all available are",
+        availableModules
+      );
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
@@ -169,7 +175,7 @@ export const createModuleLoader = () => {
     return setLoadingModule(
       name,
       loadModuleFile(module.url).then((data) => {
-        connectModule(name, data)
+        connectModule(name, data);
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
@@ -200,6 +206,8 @@ export const createModuleLoader = () => {
   };
 
   const setAvailableModules = (modules = []) => {
+    console.log("before availableModules", availableModules);
+    console.log("new available modules will be", modules);
     const promises = [];
     const newModules = {};
     for (const module of modules) {
@@ -208,16 +216,21 @@ export const createModuleLoader = () => {
     }
     for (const module in availableModules) {
       if (newModules[module]) {
-        continue
+        console.log("module", module, "still available");
+        continue;
       }
+      console.log("module", module, "will not be available");
       if (loadedModules[module]) {
+        console.log("module", module, "is loaded, unloading");
         promises.push(this.unloadModule(name));
       }
+      //console.log('module', module, 'still available')
       // FIXME this module could be running right now
       delete availableModules[module];
     }
+    console.log("after availableModules", availableModules);
     return Promise.all(promises);
-  }
+  };
 
   const getReducer = () => {
     return (state = {}, action) => {

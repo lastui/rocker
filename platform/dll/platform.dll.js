@@ -670,6 +670,7 @@ var createModuleLoader = function createModuleLoader() {
     var module = availableModules[name];
 
     if (!module) {
+      console.log("module", name, "is not available, all available are", availableModules);
       store.dispatch({
         type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_NOT_AVAILABLE,
         payload: {
@@ -711,6 +712,8 @@ var createModuleLoader = function createModuleLoader() {
 
   var setAvailableModules = function setAvailableModules() {
     var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
+    console.log("before availableModules", availableModules);
+    console.log("new available modules will be", modules);
     var promises = [];
     var newModules = {};
 
@@ -731,17 +734,23 @@ var createModuleLoader = function createModuleLoader() {
 
     for (var module in availableModules) {
       if (newModules[module]) {
+        console.log("module", module, "still available");
         continue;
       }
 
+      console.log("module", module, "will not be available");
+
       if (loadedModules[module]) {
+        console.log("module", module, "is loaded, unloading");
         promises.push(_this.unloadModule(name));
-      } // FIXME this module could be running right now
+      } //console.log('module', module, 'still available')
+      // FIXME this module could be running right now
 
 
       delete availableModules[module];
     }
 
+    console.log("after availableModules", availableModules);
     return Promise.all(promises);
   };
 
