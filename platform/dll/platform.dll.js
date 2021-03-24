@@ -717,7 +717,7 @@ var createModuleLoader = function createModuleLoader() {
       }
 
       if (loadedModules[_module]) {
-        promises.push(unloadModule(name));
+        promises.push(unloadModule(_module));
       } // FIXME this module could be running right now
 
 
