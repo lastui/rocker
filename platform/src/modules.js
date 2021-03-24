@@ -3,14 +3,7 @@ import { Provider } from "react-redux";
 import { cancel, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
 
-import HashMap from './struct/map';
-import LinkedList from './struct/list';
-
 import * as constants from "./constants";
-
-const SAGAS = "sagas";
-const REDUCERS = "reducers";
-//const MODULES = "modules";
 
 export function registerModule(scope) {
   if (scope.MainView) {
@@ -60,85 +53,58 @@ export const createModuleLoader = () => {
     console.log("Sagas runnner not provided!");
   };
 
-  const modulesCache = new HashMap();
-  const availableModules = new HashMap();
-  const loadedModules = new HashMap();  // FIXME graph
-  const loadingModules = new HashMap();
-  const danglingModules = new LinkedList();
+  const loadedModules = {};
+  const availableModules = [];
+  const loadingModules = {};
+  const danglingModules = [];
+  const reducers = {};
+  const sagas = {};
 
   let ready = false;
 
-  const moduleState = {
-    //[DANGLING_MODULES]: [],
-    [REDUCERS]: {},
-    [SAGAS]: {},
-  };
-
-  const getLoadedModule = (name) => 
-    loadedModules.get(name);
+  const getLoadedModule = (name) => loadedModules[name];
 
   const setLoadingModule = (name, promise) => {
-    loadingModules.set(name, promise);
+    loadingModules[name] = promise;
     return promise;
   };
 
-  const getReducers = () => moduleState[REDUCERS];
-
   const removeReducer = (name) => {
-    if (!moduleState[REDUCERS][name]) {
-      return;
-    }
-    console.log("module", name, "removing reducer");
-    delete moduleState[REDUCERS][name];
+    delete reducers[name];
   };
 
   const addReducer = (name, reducer) => {
     removeReducer(name);
     console.log("module", name, "adding reducer");
     reducer({}, { type: constants.MODULE_INIT });
-    moduleState[REDUCERS][name] = reducer;
+    reducers[name] = reducer;
   };
 
   const removeSaga = (name) => {
-    if (!moduleState[SAGAS][name]) {
+    if (!sagas[name]) {
       return;
     }
     console.log("module", name, "removing saga");
     console.log("before cancel");
     sagaRunner(function* () {
-      yield cancel(moduleState[SAGAS][name]);
+      yield cancel(sagas[name]);
     });
     console.log("after cancel");
     console.log("module", name, "removed saga");
-    delete moduleState[SAGAS][name];
+    delete sagas[name];
   };
 
   const addSaga = (name, saga) => {
     removeSaga(name);
     console.log("module", name, "adding saga");
-    moduleState[SAGAS][name] = sagaRunner(function* () {
+    sagas[name] = sagaRunner(function* () {
       yield fork(saga);
     });
     console.log("module", name, "added saga");
   };
 
-  const setCache = (key, value) => {
-    modulesCache.set(key, value);
-    //moduleState[CACHE][key] = value;
-    return value;
-  };
-
-  const getFromCache = (key) => 
-    modulesCache.get(key);
-  //moduleState[CACHE][key];
-
-  const clearCache = () => 
-    modulesCache.reset();
-    //(moduleState[CACHE] = {});
-
   const setReady = (isReady) => {
-    ready = isReady
-    //moduleState[READY] = isReady;
+    ready = isReady;
     store.dispatch({
       type: constants.MODULES_READY,
       payload: {
@@ -146,9 +112,6 @@ export const createModuleLoader = () => {
       },
     });
   };
-
-  const cachePromise = (cacheKey, promise) =>
-    promise.then((data) => Promise.resolve(setCache(cacheKey, data)));
 
   const connectModule = (name, scope = {}) => {
     if (scope.reducer) {
@@ -162,8 +125,8 @@ export const createModuleLoader = () => {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
     };
-    loadedModules.set(name, module);
-    loadingModules.delete(name);
+    loadedModules[name] = module;
+    delete loadingModules[name];
 
     return {
       type: constants.MODULE_LOADED,
@@ -188,37 +151,27 @@ export const createModuleLoader = () => {
         return sandbox.__SANDBOX_SCOPE__;
       });
 
-  //const getMountedModules = () => moduleState[MOUNTED_MODULES];
-
   const setModuleMountState = (name, mounted) => {
-    //if (!mounted) {
-      //delete moduleState[MOUNTED_MODULES][name];
-    console.log('module', name, 'ack unmount')
-    if (!loadedModules.has(name)) {
-      console.log('module', name, 'is now dangling and needs cleanup');
-      //moduleState[DANGLING_MODULES].push(name);
-      danglingModules.push(name);
+    if (!mounted) {
+      console.log("module", name, "ack unmount");
+      if (!loadedModules[name]) {
+        console.log("module", name, "is now dangling and needs cleanup");
+        danglingModules.push(name);
+      }
     }
-    //} else {
-      //console.log('module', name, 'ack mount')
-      //moduleState[MOUNTED_MODULES][name] = true;
-    //}
   };
 
   const loadModule = (name) => {
-    if (loadedModules.has(name)) {
-      return Promise.resolve(getLoadedModule(name));
+    const loaded = loadedModules[name];
+    if (loaded) {
+      return Promise.resolve(loaded);
+    }
+    const loading = loadingModules[name];
+    if (loading) {
+      return loading;
     }
 
-    if (loadingModules.has(name)) {
-      return loadingModules.get(name)
-      //return moduleState[LOADING_MODULES][name];
-    }
-
-    
-
-    const module = availableModules.get(name); //moduleState[AVAILABLE_MODULES][name];
-    if (!module) {
+    if (availableModules.indexOf(name) === -1) {
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
@@ -235,7 +188,7 @@ export const createModuleLoader = () => {
         return getLoadedModule(name);
       })
     ).catch((error) => {
-      delete moduleState[LOADING_MODULES][name];
+      delete loadingModules[name];
       return Promise.resolve(null);
     });
   };
@@ -244,8 +197,8 @@ export const createModuleLoader = () => {
     console.log("unloading module", name);
     removeReducer(name);
     removeSaga(name);
-    loadedModules.delete(name);
-    console.log("dispatching unload module action", name)
+    delete loadedModules[name];
+    console.log("dispatching unload module action", name);
     store.dispatch({
       type: constants.MODULE_UNLOADED,
       payload: {
@@ -256,9 +209,12 @@ export const createModuleLoader = () => {
 
   const getReducer = () => {
     return (state = {}, action) => {
-
-      for (let name = danglingModules.pop(); name; name = danglingModules.pop()) {
-        console.log('evicting dangling module redux state', name)
+      for (
+        let name = danglingModules.pop();
+        name;
+        name = danglingModules.pop()
+      ) {
+        console.log("evicting dangling module redux state", name);
         delete state[name];
       }
 
@@ -266,14 +222,12 @@ export const createModuleLoader = () => {
         return state;
       }
 
-      for (const name in moduleState[REDUCERS]) {
-        if (!loadedModules.has(name)) {
+      for (const name in reducers) {
+        if (!loadedModules[name]) {
+          // MUST be O(1)
           continue;
         }
-        state[name] = moduleState[REDUCERS][name](
-          state[name],
-          action
-        );
+        state[name] = reducers[name](state[name], action);
       }
 
       return state;
@@ -320,13 +274,14 @@ export const createModuleLoader = () => {
       }
     },
     setAvailableModules(modules = []) {
+      // FIXME single promise (wait for all)
       setReady(false);
-      availableModules.reset()
+      availableModules = [];
       for (const module of modules) {
-        availableModules.set(module.name, module);
+        availableModules.push(module.name);
       }
       for (const name in loadedModules) {
-        if (!availableModules.has(name)) {
+        if (availableModules.indexOf(name) !== -1) {
           this.unloadModule(name);
         }
       }
