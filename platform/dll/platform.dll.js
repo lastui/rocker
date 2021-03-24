@@ -448,12 +448,6 @@ var _this = undefined;
   enterModule && enterModule(module);
 })();
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 
 
 var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
@@ -711,45 +705,35 @@ var createModuleLoader = function createModuleLoader() {
 
   var setAvailableModules = function setAvailableModules() {
     var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
-    console.log("before availableModules", availableModules);
-    console.log("new available modules will be", modules);
+    // INFO 1.56ms overhead
+    //console.log("before availableModules", availableModules);
+    //console.log("new available modules will be", modules);
     var promises = [];
     var newModules = {};
 
-    var _iterator = _createForOfIteratorHelper(modules),
-        _step;
-
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var _module = _step.value;
-        newModules[_module.name] = _module;
-        availableModules[_module.name] = _module;
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
+    for (var i = modules.length; i--;) {
+      var module = modules[i];
+      newModules[module.name] = module;
+      availableModules[module.name] = module;
     }
 
-    for (var module in availableModules) {
-      if (newModules[module]) {
-        console.log("module", module, "still available");
+    for (var _module in availableModules) {
+      if (newModules[_module]) {
+        //console.log("module", module, "still available");
         continue;
-      }
+      } //console.log("module", module, "will not be available");
 
-      console.log("module", module, "will not be available");
 
-      if (loadedModules[module]) {
-        console.log("module", module, "is loaded, unloading");
+      if (loadedModules[_module]) {
+        //console.log("module", module, "is loaded, unloading");
         promises.push(_this.unloadModule(name));
-      } //console.log('module', module, 'still available')
-      // FIXME this module could be running right now
+      } // FIXME this module could be running right now
 
 
-      delete availableModules[module];
-    }
+      delete availableModules[_module];
+    } //console.log("after availableModules", availableModules);
 
-    console.log("after availableModules", availableModules);
+
     return Promise.all(promises);
   };
 
@@ -773,11 +757,6 @@ var createModuleLoader = function createModuleLoader() {
       }
 
       for (var _name2 in reducers) {
-        if (!loadedModules[_name2]) {
-          continue;
-        } // FIXME no mutex, reducer could be deleted and this would throw
-
-
         state[_name2] = reducers[_name2](state[_name2], action);
       }
 

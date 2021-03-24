@@ -197,29 +197,32 @@ export const createModuleLoader = () => {
   };
 
   const setAvailableModules = (modules = []) => {
-    console.log("before availableModules", availableModules);
-    console.log("new available modules will be", modules);
+    // INFO 1.56ms overhead
+    //console.log("before availableModules", availableModules);
+    //console.log("new available modules will be", modules);
     const promises = [];
     const newModules = {};
-    for (const module of modules) {
+
+    for (let i = modules.length; i--; ) {
+      const module = modules[i];
       newModules[module.name] = module;
       availableModules[module.name] = module;
     }
+
     for (const module in availableModules) {
       if (newModules[module]) {
-        console.log("module", module, "still available");
+        //console.log("module", module, "still available");
         continue;
       }
-      console.log("module", module, "will not be available");
+      //console.log("module", module, "will not be available");
       if (loadedModules[module]) {
-        console.log("module", module, "is loaded, unloading");
+        //console.log("module", module, "is loaded, unloading");
         promises.push(this.unloadModule(name));
       }
-      //console.log('module', module, 'still available')
       // FIXME this module could be running right now
       delete availableModules[module];
     }
-    console.log("after availableModules", availableModules);
+    //console.log("after availableModules", availableModules);
     return Promise.all(promises);
   };
 
@@ -243,10 +246,6 @@ export const createModuleLoader = () => {
       }
 
       for (const name in reducers) {
-        if (!loadedModules[name]) {
-          continue;
-        }
-        // FIXME no mutex, reducer could be deleted and this would throw
         state[name] = reducers[name](state[name], action);
       }
 
