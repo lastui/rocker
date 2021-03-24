@@ -5,17 +5,6 @@ import { combineReducers } from "redux";
 
 import * as constants from "./constants";
 
-const LOADED_MODULES = "loadedModules";
-const AVAILABLE_MODULES = "availableModules";
-const LOADING_MODULES = "loadingModules";
-const MOUNTED_MODULES = "mountedModules";
-const DANGLING_MODULES = "danglingModules";
-const SAGAS = "sagas";
-const REDUCERS = "reducers";
-const MODULES = "modules";
-const CACHE = "cache";
-const READY = "ready";
-
 export function registerModule(scope) {
   if (scope.MainView) {
     this.MainView = scope.MainView;
@@ -33,7 +22,9 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
 ) => {
   switch (action.type) {
     case constants.SET_AVAILABLE_MODULES: {
-      return loader.setAvailableModules(action.payload.modules);
+      return loader
+        .setAvailableModules(action.payload.modules)
+        .then(() => next(action));
     }
     case constants.SET_ENTRYPOINT_MODULE: {
       return loader
@@ -64,86 +55,53 @@ export const createModuleLoader = () => {
     console.log("Sagas runnner not provided!");
   };
 
-  const moduleState = {
-    [CACHE]: {},
-    [AVAILABLE_MODULES]: {},
-    [LOADED_MODULES]: {},
-    [LOADING_MODULES]: {},
-    [DANGLING_MODULES]: [],
-    [MOUNTED_MODULES]: {},
-    [READY]: true,
-    [REDUCERS]: {},
-    [SAGAS]: {},
-  };
+  const loadedModules = {};
+  const availableModules = {};
+  const loadingModules = {};
+  const danglingModules = [];
+  const reducers = {};
+  const sagas = {};
 
-  const getLoadedModule = (name) => moduleState[LOADED_MODULES][name];
+  const getLoadedModule = (name) => loadedModules[name];
 
   const setLoadingModule = (name, promise) => {
-    moduleState[LOADING_MODULES][name] = promise;
+    loadingModules[name] = promise;
     return promise;
   };
 
-  const getReducers = () => moduleState[REDUCERS];
-
   const removeReducer = (name) => {
-    if (!moduleState[REDUCERS][name]) {
-      return;
-    }
-    console.log("module", name, "removing reducer");
-    delete moduleState[REDUCERS][name];
+    delete reducers[name];
   };
 
   const addReducer = (name, reducer) => {
     removeReducer(name);
     console.log("module", name, "adding reducer");
     reducer({}, { type: constants.MODULE_INIT });
-    moduleState[REDUCERS][name] = reducer;
+    reducers[name] = reducer;
   };
 
   const removeSaga = (name) => {
-    if (!moduleState[SAGAS][name]) {
+    if (!sagas[name]) {
       return;
     }
     console.log("module", name, "removing saga");
     console.log("before cancel");
     sagaRunner(function* () {
-      yield cancel(moduleState[SAGAS][name]);
+      yield cancel(sagas[name]);
     });
     console.log("after cancel");
     console.log("module", name, "removed saga");
-    delete moduleState[SAGAS][name];
+    delete sagas[name];
   };
 
   const addSaga = (name, saga) => {
     removeSaga(name);
     console.log("module", name, "adding saga");
-    moduleState[SAGAS][name] = sagaRunner(function* () {
+    sagas[name] = sagaRunner(function* () {
       yield fork(saga);
     });
     console.log("module", name, "added saga");
   };
-
-  const setCache = (key, value) => {
-    moduleState[CACHE][key] = value;
-    return value;
-  };
-
-  const getFromCache = (key) => moduleState[CACHE][key];
-
-  const clearCache = () => (moduleState[CACHE] = {});
-
-  const setReady = (isReady) => {
-    moduleState[READY] = isReady;
-    store.dispatch({
-      type: constants.MODULES_READY,
-      payload: {
-        isReady,
-      },
-    });
-  };
-
-  const cachePromise = (cacheKey, promise) =>
-    promise.then((data) => Promise.resolve(setCache(cacheKey, data)));
 
   const connectModule = (name, scope = {}) => {
     if (scope.reducer) {
@@ -153,18 +111,9 @@ export const createModuleLoader = () => {
     if (scope.saga) {
       addSaga(name, scope.saga);
     }
-    const module = {
+    loadedModules[name] = {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
-    };
-    moduleState[LOADED_MODULES][name] = module;
-    delete moduleState[LOADING_MODULES][name];
-
-    return {
-      type: constants.MODULE_LOADED,
-      payload: {
-        name,
-      },
     };
   };
 
@@ -183,45 +132,28 @@ export const createModuleLoader = () => {
         return sandbox.__SANDBOX_SCOPE__;
       });
 
-  const getMountedModules = () => moduleState[MOUNTED_MODULES];
-
   const setModuleMountState = (name, mounted) => {
     if (!mounted) {
-      delete moduleState[MOUNTED_MODULES][name];
-      console.log('module', name, 'ack unmount')
-      if (!moduleState[LOADED_MODULES][name]) {
-        console.log('module', name, 'is now dangling and needs cleanup');
-        moduleState[DANGLING_MODULES].push(name);
+      console.log("module", name, "ack unmount");
+      if (!loadedModules[name]) {
+        console.log("module", name, "is now dangling and needs cleanup");
+        danglingModules.push(name);
       }
     } else {
-      console.log('module', name, 'ack mount')
-      moduleState[MOUNTED_MODULES][name] = true;
+      console.log("module", name, "ack mount");
     }
   };
 
-  const isModuleLoaded = (name) =>
-    moduleState[LOADED_MODULES][name] !== undefined;
-
-  const isModuleMounted = (name) => moduleState[MOUNTED_MODULES][name];
-
-  const isModuleLoading = (name) =>
-    moduleState[LOADING_MODULES][name] !== undefined;
-
-  const isModuleAvailable = (name) =>
-    moduleState[AVAILABLE_MODULES][name] !== undefined;
-
   const loadModule = (name) => {
-    if (isModuleLoaded(name)) {
-      return Promise.resolve(getLoadedModule(name));
+    const loaded = loadedModules[name];
+    if (loaded) {
+      return Promise.resolve(loaded);
     }
-
-    console.log("loading module", name);
-
-    if (isModuleLoading(name)) {
-      return moduleState[LOADING_MODULES][name];
+    const loading = loadingModules[name];
+    if (loading) {
+      return loading;
     }
-
-    const module = moduleState[AVAILABLE_MODULES][name];
+    const module = availableModules[name];
     if (!module) {
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
@@ -232,56 +164,89 @@ export const createModuleLoader = () => {
       return Promise.resolve(null);
     }
 
-    return setLoadingModule(
-      name,
-      loadModuleFile(module.url).then((data) => {
-        store.dispatch(connectModule(name, data));
+    const promise = loadModuleFile(module.url).then((data) => {
+        connectModule(name, data);
+        store.dispatch({
+          type: constants.MODULE_LOADED,
+          payload: {
+            name,
+          },
+        });
         return getLoadedModule(name);
       })
-    ).catch((error) => {
-      delete moduleState[LOADING_MODULES][name];
-      return Promise.resolve(null);
-    });
+      .catch((error) => Promise.resolve(null))
+      .then((data) => {
+        delete loadingModules[name];
+        return data;
+      });
+
+    return setLoadingModule(name, promise)
   };
 
   const unloadModule = (name) => {
     console.log("unloading module", name);
-    removeReducer(name);
     removeSaga(name);
-    delete moduleState[LOADED_MODULES][name];
+    delete loadedModules[name];
     store.dispatch({
       type: constants.MODULE_UNLOADED,
       payload: {
         name,
       },
     });
+    return Promise.resolve(null);
+  };
+
+  const setAvailableModules = (modules = []) => {
+    // INFO 1.56ms overhead
+    //console.log("before availableModules", availableModules);
+    //console.log("new available modules will be", modules);
+    const promises = [];
+    const newModules = {};
+
+    for (let i = modules.length; i--; ) {
+      const module = modules[i];
+      newModules[module.name] = module;
+      availableModules[module.name] = module;
+    }
+
+    for (const module in availableModules) {
+      if (newModules[module]) {
+        //console.log("module", module, "still available");
+        continue;
+      }
+      //console.log("module", module, "will not be available");
+      if (loadedModules[module]) {
+        //console.log("module", module, "is loaded, unloading");
+        promises.push(this.unloadModule(name));
+      }
+      // FIXME this module could be running right now
+      delete availableModules[module];
+    }
+    //console.log("after availableModules", availableModules);
+    return Promise.all(promises);
   };
 
   const getReducer = () => {
     return (state = {}, action) => {
-      console.log("platform reducer observed", action);
-
-      while (moduleState[DANGLING_MODULES].length) {
-        const name = moduleState[DANGLING_MODULES].pop()
-        console.log('evicting dangling module redux state', name)
+      for (
+        let name = danglingModules.pop();
+        name;
+        name = danglingModules.pop()
+      ) {
+        console.log("evicting dangling module redux state", name);
         delete state[name];
       }
 
-      if (!moduleState[READY]) {
-        return state;
+      switch (action.type) {
+        case constants.MODULE_UNLOADED: {
+          console.log("in rocker reducer module unload", action.payload);
+          removeReducer(name);
+          break;
+        }
       }
 
-      for (const name in moduleState[REDUCERS]) {
-        const moduleLoaded = isModuleLoaded(name);
-        if (!moduleLoaded) {
-          continue;
-        }
-        console.log("before changing state of", name);
-        state[name] = moduleState[REDUCERS][name](
-          state[name],
-          action
-        );
-        console.log("after changing state of", name);
+      for (const name in reducers) {
+        state[name] = reducers[name](state[name], action);
       }
 
       return state;
@@ -289,24 +254,15 @@ export const createModuleLoader = () => {
   };
 
   const isolateStore = (name) => ({
-    dispatch: (action) => {
-      console.log("dispatch", name, "action", action.type);
-      store.dispatch(action);
-    },
+    dispatch: store.dispatch,
     getState: () => {
-      console.log("get state called for", name);
       const state = store.getState();
-      console.log("global state is", state);
-      const isolatedState = state[MODULES][name] || {};
+      const isolatedState = state.modules[name] || {};
       isolatedState.router = state.router;
       return isolatedState;
     },
-    subscribe: function (listener) {
-      console.log("module", name, "wanted to subscribe", listener);
-      return store.subscribe(listener);
-    },
+    subscribe: store.subscribe,
     replaceReducer: function (newReducer) {
-      console.log("replaceReducer called for", name);
       addReducer(name, newReducer);
     },
   });
@@ -318,7 +274,6 @@ export const createModuleLoader = () => {
         <Component {...props} />
       </Provider>
     );
-    console.log("isolatedModule for", name, "will be", ModuleWrapper);
     return ModuleWrapper;
   };
 
@@ -333,19 +288,7 @@ export const createModuleLoader = () => {
         store = nextStore;
       }
     },
-    setAvailableModules(modules = []) {
-      setReady(false);
-      moduleState[AVAILABLE_MODULES] = {};
-      for (const module of modules) {
-        moduleState[AVAILABLE_MODULES][module.name] = module;
-      }
-      for (const name in moduleState[LOADED_MODULES]) {
-        if (!isModuleAvailable(name)) {
-          this.unloadModule(name);
-        }
-      }
-      setReady(true);
-    },
+    setAvailableModules,
     loadModule,
     unloadModule,
     getLoadedModule,

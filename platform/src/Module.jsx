@@ -6,7 +6,6 @@ const Module = (props = {}) => {
 
   const moduleLoader = useModuleLoader();
 
-  // flickering because of this (render miss always)
   let [loadedModule, setLoadedModule] = useState(
     moduleLoader.getLoadedModule(props.name)
   );
@@ -28,9 +27,6 @@ const Module = (props = {}) => {
     };
   }, [props.name]);
 
-  //const loadedModule = moduleLoader.getLoadedModule(props.name);
-
-  //console.log("module", props, "loadedModule", loadedModule);
   if (!loadedModule) {
     // FIXME does not update need to store loadedModule in state
     console.log("module", props, "not loaded");

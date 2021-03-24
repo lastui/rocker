@@ -163,8 +163,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MODULE_INIT": () => (/* binding */ MODULE_INIT),
 /* harmony export */   "MODULE_LOADED": () => (/* binding */ MODULE_LOADED),
 /* harmony export */   "MODULE_UNLOADED": () => (/* binding */ MODULE_UNLOADED),
-/* harmony export */   "MODULE_NOT_AVAILABLE": () => (/* binding */ MODULE_NOT_AVAILABLE),
-/* harmony export */   "MODULES_READY": () => (/* binding */ MODULES_READY)
+/* harmony export */   "MODULE_NOT_AVAILABLE": () => (/* binding */ MODULE_NOT_AVAILABLE)
 /* harmony export */ });
 /* module decorator */ module = __webpack_require__.hmd(module);
 (function () {
@@ -184,8 +183,8 @@ var SHUTDOWN = "@@platform/SHUTDOWN";
 var MODULE_INIT = "@@modules/INIT";
 var MODULE_LOADED = "@@modules/LOADED";
 var MODULE_UNLOADED = "@@modules/UNLOADED";
-var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
-var MODULES_READY = "@@modules/READY";
+var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE"; //export const MODULES_READY = "@@modules/READY";
+
 ;
 
 (function () {
@@ -204,7 +203,6 @@ var MODULES_READY = "@@modules/READY";
   reactHotLoader.register(MODULE_LOADED, "MODULE_LOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_UNLOADED, "MODULE_UNLOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_NOT_AVAILABLE, "MODULE_NOT_AVAILABLE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULES_READY, "MODULES_READY", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
 })();
 
 ;
@@ -217,24 +215,49 @@ var MODULES_READY = "@@modules/READY";
 /***/ }),
 
 /***/ "./node_modules/@lastui/rocker/platform/development.js":
-/*!*************************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/development.js ***!
-  \*************************************************************/
+/*!*************************************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/development.js + 1 modules ***!
+  \*************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "registerModule": () => (/* binding */ registerModule),
-/* harmony export */   "Module": () => (/* binding */ Module)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var connected_react_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! connected-react-router */ "./node_modules/connected-react-router/lib/index.js");
-/* harmony import */ var react_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router */ "./node_modules/react-router/index.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
-/* harmony import */ var _routing__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./routing */ "./node_modules/@lastui/rocker/platform/routing.js");
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "Module": () => (/* binding */ Module),
+  "registerModule": () => (/* binding */ registerModule)
+});
+
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/defineProperty.js
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+// EXTERNAL MODULE: delegated ./node_modules/react/index.js from dll-reference dependencies_dll
+var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/react-dom/index.js from dll-reference dependencies_dll
+var react_domfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-dom/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/connected-react-router/lib/index.js from dll-reference dependencies_dll
+var libfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/connected-react-router/lib/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/react-router/index.js from dll-reference dependencies_dll
+var react_routerfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-router/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/react-redux/lib/index.js from dll-reference dependencies_dll
+var react_redux_libfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-redux/lib/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/redux/lib/redux.js from dll-reference dependencies_dll
+var reduxfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/redux/lib/redux.js");
+// EXTERNAL MODULE: ./node_modules/@lastui/rocker/platform/routing.js
+var routing = __webpack_require__("./node_modules/@lastui/rocker/platform/routing.js");
+;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/development.js
 /* module decorator */ module = __webpack_require__.hmd(module);
 
 
@@ -245,7 +268,7 @@ var MODULES_READY = "@@modules/READY";
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
   return a;
@@ -264,11 +287,11 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
 function configureStore() {
   var initialState = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
   var rootReducer = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-  var enhancers = [(0,connected_react_router__WEBPACK_IMPORTED_MODULE_3__.routerMiddleware)(_routing__WEBPACK_IMPORTED_MODULE_7__.history)];
-  var reducer = (0,redux__WEBPACK_IMPORTED_MODULE_6__.combineReducers)(_objectSpread(_objectSpread({}, rootReducer), {}, {
-    router: (0,connected_react_router__WEBPACK_IMPORTED_MODULE_3__.connectRouter)(_routing__WEBPACK_IMPORTED_MODULE_7__.history)
+  var enhancers = [(0,libfrom_dll_reference_dependencies_dll.routerMiddleware)(routing.history)];
+  var reducer = (0,reduxfrom_dll_reference_dependencies_dll.combineReducers)(_objectSpread(_objectSpread({}, rootReducer), {}, {
+    router: (0,libfrom_dll_reference_dependencies_dll.connectRouter)(routing.history)
   }));
-  var store = (0,redux__WEBPACK_IMPORTED_MODULE_6__.createStore)(reducer, initialState, redux__WEBPACK_IMPORTED_MODULE_6__.compose.apply(void 0, [redux__WEBPACK_IMPORTED_MODULE_6__.applyMiddleware.apply(void 0, enhancers)]));
+  var store = (0,reduxfrom_dll_reference_dependencies_dll.createStore)(reducer, initialState, reduxfrom_dll_reference_dependencies_dll.compose.apply(void 0, [reduxfrom_dll_reference_dependencies_dll.applyMiddleware.apply(void 0, enhancers)]));
   return store;
 }
 
@@ -276,15 +299,15 @@ function registerModule(scope) {
   var node = document.createElement("div");
   var store = configureStore({}, scope.reducer);
   var View = scope.MainView;
-  react_dom__WEBPACK_IMPORTED_MODULE_2__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_5__.Provider, {
+  react_domfrom_dll_reference_dependencies_dll.render( /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(react_redux_libfrom_dll_reference_dependencies_dll.Provider, {
     store: store
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(connected_react_router__WEBPACK_IMPORTED_MODULE_3__.ConnectedRouter, {
-    history: _routing__WEBPACK_IMPORTED_MODULE_7__.history
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_router__WEBPACK_IMPORTED_MODULE_4__.Switch, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(View, null)))), node);
+  }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(libfrom_dll_reference_dependencies_dll.ConnectedRouter, {
+    history: routing.history
+  }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(react_routerfrom_dll_reference_dependencies_dll.Switch, null, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(View, null)))), node);
   document.body.appendChild(node);
 }
 var Module = function Module(props) {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", {
+  return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement("div", {
     style: {
       boxSizing: "border-box",
       border: "1px dashed rgba(0,0,0,.5)",
@@ -409,28 +432,21 @@ var _default = {
 /* harmony export */   "createModuleLoader": () => (/* binding */ createModuleLoader)
 /* harmony export */ });
 /* unused harmony export registerModule */
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
-/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! redux-saga/effects */ "./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
-/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(redux_saga_effects__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
+/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! redux-saga/effects */ "./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
+/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
-
+var _this = undefined;
 
 (function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
   enterModule && enterModule(module);
 })();
-
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 
 
@@ -443,16 +459,6 @@ var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoader
 
 
 
-var LOADED_MODULES = "loadedModules";
-var AVAILABLE_MODULES = "availableModules";
-var LOADING_MODULES = "loadingModules";
-var MOUNTED_MODULES = "mountedModules";
-var DANGLING_MODULES = "danglingModules";
-var SAGAS = "sagas";
-var REDUCERS = "reducers";
-var MODULES = "modules";
-var CACHE = "cache";
-var READY = "ready";
 function registerModule(scope) {
   if (scope.MainView) {
     this.MainView = scope.MainView;
@@ -471,12 +477,14 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
     return function (next) {
       return function (action) {
         switch (action.type) {
-          case _constants__WEBPACK_IMPORTED_MODULE_6__.SET_AVAILABLE_MODULES:
+          case _constants__WEBPACK_IMPORTED_MODULE_5__.SET_AVAILABLE_MODULES:
             {
-              return loader.setAvailableModules(action.payload.modules);
+              return loader.setAvailableModules(action.payload.modules).then(function () {
+                return next(action);
+              });
             }
 
-          case _constants__WEBPACK_IMPORTED_MODULE_6__.SET_ENTRYPOINT_MODULE:
+          case _constants__WEBPACK_IMPORTED_MODULE_5__.SET_ENTRYPOINT_MODULE:
             {
               return loader.loadModule(action.payload.entrypoint).then(function () {
                 return next(action);
@@ -493,8 +501,6 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
   };
 };
 var createModuleLoader = function createModuleLoader() {
-  var _moduleState;
-
   var store = {
     dispatch: function dispatch() {
       console.error("Redux store is not provided!");
@@ -512,53 +518,49 @@ var createModuleLoader = function createModuleLoader() {
     console.log("Sagas runnner not provided!");
   };
 
-  var moduleState = (_moduleState = {}, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, CACHE, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, AVAILABLE_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, LOADING_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, DANGLING_MODULES, []), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, MOUNTED_MODULES, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, READY, true), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, REDUCERS, {}), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_moduleState, SAGAS, {}), _moduleState);
+  var loadedModules = {};
+  var availableModules = {};
+  var loadingModules = {};
+  var danglingModules = [];
+  var reducers = {};
+  var sagas = {};
 
   var getLoadedModule = function getLoadedModule(name) {
-    return moduleState[LOADED_MODULES][name];
+    return loadedModules[name];
   };
 
   var setLoadingModule = function setLoadingModule(name, promise) {
-    moduleState[LOADING_MODULES][name] = promise;
+    loadingModules[name] = promise;
     return promise;
   };
 
-  var getReducers = function getReducers() {
-    return moduleState[REDUCERS];
-  };
-
   var removeReducer = function removeReducer(name) {
-    if (!moduleState[REDUCERS][name]) {
-      return;
-    }
-
-    console.log("module", name, "removing reducer");
-    delete moduleState[REDUCERS][name];
+    delete reducers[name];
   };
 
   var addReducer = function addReducer(name, reducer) {
     removeReducer(name);
     console.log("module", name, "adding reducer");
     reducer({}, {
-      type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_INIT
+      type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_INIT
     });
-    moduleState[REDUCERS][name] = reducer;
+    reducers[name] = reducer;
   };
 
   var removeSaga = function removeSaga(name) {
-    if (!moduleState[SAGAS][name]) {
+    if (!sagas[name]) {
       return;
     }
 
     console.log("module", name, "removing saga");
     console.log("before cancel");
-    sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee$(_context) {
+    sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_4__.cancel)(moduleState[SAGAS][name]);
+              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__.cancel)(sagas[name]);
 
             case 2:
             case "end":
@@ -569,19 +571,19 @@ var createModuleLoader = function createModuleLoader() {
     }));
     console.log("after cancel");
     console.log("module", name, "removed saga");
-    delete moduleState[SAGAS][name];
+    delete sagas[name];
   };
 
   var addSaga = function addSaga(name, saga) {
     removeSaga(name);
     console.log("module", name, "adding saga");
-    moduleState[SAGAS][name] = sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().mark(function _callee2() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default().wrap(function _callee2$(_context2) {
+    sagas[name] = sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_4__.fork)(saga);
+              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__.fork)(saga);
 
             case 2:
             case "end":
@@ -593,35 +595,6 @@ var createModuleLoader = function createModuleLoader() {
     console.log("module", name, "added saga");
   };
 
-  var setCache = function setCache(key, value) {
-    moduleState[CACHE][key] = value;
-    return value;
-  };
-
-  var getFromCache = function getFromCache(key) {
-    return moduleState[CACHE][key];
-  };
-
-  var clearCache = function clearCache() {
-    return moduleState[CACHE] = {};
-  };
-
-  var setReady = function setReady(isReady) {
-    moduleState[READY] = isReady;
-    store.dispatch({
-      type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULES_READY,
-      payload: {
-        isReady: isReady
-      }
-    });
-  };
-
-  var cachePromise = function cachePromise(cacheKey, promise) {
-    return promise.then(function (data) {
-      return Promise.resolve(setCache(cacheKey, data));
-    });
-  };
-
   var connectModule = function connectModule(name) {
     var scope = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
 
@@ -630,24 +603,16 @@ var createModuleLoader = function createModuleLoader() {
         return {};
       };
 
-      addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_5__.combineReducers)(scope.reducer));
+      addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_4__.combineReducers)(scope.reducer));
     }
 
     if (scope.saga) {
       addSaga(name, scope.saga);
     }
 
-    var module = {
+    loadedModules[name] = {
       name: name,
       root: scope.MainView && isolateModule(name, scope.MainView)
-    };
-    moduleState[LOADED_MODULES][name] = module;
-    delete moduleState[LOADING_MODULES][name];
-    return {
-      type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_LOADED,
-      payload: {
-        name: name
-      }
     };
   };
 
@@ -669,57 +634,37 @@ var createModuleLoader = function createModuleLoader() {
     });
   };
 
-  var getMountedModules = function getMountedModules() {
-    return moduleState[MOUNTED_MODULES];
-  };
-
   var setModuleMountState = function setModuleMountState(name, mounted) {
     if (!mounted) {
-      delete moduleState[MOUNTED_MODULES][name];
-      console.log('module', name, 'ack unmount');
+      console.log("module", name, "ack unmount");
 
-      if (!moduleState[LOADED_MODULES][name]) {
-        console.log('module', name, 'is now dangling and needs cleanup');
-        moduleState[DANGLING_MODULES].push(name);
+      if (!loadedModules[name]) {
+        console.log("module", name, "is now dangling and needs cleanup");
+        danglingModules.push(name);
       }
     } else {
-      console.log('module', name, 'ack mount');
-      moduleState[MOUNTED_MODULES][name] = true;
+      console.log("module", name, "ack mount");
     }
-  };
-
-  var isModuleLoaded = function isModuleLoaded(name) {
-    return moduleState[LOADED_MODULES][name] !== void 0;
-  };
-
-  var isModuleMounted = function isModuleMounted(name) {
-    return moduleState[MOUNTED_MODULES][name];
-  };
-
-  var isModuleLoading = function isModuleLoading(name) {
-    return moduleState[LOADING_MODULES][name] !== void 0;
-  };
-
-  var isModuleAvailable = function isModuleAvailable(name) {
-    return moduleState[AVAILABLE_MODULES][name] !== void 0;
   };
 
   var loadModule = function loadModule(name) {
-    if (isModuleLoaded(name)) {
-      return Promise.resolve(getLoadedModule(name));
+    var loaded = loadedModules[name];
+
+    if (loaded) {
+      return Promise.resolve(loaded);
     }
 
-    console.log("loading module", name);
+    var loading = loadingModules[name];
 
-    if (isModuleLoading(name)) {
-      return moduleState[LOADING_MODULES][name];
+    if (loading) {
+      return loading;
     }
 
-    var module = moduleState[AVAILABLE_MODULES][name];
+    var module = availableModules[name];
 
     if (!module) {
       store.dispatch({
-        type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_NOT_AVAILABLE,
+        type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_NOT_AVAILABLE,
         payload: {
           name: name
         }
@@ -727,54 +672,92 @@ var createModuleLoader = function createModuleLoader() {
       return Promise.resolve(null);
     }
 
-    return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
-      store.dispatch(connectModule(name, data));
+    var promise = loadModuleFile(module.url).then(function (data) {
+      connectModule(name, data);
+      store.dispatch({
+        type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_LOADED,
+        payload: {
+          name: name
+        }
+      });
       return getLoadedModule(name);
-    })).catch(function (error) {
-      delete moduleState[LOADING_MODULES][name];
+    }).catch(function (error) {
       return Promise.resolve(null);
+    }).then(function (data) {
+      delete loadingModules[name];
+      return data;
     });
+    return setLoadingModule(name, promise);
   };
 
   var unloadModule = function unloadModule(name) {
     console.log("unloading module", name);
-    removeReducer(name);
     removeSaga(name);
-    delete moduleState[LOADED_MODULES][name];
+    delete loadedModules[name];
     store.dispatch({
-      type: _constants__WEBPACK_IMPORTED_MODULE_6__.MODULE_UNLOADED,
+      type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_UNLOADED,
       payload: {
         name: name
       }
     });
+    return Promise.resolve(null);
+  };
+
+  var setAvailableModules = function setAvailableModules() {
+    var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
+    // INFO 1.56ms overhead
+    //console.log("before availableModules", availableModules);
+    //console.log("new available modules will be", modules);
+    var promises = [];
+    var newModules = {};
+
+    for (var i = modules.length; i--;) {
+      var module = modules[i];
+      newModules[module.name] = module;
+      availableModules[module.name] = module;
+    }
+
+    for (var _module in availableModules) {
+      if (newModules[_module]) {
+        //console.log("module", module, "still available");
+        continue;
+      } //console.log("module", module, "will not be available");
+
+
+      if (loadedModules[_module]) {
+        //console.log("module", module, "is loaded, unloading");
+        promises.push(_this.unloadModule(name));
+      } // FIXME this module could be running right now
+
+
+      delete availableModules[_module];
+    } //console.log("after availableModules", availableModules);
+
+
+    return Promise.all(promises);
   };
 
   var getReducer = function getReducer() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
-      console.log("platform reducer observed", action);
 
-      while (moduleState[DANGLING_MODULES].length) {
-        var name = moduleState[DANGLING_MODULES].pop();
-        console.log('evicting dangling module redux state', name);
-        delete state[name];
+      for (var _name = danglingModules.pop(); _name; _name = danglingModules.pop()) {
+        console.log("evicting dangling module redux state", _name);
+        delete state[_name];
       }
 
-      if (!moduleState[READY]) {
-        return state;
+      switch (action.type) {
+        case _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_UNLOADED:
+          {
+            console.log("in rocker reducer module unload", action.payload);
+            removeReducer(name);
+            break;
+          }
       }
 
-      for (var _name in moduleState[REDUCERS]) {
-        var moduleLoaded = isModuleLoaded(_name);
-
-        if (!moduleLoaded) {
-          continue;
-        }
-
-        console.log("before changing state of", _name);
-        state[_name] = moduleState[REDUCERS][_name](state[_name], action);
-        console.log("after changing state of", _name);
+      for (var _name2 in reducers) {
+        state[_name2] = reducers[_name2](state[_name2], action);
       }
 
       return state;
@@ -783,24 +766,15 @@ var createModuleLoader = function createModuleLoader() {
 
   var isolateStore = function isolateStore(name) {
     return {
-      dispatch: function dispatch(action) {
-        console.log("dispatch", name, "action", action.type);
-        store.dispatch(action);
-      },
+      dispatch: store.dispatch,
       getState: function getState() {
-        console.log("get state called for", name);
         var state = store.getState();
-        console.log("global state is", state);
-        var isolatedState = state[MODULES][name] || {};
+        var isolatedState = state.modules[name] || {};
         isolatedState.router = state.router;
         return isolatedState;
       },
-      subscribe: function subscribe(listener) {
-        console.log("module", name, "wanted to subscribe", listener);
-        return store.subscribe(listener);
-      },
+      subscribe: store.subscribe,
       replaceReducer: function replaceReducer(newReducer) {
-        console.log("replaceReducer called for", name);
         addReducer(name, newReducer);
       }
     };
@@ -810,12 +784,11 @@ var createModuleLoader = function createModuleLoader() {
     var isolatedStore = isolateStore(name);
 
     var ModuleWrapper = function ModuleWrapper(props) {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__.Provider, {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_2__.Provider, {
         store: isolatedStore
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_2__.createElement(Component, props));
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(Component, props));
     };
 
-    console.log("isolatedModule for", name, "will be", ModuleWrapper);
     return ModuleWrapper;
   };
 
@@ -830,33 +803,7 @@ var createModuleLoader = function createModuleLoader() {
         store = nextStore;
       }
     },
-    setAvailableModules: function setAvailableModules() {
-      var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
-      setReady(false);
-      moduleState[AVAILABLE_MODULES] = {};
-
-      var _iterator = _createForOfIteratorHelper(modules),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var module = _step.value;
-          moduleState[AVAILABLE_MODULES][module.name] = module;
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-
-      for (var name in moduleState[LOADED_MODULES]) {
-        if (!isModuleAvailable(name)) {
-          this.unloadModule(name);
-        }
-      }
-
-      setReady(true);
-    },
+    setAvailableModules: setAvailableModules,
     loadModule: loadModule,
     unloadModule: unloadModule,
     getLoadedModule: getLoadedModule,
@@ -873,16 +820,6 @@ var createModuleLoader = function createModuleLoader() {
     return;
   }
 
-  reactHotLoader.register(LOADED_MODULES, "LOADED_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(AVAILABLE_MODULES, "AVAILABLE_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(LOADING_MODULES, "LOADING_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(MOUNTED_MODULES, "MOUNTED_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(DANGLING_MODULES, "DANGLING_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(SAGAS, "SAGAS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(REDUCERS, "REDUCERS", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(MODULES, "MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(CACHE, "CACHE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(READY, "READY", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(registerModule, "registerModule", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(moduleLoaderMiddleware, "moduleLoaderMiddleware", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
   reactHotLoader.register(createModuleLoader, "createModuleLoader", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
@@ -938,33 +875,6 @@ var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
   var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
   leaveModule && leaveModule(module);
 })();
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/defineProperty.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _defineProperty)
-/* harmony export */ });
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
 
 /***/ }),
 
