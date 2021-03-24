@@ -183,8 +183,7 @@ var SHUTDOWN = "@@platform/SHUTDOWN";
 var MODULE_INIT = "@@modules/INIT";
 var MODULE_LOADED = "@@modules/LOADED";
 var MODULE_UNLOADED = "@@modules/UNLOADED";
-var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE"; //export const MODULES_READY = "@@modules/READY";
-
+var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
 ;
 
 (function () {
@@ -441,8 +440,6 @@ var _default = {
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
-var _this = undefined;
-
 (function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
   enterModule && enterModule(module);
@@ -705,9 +702,6 @@ var createModuleLoader = function createModuleLoader() {
 
   var setAvailableModules = function setAvailableModules() {
     var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
-    // INFO 1.56ms overhead
-    //console.log("before availableModules", availableModules);
-    //console.log("new available modules will be", modules);
     var promises = [];
     var newModules = {};
 
@@ -719,20 +713,16 @@ var createModuleLoader = function createModuleLoader() {
 
     for (var _module in availableModules) {
       if (newModules[_module]) {
-        //console.log("module", module, "still available");
         continue;
-      } //console.log("module", module, "will not be available");
-
+      }
 
       if (loadedModules[_module]) {
-        //console.log("module", module, "is loaded, unloading");
-        promises.push(_this.unloadModule(name));
+        promises.push(unloadModule(name));
       } // FIXME this module could be running right now
 
 
       delete availableModules[_module];
-    } //console.log("after availableModules", availableModules);
-
+    }
 
     return Promise.all(promises);
   };
