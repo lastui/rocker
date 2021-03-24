@@ -163,8 +163,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MODULE_INIT": () => (/* binding */ MODULE_INIT),
 /* harmony export */   "MODULE_LOADED": () => (/* binding */ MODULE_LOADED),
 /* harmony export */   "MODULE_UNLOADED": () => (/* binding */ MODULE_UNLOADED),
-/* harmony export */   "MODULE_NOT_AVAILABLE": () => (/* binding */ MODULE_NOT_AVAILABLE),
-/* harmony export */   "MODULES_READY": () => (/* binding */ MODULES_READY)
+/* harmony export */   "MODULE_NOT_AVAILABLE": () => (/* binding */ MODULE_NOT_AVAILABLE)
 /* harmony export */ });
 /* module decorator */ module = __webpack_require__.hmd(module);
 (function () {
@@ -184,8 +183,8 @@ var SHUTDOWN = "@@platform/SHUTDOWN";
 var MODULE_INIT = "@@modules/INIT";
 var MODULE_LOADED = "@@modules/LOADED";
 var MODULE_UNLOADED = "@@modules/UNLOADED";
-var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
-var MODULES_READY = "@@modules/READY";
+var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE"; //export const MODULES_READY = "@@modules/READY";
+
 ;
 
 (function () {
@@ -204,7 +203,6 @@ var MODULES_READY = "@@modules/READY";
   reactHotLoader.register(MODULE_LOADED, "MODULE_LOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_UNLOADED, "MODULE_UNLOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
   reactHotLoader.register(MODULE_NOT_AVAILABLE, "MODULE_NOT_AVAILABLE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULES_READY, "MODULES_READY", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
 })();
 
 ;
@@ -423,41 +421,27 @@ var _default = {
 /***/ }),
 
 /***/ "./node_modules/@lastui/rocker/platform/modules.js":
-/*!*********************************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/modules.js + 1 modules ***!
-  \*********************************************************************/
+/*!*********************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/modules.js ***!
+  \*********************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "createModuleLoader": () => (/* binding */ createModuleLoader),
-  "moduleLoaderMiddleware": () => (/* binding */ moduleLoaderMiddleware)
-});
-
-// UNUSED EXPORTS: registerModule
-
-;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/readOnlyError.js
-function _readOnlyError(name) {
-  throw new TypeError("\"" + name + "\" is read-only");
-}
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
-var regenerator = __webpack_require__("./node_modules/@babel/runtime/regenerator/index.js");
-var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
-// EXTERNAL MODULE: delegated ./node_modules/react/index.js from dll-reference dependencies_dll
-var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react/index.js");
-// EXTERNAL MODULE: delegated ./node_modules/react-redux/lib/index.js from dll-reference dependencies_dll
-var libfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-redux/lib/index.js");
-// EXTERNAL MODULE: delegated ./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js from dll-reference dependencies_dll
-var redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
-// EXTERNAL MODULE: delegated ./node_modules/redux/lib/redux.js from dll-reference dependencies_dll
-var reduxfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/redux/lib/redux.js");
-// EXTERNAL MODULE: ./node_modules/@lastui/rocker/platform/constants.js
-var constants = __webpack_require__("./node_modules/@lastui/rocker/platform/constants.js");
-;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/modules.js
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "moduleLoaderMiddleware": () => (/* binding */ moduleLoaderMiddleware),
+/* harmony export */   "createModuleLoader": () => (/* binding */ createModuleLoader)
+/* harmony export */ });
+/* unused harmony export registerModule */
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
+/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! redux-saga/effects */ "./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
+/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
 /* module decorator */ module = __webpack_require__.hmd(module);
-
+var _this = undefined;
 
 (function () {
   var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
@@ -499,12 +483,14 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
     return function (next) {
       return function (action) {
         switch (action.type) {
-          case constants.SET_AVAILABLE_MODULES:
+          case _constants__WEBPACK_IMPORTED_MODULE_5__.SET_AVAILABLE_MODULES:
             {
-              return loader.setAvailableModules(action.payload.modules);
+              return loader.setAvailableModules(action.payload.modules).then(function () {
+                return next(action);
+              });
             }
 
-          case constants.SET_ENTRYPOINT_MODULE:
+          case _constants__WEBPACK_IMPORTED_MODULE_5__.SET_ENTRYPOINT_MODULE:
             {
               return loader.loadModule(action.payload.entrypoint).then(function () {
                 return next(action);
@@ -539,12 +525,11 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var loadedModules = {};
-  var availableModules = [];
+  var availableModules = {};
   var loadingModules = {};
   var danglingModules = [];
   var reducers = {};
   var sagas = {};
-  var ready = false;
 
   var getLoadedModule = function getLoadedModule(name) {
     return loadedModules[name];
@@ -563,7 +548,7 @@ var createModuleLoader = function createModuleLoader() {
     removeReducer(name);
     console.log("module", name, "adding reducer");
     reducer({}, {
-      type: constants.MODULE_INIT
+      type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_INIT
     });
     reducers[name] = reducer;
   };
@@ -575,13 +560,13 @@ var createModuleLoader = function createModuleLoader() {
 
     console.log("module", name, "removing saga");
     console.log("before cancel");
-    sagaRunner( /*#__PURE__*/regenerator_default().mark(function _callee() {
-      return regenerator_default().wrap(function _callee$(_context) {
+    sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.cancel)(sagas[name]);
+              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__.cancel)(sagas[name]);
 
             case 2:
             case "end":
@@ -598,13 +583,13 @@ var createModuleLoader = function createModuleLoader() {
   var addSaga = function addSaga(name, saga) {
     removeSaga(name);
     console.log("module", name, "adding saga");
-    sagas[name] = sagaRunner( /*#__PURE__*/regenerator_default().mark(function _callee2() {
-      return regenerator_default().wrap(function _callee2$(_context2) {
+    sagas[name] = sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.fork)(saga);
+              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__.fork)(saga);
 
             case 2:
             case "end":
@@ -616,16 +601,6 @@ var createModuleLoader = function createModuleLoader() {
     console.log("module", name, "added saga");
   };
 
-  var setReady = function setReady(isReady) {
-    ready = isReady;
-    store.dispatch({
-      type: constants.MODULES_READY,
-      payload: {
-        isReady: isReady
-      }
-    });
-  };
-
   var connectModule = function connectModule(name) {
     var scope = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
 
@@ -634,25 +609,18 @@ var createModuleLoader = function createModuleLoader() {
         return {};
       };
 
-      addReducer(name, (0,reduxfrom_dll_reference_dependencies_dll.combineReducers)(scope.reducer));
+      addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_4__.combineReducers)(scope.reducer));
     }
 
     if (scope.saga) {
       addSaga(name, scope.saga);
     }
 
-    var module = {
+    loadedModules[name] = {
       name: name,
       root: scope.MainView && isolateModule(name, scope.MainView)
     };
-    loadedModules[name] = module;
     delete loadingModules[name];
-    return {
-      type: constants.MODULE_LOADED,
-      payload: {
-        name: name
-      }
-    };
   };
 
   var loadModuleFile = function loadModuleFile(uri) {
@@ -681,6 +649,8 @@ var createModuleLoader = function createModuleLoader() {
         console.log("module", name, "is now dangling and needs cleanup");
         danglingModules.push(name);
       }
+    } else {
+      console.log("module", name, "ack mount");
     }
   };
 
@@ -697,9 +667,9 @@ var createModuleLoader = function createModuleLoader() {
       return loading;
     }
 
-    if (availableModules.indexOf(name) === -1) {
+    if (!availableModules[name]) {
       store.dispatch({
-        type: constants.MODULE_NOT_AVAILABLE,
+        type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_NOT_AVAILABLE,
         payload: {
           name: name
         }
@@ -708,7 +678,13 @@ var createModuleLoader = function createModuleLoader() {
     }
 
     return setLoadingModule(name, loadModuleFile(module.url).then(function (data) {
-      store.dispatch(connectModule(name, data));
+      connectModule(name, data);
+      store.dispatch({
+        type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_LOADED,
+        payload: {
+          name: name
+        }
+      });
       return getLoadedModule(name);
     })).catch(function (error) {
       delete loadingModules[name];
@@ -723,11 +699,43 @@ var createModuleLoader = function createModuleLoader() {
     delete loadedModules[name];
     console.log("dispatching unload module action", name);
     store.dispatch({
-      type: constants.MODULE_UNLOADED,
+      type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_UNLOADED,
       payload: {
         name: name
       }
     });
+    return Promise.resolve(null);
+  };
+
+  var setAvailableModules = function setAvailableModules() {
+    var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
+    var promises = [];
+    var newModules = {};
+
+    var _iterator = _createForOfIteratorHelper(modules),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _module2 = _step.value;
+        newModules[_module2.name] = true;
+        availableModules[_module2.name] = true;
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+
+    for (var _module in availableModules) {
+      if (!newModules[_module] && loadedModules[_module]) {
+        promises.push(_this.unloadModule(name));
+      }
+
+      delete availableModules[_module];
+    }
+
+    return Promise.all(promises);
   };
 
   var getReducer = function getReducer() {
@@ -735,22 +743,22 @@ var createModuleLoader = function createModuleLoader() {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
 
-      for (var name = danglingModules.pop(); name; name = danglingModules.pop()) {
-        console.log("evicting dangling module redux state", name);
-        delete state[name];
+      for (var _name = danglingModules.pop(); _name; _name = danglingModules.pop()) {
+        console.log("evicting dangling module redux state", _name);
+        delete state[_name];
       }
 
       if (!ready) {
         return state;
       }
 
-      for (var _name in reducers) {
-        if (!loadedModules[_name]) {
-          // MUST be O(1)
+      for (var _name2 in reducers) {
+        if (!loadedModules[_name2]) {
           continue;
-        }
+        } // FIXME no mutex, reducer could be deleted and this would throw
 
-        state[_name] = reducers[_name](state[_name], action);
+
+        state[_name2] = reducers[_name2](state[_name2], action);
       }
 
       return state;
@@ -759,18 +767,14 @@ var createModuleLoader = function createModuleLoader() {
 
   var isolateStore = function isolateStore(name) {
     return {
-      dispatch: function dispatch(action) {
-        store.dispatch(action);
-      },
+      dispatch: store.dispatch,
       getState: function getState() {
         var state = store.getState();
         var isolatedState = state.modules[name] || {};
         isolatedState.router = state.router;
         return isolatedState;
       },
-      subscribe: function subscribe(listener) {
-        return store.subscribe(listener);
-      },
+      subscribe: store.subscribe,
       replaceReducer: function replaceReducer(newReducer) {
         addReducer(name, newReducer);
       }
@@ -781,9 +785,9 @@ var createModuleLoader = function createModuleLoader() {
     var isolatedStore = isolateStore(name);
 
     var ModuleWrapper = function ModuleWrapper(props) {
-      return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(libfrom_dll_reference_dependencies_dll.Provider, {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_2__.Provider, {
         store: isolatedStore
-      }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(Component, props));
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(Component, props));
     };
 
     return ModuleWrapper;
@@ -800,34 +804,7 @@ var createModuleLoader = function createModuleLoader() {
         store = nextStore;
       }
     },
-    setAvailableModules: function setAvailableModules() {
-      var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
-      // FIXME single promise (wait for all)
-      setReady(false);
-      availableModules = (_readOnlyError("availableModules"), []);
-
-      var _iterator = _createForOfIteratorHelper(modules),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var _module = _step.value;
-          availableModules.push(_module.name);
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-
-      for (var name in loadedModules) {
-        if (availableModules.indexOf(name) !== -1) {
-          this.unloadModule(name);
-        }
-      }
-
-      setReady(true);
-    },
+    setAvailableModules: setAvailableModules,
     loadModule: loadModule,
     unloadModule: unloadModule,
     getLoadedModule: getLoadedModule,

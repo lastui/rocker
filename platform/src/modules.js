@@ -22,7 +22,9 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
 ) => {
   switch (action.type) {
     case constants.SET_AVAILABLE_MODULES: {
-      return loader.setAvailableModules(action.payload.modules);
+      return loader
+        .setAvailableModules(action.payload.modules)
+        .then(() => next(action));
     }
     case constants.SET_ENTRYPOINT_MODULE: {
       return loader
@@ -54,13 +56,11 @@ export const createModuleLoader = () => {
   };
 
   const loadedModules = {};
-  const availableModules = [];
+  const availableModules = {};
   const loadingModules = {};
   const danglingModules = [];
   const reducers = {};
   const sagas = {};
-
-  let ready = false;
 
   const getLoadedModule = (name) => loadedModules[name];
 
@@ -103,16 +103,6 @@ export const createModuleLoader = () => {
     console.log("module", name, "added saga");
   };
 
-  const setReady = (isReady) => {
-    ready = isReady;
-    store.dispatch({
-      type: constants.MODULES_READY,
-      payload: {
-        isReady,
-      },
-    });
-  };
-
   const connectModule = (name, scope = {}) => {
     if (scope.reducer) {
       scope.reducer.router = () => ({});
@@ -121,19 +111,11 @@ export const createModuleLoader = () => {
     if (scope.saga) {
       addSaga(name, scope.saga);
     }
-    const module = {
+    loadedModules[name] = {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
     };
-    loadedModules[name] = module;
     delete loadingModules[name];
-
-    return {
-      type: constants.MODULE_LOADED,
-      payload: {
-        name,
-      },
-    };
   };
 
   const loadModuleFile = (uri) =>
@@ -158,6 +140,8 @@ export const createModuleLoader = () => {
         console.log("module", name, "is now dangling and needs cleanup");
         danglingModules.push(name);
       }
+    } else {
+      console.log("module", name, "ack mount");
     }
   };
 
@@ -171,7 +155,7 @@ export const createModuleLoader = () => {
       return loading;
     }
 
-    if (availableModules.indexOf(name) === -1) {
+    if (!availableModules[name]) {
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
@@ -184,7 +168,13 @@ export const createModuleLoader = () => {
     return setLoadingModule(
       name,
       loadModuleFile(module.url).then((data) => {
-        store.dispatch(connectModule(name, data));
+        connectModule(name, data)
+        store.dispatch({
+          type: constants.MODULE_LOADED,
+          payload: {
+            name,
+          },
+        });
         return getLoadedModule(name);
       })
     ).catch((error) => {
@@ -205,7 +195,24 @@ export const createModuleLoader = () => {
         name,
       },
     });
+    return Promise.resolve(null);
   };
+
+  const setAvailableModules = (modules = []) => {
+    const promises = [];
+    const newModules = {};
+    for (const module of modules) {
+      newModules[module.name] = true;
+      availableModules[module.name] = true;
+    }
+    for (const module in availableModules) {
+      if (!newModules[module] && loadedModules[module]) {
+        promises.push(this.unloadModule(name));
+      }
+      delete availableModules[module];
+    }
+    return Promise.all(promises);
+  }
 
   const getReducer = () => {
     return (state = {}, action) => {
@@ -224,9 +231,9 @@ export const createModuleLoader = () => {
 
       for (const name in reducers) {
         if (!loadedModules[name]) {
-          // MUST be O(1)
           continue;
         }
+        // FIXME no mutex, reducer could be deleted and this would throw
         state[name] = reducers[name](state[name], action);
       }
 
@@ -235,18 +242,14 @@ export const createModuleLoader = () => {
   };
 
   const isolateStore = (name) => ({
-    dispatch: (action) => {
-      store.dispatch(action);
-    },
+    dispatch: store.dispatch,
     getState: () => {
       const state = store.getState();
       const isolatedState = state.modules[name] || {};
       isolatedState.router = state.router;
       return isolatedState;
     },
-    subscribe: function (listener) {
-      return store.subscribe(listener);
-    },
+    subscribe: store.subscribe,
     replaceReducer: function (newReducer) {
       addReducer(name, newReducer);
     },
@@ -273,20 +276,7 @@ export const createModuleLoader = () => {
         store = nextStore;
       }
     },
-    setAvailableModules(modules = []) {
-      // FIXME single promise (wait for all)
-      setReady(false);
-      availableModules = [];
-      for (const module of modules) {
-        availableModules.push(module.name);
-      }
-      for (const name in loadedModules) {
-        if (availableModules.indexOf(name) !== -1) {
-          this.unloadModule(name);
-        }
-      }
-      setReady(true);
-    },
+    setAvailableModules,
     loadModule,
     unloadModule,
     getLoadedModule,
