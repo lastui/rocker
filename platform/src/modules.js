@@ -115,7 +115,6 @@ export const createModuleLoader = () => {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
     };
-    delete loadingModules[name];
   };
 
   const loadModuleFile = (uri) =>
@@ -154,15 +153,8 @@ export const createModuleLoader = () => {
     if (loading) {
       return loading;
     }
-
     const module = availableModules[name];
     if (!module) {
-      console.log(
-        "module",
-        name,
-        "is not available, all available are",
-        availableModules
-      );
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
@@ -172,9 +164,7 @@ export const createModuleLoader = () => {
       return Promise.resolve(null);
     }
 
-    return setLoadingModule(
-      name,
-      loadModuleFile(module.url).then((data) => {
+    const promise = loadModuleFile(module.url).then((data) => {
         connectModule(name, data);
         store.dispatch({
           type: constants.MODULE_LOADED,
@@ -184,18 +174,19 @@ export const createModuleLoader = () => {
         });
         return getLoadedModule(name);
       })
-    ).catch((error) => {
-      delete loadingModules[name];
-      return Promise.resolve(null);
-    });
+      .catch((error) => Promise.resolve(null))
+      .then((data) => {
+        delete loadingModules[name];
+        return data;
+      });
+
+    return setLoadingModule(name, promise)
   };
 
   const unloadModule = (name) => {
     console.log("unloading module", name);
-    removeReducer(name);
     removeSaga(name);
     delete loadedModules[name];
-    console.log("dispatching unload module action", name);
     store.dispatch({
       type: constants.MODULE_UNLOADED,
       payload: {
@@ -241,6 +232,14 @@ export const createModuleLoader = () => {
       ) {
         console.log("evicting dangling module redux state", name);
         delete state[name];
+      }
+
+      switch (action.type) {
+        case constants.MODULE_UNLOADED: {
+          console.log("in rocker reducer module unload", action.payload);
+          removeReducer(name);
+          break;
+        }
       }
 
       for (const name in reducers) {
