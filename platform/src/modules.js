@@ -225,10 +225,6 @@ export const createModuleLoader = () => {
         delete state[name];
       }
 
-      if (!ready) {
-        return state;
-      }
-
       for (const name in reducers) {
         if (!loadedModules[name]) {
           continue;

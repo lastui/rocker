@@ -748,10 +748,6 @@ var createModuleLoader = function createModuleLoader() {
         delete state[_name];
       }
 
-      if (!ready) {
-        return state;
-      }
-
       for (var _name2 in reducers) {
         if (!loadedModules[_name2]) {
           continue;
