@@ -197,9 +197,6 @@ export const createModuleLoader = () => {
   };
 
   const setAvailableModules = (modules = []) => {
-    // INFO 1.56ms overhead
-    //console.log("before availableModules", availableModules);
-    //console.log("new available modules will be", modules);
     const promises = [];
     const newModules = {};
 
@@ -211,18 +208,14 @@ export const createModuleLoader = () => {
 
     for (const module in availableModules) {
       if (newModules[module]) {
-        //console.log("module", module, "still available");
         continue;
       }
-      //console.log("module", module, "will not be available");
       if (loadedModules[module]) {
-        //console.log("module", module, "is loaded, unloading");
-        promises.push(this.unloadModule(name));
+        promises.push(unloadModule(name));
       }
       // FIXME this module could be running right now
       delete availableModules[module];
     }
-    //console.log("after availableModules", availableModules);
     return Promise.all(promises);
   };
 
