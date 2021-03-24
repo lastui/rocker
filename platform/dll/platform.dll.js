@@ -667,7 +667,9 @@ var createModuleLoader = function createModuleLoader() {
       return loading;
     }
 
-    if (!availableModules[name]) {
+    var module = availableModules[name];
+
+    if (!module) {
       store.dispatch({
         type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_NOT_AVAILABLE,
         payload: {
@@ -717,9 +719,9 @@ var createModuleLoader = function createModuleLoader() {
 
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var _module2 = _step.value;
-        newModules[_module2.name] = true;
-        availableModules[_module2.name] = true;
+        var _module = _step.value;
+        newModules[_module.name] = _module;
+        availableModules[_module.name] = _module;
       }
     } catch (err) {
       _iterator.e(err);
@@ -727,12 +729,17 @@ var createModuleLoader = function createModuleLoader() {
       _iterator.f();
     }
 
-    for (var _module in availableModules) {
-      if (!newModules[_module] && loadedModules[_module]) {
-        promises.push(_this.unloadModule(name));
+    for (var module in availableModules) {
+      if (newModules[module]) {
+        continue;
       }
 
-      delete availableModules[_module];
+      if (loadedModules[module]) {
+        promises.push(_this.unloadModule(name));
+      } // FIXME this module could be running right now
+
+
+      delete availableModules[module];
     }
 
     return Promise.all(promises);

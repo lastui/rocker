@@ -155,7 +155,8 @@ export const createModuleLoader = () => {
       return loading;
     }
 
-    if (!availableModules[name]) {
+    const module = availableModules[name];
+    if (!module) {
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
@@ -202,13 +203,17 @@ export const createModuleLoader = () => {
     const promises = [];
     const newModules = {};
     for (const module of modules) {
-      newModules[module.name] = true;
-      availableModules[module.name] = true;
+      newModules[module.name] = module;
+      availableModules[module.name] = module;
     }
     for (const module in availableModules) {
-      if (!newModules[module] && loadedModules[module]) {
+      if (newModules[module]) {
+        continue
+      }
+      if (loadedModules[module]) {
         promises.push(this.unloadModule(name));
       }
+      // FIXME this module could be running right now
       delete availableModules[module];
     }
     return Promise.all(promises);
