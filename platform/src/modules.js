@@ -211,7 +211,7 @@ export const createModuleLoader = () => {
         continue;
       }
       if (loadedModules[module]) {
-        promises.push(unloadModule(name));
+        promises.push(unloadModule(module));
       }
       // FIXME this module could be running right now
       delete availableModules[module];
