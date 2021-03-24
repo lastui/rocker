@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.0.81",
+  "version": "0.0.82",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform",
     "build:dependencies": "cd dependencies && npm run build",
@@ -33,6 +33,14 @@
     "platform/dll/platform.dll.min.js",
     "platform/dll/platform.dll.min.js.LICENSE.txt",
     "platform/index.js",
+    "platform/src/struct/graph/index.js",
+    "platform/src/struct/graph/node.js",
+    "platform/src/struct/list/index.js",
+    "platform/src/struct/list/node.js",
+    "platform/src/struct/map/index.js",
+    "platform/src/struct/queue/index.js",
+    "platform/src/struct/set/index.js",
+    "platform/src/struct/stack/index.js",
     "platform/src/actions.js",
     "platform/src/constants.js",
     "platform/src/development.js",
