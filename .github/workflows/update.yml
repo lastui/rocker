@@ -23,21 +23,23 @@ jobs:
         with:
           node-version: '14'
           check-latest: true
-      - name: Install npm-check-updates
+      - name: install npm-check-updates
         run: |
           npm install -g npm-check-updates
-      - name: Update dependencies
+      - name: update dependencies
         run: |
           cd dependencies
+          npm install
           ncu -u
           npm run build:dev
           npm run build:prod
-      - name: Update platform
+      - name: update platform
         run: |
           cd platform
+          npm install
           ncu -u
           npm run build
-      - name: pull-request
+      - name: create PR
         uses: repo-sync/pull-request@v2
         with:
           source_branch: ""
