@@ -23,14 +23,15 @@ jobs:
         with:
           node-version: '14'
           check-latest: true
-      - name: Install ncu
+      - name: Install npm-check-updates
         run: |
-          npm install -g ncu
+          npm install -g npm-check-updates
       - name: Update dependencies
         run: |
           cd dependencies
           ncu -u
-          npm run build
+          npm run build:dev
+          npm run build:prod
       - name: Update platform
         run: |
           cd platform
