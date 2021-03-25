@@ -33,6 +33,7 @@ jobs:
       - name: package dependencies
         run: |
           cd dependencies
+          npm install
           ncu -u
           npm run build:dev
           npm run build:prod
