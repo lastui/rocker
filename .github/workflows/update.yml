@@ -1,12 +1,6 @@
 name: Dependency update
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   schedule:
     - cron:  '*/30 * * * *'
 
@@ -17,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: main
       - name: set remote url
         run: git remote set-url --push origin https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
       - uses: actions/setup-node@v2
@@ -46,10 +42,10 @@ jobs:
       - name: create PR
         uses: repo-sync/pull-request@v2
         with:
-          source_branch: ""
-          destination_branch: "feature/automatic-dependencies-update"
+          source_branch: "main"
+          destination_branch: "main"
           pr_title: "Dependency upgrade"
           pr_body: ":crown: *An automated PR*"
-          pr_label: "auto-pr"
+          pr_label: "dependencies"
           pr_allow_empty: false
           github_token: ${{ secrets.GITHUB_TOKEN }}
