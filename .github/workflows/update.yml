@@ -46,6 +46,8 @@ jobs:
           delete-branch: true
           commit-message: Update dependencies and recompile dlls
           title: Update dependencies
+          labels: |
+            automated pr
           body: |
             Update report
             - Updated with *today's* date
