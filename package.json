@@ -44,6 +44,7 @@
   ],
   "dependencies": {
     "@lastui/babylon": "1.0.3",
+    "@lastui/dependencies": "1.0.2",
     "add-asset-html-webpack-plugin": "3.2.0",
     "buffer": "6.0.3",
     "clean-webpack-plugin": "3.0.0",

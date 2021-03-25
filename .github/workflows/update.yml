@@ -26,14 +26,17 @@ jobs:
       - name: install npm-check-updates
         run: |
           npm install -g npm-check-updates
-      - name: update dependencies
+      - name: install dependencies
+        run: |
+          npm install
+          ncu -u
+      - name: package dependencies
         run: |
           cd dependencies
-          npm install
           ncu -u
           npm run build:dev
           npm run build:prod
-      - name: update platform
+      - name: package platform
         run: |
           cd platform
           npm install
