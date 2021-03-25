@@ -1,0 +1,43 @@
+name: Health Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron:  '*/30 * * * *'
+
+jobs:
+
+  build:
+    name: From Scratch Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          check-latest: true
+      - name: Update dependencies
+        run: |
+          cd dependencies
+          ncu -u
+          npm run build
+      - name: Update platform
+        run: |
+          cd platform
+          ncu -u
+          npm run build
+      - name: pull-request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: ""
+          destination_branch: "main"
+          pr_title: "Dependency upgrade"
+          pr_body: ":crown: *An automated PR*"
+          pr_label: "auto-pr"
+          pr_allow_empty: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
