@@ -1,4 +1,4 @@
-name: Health Check
+name: Dependency update
 
 on:
   push:
@@ -17,10 +17,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: set remote url
+        run: git remote set-url --push origin https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
           check-latest: true
+      - name: Install ncu
+        run: |
+          npm install -g ncu
       - name: Update dependencies
         run: |
           cd dependencies
@@ -35,7 +40,7 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           source_branch: ""
-          destination_branch: "main"
+          destination_branch: "feature/automatic-dependencies-update"
           pr_title: "Dependency upgrade"
           pr_body: ":crown: *An automated PR*"
           pr_label: "auto-pr"
