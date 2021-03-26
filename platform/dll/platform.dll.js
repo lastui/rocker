@@ -2,222 +2,11 @@ var platform_dll;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/@lastui/rocker/platform/ModuleContext.jsx":
-/*!****************************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/ModuleContext.jsx ***!
-  \****************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ModuleContextProvider": () => (/* binding */ ModuleContextProvider),
-/* harmony export */   "useModuleLoader": () => (/* binding */ useModuleLoader)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* module decorator */ module = __webpack_require__.hmd(module);
-(function () {
-  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
-  enterModule && enterModule(module);
-})();
-
-var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
-  return a;
-};
-
-
-var ModuleContext = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
-
-var ModuleContextProvider = function ModuleContextProvider(props) {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(ModuleContext.Provider, {
-    value: props.moduleLoader || null
-  }, props.moduleLoader ? props.children : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null));
-};
-
-var useModuleLoader = function useModuleLoader() {
-  return react__WEBPACK_IMPORTED_MODULE_0__.useContext(ModuleContext);
-};
-
-__signature__(useModuleLoader, "useContext{}");
-
-
-var _default = ModuleContextProvider;
-/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = (_default);
-;
-
-(function () {
-  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
-
-  if (!reactHotLoader) {
-    return;
-  }
-
-  reactHotLoader.register(ModuleContext, "ModuleContext", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
-  reactHotLoader.register(ModuleContextProvider, "ModuleContextProvider", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
-  reactHotLoader.register(useModuleLoader, "useModuleLoader", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
-  reactHotLoader.register(_default, "default", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
-})();
-
-;
-
-(function () {
-  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
-  leaveModule && leaveModule(module);
-})();
-
-/***/ }),
-
-/***/ "./node_modules/@lastui/rocker/platform/actions.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/actions.js ***!
-  \*********************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "init": () => (/* binding */ init),
-/* harmony export */   "setAvailableModules": () => (/* binding */ setAvailableModules),
-/* harmony export */   "setEntryPointModule": () => (/* binding */ setEntryPointModule),
-/* harmony export */   "loadModule": () => (/* binding */ loadModule)
-/* harmony export */ });
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
-/* module decorator */ module = __webpack_require__.hmd(module);
-(function () {
-  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
-  enterModule && enterModule(module);
-})();
-
-var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
-  return a;
-};
-
-
-var init = function init() {
-  return {
-    type: _constants__WEBPACK_IMPORTED_MODULE_0__.INIT
-  };
-};
-var setAvailableModules = function setAvailableModules() {
-  var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
-  return {
-    type: _constants__WEBPACK_IMPORTED_MODULE_0__.SET_AVAILABLE_MODULES,
-    payload: {
-      modules: modules
-    }
-  };
-};
-var setEntryPointModule = function setEntryPointModule(entrypoint) {
-  return {
-    type: _constants__WEBPACK_IMPORTED_MODULE_0__.SET_ENTRYPOINT_MODULE,
-    payload: {
-      entrypoint: entrypoint
-    }
-  };
-};
-var loadModule = function loadModule(name) {
-  return {
-    type: _constants__WEBPACK_IMPORTED_MODULE_0__.LOAD_MODULE,
-    payload: {
-      name: name
-    }
-  };
-};
-;
-
-(function () {
-  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
-
-  if (!reactHotLoader) {
-    return;
-  }
-
-  reactHotLoader.register(init, "init", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
-  reactHotLoader.register(setAvailableModules, "setAvailableModules", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
-  reactHotLoader.register(setEntryPointModule, "setEntryPointModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
-  reactHotLoader.register(loadModule, "loadModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
-})();
-
-;
-
-(function () {
-  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
-  leaveModule && leaveModule(module);
-})();
-
-/***/ }),
-
-/***/ "./node_modules/@lastui/rocker/platform/constants.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/constants.js ***!
-  \***********************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "INIT": () => (/* binding */ INIT),
-/* harmony export */   "SET_AVAILABLE_MODULES": () => (/* binding */ SET_AVAILABLE_MODULES),
-/* harmony export */   "SET_ENTRYPOINT_MODULE": () => (/* binding */ SET_ENTRYPOINT_MODULE),
-/* harmony export */   "LOAD_MODULE": () => (/* binding */ LOAD_MODULE),
-/* harmony export */   "SHUTDOWN": () => (/* binding */ SHUTDOWN),
-/* harmony export */   "MODULE_INIT": () => (/* binding */ MODULE_INIT),
-/* harmony export */   "MODULE_LOADED": () => (/* binding */ MODULE_LOADED),
-/* harmony export */   "MODULE_UNLOADED": () => (/* binding */ MODULE_UNLOADED),
-/* harmony export */   "MODULE_NOT_AVAILABLE": () => (/* binding */ MODULE_NOT_AVAILABLE)
-/* harmony export */ });
-/* module decorator */ module = __webpack_require__.hmd(module);
-(function () {
-  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
-  enterModule && enterModule(module);
-})();
-
-var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
-  return a;
-};
-
-var INIT = "@@platform/INIT";
-var SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
-var SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
-var LOAD_MODULE = "@@platform/LOAD_MODULE";
-var SHUTDOWN = "@@platform/SHUTDOWN";
-var MODULE_INIT = "@@modules/INIT";
-var MODULE_LOADED = "@@modules/LOADED";
-var MODULE_UNLOADED = "@@modules/UNLOADED";
-var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
-;
-
-(function () {
-  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
-
-  if (!reactHotLoader) {
-    return;
-  }
-
-  reactHotLoader.register(INIT, "INIT", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(SET_AVAILABLE_MODULES, "SET_AVAILABLE_MODULES", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(SET_ENTRYPOINT_MODULE, "SET_ENTRYPOINT_MODULE", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(LOAD_MODULE, "LOAD_MODULE", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(SHUTDOWN, "SHUTDOWN", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULE_INIT, "MODULE_INIT", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULE_LOADED, "MODULE_LOADED", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULE_UNLOADED, "MODULE_UNLOADED", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULE_NOT_AVAILABLE, "MODULE_NOT_AVAILABLE", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-})();
-
-;
-
-(function () {
-  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
-  leaveModule && leaveModule(module);
-})();
-
-/***/ }),
-
 /***/ "./node_modules/@lastui/rocker/platform/development.js":
 /*!*************************************************************************!*\
   !*** ./node_modules/@lastui/rocker/platform/development.js + 1 modules ***!
   \*************************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 
@@ -257,21 +46,11 @@ var reduxfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modul
 // EXTERNAL MODULE: ./node_modules/@lastui/rocker/platform/routing.js
 var routing = __webpack_require__("./node_modules/@lastui/rocker/platform/routing.js");
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/development.js
-/* module decorator */ module = __webpack_require__.hmd(module);
 
-
-(function () {
-  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
-  enterModule && enterModule(module);
-})();
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
-  return a;
-};
 
 
 
@@ -318,138 +97,130 @@ var Module = function Module(props) {
     }
   }, "[".concat(props.name, "]"));
 };
-;
-
-(function () {
-  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
-
-  if (!reactHotLoader) {
-    return;
-  }
-
-  reactHotLoader.register(configureStore, "configureStore", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/development.js");
-  reactHotLoader.register(registerModule, "registerModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/development.js");
-  reactHotLoader.register(Module, "Module", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/development.js");
-})();
-
-;
-
-(function () {
-  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
-  leaveModule && leaveModule(module);
-})();
 
 /***/ }),
 
 /***/ "./node_modules/@lastui/rocker/platform/index.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/index.js ***!
-  \*******************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
+/*!*******************************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/index.js + 4 modules ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Module": () => (/* binding */ Module),
-/* harmony export */   "ModuleContextProvider": () => (/* reexport safe */ _ModuleContext__WEBPACK_IMPORTED_MODULE_3__.ModuleContextProvider),
-/* harmony export */   "useModuleLoader": () => (/* reexport safe */ _ModuleContext__WEBPACK_IMPORTED_MODULE_3__.useModuleLoader),
-/* harmony export */   "actions": () => (/* reexport module object */ _actions__WEBPACK_IMPORTED_MODULE_0__),
-/* harmony export */   "constants": () => (/* reexport module object */ _constants__WEBPACK_IMPORTED_MODULE_1__),
-/* harmony export */   "history": () => (/* reexport safe */ _routing__WEBPACK_IMPORTED_MODULE_2__.history),
-/* harmony export */   "createModuleLoader": () => (/* reexport safe */ _modules__WEBPACK_IMPORTED_MODULE_4__.createModuleLoader),
-/* harmony export */   "moduleLoaderMiddleware": () => (/* reexport safe */ _modules__WEBPACK_IMPORTED_MODULE_4__.moduleLoaderMiddleware),
-/* harmony export */   "registerModule": () => (/* binding */ registerModule),
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./node_modules/@lastui/rocker/platform/actions.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
-/* harmony import */ var _routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./routing */ "./node_modules/@lastui/rocker/platform/routing.js");
-/* harmony import */ var _ModuleContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ModuleContext */ "./node_modules/@lastui/rocker/platform/ModuleContext.jsx");
-/* harmony import */ var _modules__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules */ "./node_modules/@lastui/rocker/platform/modules.js");
-/* module decorator */ module = __webpack_require__.hmd(module);
-(function () {
-  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
-  enterModule && enterModule(module);
-})();
 
-var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
-  return a;
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "Module": () => (/* binding */ Module),
+  "ModuleContextProvider": () => (/* reexport */ ModuleContextProvider),
+  "actions": () => (/* reexport */ actions_namespaceObject),
+  "constants": () => (/* reexport */ constants_namespaceObject),
+  "createModuleLoader": () => (/* reexport */ createModuleLoader),
+  "default": () => (/* binding */ platform),
+  "history": () => (/* reexport */ routing.history),
+  "moduleLoaderMiddleware": () => (/* reexport */ moduleLoaderMiddleware),
+  "registerModule": () => (/* binding */ platform_registerModule),
+  "useModuleLoader": () => (/* reexport */ useModuleLoader)
+});
+
+// NAMESPACE OBJECT: ./node_modules/@lastui/rocker/platform/constants.js
+var constants_namespaceObject = {};
+__webpack_require__.r(constants_namespaceObject);
+__webpack_require__.d(constants_namespaceObject, {
+  "INIT": () => (INIT),
+  "LOAD_MODULE": () => (LOAD_MODULE),
+  "MODULE_INIT": () => (MODULE_INIT),
+  "MODULE_LOADED": () => (MODULE_LOADED),
+  "MODULE_NOT_AVAILABLE": () => (MODULE_NOT_AVAILABLE),
+  "MODULE_UNLOADED": () => (MODULE_UNLOADED),
+  "SET_AVAILABLE_MODULES": () => (SET_AVAILABLE_MODULES),
+  "SET_ENTRYPOINT_MODULE": () => (SET_ENTRYPOINT_MODULE),
+  "SHUTDOWN": () => (SHUTDOWN)
+});
+
+// NAMESPACE OBJECT: ./node_modules/@lastui/rocker/platform/actions.js
+var actions_namespaceObject = {};
+__webpack_require__.r(actions_namespaceObject);
+__webpack_require__.d(actions_namespaceObject, {
+  "init": () => (init),
+  "loadModule": () => (loadModule),
+  "setAvailableModules": () => (setAvailableModules),
+  "setEntryPointModule": () => (setEntryPointModule)
+});
+
+;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/constants.js
+var INIT = "@@platform/INIT";
+var SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
+var SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
+var LOAD_MODULE = "@@platform/LOAD_MODULE";
+var SHUTDOWN = "@@platform/SHUTDOWN";
+var MODULE_INIT = "@@modules/INIT";
+var MODULE_LOADED = "@@modules/LOADED";
+var MODULE_UNLOADED = "@@modules/UNLOADED";
+var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
+;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/actions.js
+
+var init = function init() {
+  return {
+    type: INIT
+  };
+};
+var setAvailableModules = function setAvailableModules() {
+  var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
+  return {
+    type: SET_AVAILABLE_MODULES,
+    payload: {
+      modules: modules
+    }
+  };
+};
+var setEntryPointModule = function setEntryPointModule(entrypoint) {
+  return {
+    type: SET_ENTRYPOINT_MODULE,
+    payload: {
+      entrypoint: entrypoint
+    }
+  };
+};
+var loadModule = function loadModule(name) {
+  return {
+    type: LOAD_MODULE,
+    payload: {
+      name: name
+    }
+  };
+};
+// EXTERNAL MODULE: ./node_modules/@lastui/rocker/platform/routing.js
+var routing = __webpack_require__("./node_modules/@lastui/rocker/platform/routing.js");
+// EXTERNAL MODULE: delegated ./node_modules/react/index.js from dll-reference dependencies_dll
+var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react/index.js");
+;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/ModuleContext.jsx
+
+var ModuleContext = /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createContext(null);
+
+var ModuleContextProvider = function ModuleContextProvider(props) {
+  return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(ModuleContext.Provider, {
+    value: props.moduleLoader || null
+  }, props.moduleLoader ? props.children : /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(reactfrom_dll_reference_dependencies_dll.Fragment, null));
+};
+
+var useModuleLoader = function useModuleLoader() {
+  return reactfrom_dll_reference_dependencies_dll.useContext(ModuleContext);
 };
 
 
-
-
-
-
-var registerModule =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modules/@lastui/rocker/platform/development.js").registerModule;
-var Module =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modules/@lastui/rocker/platform/development.js").Module;
-
-var _default = {
-  Module: Module,
-  ModuleContextProvider: _ModuleContext__WEBPACK_IMPORTED_MODULE_3__.ModuleContextProvider,
-  useModuleLoader: _ModuleContext__WEBPACK_IMPORTED_MODULE_3__.useModuleLoader,
-  actions: _actions__WEBPACK_IMPORTED_MODULE_0__,
-  constants: _constants__WEBPACK_IMPORTED_MODULE_1__,
-  history: _routing__WEBPACK_IMPORTED_MODULE_2__.history,
-  createModuleLoader: _modules__WEBPACK_IMPORTED_MODULE_4__.createModuleLoader,
-  moduleLoaderMiddleware: _modules__WEBPACK_IMPORTED_MODULE_4__.moduleLoaderMiddleware,
-  registerModule: registerModule
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_default);
-;
-
-(function () {
-  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
-
-  if (!reactHotLoader) {
-    return;
-  }
-
-  reactHotLoader.register(registerModule, "registerModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/index.js");
-  reactHotLoader.register(Module, "Module", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/index.js");
-  reactHotLoader.register(_default, "default", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/index.js");
-})();
-
-;
-
-(function () {
-  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
-  leaveModule && leaveModule(module);
-})();
-
-/***/ }),
-
-/***/ "./node_modules/@lastui/rocker/platform/modules.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/modules.js ***!
-  \*********************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "moduleLoaderMiddleware": () => (/* binding */ moduleLoaderMiddleware),
-/* harmony export */   "createModuleLoader": () => (/* binding */ createModuleLoader)
-/* harmony export */ });
-/* unused harmony export registerModule */
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/lib/index.js");
-/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! redux-saga/effects */ "./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
-/* harmony import */ var redux_saga_effects__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! redux */ "./node_modules/redux/lib/redux.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./constants */ "./node_modules/@lastui/rocker/platform/constants.js");
-/* module decorator */ module = __webpack_require__.hmd(module);
-(function () {
-  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
-  enterModule && enterModule(module);
-})();
-
-
-
-var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
-  return a;
-};
+/* harmony default export */ const platform_ModuleContext = (ModuleContextProvider);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
+var regenerator = __webpack_require__("./node_modules/@babel/runtime/regenerator/index.js");
+var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
+// EXTERNAL MODULE: delegated ./node_modules/react-redux/lib/index.js from dll-reference dependencies_dll
+var libfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-redux/lib/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js from dll-reference dependencies_dll
+var redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
+// EXTERNAL MODULE: delegated ./node_modules/redux/lib/redux.js from dll-reference dependencies_dll
+var reduxfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/redux/lib/redux.js");
+;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/modules.js
 
 
 
@@ -474,14 +245,14 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
     return function (next) {
       return function (action) {
         switch (action.type) {
-          case _constants__WEBPACK_IMPORTED_MODULE_5__.SET_AVAILABLE_MODULES:
+          case SET_AVAILABLE_MODULES:
             {
               return loader.setAvailableModules(action.payload.modules).then(function () {
                 return next(action);
               });
             }
 
-          case _constants__WEBPACK_IMPORTED_MODULE_5__.SET_ENTRYPOINT_MODULE:
+          case SET_ENTRYPOINT_MODULE:
             {
               return loader.loadModule(action.payload.entrypoint).then(function () {
                 return next(action);
@@ -539,7 +310,7 @@ var createModuleLoader = function createModuleLoader() {
     removeReducer(name);
     console.log("module", name, "adding reducer");
     reducer({}, {
-      type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_INIT
+      type: MODULE_INIT
     });
     reducers[name] = reducer;
   };
@@ -551,13 +322,13 @@ var createModuleLoader = function createModuleLoader() {
 
     console.log("module", name, "removing saga");
     console.log("before cancel");
-    sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+    sagaRunner( /*#__PURE__*/regenerator_default().mark(function _callee() {
+      return regenerator_default().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__.cancel)(sagas[name]);
+              return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.cancel)(sagas[name]);
 
             case 2:
             case "end":
@@ -574,13 +345,13 @@ var createModuleLoader = function createModuleLoader() {
   var addSaga = function addSaga(name, saga) {
     removeSaga(name);
     console.log("module", name, "adding saga");
-    sagas[name] = sagaRunner( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+    sagas[name] = sagaRunner( /*#__PURE__*/regenerator_default().mark(function _callee2() {
+      return regenerator_default().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return (0,redux_saga_effects__WEBPACK_IMPORTED_MODULE_3__.fork)(saga);
+              return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.fork)(saga);
 
             case 2:
             case "end":
@@ -600,7 +371,7 @@ var createModuleLoader = function createModuleLoader() {
         return {};
       };
 
-      addReducer(name, (0,redux__WEBPACK_IMPORTED_MODULE_4__.combineReducers)(scope.reducer));
+      addReducer(name, (0,reduxfrom_dll_reference_dependencies_dll.combineReducers)(scope.reducer));
     }
 
     if (scope.saga) {
@@ -661,7 +432,7 @@ var createModuleLoader = function createModuleLoader() {
 
     if (!module) {
       store.dispatch({
-        type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_NOT_AVAILABLE,
+        type: MODULE_NOT_AVAILABLE,
         payload: {
           name: name
         }
@@ -672,7 +443,7 @@ var createModuleLoader = function createModuleLoader() {
     var promise = loadModuleFile(module.url).then(function (data) {
       connectModule(name, data);
       store.dispatch({
-        type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_LOADED,
+        type: MODULE_LOADED,
         payload: {
           name: name
         }
@@ -692,7 +463,7 @@ var createModuleLoader = function createModuleLoader() {
     removeSaga(name);
     delete loadedModules[name];
     store.dispatch({
-      type: _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_UNLOADED,
+      type: MODULE_UNLOADED,
       payload: {
         name: name
       }
@@ -738,7 +509,7 @@ var createModuleLoader = function createModuleLoader() {
       }
 
       switch (action.type) {
-        case _constants__WEBPACK_IMPORTED_MODULE_5__.MODULE_UNLOADED:
+        case MODULE_UNLOADED:
           {
             console.log("in rocker reducer module unload", action.payload);
             removeReducer(name);
@@ -774,9 +545,9 @@ var createModuleLoader = function createModuleLoader() {
     var isolatedStore = isolateStore(name);
 
     var ModuleWrapper = function ModuleWrapper(props) {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(react_redux__WEBPACK_IMPORTED_MODULE_2__.Provider, {
+      return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(libfrom_dll_reference_dependencies_dll.Provider, {
         store: isolatedStore
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement(Component, props));
+      }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(Component, props));
     };
 
     return ModuleWrapper;
@@ -801,26 +572,26 @@ var createModuleLoader = function createModuleLoader() {
     getReducer: getReducer
   };
 };
-;
+;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/index.js
 
-(function () {
-  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
 
-  if (!reactHotLoader) {
-    return;
-  }
 
-  reactHotLoader.register(registerModule, "registerModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(moduleLoaderMiddleware, "moduleLoaderMiddleware", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(createModuleLoader, "createModuleLoader", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-})();
 
-;
 
-(function () {
-  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
-  leaveModule && leaveModule(module);
-})();
+var platform_registerModule =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modules/@lastui/rocker/platform/development.js").registerModule;
+var Module =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modules/@lastui/rocker/platform/development.js").Module;
+
+/* harmony default export */ const platform = ({
+  Module: Module,
+  ModuleContextProvider: ModuleContextProvider,
+  useModuleLoader: useModuleLoader,
+  actions: actions_namespaceObject,
+  constants: constants_namespaceObject,
+  history: routing.history,
+  createModuleLoader: createModuleLoader,
+  moduleLoaderMiddleware: moduleLoaderMiddleware,
+  registerModule: platform_registerModule
+});
 
 /***/ }),
 
@@ -828,43 +599,15 @@ var createModuleLoader = function createModuleLoader() {
 /*!*********************************************************!*\
   !*** ./node_modules/@lastui/rocker/platform/routing.js ***!
   \*********************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "history": () => (/* binding */ history)
 /* harmony export */ });
 /* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
-/* module decorator */ module = __webpack_require__.hmd(module);
-(function () {
-  var enterModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.enterModule : undefined;
-  enterModule && enterModule(module);
-})();
-
-var __signature__ = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default.signature : function (a) {
-  return a;
-};
-
 
 var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
-;
-
-(function () {
-  var reactHotLoader = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.default : undefined;
-
-  if (!reactHotLoader) {
-    return;
-  }
-
-  reactHotLoader.register(history, "history", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/routing.js");
-})();
-
-;
-
-(function () {
-  var leaveModule = typeof reactHotLoaderGlobal !== 'undefined' ? reactHotLoaderGlobal.leaveModule : undefined;
-  leaveModule && leaveModule(module);
-})();
 
 /***/ }),
 
@@ -1752,16 +1495,13 @@ module.exports = dependencies_dll;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -1789,21 +1529,6 @@ module.exports = dependencies_dll;
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	
