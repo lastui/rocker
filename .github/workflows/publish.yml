@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Version bump & publish to npm
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
 
   build:
-    name: Run npm check update and recompile dlls
+    name: Update version and publish to npm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
