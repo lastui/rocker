@@ -51,10 +51,10 @@ var _default = ModuleContextProvider;
     return;
   }
 
-  reactHotLoader.register(ModuleContext, "ModuleContext", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
-  reactHotLoader.register(ModuleContextProvider, "ModuleContextProvider", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
-  reactHotLoader.register(useModuleLoader, "useModuleLoader", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
-  reactHotLoader.register(_default, "default", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
+  reactHotLoader.register(ModuleContext, "ModuleContext", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
+  reactHotLoader.register(ModuleContextProvider, "ModuleContextProvider", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
+  reactHotLoader.register(useModuleLoader, "useModuleLoader", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
+  reactHotLoader.register(_default, "default", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/ModuleContext.jsx");
 })();
 
 ;
@@ -131,10 +131,10 @@ var loadModule = function loadModule(name) {
     return;
   }
 
-  reactHotLoader.register(init, "init", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
-  reactHotLoader.register(setAvailableModules, "setAvailableModules", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
-  reactHotLoader.register(setEntryPointModule, "setEntryPointModule", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
-  reactHotLoader.register(loadModule, "loadModule", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
+  reactHotLoader.register(init, "init", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
+  reactHotLoader.register(setAvailableModules, "setAvailableModules", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
+  reactHotLoader.register(setEntryPointModule, "setEntryPointModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
+  reactHotLoader.register(loadModule, "loadModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/actions.js");
 })();
 
 ;
@@ -193,15 +193,15 @@ var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
     return;
   }
 
-  reactHotLoader.register(INIT, "INIT", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(SET_AVAILABLE_MODULES, "SET_AVAILABLE_MODULES", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(SET_ENTRYPOINT_MODULE, "SET_ENTRYPOINT_MODULE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(LOAD_MODULE, "LOAD_MODULE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(SHUTDOWN, "SHUTDOWN", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULE_INIT, "MODULE_INIT", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULE_LOADED, "MODULE_LOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULE_UNLOADED, "MODULE_UNLOADED", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
-  reactHotLoader.register(MODULE_NOT_AVAILABLE, "MODULE_NOT_AVAILABLE", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(INIT, "INIT", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(SET_AVAILABLE_MODULES, "SET_AVAILABLE_MODULES", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(SET_ENTRYPOINT_MODULE, "SET_ENTRYPOINT_MODULE", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(LOAD_MODULE, "LOAD_MODULE", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(SHUTDOWN, "SHUTDOWN", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(MODULE_INIT, "MODULE_INIT", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(MODULE_LOADED, "MODULE_LOADED", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(MODULE_UNLOADED, "MODULE_UNLOADED", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
+  reactHotLoader.register(MODULE_NOT_AVAILABLE, "MODULE_NOT_AVAILABLE", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/constants.js");
 })();
 
 ;
@@ -327,9 +327,9 @@ var Module = function Module(props) {
     return;
   }
 
-  reactHotLoader.register(configureStore, "configureStore", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/development.js");
-  reactHotLoader.register(registerModule, "registerModule", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/development.js");
-  reactHotLoader.register(Module, "Module", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/development.js");
+  reactHotLoader.register(configureStore, "configureStore", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/development.js");
+  reactHotLoader.register(registerModule, "registerModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/development.js");
+  reactHotLoader.register(Module, "Module", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/development.js");
 })();
 
 ;
@@ -405,9 +405,9 @@ var _default = {
     return;
   }
 
-  reactHotLoader.register(registerModule, "registerModule", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/index.js");
-  reactHotLoader.register(Module, "Module", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/index.js");
-  reactHotLoader.register(_default, "default", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/index.js");
+  reactHotLoader.register(registerModule, "registerModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/index.js");
+  reactHotLoader.register(Module, "Module", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/index.js");
+  reactHotLoader.register(_default, "default", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/index.js");
 })();
 
 ;
@@ -810,9 +810,9 @@ var createModuleLoader = function createModuleLoader() {
     return;
   }
 
-  reactHotLoader.register(registerModule, "registerModule", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(moduleLoaderMiddleware, "moduleLoaderMiddleware", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
-  reactHotLoader.register(createModuleLoader, "createModuleLoader", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
+  reactHotLoader.register(registerModule, "registerModule", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
+  reactHotLoader.register(moduleLoaderMiddleware, "moduleLoaderMiddleware", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
+  reactHotLoader.register(createModuleLoader, "createModuleLoader", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/modules.js");
 })();
 
 ;
@@ -856,7 +856,7 @@ var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
     return;
   }
 
-  reactHotLoader.register(history, "history", "/Users/admin/Repositories/LastUI/rocker/platform/node_modules/@lastui/rocker/platform/routing.js");
+  reactHotLoader.register(history, "history", "/home/runner/work/rocker/rocker/platform/node_modules/@lastui/rocker/platform/routing.js");
 })();
 
 ;
