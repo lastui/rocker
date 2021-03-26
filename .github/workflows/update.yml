@@ -42,7 +42,7 @@ jobs:
       - name: create PR
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.PAT }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           delete-branch: true
           commit-message: Update dependencies and recompile dlls
           title: Update dependencies
