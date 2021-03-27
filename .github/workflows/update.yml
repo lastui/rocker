@@ -39,12 +39,9 @@ jobs:
           npm install
           ncu -u
           npm run build
-      - name: diff check
-        uses: EndBug/version-check@v1
-        with:
-          diff-search: true
-      - name: Log when changed
-        if: steps.check.outputs.changed == 'true'
+      - uses: technote-space/get-diff-action@v4
+      - name: bump version patch
+        if: env.GIT_DIFF
         run: npm version patch
       - name: create PR
         uses: peter-evans/create-pull-request@v3
