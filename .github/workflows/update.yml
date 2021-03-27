@@ -34,20 +34,15 @@ jobs:
           npm install
           ncu -u
           npm run build
-      - uses: technote-space/get-diff-action@v4
-        with:
-          PATTERNS: |
-            +(dependencies|platform)/dll/*.js
-            +(dependencies|platform)/dll/*.txt
-            +(dependencies|platform)/dll/*.json
-          FILES: |
-            package.json
+      - name: Check if there are changes
+        id: changes
+        uses: UnicornGlobal/has-changes-action@v1.0.11
       - run: echo '${{ env.GIT_DIFF }}' | jq .
       - name: bump version patch
-        if: env.GIT_DIFF
+        if: steps.changes.outputs.changed == 1
         run: npm version patch
       - name: create PR
-        if: env.GIT_DIFF
+        if: steps.changes.outputs.changed == 1
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
