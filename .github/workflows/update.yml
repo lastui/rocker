@@ -37,10 +37,9 @@ jobs:
       - name: Check if there are changes
         id: changes
         uses: UnicornGlobal/has-changes-action@v1.0.11
-      - run: echo '${{ env.GIT_DIFF }}' | jq .
       - name: bump version patch
         if: steps.changes.outputs.changed == 1
-        run: npm version patch
+        run: npm version patch --no-git-tag-version
       - name: create PR
         if: steps.changes.outputs.changed == 1
         uses: peter-evans/create-pull-request@v3
