@@ -1,0 +1,34 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  build:
+    name: Component test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          check-latest: true
+      - name: Update build dependencies
+        run: |
+          npm install
+      - name: Update build dependencies
+        run: |
+          cd ctest
+          npm install
+      - name: Test build dll
+        run: |
+          cd ctest
+          npm run build:dll:dev
+          npm run build:dll:prod
+      - name: Test build module
+        run: |
+          cd ctest
+          npm run build

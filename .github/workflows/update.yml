@@ -17,11 +17,16 @@ jobs:
           check-latest: true
       - name: Install npm-check-updates
         run: npm install -g npm-check-updates
-      - name: Install build dependencies
+      - name: Update build dependencies
         run: |
           npm install
           ncu -u
           npm install
+      - name: Update ctest dependencies
+        run: |
+          cd ctest
+          npm install
+          ncu -u
       - name: Package dependencies
         run: |
           cd dependencies
