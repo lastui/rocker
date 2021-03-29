@@ -1,7 +1,8 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.0.99",
+  "version": "0.1.0",
   "scripts": {
+    "postinstall": "cd dependencies && npm i && cd ../platform && npm i",
     "build": "npm run build:dependencies && npm run build:platform",
     "build:dependencies": "cd dependencies && npm run build",
     "build:platform": "cd platform && npm run build"

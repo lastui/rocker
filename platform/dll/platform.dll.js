@@ -90,10 +90,7 @@ var Module = function Module(props) {
       boxSizing: "border-box",
       border: "1px dashed rgba(0,0,0,.5)",
       height: "100%",
-      width: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
+      width: "100%"
     }
   }, "[".concat(props.name, "]"));
 };
@@ -308,7 +305,6 @@ var createModuleLoader = function createModuleLoader() {
 
   var addReducer = function addReducer(name, reducer) {
     removeReducer(name);
-    console.log("module", name, "adding reducer");
     reducer({}, {
       type: MODULE_INIT
     });
@@ -320,8 +316,6 @@ var createModuleLoader = function createModuleLoader() {
       return;
     }
 
-    console.log("module", name, "removing saga");
-    console.log("before cancel");
     sagaRunner( /*#__PURE__*/regeneratorfrom_dll_reference_dependencies_dll_default().mark(function _callee() {
       return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function _callee$(_context) {
         while (1) {
@@ -337,14 +331,11 @@ var createModuleLoader = function createModuleLoader() {
         }
       }, _callee);
     }));
-    console.log("after cancel");
-    console.log("module", name, "removed saga");
     delete sagas[name];
   };
 
   var addSaga = function addSaga(name, saga) {
     removeSaga(name);
-    console.log("module", name, "adding saga");
     sagas[name] = sagaRunner( /*#__PURE__*/regeneratorfrom_dll_reference_dependencies_dll_default().mark(function _callee2() {
       return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function _callee2$(_context2) {
         while (1) {
@@ -360,7 +351,6 @@ var createModuleLoader = function createModuleLoader() {
         }
       }, _callee2);
     }));
-    console.log("module", name, "added saga");
   };
 
   var connectModule = function connectModule(name) {
@@ -404,14 +394,9 @@ var createModuleLoader = function createModuleLoader() {
 
   var setModuleMountState = function setModuleMountState(name, mounted) {
     if (!mounted) {
-      console.log("module", name, "ack unmount");
-
       if (!loadedModules[name]) {
-        console.log("module", name, "is now dangling and needs cleanup");
         danglingModules.push(name);
       }
-    } else {
-      console.log("module", name, "ack mount");
     }
   };
 
@@ -459,7 +444,6 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var unloadModule = function unloadModule(name) {
-    console.log("unloading module", name);
     removeSaga(name);
     delete loadedModules[name];
     store.dispatch({
@@ -504,14 +488,12 @@ var createModuleLoader = function createModuleLoader() {
       var action = arguments.length > 1 ? arguments[1] : void 0;
 
       for (var _name = danglingModules.pop(); _name; _name = danglingModules.pop()) {
-        console.log("evicting dangling module redux state", _name);
         delete state[_name];
       }
 
       switch (action.type) {
         case MODULE_UNLOADED:
           {
-            console.log("in rocker reducer module unload", action.payload);
             removeReducer(name);
             break;
           }
