@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
 
 const Module = (props = {}) => {
-  console.log("in render of", props);
-
   const moduleLoader = useModuleLoader();
 
   let [loadedModule, setLoadedModule] = useState(
@@ -12,7 +10,6 @@ const Module = (props = {}) => {
 
   useEffect(() => {
     const name = props.name
-    console.log('mount', name)
     if (name) {
       moduleLoader.loadModule(name).then((module) => {
         moduleLoader.setModuleMountState(name, true);
@@ -20,7 +17,6 @@ const Module = (props = {}) => {
       });
     }
     return () => {
-      console.log('unmount', name)
       if (name) {
         moduleLoader.setModuleMountState(name, false);
       }
@@ -29,17 +25,14 @@ const Module = (props = {}) => {
 
   if (!loadedModule) {
     // FIXME does not update need to store loadedModule in state
-    console.log("module", props, "not loaded");
     return <React.Fragment />;
   }
 
   if (!loadedModule.root) {
-    console.log("module", props, "not does not have component");
     return <React.Fragment />;
   }
 
   // FIXME if children?
-
   const ModuleComponent = loadedModule.root;
 
   return (
@@ -50,4 +43,3 @@ const Module = (props = {}) => {
 };
 
 export default React.memo(Module);
-//export default React.memo(Module, (props, nextProps) => !nextProps.frozen);

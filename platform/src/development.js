@@ -51,9 +51,6 @@ export const Module = (props) => (
       border: "1px dashed rgba(0,0,0,.5)",
       height: "100%",
       width: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
     }}
   >
     {`[${props.name}]`}

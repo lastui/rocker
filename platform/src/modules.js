@@ -75,7 +75,6 @@ export const createModuleLoader = () => {
 
   const addReducer = (name, reducer) => {
     removeReducer(name);
-    console.log("module", name, "adding reducer");
     reducer({}, { type: constants.MODULE_INIT });
     reducers[name] = reducer;
   };
@@ -84,23 +83,17 @@ export const createModuleLoader = () => {
     if (!sagas[name]) {
       return;
     }
-    console.log("module", name, "removing saga");
-    console.log("before cancel");
     sagaRunner(function* () {
       yield cancel(sagas[name]);
     });
-    console.log("after cancel");
-    console.log("module", name, "removed saga");
     delete sagas[name];
   };
 
   const addSaga = (name, saga) => {
     removeSaga(name);
-    console.log("module", name, "adding saga");
     sagas[name] = sagaRunner(function* () {
       yield fork(saga);
     });
-    console.log("module", name, "added saga");
   };
 
   const connectModule = (name, scope = {}) => {
@@ -134,13 +127,9 @@ export const createModuleLoader = () => {
 
   const setModuleMountState = (name, mounted) => {
     if (!mounted) {
-      console.log("module", name, "ack unmount");
       if (!loadedModules[name]) {
-        console.log("module", name, "is now dangling and needs cleanup");
         danglingModules.push(name);
       }
-    } else {
-      console.log("module", name, "ack mount");
     }
   };
 
@@ -184,7 +173,6 @@ export const createModuleLoader = () => {
   };
 
   const unloadModule = (name) => {
-    console.log("unloading module", name);
     removeSaga(name);
     delete loadedModules[name];
     store.dispatch({
@@ -226,13 +214,11 @@ export const createModuleLoader = () => {
         name;
         name = danglingModules.pop()
       ) {
-        console.log("evicting dangling module redux state", name);
         delete state[name];
       }
 
       switch (action.type) {
         case constants.MODULE_UNLOADED: {
-          console.log("in rocker reducer module unload", action.payload);
           removeReducer(name);
           break;
         }
