@@ -1,25 +1,10 @@
 const path = require("path");
 const webpack = require("webpack");
-const fs = require("fs");
+
 const HTMLWebpackPlugin = require("html-webpack-plugin");
+const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 
 const settings = require("../settings");
-
-const dependenciesContent = fs.readFileSync(
-	path.resolve(__dirname, "../../dependencies/dll/dependencies.dll.js"),
-	{
-		encoding: "utf8",
-		flag: "r",
-	}
-);
-
-const platformContent = fs.readFileSync(
-	path.resolve(__dirname, "../../platform/dll/platform.dll.js"),
-	{
-		encoding: "utf8",
-		flag: "r",
-	}
-);
 
 const config = {
 	...require("../internal/base.js"),
@@ -60,10 +45,6 @@ config.plugins.push(
 									margin: 0;
 								}
 							</style>
-							<script>
-								${dependenciesContent};
-								${platformContent};
-							</script>
 						</head>
 						<body>
 							${htmlWebpackPlugin.tags.bodyTags}
@@ -71,6 +52,22 @@ config.plugins.push(
 					</html>
 				`,
 		}),
+		new AddAssetHtmlPlugin([
+			{
+				filepath: path.resolve(
+					__dirname,
+					"../../dependencies/dll/dependencies.dll.js"
+				),
+				typeOfAsset: "js",
+			},
+			{
+				filepath: path.resolve(
+					__dirname,
+					"../../platform/dll/platform.dll.js"
+				),
+				typeOfAsset: "js",
+			},
+		]),
 	]
 );
 
