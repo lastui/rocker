@@ -286,7 +286,7 @@ var createModuleLoader = function createModuleLoader() {
   var loadedModules = {};
   var availableModules = {};
   var loadingModules = {};
-  var danglingModules = [];
+  var danglingNamespaces = [];
   var reducers = {};
   var sagas = {};
 
@@ -380,8 +380,7 @@ var createModuleLoader = function createModuleLoader() {
     }).then(function (data) {
       var sandbox = {
         __SANDBOX_SCOPE__: {}
-      }; // FIXME try without "with(this)"
-
+      };
       var r = new Function("with(this) {" + data + ";}").call(sandbox);
 
       if (r !== void 0) {
@@ -395,7 +394,7 @@ var createModuleLoader = function createModuleLoader() {
   var setModuleMountState = function setModuleMountState(name, mounted) {
     if (!mounted) {
       if (!loadedModules[name]) {
-        danglingModules.push(name);
+        danglingNamespaces.push(name);
       }
     }
   };
@@ -473,8 +472,7 @@ var createModuleLoader = function createModuleLoader() {
 
       if (loadedModules[_module]) {
         promises.push(unloadModule(_module));
-      } // FIXME this module could be running right now
-
+      }
 
       delete availableModules[_module];
     }
@@ -487,7 +485,7 @@ var createModuleLoader = function createModuleLoader() {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
       var action = arguments.length > 1 ? arguments[1] : void 0;
 
-      for (var _name = danglingModules.pop(); _name; _name = danglingModules.pop()) {
+      for (var _name = danglingNamespaces.pop(); _name; _name = danglingNamespaces.pop()) {
         delete state[_name];
       }
 
