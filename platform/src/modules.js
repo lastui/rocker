@@ -58,7 +58,7 @@ export const createModuleLoader = () => {
   const loadedModules = {};
   const availableModules = {};
   const loadingModules = {};
-  const danglingModules = [];
+  const danglingNamespaces = [];
   const reducers = {};
   const sagas = {};
 
@@ -117,7 +117,6 @@ export const createModuleLoader = () => {
         let sandbox = {
           __SANDBOX_SCOPE__: {},
         };
-        // FIXME try without "with(this)"
         const r = new Function("with(this) {" + data + ";}").call(sandbox);
         if (r !== undefined) {
           return {};
@@ -128,7 +127,7 @@ export const createModuleLoader = () => {
   const setModuleMountState = (name, mounted) => {
     if (!mounted) {
       if (!loadedModules[name]) {
-        danglingModules.push(name);
+        danglingNamespaces.push(name);
       }
     }
   };
@@ -201,7 +200,6 @@ export const createModuleLoader = () => {
       if (loadedModules[module]) {
         promises.push(unloadModule(module));
       }
-      // FIXME this module could be running right now
       delete availableModules[module];
     }
     return Promise.all(promises);
@@ -210,9 +208,9 @@ export const createModuleLoader = () => {
   const getReducer = () => {
     return (state = {}, action) => {
       for (
-        let name = danglingModules.pop();
+        let name = danglingNamespaces.pop();
         name;
-        name = danglingModules.pop()
+        name = danglingNamespaces.pop()
       ) {
         delete state[name];
       }
