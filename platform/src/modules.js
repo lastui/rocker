@@ -231,7 +231,7 @@ export const createModuleLoader = () => {
             return state;
           }
           state.shared = reducer(state.shared || {}, {
-            type: constants.SET_MODULE_SHARED
+            type: constants.SET_MODULE_SHARED,
             payload: payload.data,
           });
           return state;
