@@ -227,13 +227,12 @@ export const createModuleLoader = () => {
         }
         case constants.SET_MODULE_SHARED: {
           const reducer = reducers[action.payload.name];
-          if (!reducer) {
-            return state;
+          if (reducer) {
+            state.shared = reducer(state.shared || {}, {
+              type: constants.SET_MODULE_SHARED,
+              payload: payload.data,
+            });
           }
-          state.shared = reducer(state.shared || {}, {
-            type: constants.SET_MODULE_SHARED,
-            payload: payload.data,
-          });
           return state;
         }
       }
