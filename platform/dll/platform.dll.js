@@ -267,12 +267,12 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
         switch (action.type) {
           case SET_MODULE_SHARED:
             {
-              console.debug("module ".concat(action.payload.name, " will modify shared with"), action.payload.data);
-              var nextShared = loader.reduceShared(store.getState().shared, action.payload.name, action.payload.data);
-              console.debug("next shared will be", nextShared);
+              console.debug("module ".concat(action.payload.name, " will process shared"));
+              var prevShared = store.getState().shared;
+              var nextShared = loader.reduceShared(prevShared, action.payload.name, action.payload.data).shared;
               return next({
                 type: SET_SHARED,
-                payload: nextShared
+                payload: nextShared ? nextShared : prevShared
               });
             }
 
@@ -392,14 +392,6 @@ var createModuleLoader = function createModuleLoader() {
     var scope = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
 
     if (scope.reducer) {
-      scope.reducer.router = function () {
-        return {};
-      };
-
-      scope.reducer.shared = function () {
-        return {};
-      };
-
       addReducer(name, (0,reduxfrom_dll_reference_dependencies_dll.combineReducers)(scope.reducer));
     }
 
@@ -519,18 +511,22 @@ var createModuleLoader = function createModuleLoader() {
 
   var reduceShared = function reduceShared() {
     var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-    var module = arguments.length > 1 ? arguments[1] : void 0;
+    var name = arguments.length > 1 ? arguments[1] : void 0;
     var data = arguments.length > 2 ? arguments[2] : void 0;
-    var reducer = reducers[module];
+    var reducer = reducers[name];
 
     if (!reducer) {
+      console.debug("shared reducer of ".concat(name, " does not exists"));
       return state;
     }
 
-    return reducer(state, {
+    console.debug('yes exists as', reducer, 'with state');
+    var action = {
       type: SET_SHARED,
       payload: data
-    });
+    };
+    console.log('action', action);
+    return reducer(state, action);
   };
 
   var getReducer = function getReducer() {
