@@ -585,7 +585,8 @@ var Module =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modul
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "history": () => (/* binding */ history)
 /* harmony export */ });
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/main.js");
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history__WEBPACK_IMPORTED_MODULE_0__);
 
 var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
 
@@ -611,13 +612,13 @@ module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll
 
 /***/ }),
 
-/***/ "./node_modules/history/index.js":
-/*!*************************************************************************************!*\
-  !*** delegated ./node_modules/history/index.js from dll-reference dependencies_dll ***!
-  \*************************************************************************************/
+/***/ "./node_modules/history/main.js":
+/*!************************************************************************************!*\
+  !*** delegated ./node_modules/history/main.js from dll-reference dependencies_dll ***!
+  \************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/main.js");
 
 /***/ }),
 
