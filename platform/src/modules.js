@@ -91,6 +91,7 @@ export const createModuleLoader = () => {
   };
 
   const addReducer = (name, reducer) => {
+    console.debug(`adding reducer to ${name}`, reducer);
     removeReducer(name);
     reducer({}, { type: constants.MODULE_INIT });
     reducers[name] = reducer;
@@ -320,6 +321,6 @@ export const createModuleLoader = () => {
     getLoadedModule,
     setModuleMountState,
     getReducer,
-    setShared,
+    reduceShared,
   };
 };
