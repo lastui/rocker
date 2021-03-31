@@ -152,7 +152,8 @@ export const createModuleLoader = () => {
       return Promise.resolve(null);
     }
 
-    const promise = loadModuleFile(module.url).then((data) => {
+    const promise = loadModuleFile(module.url)
+      .then((data) => {
         connectModule(name, data);
         store.dispatch({
           type: constants.MODULE_LOADED,
@@ -168,7 +169,7 @@ export const createModuleLoader = () => {
         return data;
       });
 
-    return setLoadingModule(name, promise)
+    return setLoadingModule(name, promise);
   };
 
   const unloadModule = (name) => {
@@ -218,7 +219,22 @@ export const createModuleLoader = () => {
       switch (action.type) {
         case constants.MODULE_UNLOADED: {
           removeReducer(name);
-          break;
+          return state;
+        }
+        case constants.INIT: {
+          state.shared = {};
+          return state;
+        }
+        case constants.SET_MODULE_SHARED: {
+          const reducer = reducers[action.payload.name];
+          if (!reducer) {
+            return state;
+          }
+          state.shared = reducer(state.shared || {}, {
+            type: constants.SET_MODULE_SHARED
+            payload: payload.data,
+          });
+          return state;
         }
       }
 
@@ -236,6 +252,7 @@ export const createModuleLoader = () => {
       const state = store.getState();
       const isolatedState = state.modules[name] || {};
       isolatedState.router = state.router;
+      isolatedState.shared = state.shared || {};
       return isolatedState;
     },
     subscribe: store.subscribe,

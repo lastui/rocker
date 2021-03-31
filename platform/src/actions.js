@@ -4,6 +4,14 @@ export const init = () => ({
   type: constants.INIT,
 });
 
+export const setShared = (name, data = {}) => ({
+  type: constants.SET_MODULE_SHARED,
+  payload: {
+    name,
+    data,
+  },
+})
+
 export const setAvailableModules = (modules = []) => ({
   type: constants.SET_AVAILABLE_MODULES,
   payload: {
