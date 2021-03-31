@@ -22,9 +22,22 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
 ) => {
   switch (action.type) {
     case constants.SET_MODULE_SHARED: {
-      console.debug(`module ${action.payload.name} will modify shared with`, action.payload.data)
-      return next(action);
+      console.debug(
+        `module ${action.payload.name} will modify shared with`,
+        action.payload.data
+      );
+      const nextShared = loader.reduceShared(
+        store.getState().shared,
+        action.payload.name,
+        action.payload.data
+      );
+      console.debug('next shared will be', nextShared)
+      return next({
+        type: constants.SET_SHARED,
+        payload: nextShared,
+      });
     }
+
     case constants.SET_AVAILABLE_MODULES: {
       return loader
         .setAvailableModules(action.payload.modules)
@@ -56,7 +69,7 @@ export const createModuleLoader = () => {
   };
 
   let sagaRunner = () => {
-    console.log("Sagas runnner not provided!");
+    console.error("Sagas runnner not provided!");
   };
 
   const loadedModules = {};
@@ -208,6 +221,17 @@ export const createModuleLoader = () => {
     return Promise.all(promises);
   };
 
+  const reduceShared = (state = {}, module, data) => {
+    const reducer = reducers[module];
+    if (!reducer) {
+      return state;
+    }
+    return reducer(state, {
+      type: constants.SET_SHARED,
+      payload: data,
+    });
+  };
+
   const getReducer = () => {
     return (state = {}, action) => {
       for (
@@ -220,13 +244,13 @@ export const createModuleLoader = () => {
       }
 
       switch (action.type) {
-        case constants.REPLACE_SHARED: {
+        case constants.SET_SHARED: {
           console.debug(`dyn reducer - replacing shared (ignore)`);
           return state;
         }
         case constants.SET_AVAILABLE_MODULES: {
           console.debug(`dyn reducer - set available modules (ignore)`);
-          return state; 
+          return state;
         }
         case constants.MODULE_UNLOADED: {
           console.debug(`dyn reducer - module ${name} unloaded`);
@@ -238,7 +262,9 @@ export const createModuleLoader = () => {
           return state;
         }
         case constants.SET_MODULE_SHARED: {
-          console.debug(`dyn reducer - set module ${action.payload.name} shared (ignore)`);
+          console.debug(
+            `dyn reducer - set module ${action.payload.name} shared (ignore)`
+          );
           return state;
         }
       }
@@ -272,7 +298,6 @@ export const createModuleLoader = () => {
         <Component {...props} />
       </Provider>
     );
-    ModuleWrapper.displayName = `Module-${name}`;
     return ModuleWrapper;
   };
 
@@ -293,5 +318,6 @@ export const createModuleLoader = () => {
     getLoadedModule,
     setModuleMountState,
     getReducer,
+    setShared,
   };
 };

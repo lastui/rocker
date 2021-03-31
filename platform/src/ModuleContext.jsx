@@ -8,8 +8,6 @@ const ModuleContextProvider = (props) => (
 	</ModuleContext.Provider>
 );
 
-ModuleContextProvider.displayName = "ModuleContextProvider"
-
 const useModuleLoader = () => React.useContext(ModuleContext);
 
 export { ModuleContextProvider, useModuleLoader };

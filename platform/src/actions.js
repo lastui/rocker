@@ -4,8 +4,8 @@ export const init = () => ({
   type: constants.INIT,
 });
 
-export const replaceShared = (payload) => ({
-  type: constants.REPLACE_SHARED,
+export const setShared = (payload = {}) => ({
+  type: constants.SET_SHARED,
   payload,
 });
 
