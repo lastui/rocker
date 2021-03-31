@@ -215,7 +215,7 @@ export const createModuleLoader = () => {
         name;
         name = danglingNamespaces.pop()
       ) {
-        console.debug(`module's ${name} state evicted`);
+        console.debug(`dyn reducer - module's ${name} state evicted`);
         delete state[name];
       }
 
@@ -224,7 +224,7 @@ export const createModuleLoader = () => {
           console.debug(`dyn reducer - replacing shared (ignore)`);
           return state;
         }
-        case SET_AVAILABLE_MODULES: {
+        case constants.SET_AVAILABLE_MODULES: {
           console.debug(`dyn reducer - set available modules (ignore)`);
           return state; 
         }

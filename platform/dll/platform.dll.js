@@ -132,7 +132,7 @@ __webpack_require__.d(constants_namespaceObject, {
   "MODULE_NOT_AVAILABLE": () => (MODULE_NOT_AVAILABLE),
   "MODULE_UNLOADED": () => (MODULE_UNLOADED),
   "REPLACE_SHARED": () => (REPLACE_SHARED),
-  "SET_AVAILABLE_MODULES": () => (constants_SET_AVAILABLE_MODULES),
+  "SET_AVAILABLE_MODULES": () => (SET_AVAILABLE_MODULES),
   "SET_ENTRYPOINT_MODULE": () => (SET_ENTRYPOINT_MODULE),
   "SET_MODULE_SHARED": () => (SET_MODULE_SHARED),
   "SHUTDOWN": () => (SHUTDOWN)
@@ -152,7 +152,7 @@ __webpack_require__.d(actions_namespaceObject, {
 
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/constants.js
 var INIT = "@@platform/INIT";
-var constants_SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
+var SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
 var SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
 var LOAD_MODULE = "@@platform/LOAD_MODULE";
 var SHUTDOWN = "@@platform/SHUTDOWN";
@@ -188,7 +188,7 @@ var setModuleShared = function setModuleShared(name) {
 var setAvailableModules = function setAvailableModules() {
   var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
   return {
-    type: constants_SET_AVAILABLE_MODULES,
+    type: SET_AVAILABLE_MODULES,
     payload: {
       modules: modules
     }
@@ -272,7 +272,7 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
               return next(action);
             }
 
-          case constants_SET_AVAILABLE_MODULES:
+          case SET_AVAILABLE_MODULES:
             {
               return loader.setAvailableModules(action.payload.modules).then(function () {
                 return next(action);
@@ -514,7 +514,7 @@ var createModuleLoader = function createModuleLoader() {
       var action = arguments.length > 1 ? arguments[1] : void 0;
 
       for (var _name = danglingNamespaces.pop(); _name; _name = danglingNamespaces.pop()) {
-        console.debug("module's ".concat(_name, " state evicted"));
+        console.debug("dyn reducer - module's ".concat(_name, " state evicted"));
         delete state[_name];
       }
 
