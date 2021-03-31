@@ -221,16 +221,12 @@ export const createModuleLoader = () => {
   const reduceShared = (state = {}, name, data) => {
     const reducer = reducers[name];
     if (!reducer) {
-      console.debug(`shared reducer of ${name} does not exists`)
       return state;
     }
-    console.debug('yes exists as', reducer, 'with state')
-    const action = {
+    return reducer(state, {
       type: constants.SET_SHARED,
       payload: data,
-    }
-    console.log('action', action)
-    return reducer(state, action);
+    });
   };
 
   const getReducer = () => {
