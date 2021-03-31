@@ -22,19 +22,16 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
 ) => {
   switch (action.type) {
     case constants.SET_MODULE_SHARED: {
-      console.debug(
-        `module ${action.payload.name} will modify shared with`,
-        action.payload.data
-      );
+      console.debug(`module ${action.payload.name} will process shared`);
+      const prevShared = store.getState().shared
       const nextShared = loader.reduceShared(
-        store.getState().shared,
+        prevShared,
         action.payload.name,
         action.payload.data
-      );
-      console.debug("next shared will be", nextShared);
+      ).shared;
       return next({
         type: constants.SET_SHARED,
-        payload: nextShared,
+        payload: nextShared ? nextShared : prevShared,
       });
     }
 
@@ -116,8 +113,6 @@ export const createModuleLoader = () => {
 
   const connectModule = (name, scope = {}) => {
     if (scope.reducer) {
-      scope.reducer.router = () => ({});
-      scope.reducer.shared = () => ({});
       addReducer(name, combineReducers(scope.reducer));
     }
     if (scope.saga) {
@@ -223,8 +218,8 @@ export const createModuleLoader = () => {
     return Promise.all(promises);
   };
 
-  const reduceShared = (state = {}, module, data) => {
-    const reducer = reducers[module];
+  const reduceShared = (state = {}, name, data) => {
+    const reducer = reducers[name];
     if (!reducer) {
       return state;
     }
