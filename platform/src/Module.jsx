@@ -45,6 +45,4 @@ const Module = (props = {}) => {
   );
 };
 
-Module.displayName = "Module";
-
 export default React.memo(Module);
