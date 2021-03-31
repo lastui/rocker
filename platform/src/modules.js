@@ -21,6 +21,10 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
   action
 ) => {
   switch (action.type) {
+    case constants.SET_MODULE_SHARED: {
+      console.debug(`module ${action.payload.name} will modify shared with`, action.payload.data)
+      return next(action);
+    }
     case constants.SET_AVAILABLE_MODULES: {
       return loader
         .setAvailableModules(action.payload.modules)
@@ -125,10 +129,8 @@ export const createModuleLoader = () => {
       });
 
   const setModuleMountState = (name, mounted) => {
-    if (!mounted) {
-      if (!loadedModules[name]) {
-        danglingNamespaces.push(name);
-      }
+    if (!mounted && !loadedModules[name]) {
+      danglingNamespaces.push(name);
     }
   };
 
@@ -213,26 +215,30 @@ export const createModuleLoader = () => {
         name;
         name = danglingNamespaces.pop()
       ) {
+        console.debug(`module's ${name} state evicted`);
         delete state[name];
       }
 
       switch (action.type) {
+        case constants.REPLACE_SHARED: {
+          console.debug(`dyn reducer - replacing shared (ignore)`);
+          return state;
+        }
+        case SET_AVAILABLE_MODULES: {
+          console.debug(`dyn reducer - set available modules (ignore)`);
+          return state; 
+        }
         case constants.MODULE_UNLOADED: {
+          console.debug(`dyn reducer - module ${name} unloaded`);
           removeReducer(name);
           return state;
         }
         case constants.INIT: {
-          state.shared = {};
+          console.debug(`dyn reducer - platform init (ignore)`);
           return state;
         }
         case constants.SET_MODULE_SHARED: {
-          const reducer = reducers[action.payload.name];
-          if (reducer) {
-            state.shared = reducer(state.shared || {}, {
-              type: constants.SET_MODULE_SHARED,
-              payload: payload.data,
-            });
-          }
+          console.debug(`dyn reducer - set module ${action.payload.name} shared (ignore)`);
           return state;
         }
       }
@@ -251,7 +257,6 @@ export const createModuleLoader = () => {
       const state = store.getState();
       const isolatedState = state.modules[name] || {};
       isolatedState.router = state.router;
-      isolatedState.shared = state.shared || {};
       return isolatedState;
     },
     subscribe: store.subscribe,
@@ -267,6 +272,7 @@ export const createModuleLoader = () => {
         <Component {...props} />
       </Provider>
     );
+    ModuleWrapper.displayName = `Module-${name}`;
     return ModuleWrapper;
   };
 

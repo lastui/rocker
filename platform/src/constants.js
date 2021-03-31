@@ -3,6 +3,7 @@ export const SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
 export const SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
 export const LOAD_MODULE = "@@platform/LOAD_MODULE";
 export const SHUTDOWN = "@@platform/SHUTDOWN";
+export const REPLACE_SHARED = "@@platform/REPLACE_SHARED";
 
 export const MODULE_INIT = "@@modules/INIT";
 export const MODULE_LOADED = "@@modules/LOADED";
