@@ -519,14 +519,13 @@ var createModuleLoader = function createModuleLoader() {
           {
             var reducer = reducers[action.payload.name];
 
-            if (!reducer) {
-              return state;
+            if (reducer) {
+              state.shared = reducer(state.shared || {}, {
+                type: SET_MODULE_SHARED,
+                payload: payload.data
+              });
             }
 
-            state.shared = reducer(state.shared || {}, {
-              type: SET_MODULE_SHARED,
-              payload: payload.data
-            });
             return state;
           }
       }
