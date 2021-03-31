@@ -131,10 +131,10 @@ __webpack_require__.d(constants_namespaceObject, {
   "MODULE_LOADED": () => (MODULE_LOADED),
   "MODULE_NOT_AVAILABLE": () => (MODULE_NOT_AVAILABLE),
   "MODULE_UNLOADED": () => (MODULE_UNLOADED),
-  "REPLACE_SHARED": () => (REPLACE_SHARED),
   "SET_AVAILABLE_MODULES": () => (SET_AVAILABLE_MODULES),
   "SET_ENTRYPOINT_MODULE": () => (SET_ENTRYPOINT_MODULE),
   "SET_MODULE_SHARED": () => (SET_MODULE_SHARED),
+  "SET_SHARED": () => (SET_SHARED),
   "SHUTDOWN": () => (SHUTDOWN)
 });
 
@@ -144,10 +144,10 @@ __webpack_require__.r(actions_namespaceObject);
 __webpack_require__.d(actions_namespaceObject, {
   "init": () => (init),
   "loadModule": () => (loadModule),
-  "replaceShared": () => (replaceShared),
   "setAvailableModules": () => (setAvailableModules),
   "setEntryPointModule": () => (setEntryPointModule),
-  "setModuleShared": () => (setModuleShared)
+  "setModuleShared": () => (setModuleShared),
+  "setShared": () => (setShared)
 });
 
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/constants.js
@@ -156,11 +156,11 @@ var SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
 var SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
 var LOAD_MODULE = "@@platform/LOAD_MODULE";
 var SHUTDOWN = "@@platform/SHUTDOWN";
-var REPLACE_SHARED = "@@platform/REPLACE_SHARED";
 var MODULE_INIT = "@@modules/INIT";
 var MODULE_LOADED = "@@modules/LOADED";
 var MODULE_UNLOADED = "@@modules/UNLOADED";
 var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
+var SET_SHARED = "@@shared/SET_SHARED";
 var SET_MODULE_SHARED = "@@shared/SET_MODULE_SHARED";
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/actions.js
 
@@ -169,9 +169,10 @@ var init = function init() {
     type: INIT
   };
 };
-var replaceShared = function replaceShared(payload) {
+var setShared = function setShared() {
+  var payload = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
   return {
-    type: REPLACE_SHARED,
+    type: SET_SHARED,
     payload: payload
   };
 };
@@ -224,8 +225,6 @@ var ModuleContextProvider = function ModuleContextProvider(props) {
   }, props.moduleLoader ? props.children : /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(reactfrom_dll_reference_dependencies_dll.Fragment, null));
 };
 
-ModuleContextProvider.displayName = "ModuleContextProvider";
-
 var useModuleLoader = function useModuleLoader() {
   return reactfrom_dll_reference_dependencies_dll.useContext(ModuleContext);
 };
@@ -269,7 +268,12 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
           case SET_MODULE_SHARED:
             {
               console.debug("module ".concat(action.payload.name, " will modify shared with"), action.payload.data);
-              return next(action);
+              var nextShared = loader.reduceShared(store.getState().shared, action.payload.name, action.payload.data);
+              console.debug("next shared will be", nextShared);
+              return next({
+                type: SET_SHARED,
+                payload: nextShared
+              });
             }
 
           case SET_AVAILABLE_MODULES:
@@ -310,7 +314,7 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var sagaRunner = function sagaRunner() {
-    console.log("Sagas runnner not provided!");
+    console.error("Sagas runnner not provided!");
   };
 
   var loadedModules = {};
@@ -334,6 +338,7 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var addReducer = function addReducer(name, reducer) {
+    console.debug("adding reducer to ".concat(name), reducer);
     removeReducer(name);
     reducer({}, {
       type: MODULE_INIT
@@ -388,6 +393,10 @@ var createModuleLoader = function createModuleLoader() {
 
     if (scope.reducer) {
       scope.reducer.router = function () {
+        return {};
+      };
+
+      scope.reducer.shared = function () {
         return {};
       };
 
@@ -508,6 +517,22 @@ var createModuleLoader = function createModuleLoader() {
     return Promise.all(promises);
   };
 
+  var reduceShared = function reduceShared() {
+    var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+    var module = arguments.length > 1 ? arguments[1] : void 0;
+    var data = arguments.length > 2 ? arguments[2] : void 0;
+    var reducer = reducers[module];
+
+    if (!reducer) {
+      return state;
+    }
+
+    return reducer(state, {
+      type: SET_SHARED,
+      payload: data
+    });
+  };
+
   var getReducer = function getReducer() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
@@ -519,7 +544,7 @@ var createModuleLoader = function createModuleLoader() {
       }
 
       switch (action.type) {
-        case REPLACE_SHARED:
+        case SET_SHARED:
           {
             console.debug("dyn reducer - replacing shared (ignore)");
             return state;
@@ -566,6 +591,7 @@ var createModuleLoader = function createModuleLoader() {
         var state = store.getState();
         var isolatedState = state.modules[name] || {};
         isolatedState.router = state.router;
+        isolatedState.shared = state.shared;
         return isolatedState;
       },
       subscribe: store.subscribe,
@@ -584,7 +610,6 @@ var createModuleLoader = function createModuleLoader() {
       }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(Component, props));
     };
 
-    ModuleWrapper.displayName = "Module-".concat(name);
     return ModuleWrapper;
   };
 
@@ -604,7 +629,8 @@ var createModuleLoader = function createModuleLoader() {
     unloadModule: unloadModule,
     getLoadedModule: getLoadedModule,
     setModuleMountState: setModuleMountState,
-    getReducer: getReducer
+    getReducer: getReducer,
+    reduceShared: reduceShared
   };
 };
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/index.js
@@ -640,8 +666,7 @@ var Module =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modul
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "history": () => (/* binding */ history)
 /* harmony export */ });
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/main.js");
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
 
 var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
 
@@ -667,13 +692,13 @@ module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll
 
 /***/ }),
 
-/***/ "./node_modules/history/main.js":
-/*!************************************************************************************!*\
-  !*** delegated ./node_modules/history/main.js from dll-reference dependencies_dll ***!
-  \************************************************************************************/
+/***/ "./node_modules/history/index.js":
+/*!*************************************************************************************!*\
+  !*** delegated ./node_modules/history/index.js from dll-reference dependencies_dll ***!
+  \*************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/main.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/index.js");
 
 /***/ }),
 
