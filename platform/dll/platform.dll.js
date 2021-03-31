@@ -516,17 +516,13 @@ var createModuleLoader = function createModuleLoader() {
     var reducer = reducers[name];
 
     if (!reducer) {
-      console.debug("shared reducer of ".concat(name, " does not exists"));
       return state;
     }
 
-    console.debug('yes exists as', reducer, 'with state');
-    var action = {
+    return reducer(state, {
       type: SET_SHARED,
       payload: data
-    };
-    console.log('action', action);
-    return reducer(state, action);
+    });
   };
 
   var getReducer = function getReducer() {
