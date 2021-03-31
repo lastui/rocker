@@ -131,7 +131,8 @@ __webpack_require__.d(constants_namespaceObject, {
   "MODULE_LOADED": () => (MODULE_LOADED),
   "MODULE_NOT_AVAILABLE": () => (MODULE_NOT_AVAILABLE),
   "MODULE_UNLOADED": () => (MODULE_UNLOADED),
-  "SET_AVAILABLE_MODULES": () => (SET_AVAILABLE_MODULES),
+  "REPLACE_SHARED": () => (REPLACE_SHARED),
+  "SET_AVAILABLE_MODULES": () => (constants_SET_AVAILABLE_MODULES),
   "SET_ENTRYPOINT_MODULE": () => (SET_ENTRYPOINT_MODULE),
   "SET_MODULE_SHARED": () => (SET_MODULE_SHARED),
   "SHUTDOWN": () => (SHUTDOWN)
@@ -143,17 +144,19 @@ __webpack_require__.r(actions_namespaceObject);
 __webpack_require__.d(actions_namespaceObject, {
   "init": () => (init),
   "loadModule": () => (loadModule),
+  "replaceShared": () => (replaceShared),
   "setAvailableModules": () => (setAvailableModules),
   "setEntryPointModule": () => (setEntryPointModule),
-  "setShared": () => (setShared)
+  "setModuleShared": () => (setModuleShared)
 });
 
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/constants.js
 var INIT = "@@platform/INIT";
-var SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
+var constants_SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
 var SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
 var LOAD_MODULE = "@@platform/LOAD_MODULE";
 var SHUTDOWN = "@@platform/SHUTDOWN";
+var REPLACE_SHARED = "@@platform/REPLACE_SHARED";
 var MODULE_INIT = "@@modules/INIT";
 var MODULE_LOADED = "@@modules/LOADED";
 var MODULE_UNLOADED = "@@modules/UNLOADED";
@@ -166,7 +169,13 @@ var init = function init() {
     type: INIT
   };
 };
-var setShared = function setShared(name) {
+var replaceShared = function replaceShared(payload) {
+  return {
+    type: REPLACE_SHARED,
+    payload: payload
+  };
+};
+var setModuleShared = function setModuleShared(name) {
   var data = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
   return {
     type: SET_MODULE_SHARED,
@@ -179,7 +188,7 @@ var setShared = function setShared(name) {
 var setAvailableModules = function setAvailableModules() {
   var modules = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
   return {
-    type: SET_AVAILABLE_MODULES,
+    type: constants_SET_AVAILABLE_MODULES,
     payload: {
       modules: modules
     }
@@ -214,6 +223,8 @@ var ModuleContextProvider = function ModuleContextProvider(props) {
     value: props.moduleLoader || null
   }, props.moduleLoader ? props.children : /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(reactfrom_dll_reference_dependencies_dll.Fragment, null));
 };
+
+ModuleContextProvider.displayName = "ModuleContextProvider";
 
 var useModuleLoader = function useModuleLoader() {
   return reactfrom_dll_reference_dependencies_dll.useContext(ModuleContext);
@@ -255,7 +266,13 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
     return function (next) {
       return function (action) {
         switch (action.type) {
-          case SET_AVAILABLE_MODULES:
+          case SET_MODULE_SHARED:
+            {
+              console.debug("module ".concat(action.payload.name, " will modify shared with"), action.payload.data);
+              return next(action);
+            }
+
+          case constants_SET_AVAILABLE_MODULES:
             {
               return loader.setAvailableModules(action.payload.modules).then(function () {
                 return next(action);
@@ -405,10 +422,8 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var setModuleMountState = function setModuleMountState(name, mounted) {
-    if (!mounted) {
-      if (!loadedModules[name]) {
-        danglingNamespaces.push(name);
-      }
+    if (!mounted && !loadedModules[name]) {
+      danglingNamespaces.push(name);
     }
   };
 
@@ -499,34 +514,39 @@ var createModuleLoader = function createModuleLoader() {
       var action = arguments.length > 1 ? arguments[1] : void 0;
 
       for (var _name = danglingNamespaces.pop(); _name; _name = danglingNamespaces.pop()) {
+        console.debug("module's ".concat(_name, " state evicted"));
         delete state[_name];
       }
 
       switch (action.type) {
+        case REPLACE_SHARED:
+          {
+            console.debug("dyn reducer - replacing shared (ignore)");
+            return state;
+          }
+
+        case SET_AVAILABLE_MODULES:
+          {
+            console.debug("dyn reducer - set available modules (ignore)");
+            return state;
+          }
+
         case MODULE_UNLOADED:
           {
+            console.debug("dyn reducer - module ".concat(name, " unloaded"));
             removeReducer(name);
             return state;
           }
 
         case INIT:
           {
-            state.shared = {};
+            console.debug("dyn reducer - platform init (ignore)");
             return state;
           }
 
         case SET_MODULE_SHARED:
           {
-            var reducer = reducers[action.payload.name];
-
-            if (!reducer) {
-              return state;
-            }
-
-            state.shared = reducer(state.shared || {}, {
-              type: SET_MODULE_SHARED,
-              payload: payload.data
-            });
+            console.debug("dyn reducer - set module ".concat(action.payload.name, " shared (ignore)"));
             return state;
           }
       }
@@ -546,7 +566,6 @@ var createModuleLoader = function createModuleLoader() {
         var state = store.getState();
         var isolatedState = state.modules[name] || {};
         isolatedState.router = state.router;
-        isolatedState.shared = state.shared || {};
         return isolatedState;
       },
       subscribe: store.subscribe,
@@ -565,6 +584,7 @@ var createModuleLoader = function createModuleLoader() {
       }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(Component, props));
     };
 
+    ModuleWrapper.displayName = "Module-".concat(name);
     return ModuleWrapper;
   };
 
@@ -620,8 +640,7 @@ var Module =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modul
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "history": () => (/* binding */ history)
 /* harmony export */ });
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/main.js");
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
 
 var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
 
@@ -647,13 +666,13 @@ module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll
 
 /***/ }),
 
-/***/ "./node_modules/history/main.js":
-/*!************************************************************************************!*\
-  !*** delegated ./node_modules/history/main.js from dll-reference dependencies_dll ***!
-  \************************************************************************************/
+/***/ "./node_modules/history/index.js":
+/*!*************************************************************************************!*\
+  !*** delegated ./node_modules/history/index.js from dll-reference dependencies_dll ***!
+  \*************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/main.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/index.js");
 
 /***/ }),
 

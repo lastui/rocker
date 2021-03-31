@@ -24,14 +24,17 @@ const Module = (props = {}) => {
   }, [props.name]);
 
   if (!loadedModule) {
+    console.debug(`module ${props.name} is not loaded`)
     // FIXME does not update need to store loadedModule in state
     return <React.Fragment />;
   }
 
   if (!loadedModule.root) {
+    console.debug(`module ${props.name} does not have view`)
     return <React.Fragment />;
   }
 
+  console.debug(`module ${props.name} ready`)
   // FIXME if children?
   const ModuleComponent = loadedModule.root;
 
@@ -41,5 +44,7 @@ const Module = (props = {}) => {
     </ModuleContextProvider>
   );
 };
+
+Module.displayName = "Module";
 
 export default React.memo(Module);
