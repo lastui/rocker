@@ -31,7 +31,7 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
         action.payload.name,
         action.payload.data
       );
-      console.debug('next shared will be', nextShared)
+      console.debug("next shared will be", nextShared);
       return next({
         type: constants.SET_SHARED,
         payload: nextShared,
@@ -116,6 +116,7 @@ export const createModuleLoader = () => {
   const connectModule = (name, scope = {}) => {
     if (scope.reducer) {
       scope.reducer.router = () => ({});
+      scope.reducer.shared = () => ({});
       addReducer(name, combineReducers(scope.reducer));
     }
     if (scope.saga) {
@@ -283,6 +284,7 @@ export const createModuleLoader = () => {
       const state = store.getState();
       const isolatedState = state.modules[name] || {};
       isolatedState.router = state.router;
+      isolatedState.shared = state.shared;
       return isolatedState;
     },
     subscribe: store.subscribe,
