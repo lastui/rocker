@@ -133,6 +133,7 @@ __webpack_require__.d(constants_namespaceObject, {
   "MODULE_UNLOADED": () => (MODULE_UNLOADED),
   "SET_AVAILABLE_MODULES": () => (SET_AVAILABLE_MODULES),
   "SET_ENTRYPOINT_MODULE": () => (SET_ENTRYPOINT_MODULE),
+  "SET_MODULE_SHARED": () => (SET_MODULE_SHARED),
   "SHUTDOWN": () => (SHUTDOWN)
 });
 
@@ -143,7 +144,8 @@ __webpack_require__.d(actions_namespaceObject, {
   "init": () => (init),
   "loadModule": () => (loadModule),
   "setAvailableModules": () => (setAvailableModules),
-  "setEntryPointModule": () => (setEntryPointModule)
+  "setEntryPointModule": () => (setEntryPointModule),
+  "setShared": () => (setShared)
 });
 
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/constants.js
@@ -156,11 +158,22 @@ var MODULE_INIT = "@@modules/INIT";
 var MODULE_LOADED = "@@modules/LOADED";
 var MODULE_UNLOADED = "@@modules/UNLOADED";
 var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
+var SET_MODULE_SHARED = "@@shared/SET_MODULE_SHARED";
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/actions.js
 
 var init = function init() {
   return {
     type: INIT
+  };
+};
+var setShared = function setShared(name) {
+  var data = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+  return {
+    type: SET_MODULE_SHARED,
+    payload: {
+      name: name,
+      data: data
+    }
   };
 };
 var setAvailableModules = function setAvailableModules() {
@@ -493,7 +506,28 @@ var createModuleLoader = function createModuleLoader() {
         case MODULE_UNLOADED:
           {
             removeReducer(name);
-            break;
+            return state;
+          }
+
+        case INIT:
+          {
+            state.shared = {};
+            return state;
+          }
+
+        case SET_MODULE_SHARED:
+          {
+            var reducer = reducers[action.payload.name];
+
+            if (!reducer) {
+              return state;
+            }
+
+            state.shared = reducer(state.shared || {}, {
+              type: SET_MODULE_SHARED,
+              payload: payload.data
+            });
+            return state;
           }
       }
 
@@ -512,6 +546,7 @@ var createModuleLoader = function createModuleLoader() {
         var state = store.getState();
         var isolatedState = state.modules[name] || {};
         isolatedState.router = state.router;
+        isolatedState.shared = state.shared || {};
         return isolatedState;
       },
       subscribe: store.subscribe,
