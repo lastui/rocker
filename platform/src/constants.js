@@ -9,5 +9,5 @@ export const MODULE_LOADED = "@@modules/LOADED";
 export const MODULE_UNLOADED = "@@modules/UNLOADED";
 export const MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
 
-export const SET_SHARED = "@@shared/SET_SHARED";
-export const SET_MODULE_SHARED = "@@shared/SET_MODULE_SHARED";
+export const ADD_SHARED = "@@shared/ADD_SHARED";
+export const REMOVE_SHARED = "@@shared/REMOVE_SHARED";

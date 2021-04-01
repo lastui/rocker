@@ -125,16 +125,16 @@ __webpack_require__.d(__webpack_exports__, {
 var constants_namespaceObject = {};
 __webpack_require__.r(constants_namespaceObject);
 __webpack_require__.d(constants_namespaceObject, {
+  "ADD_SHARED": () => (ADD_SHARED),
   "INIT": () => (INIT),
   "LOAD_MODULE": () => (LOAD_MODULE),
   "MODULE_INIT": () => (MODULE_INIT),
   "MODULE_LOADED": () => (MODULE_LOADED),
   "MODULE_NOT_AVAILABLE": () => (MODULE_NOT_AVAILABLE),
   "MODULE_UNLOADED": () => (MODULE_UNLOADED),
+  "REMOVE_SHARED": () => (REMOVE_SHARED),
   "SET_AVAILABLE_MODULES": () => (SET_AVAILABLE_MODULES),
   "SET_ENTRYPOINT_MODULE": () => (SET_ENTRYPOINT_MODULE),
-  "SET_MODULE_SHARED": () => (SET_MODULE_SHARED),
-  "SET_SHARED": () => (SET_SHARED),
   "SHUTDOWN": () => (SHUTDOWN)
 });
 
@@ -142,12 +142,12 @@ __webpack_require__.d(constants_namespaceObject, {
 var actions_namespaceObject = {};
 __webpack_require__.r(actions_namespaceObject);
 __webpack_require__.d(actions_namespaceObject, {
+  "addShared": () => (actions_addShared),
   "init": () => (init),
   "loadModule": () => (loadModule),
+  "removeShared": () => (actions_removeShared),
   "setAvailableModules": () => (setAvailableModules),
-  "setEntryPointModule": () => (setEntryPointModule),
-  "setModuleShared": () => (setModuleShared),
-  "setShared": () => (setShared)
+  "setEntryPointModule": () => (setEntryPointModule)
 });
 
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/constants.js
@@ -160,8 +160,8 @@ var MODULE_INIT = "@@modules/INIT";
 var MODULE_LOADED = "@@modules/LOADED";
 var MODULE_UNLOADED = "@@modules/UNLOADED";
 var MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
-var SET_SHARED = "@@shared/SET_SHARED";
-var SET_MODULE_SHARED = "@@shared/SET_MODULE_SHARED";
+var ADD_SHARED = "@@shared/ADD_SHARED";
+var REMOVE_SHARED = "@@shared/REMOVE_SHARED";
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/actions.js
 
 var init = function init() {
@@ -169,20 +169,21 @@ var init = function init() {
     type: INIT
   };
 };
-var setShared = function setShared() {
-  var payload = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  return {
-    type: SET_SHARED,
-    payload: payload
-  };
-};
-var setModuleShared = function setModuleShared(name) {
+var actions_addShared = function addShared(name) {
   var data = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
   return {
-    type: SET_MODULE_SHARED,
+    type: ADD_SHARED,
     payload: {
       name: name,
       data: data
+    }
+  };
+};
+var actions_removeShared = function removeShared(name) {
+  return {
+    type: REMOVE_SHARED,
+    payload: {
+      name: name
     }
   };
 };
@@ -247,6 +248,7 @@ var reduxfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modul
 
 
 
+
 function registerModule(scope) {
   if (scope.MainView) {
     this.MainView = scope.MainView;
@@ -265,17 +267,6 @@ var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
     return function (next) {
       return function (action) {
         switch (action.type) {
-          case SET_MODULE_SHARED:
-            {
-              console.debug("module ".concat(action.payload.name, " will process shared"));
-              var prevShared = store.getState().shared;
-              var nextShared = loader.reduceShared(prevShared, action.payload.name, action.payload.data).shared;
-              return next({
-                type: SET_SHARED,
-                payload: nextShared ? nextShared : prevShared
-              });
-            }
-
           case SET_AVAILABLE_MODULES:
             {
               return loader.setAvailableModules(action.payload.modules).then(function () {
@@ -388,6 +379,14 @@ var createModuleLoader = function createModuleLoader() {
     }));
   };
 
+  var removeShared = function removeShared(name) {
+    store.dispatch(actions_removeShared(name));
+  };
+
+  var addShared = function addShared(name, payload) {
+    store.dispatch(actions_addShared(name, payload));
+  };
+
   var connectModule = function connectModule(name) {
     var scope = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
 
@@ -397,6 +396,10 @@ var createModuleLoader = function createModuleLoader() {
 
     if (scope.saga) {
       addSaga(name, scope.saga);
+    }
+
+    if (scope.shared) {
+      addShared(name, scope.shared);
     }
 
     loadedModules[name] = {
@@ -509,22 +512,6 @@ var createModuleLoader = function createModuleLoader() {
     return Promise.all(promises);
   };
 
-  var reduceShared = function reduceShared() {
-    var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-    var name = arguments.length > 1 ? arguments[1] : void 0;
-    var data = arguments.length > 2 ? arguments[2] : void 0;
-    var reducer = reducers[name];
-
-    if (!reducer) {
-      return state;
-    }
-
-    return reducer(state, {
-      type: SET_SHARED,
-      payload: data
-    });
-  };
-
   var getReducer = function getReducer() {
     return function () {
       var state = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
@@ -536,9 +523,15 @@ var createModuleLoader = function createModuleLoader() {
       }
 
       switch (action.type) {
-        case SET_SHARED:
+        case ADD_SHARED:
           {
-            console.debug("dyn reducer - replacing shared (ignore)");
+            console.debug("dyn reducer - add shared (ignore)");
+            return state;
+          }
+
+        case REMOVE_SHARED:
+          {
+            console.debug("dyn reducer - remove shared (ignore)");
             return state;
           }
 
@@ -558,12 +551,6 @@ var createModuleLoader = function createModuleLoader() {
         case INIT:
           {
             console.debug("dyn reducer - platform init (ignore)");
-            return state;
-          }
-
-        case SET_MODULE_SHARED:
-          {
-            console.debug("dyn reducer - set module ".concat(action.payload.name, " shared (ignore)"));
             return state;
           }
       }
@@ -621,8 +608,7 @@ var createModuleLoader = function createModuleLoader() {
     unloadModule: unloadModule,
     getLoadedModule: getLoadedModule,
     setModuleMountState: setModuleMountState,
-    getReducer: getReducer,
-    reduceShared: reduceShared
+    getReducer: getReducer
   };
 };
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/index.js
