@@ -8,6 +8,7 @@ import { connectRouter, routerMiddleware } from "connected-react-router";
 import { combineReducers } from "redux";
 import { history } from "./routing";
 
+// FIXME make shared work in development
 function configureStore(initialState = {}, rootReducer = {}) {
   const enhancers = [routerMiddleware(history)];
 

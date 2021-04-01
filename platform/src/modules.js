@@ -4,6 +4,7 @@ import { cancel, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
 
 import * as constants from "./constants";
+import * as actions from "./actions";
 
 export function registerModule(scope) {
   if (scope.MainView) {
@@ -21,20 +22,6 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
   action
 ) => {
   switch (action.type) {
-    case constants.SET_MODULE_SHARED: {
-      console.debug(`module ${action.payload.name} will process shared`);
-      const prevShared = store.getState().shared
-      const nextShared = loader.reduceShared(
-        prevShared,
-        action.payload.name,
-        action.payload.data
-      ).shared;
-      return next({
-        type: constants.SET_SHARED,
-        payload: nextShared ? nextShared : prevShared,
-      });
-    }
-
     case constants.SET_AVAILABLE_MODULES: {
       return loader
         .setAvailableModules(action.payload.modules)
@@ -111,12 +98,23 @@ export const createModuleLoader = () => {
     });
   };
 
+  const removeShared = (name) => {
+    store.dispatch(actions.removeShared(name))
+  };
+
+  const addShared = (name, payload) => {
+    store.dispatch(actions.addShared(name, payload))
+  };
+
   const connectModule = (name, scope = {}) => {
     if (scope.reducer) {
       addReducer(name, combineReducers(scope.reducer));
     }
     if (scope.saga) {
       addSaga(name, scope.saga);
+    }
+    if (scope.shared) {
+      addShared(name, scope.shared);
     }
     loadedModules[name] = {
       name,
@@ -218,17 +216,6 @@ export const createModuleLoader = () => {
     return Promise.all(promises);
   };
 
-  const reduceShared = (state = {}, name, data) => {
-    const reducer = reducers[name];
-    if (!reducer) {
-      return state;
-    }
-    return reducer(state, {
-      type: constants.SET_SHARED,
-      payload: data,
-    });
-  };
-
   const getReducer = () => {
     return (state = {}, action) => {
       for (
@@ -241,8 +228,12 @@ export const createModuleLoader = () => {
       }
 
       switch (action.type) {
-        case constants.SET_SHARED: {
-          console.debug(`dyn reducer - replacing shared (ignore)`);
+        case constants.ADD_SHARED: {
+          console.debug(`dyn reducer - add shared (ignore)`);
+          return state;
+        }
+        case constants.REMOVE_SHARED: {
+          console.debug(`dyn reducer - remove shared (ignore)`);
           return state;
         }
         case constants.SET_AVAILABLE_MODULES: {
@@ -256,12 +247,6 @@ export const createModuleLoader = () => {
         }
         case constants.INIT: {
           console.debug(`dyn reducer - platform init (ignore)`);
-          return state;
-        }
-        case constants.SET_MODULE_SHARED: {
-          console.debug(
-            `dyn reducer - set module ${action.payload.name} shared (ignore)`
-          );
           return state;
         }
       }
@@ -316,6 +301,5 @@ export const createModuleLoader = () => {
     getLoadedModule,
     setModuleMountState,
     getReducer,
-    reduceShared,
   };
 };

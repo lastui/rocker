@@ -4,16 +4,18 @@ export const init = () => ({
   type: constants.INIT,
 });
 
-export const setShared = (payload = {}) => ({
-  type: constants.SET_SHARED,
-  payload,
-});
-
-export const setModuleShared = (name, data = {}) => ({
-  type: constants.SET_MODULE_SHARED,
+export const addShared = (name, data = {}) => ({
+  type: constants.ADD_SHARED,
   payload: {
     name,
     data,
+  },
+});
+
+export const removeShared = (name) => ({
+  type: constants.REMOVE_SHARED,
+  payload: {
+    name,
   },
 });
 
