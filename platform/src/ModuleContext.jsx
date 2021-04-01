@@ -2,14 +2,8 @@ import React from "react";
 
 const ModuleContext = React.createContext(null);
 
-const ModuleContextProvider = (props) => (
-	<ModuleContext.Provider value={props.moduleLoader || null}>
-		{props.moduleLoader ? props.children : <React.Fragment />}
-	</ModuleContext.Provider>
-);
-
 const useModuleLoader = () => React.useContext(ModuleContext);
 
-export { ModuleContextProvider, useModuleLoader };
+export { ModuleContext, useModuleLoader };
 
-export default ModuleContextProvider;
+export default ModuleContext;

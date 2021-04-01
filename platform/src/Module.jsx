@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
+import { ModuleContext, useModuleLoader } from "./ModuleContext";
 
 const Module = (props = {}) => {
   const moduleLoader = useModuleLoader();
@@ -39,9 +39,9 @@ const Module = (props = {}) => {
   const ModuleComponent = loadedModule.root;
 
   return (
-    <ModuleContextProvider moduleLoader={moduleLoader}>
+    <ModuleContext.Provider value={moduleLoader}>
       <ModuleComponent {...props.options} />
-    </ModuleContextProvider>
+    </ModuleContext.Provider>
   );
 };
 

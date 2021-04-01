@@ -1,7 +1,7 @@
 import * as actions from "./actions";
 import * as constants from "./constants";
 import { history } from "./routing";
-import { ModuleContextProvider, useModuleLoader } from "./ModuleContext";
+import { ModuleContext, useModuleLoader } from "./ModuleContext";
 import { createModuleLoader, moduleLoaderMiddleware } from "./modules";
 
 const registerModule =
@@ -16,7 +16,7 @@ const Module =
 
 export {
 	Module,
-	ModuleContextProvider,
+	ModuleContext,
 	useModuleLoader,
 	actions,
 	constants,
@@ -28,7 +28,7 @@ export {
 
 export default {
 	Module,
-	ModuleContextProvider,
+	ModuleContext,
 	useModuleLoader,
 	actions,
 	constants,

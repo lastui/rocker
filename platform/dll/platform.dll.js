@@ -110,7 +110,7 @@ __webpack_require__.r(__webpack_exports__);
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
   "Module": () => (/* binding */ Module),
-  "ModuleContextProvider": () => (/* reexport */ ModuleContextProvider),
+  "ModuleContext": () => (/* reexport */ ModuleContext),
   "actions": () => (/* reexport */ actions_namespaceObject),
   "constants": () => (/* reexport */ constants_namespaceObject),
   "createModuleLoader": () => (/* reexport */ createModuleLoader),
@@ -220,18 +220,12 @@ var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modul
 
 var ModuleContext = /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createContext(null);
 
-var ModuleContextProvider = function ModuleContextProvider(props) {
-  return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(ModuleContext.Provider, {
-    value: props.moduleLoader || null
-  }, props.moduleLoader ? props.children : /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(reactfrom_dll_reference_dependencies_dll.Fragment, null));
-};
-
 var useModuleLoader = function useModuleLoader() {
   return reactfrom_dll_reference_dependencies_dll.useContext(ModuleContext);
 };
 
 
-/* harmony default export */ const platform_ModuleContext = (ModuleContextProvider);
+/* harmony default export */ const platform_ModuleContext = (ModuleContext);
 // EXTERNAL MODULE: delegated ./node_modules/@babel/runtime/regenerator/index.js from dll-reference dependencies_dll
 var regeneratorfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/@babel/runtime/regenerator/index.js");
 var regeneratorfrom_dll_reference_dependencies_dll_default = /*#__PURE__*/__webpack_require__.n(regeneratorfrom_dll_reference_dependencies_dll);
@@ -260,6 +254,10 @@ function registerModule(scope) {
 
   if (scope.saga) {
     this.saga = scope.saga;
+  }
+
+  if (scope.shared) {
+    this.shared = scope.shared;
   }
 }
 var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
@@ -329,7 +327,6 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var addReducer = function addReducer(name, reducer) {
-    console.debug("adding reducer to ".concat(name), reducer);
     removeReducer(name);
     reducer({}, {
       type: MODULE_INIT
@@ -391,14 +388,17 @@ var createModuleLoader = function createModuleLoader() {
     var scope = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
 
     if (scope.reducer) {
+      console.debug("module ".concat(name, " introducing reducer"));
       addReducer(name, (0,reduxfrom_dll_reference_dependencies_dll.combineReducers)(scope.reducer));
     }
 
     if (scope.saga) {
+      console.debug("module ".concat(name, " introducing saga"));
       addSaga(name, scope.saga);
     }
 
     if (scope.shared) {
+      console.debug("module ".concat(name, " introducing shared"));
       addShared(name, scope.shared);
     }
 
@@ -584,11 +584,15 @@ var createModuleLoader = function createModuleLoader() {
     var isolatedStore = isolateStore(name);
 
     var ModuleWrapper = function ModuleWrapper(props) {
-      return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(libfrom_dll_reference_dependencies_dll.Provider, {
-        store: isolatedStore
+      return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(libfrom_dll_reference_dependencies_dll.ReactReduxContext.Provider, {
+        value: {
+          store: isolatedStore
+        }
       }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(Component, props));
     };
 
+    ModuleWrapper.displayName = "ModuleWrapper-".concat(name);
+    Component.displayName = "Module-".concat(name);
     return ModuleWrapper;
   };
 
@@ -622,7 +626,7 @@ var Module =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modul
 
 /* harmony default export */ const platform = ({
   Module: Module,
-  ModuleContextProvider: ModuleContextProvider,
+  ModuleContext: ModuleContext,
   useModuleLoader: useModuleLoader,
   actions: actions_namespaceObject,
   constants: constants_namespaceObject,
@@ -644,8 +648,7 @@ var Module =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modul
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "history": () => (/* binding */ history)
 /* harmony export */ });
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/main.js");
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
 
 var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
 
@@ -671,13 +674,13 @@ module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll
 
 /***/ }),
 
-/***/ "./node_modules/history/main.js":
-/*!************************************************************************************!*\
-  !*** delegated ./node_modules/history/main.js from dll-reference dependencies_dll ***!
-  \************************************************************************************/
+/***/ "./node_modules/history/index.js":
+/*!*************************************************************************************!*\
+  !*** delegated ./node_modules/history/index.js from dll-reference dependencies_dll ***!
+  \*************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/main.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/index.js");
 
 /***/ }),
 
