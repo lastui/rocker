@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "scripts": {
     "postinstall": "cd dependencies && npm i && cd ../platform && npm i",
     "build": "npm run build:dependencies && npm run build:platform",
@@ -55,7 +55,7 @@
     "stream-browserify": "3.0.0",
     "terser-webpack-plugin": "5.1.1",
     "util": "0.12.3",
-    "webpack": "5.28.0",
+    "webpack": "5.29.0",
     "webpack-nano": "1.1.1",
     "webpack-plugin-serve": "1.4.1"
   },
