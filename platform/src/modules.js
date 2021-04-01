@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider } from "react-redux";
+import { ReactReduxContext } from "react-redux";
 import { cancel, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
 
@@ -15,6 +15,9 @@ export function registerModule(scope) {
   }
   if (scope.saga) {
     this.saga = scope.saga;
+  }
+  if (scope.shared) {
+    this.shared = scope.shared;
   }
 }
 
@@ -75,7 +78,6 @@ export const createModuleLoader = () => {
   };
 
   const addReducer = (name, reducer) => {
-    console.debug(`adding reducer to ${name}`, reducer);
     removeReducer(name);
     reducer({}, { type: constants.MODULE_INIT });
     reducers[name] = reducer;
@@ -108,12 +110,15 @@ export const createModuleLoader = () => {
 
   const connectModule = (name, scope = {}) => {
     if (scope.reducer) {
+      console.debug(`module ${name} introducing reducer`)
       addReducer(name, combineReducers(scope.reducer));
     }
     if (scope.saga) {
+      console.debug(`module ${name} introducing saga`)
       addSaga(name, scope.saga);
     }
     if (scope.shared) {
+      console.debug(`module ${name} introducing shared`)
       addShared(name, scope.shared);
     }
     loadedModules[name] = {
@@ -276,11 +281,19 @@ export const createModuleLoader = () => {
 
   const isolateModule = (name, Component) => {
     const isolatedStore = isolateStore(name);
-    const ModuleWrapper = (props) => (
-      <Provider store={isolatedStore}>
-        <Component {...props} />
-      </Provider>
-    );
+    const ModuleWrapper = (props) => {
+      return (
+        <ReactReduxContext.Provider
+          value={{
+            store: isolatedStore,
+          }}
+        >
+          <Component {...props} />
+        </ReactReduxContext.Provider>
+      )
+    };
+    ModuleWrapper.displayName = `ModuleWrapper-${name}`
+    Component.displayName = `Module-${name}`
     return ModuleWrapper;
   };
 
