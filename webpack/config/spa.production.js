@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 
@@ -45,6 +46,14 @@ config.module.rules.push(
 )
 
 config.plugins.push(
+	new CleanWebpackPlugin({
+		root: settings.PROJECT_BUILD_PATH,
+		cleanOnceBeforeBuildPatterns: ["**/*"],
+		cleanStaleWebpackAssets: true,
+		dangerouslyAllowCleanPatternsOutsideProject: false,
+		verbose: false,
+		dry: false,
+	}),
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
 			__dirname,

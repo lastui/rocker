@@ -1,6 +1,8 @@
 const path = require("path");
 const webpack = require("webpack");
 
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
 const settings = require("../settings");
 
 const config = {
@@ -12,6 +14,14 @@ const config = {
 config.output.filename = '[name].min.js';
 
 config.plugins.push(
+	new CleanWebpackPlugin({
+		root: settings.PROJECT_BUILD_PATH,
+		cleanOnceBeforeBuildPatterns: ["**/*"],
+		cleanStaleWebpackAssets: true,
+		dangerouslyAllowCleanPatternsOutsideProject: false,
+		verbose: false,
+		dry: false,
+	}),
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
 			__dirname,
@@ -33,6 +43,7 @@ config.plugins.push(
 		),
 		context: settings.PROJECT_ROOT_PATH,
 	}),
+
 );
 
 module.exports = config;
