@@ -12,7 +12,7 @@ const config = {
 	...require("../internal/development.js"),
 };
 
-config.output.filename = "[name].[fullhash].js";
+config.output.filename = "module.js";
 
 config.plugins.push(
 	new webpack.DllReferencePlugin({
@@ -42,21 +42,35 @@ config.plugins.push(
 		minify: false,
 		inject: false,
 		scriptLoading: "blocking",
-		templateContent: ({ htmlWebpackPlugin }) => `
+		templateContent: ({ htmlWebpackPlugin }) => {
+			const scripts = htmlWebpackPlugin.tags.bodyTags.filter((item) =>
+				item.attributes.src !== 'module.js'	
+			)
+			return `
 				<html>
 					<head>
 						${htmlWebpackPlugin.tags.headTags}
-						<style>
-							body {
-								margin: 0;
-							}
-						</style>
 					</head>
 					<body>
-						${htmlWebpackPlugin.tags.bodyTags}
+						${scripts}
+						<script>
+							(function(){
+								"use strict";
+
+								const react = dependencies_dll("./node_modules/react/index.js");
+								const dom = dependencies_dll("./node_modules/react-dom/index.js");
+								const runtime = runtime_dll("./node_modules/@lastui/rocker/runtime/index.js");
+
+								window.addEventListener("load", function() {
+									dom.render(react.createElement(runtime.Main, null), document.getElementById("mount"))
+								})
+							}())
+						</script>
+						<div id="mount" />
 					</body>
 				</html>
-			`,
+			`
+		},
 	}),
 	new AddAssetHtmlPlugin([
 		{
