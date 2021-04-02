@@ -14,75 +14,84 @@ const config = {
 
 config.output.filename = "[name].js";
 
+config.module.rules.push(
+	{
+		test: /\.css$/i,
+		use: ["file-loader", "extract-loader", "css-loader"],
+	},
+	{
+		test: /\.scss$/,
+		use: ["file-loader", "extract-loader", "css-loader", "sass-loader"],
+	},
+)
+
 config.plugins.push(
-	...[
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../dependencies/dll/dependencies-prod-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../platform/dll/platform-prod-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../runtime/dll/runtime-prod-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new HTMLWebpackPlugin({
+		template: path.resolve(
+			settings.PROJECT_ROOT_PATH,
+			"static/index.html"
+		),
+		production: true,
+		publicPath: "/",
+		minify: {
+			removeComments: true,
+			collapseWhitespace: true,
+			removeRedundandAttributes: true,
+			useShortDoctype: true,
+			removeEmptyAttributes: true,
+			removeStyleLinkTypeAttributes: false,
+			keepClosingSlash: true,
+			minifyJS: false,
+			minofyCSS: false,
+			minifyURLs: false,
+		},
+		inject: "body",
+		scriptLoading: "blocking",
+	}),
+	new AddAssetHtmlPlugin([
+		{
+			filepath: path.resolve(
 				__dirname,
-				"../../dependencies/dll/dependencies-prod-manifest.json"
+				"../../dependencies/dll/dependencies.dll.min.js"
 			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
+			typeOfAsset: "js",
+		},
+		{
+			filepath: path.resolve(
 				__dirname,
-				"../../platform/dll/platform-prod-manifest.json"
+				"../../platform/dll/platform.dll.min.js"
 			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
+			typeOfAsset: "js",
+		},
+		{
+			filepath: path.resolve(
 				__dirname,
-				"../../runtime/dll/runtime-prod-manifest.json"
+				"../../runtime/dll/runtime.dll.min.js"
 			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new HTMLWebpackPlugin({
-			template: path.resolve(
-				settings.PROJECT_ROOT_PATH,
-				"static/index.html"
-			),
-			production: true,
-			publicPath: "/",
-			minify: {
-				removeComments: true,
-				collapseWhitespace: true,
-				removeRedundandAttributes: true,
-				useShortDoctype: true,
-				removeEmptyAttributes: true,
-				removeStyleLinkTypeAttributes: false,
-				keepClosingSlash: true,
-				minifyJS: false,
-				minofyCSS: false,
-				minifyURLs: false,
-			},
-			inject: "body",
-			scriptLoading: "blocking",
-		}),
-		new AddAssetHtmlPlugin([
-			{
-				filepath: path.resolve(
-					__dirname,
-					"../../dependencies/dll/dependencies.dll.min.js"
-				),
-				typeOfAsset: "js",
-			},
-			{
-				filepath: path.resolve(
-					__dirname,
-					"../../platform/dll/platform.dll.min.js"
-				),
-				typeOfAsset: "js",
-			},
-			{
-				filepath: path.resolve(
-					__dirname,
-					"../../runtime/dll/runtime.dll.min.js"
-				),
-				typeOfAsset: "js",
-			},
-		]),
-	]
+			typeOfAsset: "js",
+		},
+	]),
 );
 
 module.exports = config;
