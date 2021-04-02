@@ -43,6 +43,14 @@ jobs:
           npm install
           npm run build:dev
           npm run build:prod
+      - name: Package runtime
+        run: |
+          cd runtime
+          npm install
+          ncu -u
+          npm install
+          npm run build:dev
+          npm run build:prod
       - name: Check if there are changes
         id: changes
         uses: UnicornGlobal/has-changes-action@v1.0.11
