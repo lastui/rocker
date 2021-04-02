@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "scripts": {
     "postinstall": "cd dependencies && npm i && cd ../platform && npm i && cd ../runtime && npm i",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
@@ -52,7 +52,12 @@
     "runtime/src/reducer/shared.js",
     "runtime/src/saga/index.js",
     "runtime/src/service/index.js",
-    "runtime/src/store/index.js"
+    "runtime/src/store/index.js",
+    "runtime/dll/runtime-dev-manifest.json",
+    "runtime/dll/runtime-prod-manifest.json",
+    "runtime/dll/runtime.dll.js",
+    "runtime/dll/runtime.dll.min.js",
+    "runtime/dll/runtime.dll.min.js.LICENSE.txt"
   ],
   "dependencies": {
     "@lastui/babylon": "1.0.9",
