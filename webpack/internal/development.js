@@ -1,7 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
+
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const { WebpackPluginServe } = require('webpack-plugin-serve');
 
 const settings = require(path.resolve(__dirname, "../settings"));
 
@@ -49,40 +49,6 @@ module.exports = {
 			dangerouslyAllowCleanPatternsOutsideProject: false,
 			verbose: false,
 			dry: false,
-		}),
-		new WebpackPluginServe({
-			hmr: false,
-			historyFallback: true,
-			host: '0.0.0.0',
-			port: 5000,
-			status: true,
-			ramdisk: false,
-			liveReload: true,
-			waitForBuild: true,
-			log: {
-				level: settings.LOG_LEVEL,
-			},
-			static: settings.PROJECT_DEV_PATH,
-			client: {
-				silent: false,
-			},
-			middleware: (app, builtins) => {
-			  app.use(async (ctx, next) => {
-			  	if (ctx.request.url === '/context') {
-			  		ctx.status = 200;
-  					ctx.body = JSON.stringify({
-			  			'available': [{
-			  				name: 'hot',
-			  				url: '/module.js',
-			  			}],
-			  			'entrypoint': 'hot',
-			  		})
- 					ctx.type = 'json'; 
-			  	} else {
-			  		await next();
-			  	}
-			  })
-		    }
 		}),
 	],
 	watch: true,
