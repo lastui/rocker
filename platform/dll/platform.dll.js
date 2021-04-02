@@ -117,11 +117,11 @@ var loadModule = function loadModule(name) {
     }
   };
 };
-// EXTERNAL MODULE: delegated ./node_modules/history/index.js from dll-reference dependencies_dll
-var historyfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/history/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/history/main.js from dll-reference dependencies_dll
+var mainfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/history/main.js");
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/routing.js
 
-var routing_history = (0,historyfrom_dll_reference_dependencies_dll.createBrowserHistory)();
+var routing_history = (0,mainfrom_dll_reference_dependencies_dll.createBrowserHistory)();
 // EXTERNAL MODULE: delegated ./node_modules/react/index.js from dll-reference dependencies_dll
 var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react/index.js");
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/ModuleContext.jsx
@@ -669,13 +669,13 @@ module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll
 
 /***/ }),
 
-/***/ "./node_modules/history/index.js":
-/*!*************************************************************************************!*\
-  !*** delegated ./node_modules/history/index.js from dll-reference dependencies_dll ***!
-  \*************************************************************************************/
+/***/ "./node_modules/history/main.js":
+/*!************************************************************************************!*\
+  !*** delegated ./node_modules/history/main.js from dll-reference dependencies_dll ***!
+  \************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/main.js");
 
 /***/ }),
 
