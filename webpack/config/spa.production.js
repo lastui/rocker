@@ -21,7 +21,7 @@ config.module.rules.push(
 			{
                 loader: "file-loader",
                 options: {
-                    name: "assets/[name].[ext]",
+                    name: "[name].css",
                 },
             },
 			"extract-loader",
@@ -34,7 +34,7 @@ config.module.rules.push(
 			{
                 loader: "file-loader",
                 options: {
-                    name: "assets/[name].[ext]",
+                    name: "[name].css",
                 },
             },
 			"extract-loader",
