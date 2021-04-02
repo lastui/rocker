@@ -1,11 +1,12 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.1.17",
+  "version": "0.2.0",
   "scripts": {
-    "postinstall": "cd dependencies && npm i && cd ../platform && npm i",
-    "build": "npm run build:dependencies && npm run build:platform",
+    "postinstall": "cd dependencies && npm i && cd ../platform && npm i && cd ../runtime && npm i",
+    "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
-    "build:platform": "cd platform && npm run build"
+    "build:platform": "cd platform && npm run build",
+    "build:runtime": "cd runtime && npm run build"
   },
   "files": [
     "package-lock.json",
@@ -15,9 +16,9 @@
     "webpack/config/module.js",
     "webpack/config/module.development.js",
     "webpack/config/module.production.js",
-    "webpack/config/runtime.js",
-    "webpack/config/runtime.development.js",
-    "webpack/config/runtime.production.js",
+    "webpack/config/spa.js",
+    "webpack/config/spa.development.js",
+    "webpack/config/spa.production.js",
     "webpack/internal/base.js",
     "webpack/internal/loaders.js",
     "webpack/internal/build.js",
@@ -41,7 +42,16 @@
     "platform/src/ModuleContext.jsx",
     "platform/src/modules.js",
     "platform/src/routing.js",
-    "platform/src/index.js"
+    "platform/src/index.js",
+    "runtime/component/Entrypoint.jsx",
+    "runtime/component/Main.jsx",
+    "runtime/component/ReduxProvider.jsx",
+    "runtime/reducer/index.js",
+    "runtime/reducer/runtime.js",
+    "runtime/reducer/shared.js",
+    "runtime/saga/index.js",
+    "runtime/service/index.js",
+    "runtime/store/index.js"
   ],
   "dependencies": {
     "@lastui/babylon": "1.0.9",

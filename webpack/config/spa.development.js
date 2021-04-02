@@ -9,24 +9,31 @@ const settings = require("../settings");
 const config = {
 	...require("../internal/base.js"),
 	...require("../internal/loaders.js"),
-	...require("../internal/build.js"),
+	...require("../internal/development.js"),
 };
 
-config.output.filename = "[name].js";
+config.output.filename = '[name].[fullhash].js';
 
 config.plugins.push(
 	...[
 		new webpack.DllReferencePlugin({
 			manifest: path.resolve(
 				__dirname,
-				"../../dependencies/dll/dependencies-prod-manifest.json"
+				"../../dependencies/dll/dependencies-dev-manifest.json"
 			),
 			context: settings.PROJECT_ROOT_PATH,
 		}),
 		new webpack.DllReferencePlugin({
 			manifest: path.resolve(
 				__dirname,
-				"../../platform/dll/platform-prod-manifest.json"
+				"../../platform/dll/platform-dev-manifest.json"
+			),
+			context: settings.PROJECT_ROOT_PATH,
+		}),
+		new webpack.DllReferencePlugin({
+			manifest: path.resolve(
+				__dirname,
+				"../../runtime/dll/runtime-dev-manifest.json"
 			),
 			context: settings.PROJECT_ROOT_PATH,
 		}),
@@ -35,20 +42,9 @@ config.plugins.push(
 				settings.PROJECT_ROOT_PATH,
 				"static/index.html"
 			),
-			production: true,
+			production: false,
 			publicPath: "/",
-			minify: {
-				removeComments: true,
-				collapseWhitespace: true,
-				removeRedundandAttributes: true,
-				useShortDoctype: true,
-				removeEmptyAttributes: true,
-				removeStyleLinkTypeAttributes: false,
-				keepClosingSlash: true,
-				minifyJS: false,
-				minofyCSS: false,
-				minifyURLs: false,
-			},
+			minify: false,
 			inject: "body",
 			scriptLoading: "blocking",
 		}),
@@ -56,14 +52,21 @@ config.plugins.push(
 			{
 				filepath: path.resolve(
 					__dirname,
-					"../../dependencies/dll/dependencies.dll.min.js"
+					"../../dependencies/dll/dependencies.dll.js"
 				),
 				typeOfAsset: "js",
 			},
 			{
 				filepath: path.resolve(
 					__dirname,
-					"../../platform/dll/platform.dll.min.js"
+					"../../platform/dll/platform.dll.js"
+				),
+				typeOfAsset: "js",
+			},
+			{
+				filepath: path.resolve(
+					__dirname,
+					"../../runtime/dll/runtime.dll.js"
 				),
 				typeOfAsset: "js",
 			},

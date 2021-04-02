@@ -2,105 +2,10 @@ var platform_dll;
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/@lastui/rocker/platform/development.js":
-/*!*************************************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/development.js + 1 modules ***!
-  \*************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "Module": () => (/* binding */ Module),
-  "registerModule": () => (/* binding */ registerModule)
-});
-
-;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/defineProperty.js
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-// EXTERNAL MODULE: delegated ./node_modules/react/index.js from dll-reference dependencies_dll
-var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react/index.js");
-// EXTERNAL MODULE: delegated ./node_modules/react-dom/index.js from dll-reference dependencies_dll
-var react_domfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-dom/index.js");
-// EXTERNAL MODULE: delegated ./node_modules/connected-react-router/lib/index.js from dll-reference dependencies_dll
-var libfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/connected-react-router/lib/index.js");
-// EXTERNAL MODULE: delegated ./node_modules/react-router/index.js from dll-reference dependencies_dll
-var react_routerfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-router/index.js");
-// EXTERNAL MODULE: delegated ./node_modules/react-redux/lib/index.js from dll-reference dependencies_dll
-var react_redux_libfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-redux/lib/index.js");
-// EXTERNAL MODULE: delegated ./node_modules/redux/lib/redux.js from dll-reference dependencies_dll
-var reduxfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/redux/lib/redux.js");
-// EXTERNAL MODULE: ./node_modules/@lastui/rocker/platform/routing.js
-var routing = __webpack_require__("./node_modules/@lastui/rocker/platform/routing.js");
-;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/development.js
-
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-
-
-
-
-
-
-
-
- // FIXME make shared work in development
-
-function configureStore() {
-  var initialState = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  var rootReducer = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-  var enhancers = [(0,libfrom_dll_reference_dependencies_dll.routerMiddleware)(routing.history)];
-  var reducer = (0,reduxfrom_dll_reference_dependencies_dll.combineReducers)(_objectSpread(_objectSpread({}, rootReducer), {}, {
-    router: (0,libfrom_dll_reference_dependencies_dll.connectRouter)(routing.history)
-  }));
-  var store = (0,reduxfrom_dll_reference_dependencies_dll.createStore)(reducer, initialState, reduxfrom_dll_reference_dependencies_dll.compose.apply(void 0, [reduxfrom_dll_reference_dependencies_dll.applyMiddleware.apply(void 0, enhancers)]));
-  return store;
-}
-
-function registerModule(scope) {
-  var node = document.createElement("div");
-  var store = configureStore({}, scope.reducer);
-  var View = scope.MainView;
-  react_domfrom_dll_reference_dependencies_dll.render( /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(react_redux_libfrom_dll_reference_dependencies_dll.Provider, {
-    store: store
-  }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(libfrom_dll_reference_dependencies_dll.ConnectedRouter, {
-    history: routing.history
-  }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(react_routerfrom_dll_reference_dependencies_dll.Switch, null, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(View, null)))), node);
-  document.body.appendChild(node);
-}
-var Module = function Module(props) {
-  return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement("div", {
-    style: {
-      boxSizing: "border-box",
-      border: "1px dashed rgba(0,0,0,.5)",
-      height: "100%",
-      width: "100%"
-    }
-  }, "[".concat(props.name, "]"));
-};
-
-/***/ }),
-
 /***/ "./node_modules/@lastui/rocker/platform/index.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/index.js + 4 modules ***!
-  \*******************************************************************/
+/*!********************************************************************!*\
+  !*** ./node_modules/@lastui/rocker/platform/index.js + 12 modules ***!
+  \********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -109,15 +14,15 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "Module": () => (/* binding */ Module),
+  "Module": () => (/* reexport */ platform_Module),
   "ModuleContext": () => (/* reexport */ ModuleContext),
   "actions": () => (/* reexport */ actions_namespaceObject),
   "constants": () => (/* reexport */ constants_namespaceObject),
   "createModuleLoader": () => (/* reexport */ createModuleLoader),
   "default": () => (/* binding */ platform),
-  "history": () => (/* reexport */ routing.history),
+  "history": () => (/* reexport */ routing_history),
   "moduleLoaderMiddleware": () => (/* reexport */ moduleLoaderMiddleware),
-  "registerModule": () => (/* binding */ platform_registerModule),
+  "registerModule": () => (/* reexport */ registerModule),
   "useModuleLoader": () => (/* reexport */ useModuleLoader)
 });
 
@@ -212,8 +117,11 @@ var loadModule = function loadModule(name) {
     }
   };
 };
-// EXTERNAL MODULE: ./node_modules/@lastui/rocker/platform/routing.js
-var routing = __webpack_require__("./node_modules/@lastui/rocker/platform/routing.js");
+// EXTERNAL MODULE: delegated ./node_modules/history/index.js from dll-reference dependencies_dll
+var historyfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/history/index.js");
+;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/routing.js
+
+var routing_history = (0,historyfrom_dll_reference_dependencies_dll.createBrowserHistory)();
 // EXTERNAL MODULE: delegated ./node_modules/react/index.js from dll-reference dependencies_dll
 var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react/index.js");
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/ModuleContext.jsx
@@ -615,43 +523,139 @@ var createModuleLoader = function createModuleLoader() {
     getReducer: getReducer
   };
 };
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayWithHoles.js
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/iterableToArrayLimit.js
+function _iterableToArrayLimit(arr, i) {
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/nonIterableRest.js
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js
+
+
+
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/Module.jsx
+
+
+
+
+var Module = function Module() {
+  var props = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+  var moduleLoader = useModuleLoader();
+
+  var _useState = (0,reactfrom_dll_reference_dependencies_dll.useState)(moduleLoader.getLoadedModule(props.name)),
+      _useState2 = _slicedToArray(_useState, 2),
+      loadedModule = _useState2[0],
+      setLoadedModule = _useState2[1];
+
+  (0,reactfrom_dll_reference_dependencies_dll.useEffect)(function () {
+    var name = props.name;
+
+    if (name) {
+      moduleLoader.loadModule(name).then(function (module) {
+        moduleLoader.setModuleMountState(name, true);
+        setLoadedModule(module);
+      });
+    }
+
+    return function () {
+      if (name) {
+        moduleLoader.setModuleMountState(name, false);
+      }
+    };
+  }, [props.name]);
+
+  if (!loadedModule) {
+    console.debug("module ".concat(props.name, " is not loaded")); // FIXME does not update need to store loadedModule in state
+
+    return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(reactfrom_dll_reference_dependencies_dll.Fragment, null);
+  }
+
+  if (!loadedModule.root) {
+    console.debug("module ".concat(props.name, " does not have view"));
+    return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(reactfrom_dll_reference_dependencies_dll.Fragment, null);
+  }
+
+  console.debug("module ".concat(props.name, " ready")); // FIXME if children?
+
+  var ModuleComponent = loadedModule.root;
+  return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(ModuleContext.Provider, {
+    value: moduleLoader
+  }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(ModuleComponent, props.options));
+};
+
+/* harmony default export */ const platform_Module = (/*#__PURE__*/reactfrom_dll_reference_dependencies_dll.memo(Module));
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/index.js
 
 
 
 
 
-var platform_registerModule =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modules/@lastui/rocker/platform/development.js").registerModule;
-var Module =  false ? 0 : __webpack_require__(/*! ./development */ "./node_modules/@lastui/rocker/platform/development.js").Module;
+
 
 /* harmony default export */ const platform = ({
-  Module: Module,
+  Module: platform_Module,
   ModuleContext: ModuleContext,
   useModuleLoader: useModuleLoader,
   actions: actions_namespaceObject,
   constants: constants_namespaceObject,
-  history: routing.history,
+  history: routing_history,
   createModuleLoader: createModuleLoader,
   moduleLoaderMiddleware: moduleLoaderMiddleware,
-  registerModule: platform_registerModule
+  registerModule: registerModule
 });
-
-/***/ }),
-
-/***/ "./node_modules/@lastui/rocker/platform/routing.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/routing.js ***!
-  \*********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "history": () => (/* binding */ history)
-/* harmony export */ });
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ "./node_modules/history/main.js");
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(history__WEBPACK_IMPORTED_MODULE_0__);
-
-var history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();
 
 /***/ }),
 
@@ -665,33 +669,13 @@ module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll
 
 /***/ }),
 
-/***/ "./node_modules/connected-react-router/lib/index.js":
-/*!********************************************************************************************************!*\
-  !*** delegated ./node_modules/connected-react-router/lib/index.js from dll-reference dependencies_dll ***!
-  \********************************************************************************************************/
+/***/ "./node_modules/history/index.js":
+/*!*************************************************************************************!*\
+  !*** delegated ./node_modules/history/index.js from dll-reference dependencies_dll ***!
+  \*************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/connected-react-router/lib/index.js");
-
-/***/ }),
-
-/***/ "./node_modules/history/main.js":
-/*!************************************************************************************!*\
-  !*** delegated ./node_modules/history/main.js from dll-reference dependencies_dll ***!
-  \************************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/main.js");
-
-/***/ }),
-
-/***/ "./node_modules/react-dom/index.js":
-/*!***************************************************************************************!*\
-  !*** delegated ./node_modules/react-dom/index.js from dll-reference dependencies_dll ***!
-  \***************************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/react-dom/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/index.js");
 
 /***/ }),
 
@@ -702,16 +686,6 @@ module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/react-redux/lib/index.js");
-
-/***/ }),
-
-/***/ "./node_modules/react-router/index.js":
-/*!******************************************************************************************!*\
-  !*** delegated ./node_modules/react-router/index.js from dll-reference dependencies_dll ***!
-  \******************************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/react-router/index.js");
 
 /***/ }),
 

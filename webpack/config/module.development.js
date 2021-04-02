@@ -30,6 +30,13 @@ config.plugins.push(
 			),
 			context: settings.PROJECT_ROOT_PATH,
 		}),
+		new webpack.DllReferencePlugin({
+			manifest: path.resolve(
+				__dirname,
+				"../../runtime/dll/runtime-dev-manifest.json"
+			),
+			context: settings.PROJECT_ROOT_PATH,
+		}),
 		new HTMLWebpackPlugin({
 			production: false,
 			publicPath: "",
@@ -64,6 +71,13 @@ config.plugins.push(
 				filepath: path.resolve(
 					__dirname,
 					"../../platform/dll/platform.dll.js"
+				),
+				typeOfAsset: "js",
+			},
+			{
+				filepath: path.resolve(
+					__dirname,
+					"../../runtime/dll/runtime.dll.js"
 				),
 				typeOfAsset: "js",
 			},

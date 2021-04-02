@@ -1,5 +1,5 @@
 const settings = require("../settings");
 
 module.exports = settings.DEVELOPMENT
-	? require("./runtime.development.js")
-	: require("./runtime.production.js")
+	? require("./spa.development.js")
+	: require("./spa.production.js")
