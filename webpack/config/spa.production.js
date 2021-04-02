@@ -17,11 +17,30 @@ config.output.filename = "[name].js";
 config.module.rules.push(
 	{
 		test: /\.css$/i,
-		use: ["file-loader", "extract-loader", "css-loader"],
+		use: [
+			{
+                loader: "file-loader",
+                options: {
+                    name: "assets/[name].[ext]",
+                },
+            },
+			"extract-loader",
+			"css-loader",
+		],
 	},
 	{
 		test: /\.scss$/,
-		use: ["file-loader", "extract-loader", "css-loader", "sass-loader"],
+		use: [
+			{
+                loader: "file-loader",
+                options: {
+                    name: "assets/[name].[ext]",
+                },
+            },
+			"extract-loader",
+			"css-loader",
+			"sass-loader",
+		],
 	},
 )
 
