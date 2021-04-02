@@ -12,29 +12,27 @@ const config = {
 config.output.filename = '[name].min.js';
 
 config.plugins.push(
-	...[
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
-				__dirname,
-				"../../dependencies/dll/dependencies-prod-manifest.json"
-			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
-				__dirname,
-				"../../platform/dll/platform-prod-manifest.json"
-			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
-				__dirname,
-				"../../runtime/dll/runtime-prod-manifest.json"
-			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-	]
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../dependencies/dll/dependencies-prod-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../platform/dll/platform-prod-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../runtime/dll/runtime-prod-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
 );
 
 module.exports = config;

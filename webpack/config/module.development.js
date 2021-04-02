@@ -15,74 +15,72 @@ const config = {
 config.output.filename = "[name].[fullhash].js";
 
 config.plugins.push(
-	...[
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../dependencies/dll/dependencies-dev-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../platform/dll/platform-dev-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../runtime/dll/runtime-dev-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new HTMLWebpackPlugin({
+		production: false,
+		publicPath: "",
+		minify: false,
+		inject: false,
+		scriptLoading: "blocking",
+		templateContent: ({ htmlWebpackPlugin }) => `
+				<html>
+					<head>
+						${htmlWebpackPlugin.tags.headTags}
+						<style>
+							body {
+								margin: 0;
+							}
+						</style>
+					</head>
+					<body>
+						${htmlWebpackPlugin.tags.bodyTags}
+					</body>
+				</html>
+			`,
+	}),
+	new AddAssetHtmlPlugin([
+		{
+			filepath: path.resolve(
 				__dirname,
-				"../../dependencies/dll/dependencies-dev-manifest.json"
+				"../../dependencies/dll/dependencies.dll.js"
 			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
+			typeOfAsset: "js",
+		},
+		{
+			filepath: path.resolve(
 				__dirname,
-				"../../platform/dll/platform-dev-manifest.json"
+				"../../platform/dll/platform.dll.js"
 			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
+			typeOfAsset: "js",
+		},
+		{
+			filepath: path.resolve(
 				__dirname,
-				"../../runtime/dll/runtime-dev-manifest.json"
+				"../../runtime/dll/runtime.dll.js"
 			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new HTMLWebpackPlugin({
-			production: false,
-			publicPath: "",
-			minify: false,
-			inject: false,
-			scriptLoading: "blocking",
-			templateContent: ({ htmlWebpackPlugin }) => `
-					<html>
-						<head>
-							${htmlWebpackPlugin.tags.headTags}
-							<style>
-								body {
-									margin: 0;
-								}
-							</style>
-						</head>
-						<body>
-							${htmlWebpackPlugin.tags.bodyTags}
-						</body>
-					</html>
-				`,
-		}),
-		new AddAssetHtmlPlugin([
-			{
-				filepath: path.resolve(
-					__dirname,
-					"../../dependencies/dll/dependencies.dll.js"
-				),
-				typeOfAsset: "js",
-			},
-			{
-				filepath: path.resolve(
-					__dirname,
-					"../../platform/dll/platform.dll.js"
-				),
-				typeOfAsset: "js",
-			},
-			{
-				filepath: path.resolve(
-					__dirname,
-					"../../runtime/dll/runtime.dll.js"
-				),
-				typeOfAsset: "js",
-			},
-		]),
-	]
+			typeOfAsset: "js",
+		},
+	]),
 );
 
 module.exports = config;

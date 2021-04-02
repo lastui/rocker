@@ -18,33 +18,31 @@ config.output = {
 };
 
 config.plugins.push(
-	...[
-		new CleanWebpackPlugin({
-			root: settings.PROJECT_ROOT_PATH,
-			cleanOnceBeforeBuildPatterns: [
-				path.join(
-					settings.DLL_BUILD_PATH,
-					`[name]-${
-						settings.DEVELOPMENT ? "dev" : "prod"
-					}-manifest.json`
-				),
-				path.join(
-					settings.DLL_BUILD_PATH,
-					`[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`
-				),
-			],
-			verbose: false,
-			dry: false,
-		}),
-		new webpack.DllPlugin({
-			context: settings.PROJECT_ROOT_PATH,
-			path: path.join(
+	new CleanWebpackPlugin({
+		root: settings.PROJECT_ROOT_PATH,
+		cleanOnceBeforeBuildPatterns: [
+			path.join(
 				settings.DLL_BUILD_PATH,
-				`[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`
+				`[name]-${
+					settings.DEVELOPMENT ? "dev" : "prod"
+				}-manifest.json`
 			),
-			name: "[name]_dll",
-		}),
-	]
+			path.join(
+				settings.DLL_BUILD_PATH,
+				`[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`
+			),
+		],
+		verbose: false,
+		dry: false,
+	}),
+	new webpack.DllPlugin({
+		context: settings.PROJECT_ROOT_PATH,
+		path: path.join(
+			settings.DLL_BUILD_PATH,
+			`[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`
+		),
+		name: "[name]_dll",
+	}),
 );
 
 module.exports = config;

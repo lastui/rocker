@@ -14,64 +14,73 @@ const config = {
 
 config.output.filename = '[name].[fullhash].js';
 
+config.module.rules.push(
+	{
+		test: /\.css$/i,
+		use: ["style-loader", "css-loader"],
+	},
+	{
+		test: /\.scss$/,
+		use: ["style-loader", "css-loader", "sass-loader"],
+	},
+)
+
 config.plugins.push(
-	...[
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../dependencies/dll/dependencies-dev-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../platform/dll/platform-dev-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new webpack.DllReferencePlugin({
+		manifest: path.resolve(
+			__dirname,
+			"../../runtime/dll/runtime-dev-manifest.json"
+		),
+		context: settings.PROJECT_ROOT_PATH,
+	}),
+	new HTMLWebpackPlugin({
+		template: path.resolve(
+			settings.PROJECT_ROOT_PATH,
+			"static/index.html"
+		),
+		production: false,
+		publicPath: "/",
+		minify: false,
+		inject: "body",
+		scriptLoading: "blocking",
+	}),
+	new AddAssetHtmlPlugin([
+		{
+			filepath: path.resolve(
 				__dirname,
-				"../../dependencies/dll/dependencies-dev-manifest.json"
+				"../../dependencies/dll/dependencies.dll.js"
 			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
+			typeOfAsset: "js",
+		},
+		{
+			filepath: path.resolve(
 				__dirname,
-				"../../platform/dll/platform-dev-manifest.json"
+				"../../platform/dll/platform.dll.js"
 			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new webpack.DllReferencePlugin({
-			manifest: path.resolve(
+			typeOfAsset: "js",
+		},
+		{
+			filepath: path.resolve(
 				__dirname,
-				"../../runtime/dll/runtime-dev-manifest.json"
+				"../../runtime/dll/runtime.dll.js"
 			),
-			context: settings.PROJECT_ROOT_PATH,
-		}),
-		new HTMLWebpackPlugin({
-			template: path.resolve(
-				settings.PROJECT_ROOT_PATH,
-				"static/index.html"
-			),
-			production: false,
-			publicPath: "/",
-			minify: false,
-			inject: "body",
-			scriptLoading: "blocking",
-		}),
-		new AddAssetHtmlPlugin([
-			{
-				filepath: path.resolve(
-					__dirname,
-					"../../dependencies/dll/dependencies.dll.js"
-				),
-				typeOfAsset: "js",
-			},
-			{
-				filepath: path.resolve(
-					__dirname,
-					"../../platform/dll/platform.dll.js"
-				),
-				typeOfAsset: "js",
-			},
-			{
-				filepath: path.resolve(
-					__dirname,
-					"../../runtime/dll/runtime.dll.js"
-				),
-				typeOfAsset: "js",
-			},
-		]),
-	]
+			typeOfAsset: "js",
+		},
+	]),
 );
 
 module.exports = config;
