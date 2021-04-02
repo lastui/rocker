@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "postinstall": "cd dependencies && npm i && cd ../platform && npm i && cd ../runtime && npm i",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
@@ -43,15 +43,16 @@
     "platform/src/modules.js",
     "platform/src/routing.js",
     "platform/src/index.js",
-    "runtime/component/Entrypoint.jsx",
-    "runtime/component/Main.jsx",
-    "runtime/component/ReduxProvider.jsx",
-    "runtime/reducer/index.js",
-    "runtime/reducer/runtime.js",
-    "runtime/reducer/shared.js",
-    "runtime/saga/index.js",
-    "runtime/service/index.js",
-    "runtime/store/index.js"
+    "runtime/index.js",
+    "runtime/src/component/Entrypoint.jsx",
+    "runtime/src/component/Main.jsx",
+    "runtime/src/component/ReduxProvider.jsx",
+    "runtime/src/reducer/index.js",
+    "runtime/src/reducer/runtime.js",
+    "runtime/src/reducer/shared.js",
+    "runtime/src/saga/index.js",
+    "runtime/src/service/index.js",
+    "runtime/src/store/index.js"
   ],
   "dependencies": {
     "@lastui/babylon": "1.0.9",
