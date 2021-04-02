@@ -37,7 +37,6 @@ module.exports = {
 			"process.env": {
 				NODE_ENV: `"development"`,
 			},
-			"__SANDBOX_SCOPE__": {}
 		}),
 		new webpack.EnvironmentPlugin([
 			...Object.keys(process.env),
@@ -67,6 +66,23 @@ module.exports = {
 			client: {
 				silent: false,
 			},
+			middleware: (app, builtins) => {
+			  app.use(async (ctx, next) => {
+			  	if (ctx.request.url === '/context') {
+			  		ctx.status = 200;
+  					ctx.body = JSON.stringify({
+			  			'available': [{
+			  				name: 'hot',
+			  				url: '/module.js',
+			  			}],
+			  			'entrypoint': 'hot',
+			  		})
+ 					ctx.type = 'json'; 
+			  	} else {
+			  		await next();
+			  	}
+			  })
+		    }
 		}),
 	],
 	watch: true,
