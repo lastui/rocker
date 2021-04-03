@@ -30,7 +30,7 @@ config.module.rules.push(
 		],
 	},
 	{
-		test: /\.scss$/,
+		test: /\.s[a|c]ss$/,
 		use: [
 			{
                 loader: "file-loader",
