@@ -15,6 +15,17 @@ const config = {
 
 config.output.filename = "module.js";
 
+config.module.rules.push(
+	{
+		test: /\.css$/i,
+		use: ["style-loader", "css-loader"],
+	},
+	{
+		test: /\.scss$/,
+		use: ["style-loader", "css-loader", "sass-loader"],
+	},
+)
+
 config.plugins.push(
 	new WebpackPluginServe({
 		hmr: false,
