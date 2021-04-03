@@ -13,6 +13,17 @@ const config = {
 
 config.output.filename = '[name].min.js';
 
+config.module.rules.push(
+	{
+		test: /\.css$/i,
+		use: ["style-loader", "css-loader"],
+	},
+	{
+		test: /\.s[a|c]ss$/,
+		use: ["style-loader", "css-loader", "sass-loader"],
+	},
+)
+
 config.plugins.push(
 	new CleanWebpackPlugin({
 		root: settings.PROJECT_BUILD_PATH,
