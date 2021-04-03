@@ -21,7 +21,7 @@ config.module.rules.push(
 		use: ["style-loader", "css-loader"],
 	},
 	{
-		test: /\.scss$/,
+		test: /\.s[a|c]ss$/,
 		use: ["style-loader", "css-loader", "sass-loader"],
 	},
 )
