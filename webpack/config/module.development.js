@@ -3,7 +3,7 @@ const webpack = require("webpack");
 
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
-const { WebpackPluginServe } = require('webpack-plugin-serve');
+const { WebpackPluginServe } = require("webpack-plugin-serve");
 
 const settings = require("../settings");
 
@@ -24,13 +24,23 @@ config.module.rules.push(
 		test: /\.s[a|c]ss$/,
 		use: ["style-loader", "css-loader", "sass-loader"],
 	},
-)
+	{
+		test: /\.(png|jpg|gif)$/i,
+		dependency: { not: ["url"] },
+		type: "asset/inline",
+	},
+	{
+		test: /\.(woff(2)?|eot|ttf)$/i,
+		dependency: { not: ["url"] },
+		type: "asset/resource",
+	}
+);
 
 config.plugins.push(
 	new WebpackPluginServe({
 		hmr: false,
 		historyFallback: true,
-		host: '0.0.0.0',
+		host: "0.0.0.0",
 		port: 5000,
 		status: true,
 		ramdisk: false,
@@ -44,22 +54,24 @@ config.plugins.push(
 			silent: false,
 		},
 		middleware: (app, builtins) => {
-		  app.use(async (ctx, next) => {
-		  	if (ctx.request.url === '/context') {
-		  		ctx.status = 200;
+			app.use(async (ctx, next) => {
+				if (ctx.request.url === "/context") {
+					ctx.status = 200;
 					ctx.body = JSON.stringify({
-		  			'available': [{
-		  				name: 'hot',
-		  				url: '/module.js',
-		  			}],
-		  			'entrypoint': 'hot',
-		  		})
-					ctx.type = 'json'; 
-		  	} else {
-		  		await next();
-		  	}
-		  })
-	    }
+						available: [
+							{
+								name: "hot",
+								url: "/module.js",
+							},
+						],
+						entrypoint: "hot",
+					});
+					ctx.type = "json";
+				} else {
+					await next();
+				}
+			});
+		},
 	}),
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
@@ -89,9 +101,9 @@ config.plugins.push(
 		inject: false,
 		scriptLoading: "blocking",
 		templateContent: ({ htmlWebpackPlugin }) => {
-			const scripts = htmlWebpackPlugin.tags.bodyTags.filter((item) =>
-				item.attributes.src !== 'module.js'	
-			)
+			const scripts = htmlWebpackPlugin.tags.bodyTags.filter(
+				(item) => item.attributes.src !== "module.js"
+			);
 			return `
 				<html>
 					<head>
@@ -115,7 +127,7 @@ config.plugins.push(
 						<div id="mount" />
 					</body>
 				</html>
-			`
+			`;
 		},
 	}),
 	new AddAssetHtmlPlugin([
@@ -140,7 +152,7 @@ config.plugins.push(
 			),
 			typeOfAsset: "js",
 		},
-	]),
+	])
 );
 
 module.exports = config;
