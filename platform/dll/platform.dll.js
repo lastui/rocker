@@ -315,6 +315,7 @@ var createModuleLoader = function createModuleLoader() {
     }
 
     if (scope.styles) {
+      console.debug("module ".concat(name, " introducing styles"));
       scope.styles.use();
     }
 
@@ -324,6 +325,10 @@ var createModuleLoader = function createModuleLoader() {
       cleanup: function cleanup() {
         if (scope.style) {
           scope.styles.unuse();
+        }
+
+        if (scope.saga) {
+          removeSaga(name);
         }
       }
     };
@@ -399,7 +404,6 @@ var createModuleLoader = function createModuleLoader() {
     var loaded = loadedModules[name];
 
     if (loaded) {
-      removeSaga(name);
       loaded.cleanup();
       delete loadedModules[name];
       store.dispatch({
