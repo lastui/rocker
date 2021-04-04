@@ -24,6 +24,16 @@ config.module.rules.push(
 		test: /\.s[a|c]ss$/,
 		use: ["style-loader", "css-loader", "sass-loader"],
 	},
+	{
+        test: /\.(png|jpg|gif)$/i,
+       	dependency: { not: ['url'] },
+        type: 'asset/inline',
+    },
+    {
+        test: /\.(woff(2)?|eot|ttf)$/i,
+       	dependency: { not: ['url'] },
+        type: 'asset/resource',
+    },
 )
 
 config.plugins.push(

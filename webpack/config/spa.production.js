@@ -14,6 +14,7 @@ const config = {
 };
 
 config.output.filename = "[name].js";
+config.output.assetModuleFilename = '[name].[ext][query]';
 
 config.module.rules.push(
 	{
@@ -43,6 +44,11 @@ config.module.rules.push(
 			"sass-loader",
 		],
 	},
+	{
+        test: /\.(woff(2)?|eot|ttf|png|jpg|gif)$/i,
+       	dependency: { not: ['url'] },
+        type: 'asset/resource',
+    },
 )
 
 config.plugins.push(

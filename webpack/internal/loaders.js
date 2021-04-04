@@ -22,6 +22,14 @@ module.exports = {
 					},
 				},
 			},
+		    {
+		       test: /\.txt/,
+		       type: 'asset/source',
+		    },
+		    {
+		       test: /\.svg/,
+		       type: 'asset/inline',
+		    },
 		],
 	},
 };
