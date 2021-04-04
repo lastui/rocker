@@ -18,11 +18,28 @@ config.output.filename = "module.js";
 config.module.rules.push(
 	{
 		test: /\.css$/i,
-		use: ["style-loader", "css-loader"],
+		use: [
+			{
+				loader: "style-loader",
+				options: {
+					injectType: "singletonStyleTag",
+				},
+			},
+			"css-loader",
+		],
 	},
 	{
 		test: /\.s[a|c]ss$/,
-		use: ["style-loader", "css-loader", "sass-loader"],
+		use: [
+			{
+				loader: "style-loader",
+				options: {
+					injectType: "singletonStyleTag",
+				},
+			},
+			"css-loader",
+			"sass-loader",
+		],
 	},
 	{
 		test: /\.(png|jpg|gif)$/i,
