@@ -125,6 +125,7 @@ export const createModuleLoader = () => {
       addShared(name, scope.shared);
     }
     if (scope.styles) {
+      console.debug(`module ${name} introducing styles`);
       scope.styles.use();
     }
     loadedModules[name] = {
@@ -133,6 +134,9 @@ export const createModuleLoader = () => {
       cleanup: () => {
         if (scope.style) {
           scope.styles.unuse();
+        }
+        if (scope.saga) {
+          removeSaga(name);
         }
       },
     };
@@ -201,7 +205,6 @@ export const createModuleLoader = () => {
   const unloadModule = (name) => {
     const loaded = loadedModules[name];
     if (loaded) {
-      removeSaga(name);
       loaded.cleanup();
       delete loadedModules[name];
       store.dispatch({
