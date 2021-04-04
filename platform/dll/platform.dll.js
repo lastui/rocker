@@ -167,6 +167,10 @@ function registerModule(scope) {
   if (scope.shared) {
     this.shared = scope.shared;
   }
+
+  if (scope.styles) {
+    this.styles = scope.styles;
+  }
 }
 var moduleLoaderMiddleware = function moduleLoaderMiddleware(loader) {
   return function (store) {
@@ -310,9 +314,18 @@ var createModuleLoader = function createModuleLoader() {
       addShared(name, scope.shared);
     }
 
+    if (scope.styles) {
+      scope.styles.use();
+    }
+
     loadedModules[name] = {
       name: name,
-      root: scope.MainView && isolateModule(name, scope.MainView)
+      root: scope.MainView && isolateModule(name, scope.MainView),
+      cleanup: function cleanup() {
+        if (scope.style) {
+          scope.styles.unuse();
+        }
+      }
     };
   };
 
@@ -383,14 +396,20 @@ var createModuleLoader = function createModuleLoader() {
   };
 
   var unloadModule = function unloadModule(name) {
-    removeSaga(name);
-    delete loadedModules[name];
-    store.dispatch({
-      type: MODULE_UNLOADED,
-      payload: {
-        name: name
-      }
-    });
+    var loaded = loadedModules[name];
+
+    if (loaded) {
+      removeSaga(name);
+      loaded.cleanup();
+      delete loadedModules[name];
+      store.dispatch({
+        type: MODULE_UNLOADED,
+        payload: {
+          name: name
+        }
+      });
+    }
+
     return Promise.resolve(null);
   };
 

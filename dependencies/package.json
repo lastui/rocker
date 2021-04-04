@@ -7,6 +7,6 @@
 	"dependencies": {
 		"@lastui/babylon": "1.0.9",
 		"@lastui/dependencies": "1.0.3",
-		"css-loader": "5.2.0"
+		"style-loader": "2.0.0"
 	}
 }

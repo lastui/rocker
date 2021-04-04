@@ -19,6 +19,9 @@ export function registerModule(scope) {
   if (scope.shared) {
     this.shared = scope.shared;
   }
+  if (scope.styles) {
+    this.styles = scope.styles;
+  }
 }
 
 export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
@@ -101,29 +104,41 @@ export const createModuleLoader = () => {
   };
 
   const removeShared = (name) => {
-    store.dispatch(actions.removeShared(name))
+    store.dispatch(actions.removeShared(name));
   };
 
   const addShared = (name, payload) => {
-    store.dispatch(actions.addShared(name, payload))
+    store.dispatch(actions.addShared(name, payload));
   };
 
   const connectModule = (name, scope = {}) => {
     if (scope.reducer) {
-      console.debug(`module ${name} introducing reducer`)
+      console.debug(`module ${name} introducing reducer`);
       addReducer(name, combineReducers(scope.reducer));
     }
     if (scope.saga) {
-      console.debug(`module ${name} introducing saga`)
+      console.debug(`module ${name} introducing saga`);
       addSaga(name, scope.saga);
     }
     if (scope.shared) {
-      console.debug(`module ${name} introducing shared`)
+      console.debug(`module ${name} introducing shared`);
       addShared(name, scope.shared);
+    }
+    if (scope.styles) {
+      console.debug(`module ${name} introducing styles`);
+      scope.styles.use();
     }
     loadedModules[name] = {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
+      cleanup: () => {
+        if (scope.style) {
+          scope.styles.unuse();
+        }
+        if (scope.saga) {
+          removeSaga(name);
+        }
+      },
     };
   };
 
@@ -188,14 +203,17 @@ export const createModuleLoader = () => {
   };
 
   const unloadModule = (name) => {
-    removeSaga(name);
-    delete loadedModules[name];
-    store.dispatch({
-      type: constants.MODULE_UNLOADED,
-      payload: {
-        name,
-      },
-    });
+    const loaded = loadedModules[name];
+    if (loaded) {
+      loaded.cleanup();
+      delete loadedModules[name];
+      store.dispatch({
+        type: constants.MODULE_UNLOADED,
+        payload: {
+          name,
+        },
+      });
+    }
     return Promise.resolve(null);
   };
 
@@ -290,10 +308,10 @@ export const createModuleLoader = () => {
         >
           <Component {...props} />
         </ReactReduxContext.Provider>
-      )
+      );
     };
-    ModuleWrapper.displayName = `ModuleWrapper-${name}`
-    Component.displayName = `Module-${name}`
+    ModuleWrapper.displayName = `ModuleWrapper-${name}`;
+    Component.displayName = `Module-${name}`;
     return ModuleWrapper;
   };
 

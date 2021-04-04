@@ -22,7 +22,9 @@ config.entry = {
 	    "redux-saga",
 		"redux-saga/effects",
 		"@babel/runtime/regenerator",
-		"css-loader/dist/runtime/api",
+		"style-loader/dist/runtime/injectStylesIntoLinkTag",
+		"style-loader/dist/runtime/injectStylesIntoStyleTag",
+		"style-loader/dist/runtime/isEqualLocals",
 	],
 };
 
