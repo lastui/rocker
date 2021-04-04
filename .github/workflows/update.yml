@@ -54,7 +54,6 @@ jobs:
       - name: Check if there are changes
         id: changes
         uses: tj-actions/verify-changed-files@v5.5
-        id: changed_files
         with:
           files: |
             package.json
