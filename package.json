@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "scripts": {
     "postinstall": "cd dependencies && npm i && cd ../platform && npm i && cd ../runtime && npm i",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
@@ -68,6 +68,7 @@
     "extract-loader": "5.1.0",
     "file-loader": "6.2.0",
     "html-webpack-plugin": "5.3.1",
+    "mini-css-extract-plugin": "1.4.0",
     "node-sass": "5.0.0",
     "os-browserify": "0.3.0",
     "path-browserify": "1.0.1",

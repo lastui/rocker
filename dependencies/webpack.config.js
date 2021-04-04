@@ -22,6 +22,7 @@ config.entry = {
 	    "redux-saga",
 		"redux-saga/effects",
 		"@babel/runtime/regenerator",
+		"css-loader/dist/runtime/api",
 	],
 };
 

@@ -5,6 +5,8 @@
 		"build:dev": "NODE_ENV=development node ../bin/webpack.js"
 	},
 	"dependencies": {
-		"@lastui/dependencies": "1.0.3"
+		"@lastui/babylon": "1.0.9",
+		"@lastui/dependencies": "1.0.3",
+		"css-loader": "5.2.0"
 	}
 }
