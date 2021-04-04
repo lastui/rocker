@@ -27,40 +27,54 @@ jobs:
           cd ctest
           npm install
           ncu -u
-      - name: Package dependencies
+      - name: Update package dependencies
         run: |
           cd dependencies
           npm install
           ncu -u
           npm install
-          npm run build:dev
-          npm run build:prod
-      - name: Package platform
+      - name: Update package platform
         run: |
           cd platform
           npm install
           ncu -u
           npm install
-          npm run build:dev
-          npm run build:prod
-      - name: Package runtime
+      - name: Update package runtime
         run: |
           cd runtime
           npm install
           ncu -u
           npm install
-          npm run build:dev
-          npm run build:prod
       - name: Check if there are changes
         id: changes
         uses: tj-actions/verify-changed-files@v5.5
         with:
           files: |
             package.json
-            (dependencies|platform|runtime)/package.json
+            dependencies/package.json
+            platform/package.json
+            runtime/package.json
       - name: Bump version patch
         if: steps.changes.outputs.files_changed == 'true'
         run: npm version patch --no-git-tag-version
+      - name: Compile package dependencies
+        if: steps.changes.outputs.files_changed == 'true'
+        run: |
+          cd dependencies
+          npm run build:dev
+          npm run build:prod
+      - name: Compile package platform
+        if: steps.changes.outputs.files_changed == 'true'
+        run: |
+          cd platform
+          npm run build:dev
+          npm run build:prod
+      - name: Compile package runtime
+        if: steps.changes.outputs.files_changed == 'true'
+        run: |
+          cd runtime
+          npm run build:dev
+          npm run build:prod
       - name: Create PR
         if: steps.changes.outputs.files_changed == 'true'
         uses: peter-evans/create-pull-request@v3
