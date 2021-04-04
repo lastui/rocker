@@ -3,7 +3,7 @@ const webpack = require("webpack");
 
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
-const { WebpackPluginServe } = require('webpack-plugin-serve');
+const { WebpackPluginServe } = require("webpack-plugin-serve");
 
 const settings = require("../settings");
 
@@ -13,7 +13,7 @@ const config = {
 	...require("../internal/development.js"),
 };
 
-config.output.filename = '[name].[fullhash].js';
+config.output.filename = "[name].[fullhash].js";
 
 config.module.rules.push(
 	{
@@ -25,22 +25,22 @@ config.module.rules.push(
 		use: ["style-loader", "css-loader", "sass-loader"],
 	},
 	{
-        test: /\.(png|jpg|gif)$/i,
-       	dependency: { not: ['url'] },
-        type: 'asset/inline',
-    },
-    {
-        test: /\.(woff(2)?|eot|ttf)$/i,
-       	dependency: { not: ['url'] },
-        type: 'asset/resource',
-    },
-)
+		test: /\.(png|jpg|gif)$/i,
+		dependency: { not: ["url"] },
+		type: "asset/inline",
+	},
+	{
+		test: /\.(woff(2)?|eot|ttf)$/i,
+		dependency: { not: ["url"] },
+		type: "asset/resource",
+	}
+);
 
 config.plugins.push(
 	new WebpackPluginServe({
 		hmr: false,
 		historyFallback: true,
-		host: '0.0.0.0',
+		host: "0.0.0.0",
 		port: 5000,
 		status: true,
 		ramdisk: false,
@@ -54,19 +54,19 @@ config.plugins.push(
 			silent: false,
 		},
 		middleware: (app, builtins) => {
-		  app.use(async (ctx, next) => {
-		  	if (ctx.request.url === '/context') {
-		  		ctx.status = 200;
+			app.use(async (ctx, next) => {
+				if (ctx.request.url === "/context") {
+					ctx.status = 200;
 					ctx.body = JSON.stringify({
-		  			'available': [],
-		  			'entrypoint': '',
-		  		})
-					ctx.type = 'json'; 
-		  	} else {
-		  		await next();
-		  	}
-		  })
-	    }
+						available: [],
+						entrypoint: "",
+					});
+					ctx.type = "json";
+				} else {
+					await next();
+				}
+			});
+		},
 	}),
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
@@ -90,10 +90,7 @@ config.plugins.push(
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new HTMLWebpackPlugin({
-		template: path.resolve(
-			settings.PROJECT_ROOT_PATH,
-			"static/index.html"
-		),
+		template: path.resolve(settings.PROJECT_ROOT_PATH, "static/index.html"),
 		production: false,
 		publicPath: "/",
 		minify: false,
@@ -122,7 +119,7 @@ config.plugins.push(
 			),
 			typeOfAsset: "js",
 		},
-	]),
+	])
 );
 
 module.exports = config;

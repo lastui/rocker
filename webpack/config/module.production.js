@@ -11,7 +11,7 @@ const config = {
 	...require("../internal/build.js"),
 };
 
-config.output.filename = '[name].min.js';
+config.output.filename = "[name].min.js";
 
 config.module.rules.push(
 	{
@@ -23,11 +23,11 @@ config.module.rules.push(
 		use: ["style-loader", "css-loader", "sass-loader"],
 	},
 	{
-        test: /\.(png|jpg|gif)$/i,
-       	dependency: { not: ['url'] },
-        type: 'asset/inline',
-    },
-)
+		test: /\.(png|jpg|gif)$/i,
+		dependency: { not: ["url"] },
+		type: "asset/inline",
+	}
+);
 
 config.plugins.push(
 	new CleanWebpackPlugin({
@@ -58,8 +58,7 @@ config.plugins.push(
 			"../../runtime/dll/runtime-prod-manifest.json"
 		),
 		context: settings.PROJECT_ROOT_PATH,
-	}),
-
+	})
 );
 
 module.exports = config;

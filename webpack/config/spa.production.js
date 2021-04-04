@@ -14,18 +14,18 @@ const config = {
 };
 
 config.output.filename = "[name].js";
-config.output.assetModuleFilename = '[name].[ext][query]';
+config.output.assetModuleFilename = "[name].[ext][query]";
 
 config.module.rules.push(
 	{
 		test: /\.css$/i,
 		use: [
 			{
-                loader: "file-loader",
-                options: {
-                    name: "[name].css",
-                },
-            },
+				loader: "file-loader",
+				options: {
+					name: "[name].css",
+				},
+			},
 			"extract-loader",
 			"css-loader",
 		],
@@ -34,22 +34,22 @@ config.module.rules.push(
 		test: /\.s[a|c]ss$/,
 		use: [
 			{
-                loader: "file-loader",
-                options: {
-                    name: "[name].css",
-                },
-            },
+				loader: "file-loader",
+				options: {
+					name: "[name].css",
+				},
+			},
 			"extract-loader",
 			"css-loader",
 			"sass-loader",
 		],
 	},
 	{
-        test: /\.(woff(2)?|eot|ttf|png|jpg|gif)$/i,
-       	dependency: { not: ['url'] },
-        type: 'asset/resource',
-    },
-)
+		test: /\.(woff(2)?|eot|ttf|png|jpg|gif)$/i,
+		dependency: { not: ["url"] },
+		type: "asset/resource",
+	}
+);
 
 config.plugins.push(
 	new CleanWebpackPlugin({
@@ -82,10 +82,7 @@ config.plugins.push(
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new HTMLWebpackPlugin({
-		template: path.resolve(
-			settings.PROJECT_ROOT_PATH,
-			"static/index.html"
-		),
+		template: path.resolve(settings.PROJECT_ROOT_PATH, "static/index.html"),
 		production: true,
 		publicPath: "/",
 		minify: {
@@ -125,7 +122,7 @@ config.plugins.push(
 			),
 			typeOfAsset: "js",
 		},
-	]),
+	])
 );
 
 module.exports = config;
