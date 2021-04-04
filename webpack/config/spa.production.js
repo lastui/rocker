@@ -4,6 +4,7 @@ const webpack = require("webpack");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const settings = require("../settings");
 
@@ -14,19 +15,15 @@ const config = {
 };
 
 config.output.filename = "[name].js";
-config.output.assetModuleFilename = "[name].[ext][query]";
+config.output.assetModuleFilename = "[name][ext][query]";
 
 config.module.rules.push(
 	{
 		test: /\.css$/i,
 		use: [
 			{
-				loader: "file-loader",
-				options: {
-					name: "[name].css",
-				},
+				loader: MiniCssExtractPlugin.loader,
 			},
-			"extract-loader",
 			"css-loader",
 		],
 	},
@@ -34,24 +31,32 @@ config.module.rules.push(
 		test: /\.s[a|c]ss$/,
 		use: [
 			{
-				loader: "file-loader",
+				loader: MiniCssExtractPlugin.loader,
+			},
+			{
+				loader: "css-loader",
 				options: {
-					name: "[name].css",
+					importLoaders: 1,
+					modules: {
+						compileType: "icss",
+					},
 				},
 			},
-			"extract-loader",
-			"css-loader",
 			"sass-loader",
 		],
 	},
 	{
-		test: /\.(woff(2)?|eot|ttf|png|jpg|gif)$/i,
-		dependency: { not: ["url"] },
+		test: /\.(woff|woff2|eot|otf|ttf|png|jpg|gif)(\?v=\d+\.\d+\.\d+)?$/,
 		type: "asset/resource",
 	}
 );
 
 config.plugins.push(
+	new MiniCssExtractPlugin({
+		filename: "[name].css",
+		chunkFilename: "[id].css",
+		ignoreOrder: false,
+	}),
 	new CleanWebpackPlugin({
 		root: settings.PROJECT_BUILD_PATH,
 		cleanOnceBeforeBuildPatterns: ["**/*"],

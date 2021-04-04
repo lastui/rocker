@@ -30,8 +30,7 @@ config.module.rules.push(
 		type: "asset/inline",
 	},
 	{
-		test: /\.(woff(2)?|eot|ttf)$/i,
-		dependency: { not: ["url"] },
+		test: /\.(woff|woff2|eot|otf|ttf)(\?v=\d+\.\d+\.\d+)?$/,
 		type: "asset/resource",
 	}
 );
