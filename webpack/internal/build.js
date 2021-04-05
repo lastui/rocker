@@ -10,7 +10,7 @@ module.exports = {
 		chunkLoadingGlobal: "lastuiJsonp",
 		chunkLoading: "jsonp",
 		path: settings.PROJECT_BUILD_PATH,
-		publicPath: "/",
+		publicPath: settings.PROJECT_NAMESPACE,
 	},
 	performance: {
 		hints: "warning",

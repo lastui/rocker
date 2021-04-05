@@ -33,15 +33,7 @@ config.module.rules.push(
 			{
 				loader: MiniCssExtractPlugin.loader,
 			},
-			{
-				loader: "css-loader",
-				options: {
-					importLoaders: 1,
-					modules: {
-						compileType: "icss",
-					},
-				},
-			},
+			"css-loader",
 			"sass-loader",
 		],
 	},
@@ -55,6 +47,7 @@ config.plugins.push(
 	new MiniCssExtractPlugin({
 		filename: "[name].css",
 		chunkFilename: "[id].css",
+		linkType: "text/css",
 		ignoreOrder: false,
 	}),
 	new CleanWebpackPlugin({
@@ -89,7 +82,7 @@ config.plugins.push(
 	new HTMLWebpackPlugin({
 		template: path.resolve(settings.PROJECT_ROOT_PATH, "static/index.html"),
 		production: true,
-		publicPath: "/",
+		publicPath: settings.PROJECT_NAMESPACE,
 		minify: {
 			removeComments: true,
 			collapseWhitespace: true,

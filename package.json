@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "scripts": {
     "postinstall": "cd dependencies && npm i && cd ../platform && npm i && cd ../runtime && npm i",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
@@ -65,6 +65,7 @@
     "buffer": "6.0.3",
     "clean-webpack-plugin": "3.0.0",
     "css-loader": "5.2.0",
+    "dotenv": "8.2.0",
     "extract-loader": "5.1.0",
     "file-loader": "6.2.0",
     "html-webpack-plugin": "5.3.1",
