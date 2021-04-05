@@ -38,7 +38,7 @@ config.module.rules.push(
 		],
 	},
 	{
-		test: /\.(woff|woff2|eot|otf|ttf|png|jpg|gif)(\?v=\d+\.\d+\.\d+)?$/,
+		test: /\.(woff|woff2|eot|otf|ttf|png|jpg|gif)(\?.*$|$)/,
 		type: "asset/resource",
 	}
 );
