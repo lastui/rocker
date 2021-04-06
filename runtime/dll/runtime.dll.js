@@ -233,7 +233,7 @@ var _marked = /*#__PURE__*/regeneratorfrom_dll_reference_dependencies_dll_defaul
     _marked2 = /*#__PURE__*/regeneratorfrom_dll_reference_dependencies_dll_default().mark(runInit);
 
 
- //import { getContext } from '../service';
+
 
 function watchInit() {
   return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function watchInit$(_context) {
@@ -459,13 +459,7 @@ var Entrypoint = function Entrypoint(props) {
 var Main = function Main(props) {
   return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(component_ReduxProvider, null, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(libfrom_dll_reference_dependencies_dll.ConnectedRouter, {
     history: platformfrom_dll_reference_platform_dll.history
-  }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(react_routerfrom_dll_reference_dependencies_dll.Switch, null, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(react_routerfrom_dll_reference_dependencies_dll.Route, {
-    component: function component() {
-      return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(component_Entrypoint, {
-        fetchContext: props.fetchContext
-      });
-    }
-  }))));
+  }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(react_routerfrom_dll_reference_dependencies_dll.Switch, null, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(component_Entrypoint, props))));
 };
 
 /* harmony default export */ const component_Main = (Main);

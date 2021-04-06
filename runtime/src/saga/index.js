@@ -1,6 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { actions, constants } from '@lastui/rocker/platform';
-//import { getContext } from '../service';
 
 function* watchInit() {
 	yield takeLatest(constants.INIT, runInit);
