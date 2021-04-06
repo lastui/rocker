@@ -57,7 +57,7 @@ config.plugins.push(
 		hmr: false,
 		historyFallback: true,
 		host: "0.0.0.0",
-		port: 5000,
+		port: settings.DEV_SERVER_PORT,
 		status: true,
 		ramdisk: false,
 		liveReload: true,
@@ -68,25 +68,6 @@ config.plugins.push(
 		static: settings.PROJECT_DEV_PATH,
 		client: {
 			silent: false,
-		},
-		middleware: (app, builtins) => {
-			app.use(async (ctx, next) => {
-				if (ctx.request.url === "/context") {
-					ctx.status = 200;
-					ctx.body = JSON.stringify({
-						available: [
-							{
-								name: "hot",
-								url: "/module.js",
-							},
-						],
-						entrypoint: "hot",
-					});
-					ctx.type = "json";
-				} else {
-					await next();
-				}
-			});
 		},
 	}),
 	new webpack.DllReferencePlugin({
@@ -136,7 +117,19 @@ config.plugins.push(
 								const runtime = runtime_dll("./node_modules/@lastui/rocker/runtime/index.js");
 
 								window.addEventListener("load", function() {
-									dom.render(react.createElement(runtime.Main, null), document.getElementById("mount"))
+									dom.render(react.createElement(runtime.Main, {
+										fetchContext: async function() {
+											return {
+												available: [
+													{
+														name: "hot",
+														url: "/module.js",
+													},
+												],
+												entrypoint: "hot",
+											}
+										}
+									}), document.getElementById("mount"))
 								})
 							}())
 						</script>
