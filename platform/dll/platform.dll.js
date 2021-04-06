@@ -69,9 +69,12 @@ var ADD_SHARED = "@@shared/ADD_SHARED";
 var REMOVE_SHARED = "@@shared/REMOVE_SHARED";
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/actions.js
 
-var init = function init() {
+var init = function init(fetchContext) {
   return {
-    type: INIT
+    type: INIT,
+    payload: {
+      fetchContext: fetchContext
+    }
   };
 };
 var actions_addShared = function addShared(name) {
