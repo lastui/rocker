@@ -20,7 +20,7 @@ config.module.rules.push(
 			{
 				loader: "style-loader",
 				options: {
-					injectType: 'lazyStyleTag',
+					injectType: "lazyStyleTag",
 				},
 			},
 			"css-loader",
@@ -29,10 +29,10 @@ config.module.rules.push(
 	{
 		test: /\.s[a|c]ss$/,
 		use: [
-		{
+			{
 				loader: "style-loader",
 				options: {
-					injectType: 'lazyStyleTag',
+					injectType: "lazyStyleTag",
 				},
 			},
 			"css-loader",
