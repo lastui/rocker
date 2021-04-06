@@ -5,11 +5,11 @@ import { history } from "@lastui/rocker/platform";
 import ReduxProvider from "./ReduxProvider";
 import Entrypoint from "./Entrypoint";
 
-const Main = () => (
+const Main = (props) => (
 	<ReduxProvider>
 		<ConnectedRouter history={history}>
 			<Switch>
-				<Route component={Entrypoint} />
+				<Route component={() => <Entrypoint fetchContext={props.fetchContext} />} />
 			</Switch>
 		</ConnectedRouter>
 	</ReduxProvider>

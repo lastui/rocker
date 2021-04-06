@@ -1,7 +1,10 @@
 import * as constants from "./constants";
 
-export const init = () => ({
+export const init = (fetchContext) => ({
   type: constants.INIT,
+  payload: {
+    fetchContext,
+  }
 });
 
 export const addShared = (name, data = {}) => ({

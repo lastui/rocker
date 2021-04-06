@@ -4,7 +4,7 @@ var runtime_dll;
 
 /***/ "./node_modules/@lastui/rocker/runtime/index.js":
 /*!*******************************************************************!*\
-  !*** ./node_modules/@lastui/rocker/runtime/index.js + 18 modules ***!
+  !*** ./node_modules/@lastui/rocker/runtime/index.js + 17 modules ***!
   \*******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -226,31 +226,6 @@ var shared_initialState = {};
 
 var runtimeReducer = runtime;
 var sharedReducer = shared;
-;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/service/index.js
-
-
-var getContext = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorfrom_dll_reference_dependencies_dll_default().mark(function _callee() {
-    return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            return _context.abrupt("return", fetch('/context').then(function (data) {
-              return data.json();
-            }));
-
-          case 1:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-
-  return function getContext() {
-    return _ref.apply(this, arguments);
-  };
-}();
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/saga/index.js
 
 
@@ -258,8 +233,7 @@ var _marked = /*#__PURE__*/regeneratorfrom_dll_reference_dependencies_dll_defaul
     _marked2 = /*#__PURE__*/regeneratorfrom_dll_reference_dependencies_dll_default().mark(runInit);
 
 
-
-
+ //import { getContext } from '../service';
 
 function watchInit() {
   return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function watchInit$(_context) {
@@ -284,7 +258,7 @@ function runInit(action) {
       switch (_context2.prev = _context2.next) {
         case 0:
           _context2.next = 2;
-          return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.call)(getContext);
+          return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.call)(action.payload.fetchContext);
 
         case 2:
           context = _context2.sent;
@@ -462,10 +436,10 @@ var getIsReady = function getIsReady(state) {
 
 
 
-var Entrypoint = function Entrypoint() {
+var Entrypoint = function Entrypoint(props) {
   var dispatch = (0,react_redux_libfrom_dll_reference_dependencies_dll.useDispatch)();
   (0,reactfrom_dll_reference_dependencies_dll.useEffect)(function () {
-    dispatch(platformfrom_dll_reference_platform_dll.actions.init());
+    dispatch(platformfrom_dll_reference_platform_dll.actions.init(props.fetchContext));
   }, []);
   var entrypoint = (0,react_redux_libfrom_dll_reference_dependencies_dll.useSelector)(getEntrypoint);
   return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(platformfrom_dll_reference_platform_dll.Module, {
@@ -482,11 +456,15 @@ var Entrypoint = function Entrypoint() {
 
 
 
-var Main = function Main() {
+var Main = function Main(props) {
   return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(component_ReduxProvider, null, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(libfrom_dll_reference_dependencies_dll.ConnectedRouter, {
     history: platformfrom_dll_reference_platform_dll.history
   }, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(react_routerfrom_dll_reference_dependencies_dll.Switch, null, /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(react_routerfrom_dll_reference_dependencies_dll.Route, {
-    component: component_Entrypoint
+    component: function component() {
+      return /*#__PURE__*/reactfrom_dll_reference_dependencies_dll.createElement(component_Entrypoint, {
+        fetchContext: props.fetchContext
+      });
+    }
   }))));
 };
 
