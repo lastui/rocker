@@ -1,8 +1,2 @@
 node_modules
-example/build
-example/dev
-ctest/build
-ctest/dev
-ctest/dll
 dependencies/package-lock.json
-ctest/package-lock.json
