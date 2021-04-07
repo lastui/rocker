@@ -5,7 +5,7 @@ const settings = require("../webpack/settings");
 const cwd = path.resolve(process.cwd());
 
 execSync(`mkdir -p ./node_modules/@lastui/rocker`);
-execSync(`rm -f ./node_modules/@lastui/rocker/platform`);
+execSync(`rm -f ./node_modules/@lastui/rocker/platform || :`);
 execSync(`ln -s ${cwd}/src ./node_modules/@lastui/rocker/platform`);
 
 const { dependencies } = require("../dependencies/webpack.config.js").entry;
