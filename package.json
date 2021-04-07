@@ -1,8 +1,8 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "scripts": {
-    "postinstall": "cd dependencies && npm i && cd ../platform && npm i && cd ../runtime && npm i",
+    "postinstall": "cd dependencies && npm i",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
     "build:platform": "cd platform && npm run build",
@@ -28,7 +28,7 @@
     "dependencies/dll/dependencies-prod-manifest.json",
     "dependencies/dll/dependencies.dll.js",
     "dependencies/dll/dependencies.dll.min.js",
-    "dependencies/dll/dependencies.dll.min.js.LICENSE.txt",
+    "dependencies/dll/LICENSE.txt",
     "platform/index.js",
     "platform/src/index.js",
     "platform/src/actions.js",
@@ -42,7 +42,7 @@
     "platform/dll/platform-prod-manifest.json",
     "platform/dll/platform.dll.js",
     "platform/dll/platform.dll.min.js",
-    "platform/dll/platform.dll.min.js.LICENSE.txt",
+    "platform/dll/LICENSE.txt",
     "runtime/index.js",
     "runtime/src/index.js",
     "runtime/src/component/Entrypoint.jsx",
@@ -59,7 +59,7 @@
     "runtime/dll/runtime-prod-manifest.json",
     "runtime/dll/runtime.dll.js",
     "runtime/dll/runtime.dll.min.js",
-    "runtime/dll/runtime.dll.min.js.LICENSE.txt"
+    "runtime/dll/LICENSE.txt"
   ],
   "dependencies": {
     "@lastui/babylon": "1.0.9",
@@ -68,8 +68,6 @@
     "clean-webpack-plugin": "3.0.0",
     "css-loader": "5.2.0",
     "dotenv": "8.2.0",
-    "extract-loader": "5.1.0",
-    "file-loader": "6.2.0",
     "html-webpack-plugin": "5.3.1",
     "mini-css-extract-plugin": "1.4.1",
     "node-sass": "5.0.0",
