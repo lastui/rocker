@@ -1,10 +1,2 @@
 node_modules
-example/build
-example/dev
-ctest/build
-ctest/dev
-ctest/dll
 dependencies/package-lock.json
-runtime/package-lock.json
-ctest/package-lock.json
-platform/package-lock.json

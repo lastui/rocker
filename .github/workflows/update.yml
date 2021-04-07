@@ -22,26 +22,9 @@ jobs:
           npm install
           ncu -u
           npm install
-      - name: Update ctest dependencies
-        run: |
-          cd ctest
-          npm install
-          ncu -u
       - name: Update package dependencies
         run: |
           cd dependencies
-          npm install
-          ncu -u
-          npm install
-      - name: Update package platform
-        run: |
-          cd platform
-          npm install
-          ncu -u
-          npm install
-      - name: Update package runtime
-        run: |
-          cd runtime
           npm install
           ncu -u
           npm install
@@ -52,8 +35,6 @@ jobs:
           files: |
             package.json
             dependencies/package.json
-            platform/package.json
-            runtime/package.json
       - name: Bump version patch
         if: steps.changes.outputs.files_changed == 'true'
         run: npm version patch --no-git-tag-version
