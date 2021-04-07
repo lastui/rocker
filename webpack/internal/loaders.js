@@ -1,6 +1,5 @@
 const babel = require("@lastui/babylon");
 
-const path = require('path');
 const settings = require("../settings");
 
 module.exports = {
