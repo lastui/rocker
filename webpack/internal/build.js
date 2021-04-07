@@ -6,7 +6,7 @@ const settings = require("../settings");
 module.exports = {
 	bail: true,
 	output: {
-		pathinfo: true,
+		pathinfo: false,
 		chunkLoadingGlobal: "lastuiJsonp",
 		chunkLoading: "jsonp",
 		path: settings.PROJECT_BUILD_PATH,
@@ -39,38 +39,40 @@ module.exports = {
 		emitOnErrors: true,
 		concatenateModules: true,
 		runtimeChunk: false,
+		minimize: !settings.DEVELOPMENT,
 		minimizer: settings.DEVELOPMENT
 			? []
 			: [
-					new TerserPlugin({
-						terserOptions: {
-							compress: {
-								ecma: 5,
-								warnings: false,
-								comparisons: false,
-								inline: 2,
-							},
-							output: {
-								ecma: 5,
-								comments: false,
-								ascii_only: true,
-							},
+				new TerserPlugin({
+					extractComments: {
+						condition: /^\**!|license/i,
+						filename: (fileData) => 'LICENSE.txt',
+						banner: (licenseFile) => 'License information can be found in LICENSE.txt',
+					},
+					terserOptions: {
+						parse: {
+							ecma: 8,
 						},
-						parallel: true,
-					}),
+						compress: {
+							ecma: 5,
+							warnings: false,
+							comparisons: false,
+							inline: 2,
+						},
+						output: {
+							ecma: 5,
+							comments: false,
+							ascii_only: true,
+						},
+					},
+					parallel: true,
+				}),
 			  ],
 	},
 	plugins: [
 		new webpack.ProvidePlugin({
 			Buffer: ["buffer", "Buffer"],
 			process: ["process"],
-		}),
-		new webpack.DefinePlugin({
-			"process.env": {
-				NODE_ENV: settings.DEVELOPMENT
-					? `"development"`
-					: `"production"`,
-			},
 		}),
 		new webpack.EnvironmentPlugin([
 			...Object.keys(process.env),

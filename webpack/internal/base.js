@@ -6,9 +6,10 @@ module.exports = {
 	resolve: {
 		unsafeCache: false,
 		modules: [settings.PROJECT_SRC_PATH, "node_modules"],
-		extensions: [".ts", ".js", ".jsx", ".tsx"],
+		extensions: [".js", ".jsx", ".ts", ".tsx"],
 		mainFields: ["browser", "main"],
 		enforceExtension: false,
+		symlinks: false,
 		fallback: {
 			util: require.resolve("util/"),
 			process: false,

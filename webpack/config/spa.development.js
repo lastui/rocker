@@ -13,7 +13,7 @@ const config = {
 	...require("../internal/development.js"),
 };
 
-config.output.filename = "[name].[fullhash].js";
+config.output.filename = "[name].js";
 
 config.module.rules.push(
 	{

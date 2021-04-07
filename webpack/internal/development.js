@@ -8,7 +8,7 @@ const settings = require(path.resolve(__dirname, "../settings"));
 module.exports = {
 	bail: false,
 	output: {
-		pathinfo: true,
+		pathinfo: false,
 		chunkLoadingGlobal: "lastuiJsonp",
 		chunkLoading: "jsonp",
 		path: settings.PROJECT_DEV_PATH,
@@ -32,11 +32,6 @@ module.exports = {
 		new webpack.ProvidePlugin({
 			Buffer: ["buffer", "Buffer"],
 			process: ["process"],
-		}),
-		new webpack.DefinePlugin({
-			"process.env": {
-				NODE_ENV: `"development"`,
-			},
 		}),
 		new webpack.EnvironmentPlugin([
 			...Object.keys(process.env),

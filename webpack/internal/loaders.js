@@ -1,5 +1,6 @@
 const babel = require("@lastui/babylon");
 
+const path = require('path');
 const settings = require("../settings");
 
 module.exports = {
@@ -7,20 +8,25 @@ module.exports = {
 		strictExportPresence: true,
 		rules: [
 			{
-				test: /\.[j|t]sx?$/,
+				test: /\.[t|j]sx?$/,
 				enforce: "pre",
 				include: [settings.PROJECT_SRC_PATH, /node_modules\/\@lastui*/],
 				exclude: [/node_modules\/(?!(\@lastui*))/],
-				use: {
-					loader: "babel-loader",
-					options: {
-						babelrc: false,
-						...babel,
-						cacheDirectory: settings.DEVELOPMENT,
-						cacheCompression: false,
-						sourceMaps: settings.DEVELOPMENT,
+				use: [
+					{
+						loader: "babel-loader",
+						options: {
+							babelrc: false,
+							...babel,
+							sourceMaps: false,
+							sourceType: 'module',
+							highlightCode: true,
+							shouldPrintComment: (val) => /license/.test(val),
+      						compact: true,
+      						inputSourceMap: false,
+						},
 					},
-				},
+				],
 			},
 		    {
 		       test: /\.txt/,
