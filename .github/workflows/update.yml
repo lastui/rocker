@@ -28,11 +28,6 @@ jobs:
           npm install
           ncu -u
           npm install
-      - name: Update ctest dependencies
-        run: |
-          cd ctest
-          npm install
-          ncu -u
       - name: Check if there are changes
         id: changes
         uses: tj-actions/verify-changed-files@v5.5
@@ -40,8 +35,6 @@ jobs:
           files: |
             package.json
             dependencies/package.json
-            platform/package.json
-            runtime/package.json
       - name: Bump version patch
         if: steps.changes.outputs.files_changed == 'true'
         run: npm version patch --no-git-tag-version
