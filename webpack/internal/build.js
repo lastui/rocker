@@ -74,6 +74,13 @@ module.exports = {
 			Buffer: ["buffer", "Buffer"],
 			process: ["process"],
 		}),
+		new webpack.DefinePlugin({
+			"process.env": {
+				NODE_ENV: settings.DEVELOPMENT
+					? `"development"`
+					: `"production"`,
+			},
+		}),
 		new webpack.EnvironmentPlugin([
 			...Object.keys(process.env),
 			"NODE_ENV",
