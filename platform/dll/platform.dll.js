@@ -59,10 +59,10 @@ __webpack_require__.d(actions_namespaceObject, {
 var INIT="@@platform/INIT";var SET_AVAILABLE_MODULES="@@platform/SET_AVAILABLE_MODULES";var SET_ENTRYPOINT_MODULE="@@platform/SET_ENTRYPOINT_MODULE";var LOAD_MODULE="@@platform/LOAD_MODULE";var SHUTDOWN="@@platform/SHUTDOWN";var MODULE_INIT="@@modules/INIT";var MODULE_LOADED="@@modules/LOADED";var MODULE_UNLOADED="@@modules/UNLOADED";var MODULE_NOT_AVAILABLE="@@modules/NOT_AVAILABLE";var ADD_SHARED="@@shared/ADD_SHARED";var REMOVE_SHARED="@@shared/REMOVE_SHARED";
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/actions.js
 var init=function init(fetchContext){return{type:INIT,payload:{fetchContext:fetchContext}};};var actions_addShared=function addShared(name){var data=arguments.length>1&&arguments[1]!==void 0?arguments[1]:{};return{type:ADD_SHARED,payload:{name:name,data:data}};};var actions_removeShared=function removeShared(name){return{type:REMOVE_SHARED,payload:{name:name}};};var setAvailableModules=function setAvailableModules(){var modules=arguments.length>0&&arguments[0]!==void 0?arguments[0]:[];return{type:SET_AVAILABLE_MODULES,payload:{modules:modules}};};var setEntryPointModule=function setEntryPointModule(entrypoint){return{type:SET_ENTRYPOINT_MODULE,payload:{entrypoint:entrypoint}};};var loadModule=function loadModule(name){return{type:LOAD_MODULE,payload:{name:name}};};
-// EXTERNAL MODULE: delegated ./node_modules/history/main.js from dll-reference dependencies_dll
-var mainfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/history/main.js");
+// EXTERNAL MODULE: delegated ./node_modules/history/index.js from dll-reference dependencies_dll
+var historyfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/history/index.js");
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/routing.js
-var routing_history=(0,mainfrom_dll_reference_dependencies_dll.createBrowserHistory)();
+var routing_history=(0,historyfrom_dll_reference_dependencies_dll.createBrowserHistory)();
 // EXTERNAL MODULE: delegated ./node_modules/react/index.js from dll-reference dependencies_dll
 var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react/index.js");
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/ModuleContext.jsx
@@ -82,13 +82,13 @@ function _slicedToArray(arr,i){return _arrayWithHoles(arr)||_iterableToArrayLimi
 
 /***/ }),
 
-/***/ "./node_modules/history/main.js":
-/*!************************************************************************************!*\
-  !*** delegated ./node_modules/history/main.js from dll-reference dependencies_dll ***!
-  \************************************************************************************/
+/***/ "./node_modules/history/index.js":
+/*!*************************************************************************************!*\
+  !*** delegated ./node_modules/history/index.js from dll-reference dependencies_dll ***!
+  \*************************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/main.js");
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/index.js");
 
 /***/ }),
 
