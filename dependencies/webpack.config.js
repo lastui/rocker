@@ -10,7 +10,6 @@ config.entry = {
 	dependencies: [
 		"connected-react-router",
 		"history",
-		"loose-envify",
 		"object-assign",
 		"react",
 		"react-dom",
