@@ -4,7 +4,7 @@
 		"build:prod": "NODE_ENV=production node ../bin/webpack.js",
 		"build:dev": "NODE_ENV=development node ../bin/webpack.js"
 	},
-	"dependencies": {
+	"devDependencies": {
 		"@lastui/dependencies": "1.0.3"
 	}
 }
