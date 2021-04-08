@@ -14,7 +14,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-          check-latest: true
       - name: Install npm-check-updates
         run: npm install -g npm-check-updates
       - name: Update build dependencies
@@ -42,20 +41,17 @@ jobs:
         if: steps.changes.outputs.files_changed == 'true'
         run: |
           cd dependencies
-          npm run build:dev
-          npm run build:prod
+          npm run build
       - name: Compile package platform
         if: steps.changes.outputs.files_changed == 'true'
         run: |
           cd platform
-          npm run build:dev
-          npm run build:prod
+          npm run build
       - name: Compile package runtime
         if: steps.changes.outputs.files_changed == 'true'
         run: |
           cd runtime
-          npm run build:dev
-          npm run build:prod
+          npm run build
       - name: Create PR
         if: steps.changes.outputs.files_changed == 'true'
         uses: peter-evans/create-pull-request@v3
