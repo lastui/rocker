@@ -4,17 +4,6 @@ const webpack = require("webpack");
 const settings = require("../webpack/settings");
 const cwd = path.resolve(process.cwd());
 
-execSync(`mkdir -p ./node_modules/@lastui/rocker`);
-execSync(`rm -f ./node_modules/@lastui/rocker/runtime || :`);
-execSync(`ln -s ${cwd}/src ./node_modules/@lastui/rocker/runtime`);
-
-const { dependencies } = require("../dependencies/webpack.config.js").entry;
-
-for (const provided of dependencies) {
-	execSync(`mkdir -p ./node_modules/${provided}`);
-	execSync(`touch ./node_modules/${provided}/index.js`);
-}
-
 const config = require(path.resolve(
 	settings.WEBPACK_ROOT_PATH,
 	"config/dll.js"
