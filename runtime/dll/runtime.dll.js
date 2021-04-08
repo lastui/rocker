@@ -20,13 +20,13 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: delegated ./node_modules/react/index.js from dll-reference dependencies_dll
 var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react/index.js");
-// EXTERNAL MODULE: ./node_modules/connected-react-router/index.js
-var connected_react_router = __webpack_require__("./node_modules/connected-react-router/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/connected-react-router/lib/index.js from dll-reference dependencies_dll
+var libfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/connected-react-router/lib/index.js");
 // EXTERNAL MODULE: delegated ./node_modules/react-router/index.js from dll-reference dependencies_dll
 var react_routerfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-router/index.js");
 // EXTERNAL MODULE: delegated ./node_modules/@lastui/rocker/platform/index.js from dll-reference platform_dll
 var platformfrom_dll_reference_platform_dll = __webpack_require__("./node_modules/@lastui/rocker/platform/index.js");
-;// CONCATENATED MODULE: ../node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
     var info = gen[key](arg);
@@ -62,11 +62,11 @@ function _asyncToGenerator(fn) {
     });
   };
 }
-;// CONCATENATED MODULE: ../node_modules/@babel/runtime/helpers/esm/arrayWithHoles.js
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayWithHoles.js
 function _arrayWithHoles(arr) {
   if (Array.isArray(arr)) return arr;
 }
-;// CONCATENATED MODULE: ../node_modules/@babel/runtime/helpers/esm/iterableToArrayLimit.js
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/iterableToArrayLimit.js
 function _iterableToArrayLimit(arr, i) {
   if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
   var _arr = [];
@@ -93,7 +93,7 @@ function _iterableToArrayLimit(arr, i) {
 
   return _arr;
 }
-;// CONCATENATED MODULE: ../node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/arrayLikeToArray.js
 function _arrayLikeToArray(arr, len) {
   if (len == null || len > arr.length) len = arr.length;
 
@@ -103,7 +103,7 @@ function _arrayLikeToArray(arr, len) {
 
   return arr2;
 }
-;// CONCATENATED MODULE: ../node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/unsupportedIterableToArray.js
 
 function _unsupportedIterableToArray(o, minLen) {
   if (!o) return;
@@ -113,11 +113,11 @@ function _unsupportedIterableToArray(o, minLen) {
   if (n === "Map" || n === "Set") return Array.from(o);
   if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
 }
-;// CONCATENATED MODULE: ../node_modules/@babel/runtime/helpers/esm/nonIterableRest.js
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/nonIterableRest.js
 function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
-;// CONCATENATED MODULE: ../node_modules/@babel/runtime/helpers/esm/slicedToArray.js
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/slicedToArray.js
 
 
 
@@ -128,18 +128,18 @@ function _slicedToArray(arr, i) {
 // EXTERNAL MODULE: delegated ./node_modules/@babel/runtime/regenerator/index.js from dll-reference dependencies_dll
 var regeneratorfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/@babel/runtime/regenerator/index.js");
 var regeneratorfrom_dll_reference_dependencies_dll_default = /*#__PURE__*/__webpack_require__.n(regeneratorfrom_dll_reference_dependencies_dll);
-// EXTERNAL MODULE: ./node_modules/react-redux/index.js
-var react_redux = __webpack_require__("./node_modules/react-redux/index.js");
-// EXTERNAL MODULE: ./node_modules/redux/index.js
-var redux = __webpack_require__("./node_modules/redux/index.js");
-// EXTERNAL MODULE: ./node_modules/redux-saga/index.js
-var redux_saga = __webpack_require__("./node_modules/redux-saga/index.js");
-var redux_saga_default = /*#__PURE__*/__webpack_require__.n(redux_saga);
-// EXTERNAL MODULE: ./node_modules/redux-saga/effects/index.js
-var effects = __webpack_require__("./node_modules/redux-saga/effects/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/react-redux/lib/index.js from dll-reference dependencies_dll
+var react_redux_libfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react-redux/lib/index.js");
+// EXTERNAL MODULE: delegated ./node_modules/redux/lib/redux.js from dll-reference dependencies_dll
+var reduxfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/redux/lib/redux.js");
+// EXTERNAL MODULE: delegated ./node_modules/redux-saga/dist/redux-saga-core-npm-proxy.cjs.js from dll-reference dependencies_dll
+var redux_saga_core_npm_proxy_cjsfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/redux-saga/dist/redux-saga-core-npm-proxy.cjs.js");
+var redux_saga_core_npm_proxy_cjsfrom_dll_reference_dependencies_dll_default = /*#__PURE__*/__webpack_require__.n(redux_saga_core_npm_proxy_cjsfrom_dll_reference_dependencies_dll);
+// EXTERNAL MODULE: delegated ./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js from dll-reference dependencies_dll
+var redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/reducer/runtime.js
 var initialState={entrypoint:null,ready:false};/* harmony default export */ const runtime = (function(){var state=arguments.length>0&&arguments[0]!==void 0?arguments[0]:initialState;var action=arguments.length>1?arguments[1]:void 0;switch(action.type){case platformfrom_dll_reference_platform_dll.constants.MODULES_READY:{return{entrypoint:state.entrypoint,ready:action.payload.isReady};}case platformfrom_dll_reference_platform_dll.constants.SET_ENTRYPOINT_MODULE:{return{entrypoint:action.payload.entrypoint,ready:state.ready};}default:{return state;}}});
-;// CONCATENATED MODULE: ../node_modules/@babel/runtime/helpers/esm/defineProperty.js
+;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/defineProperty.js
 function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
@@ -159,69 +159,19 @@ function ownKeys(object,enumerableOnly){var keys=Object.keys(object);if(Object.g
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/reducer/index.js
 var runtimeReducer=runtime;var sharedReducer=shared;
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/saga/index.js
-var _marked=regeneratorfrom_dll_reference_dependencies_dll_default().mark(watchInit),_marked2=regeneratorfrom_dll_reference_dependencies_dll_default().mark(runInit);function watchInit(){return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function watchInit$(_context){while(1){switch(_context.prev=_context.next){case 0:_context.next=2;return (0,effects.takeLatest)(platformfrom_dll_reference_platform_dll.constants.INIT,runInit);case 2:case"end":return _context.stop();}}},_marked);}function runInit(action){var context;return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function runInit$(_context2){while(1){switch(_context2.prev=_context2.next){case 0:_context2.next=2;return (0,effects.call)(action.payload.fetchContext);case 2:context=_context2.sent;_context2.next=5;return (0,effects.put)(platformfrom_dll_reference_platform_dll.actions.setAvailableModules(context.available));case 5:_context2.next=7;return (0,effects.put)(platformfrom_dll_reference_platform_dll.actions.setEntryPointModule(context.entrypoint));case 7:case"end":return _context2.stop();}}},_marked2);}/* harmony default export */ const saga = ([watchInit]);
+var _marked=regeneratorfrom_dll_reference_dependencies_dll_default().mark(watchInit),_marked2=regeneratorfrom_dll_reference_dependencies_dll_default().mark(runInit);function watchInit(){return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function watchInit$(_context){while(1){switch(_context.prev=_context.next){case 0:_context.next=2;return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.takeLatest)(platformfrom_dll_reference_platform_dll.constants.INIT,runInit);case 2:case"end":return _context.stop();}}},_marked);}function runInit(action){var context;return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function runInit$(_context2){while(1){switch(_context2.prev=_context2.next){case 0:_context2.next=2;return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.call)(action.payload.fetchContext);case 2:context=_context2.sent;_context2.next=5;return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.put)(platformfrom_dll_reference_platform_dll.actions.setAvailableModules(context.available));case 5:_context2.next=7;return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.put)(platformfrom_dll_reference_platform_dll.actions.setEntryPointModule(context.entrypoint));case 7:case"end":return _context2.stop();}}},_marked2);}/* harmony default export */ const saga = ([watchInit]);
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/store/index.js
-/* harmony default export */ const runtime_store = (_asyncToGenerator(regeneratorfrom_dll_reference_dependencies_dll_default().mark(function _callee(){var loader,sagaMiddleware,enhancers,composer,reducer,store;return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function _callee$(_context2){while(1){switch(_context2.prev=_context2.next){case 0:loader=(0,platformfrom_dll_reference_platform_dll.createModuleLoader)();sagaMiddleware=redux_saga_default()();enhancers=[sagaMiddleware,(0,connected_react_router.routerMiddleware)(platformfrom_dll_reference_platform_dll.history),(0,platformfrom_dll_reference_platform_dll.moduleLoaderMiddleware)(loader)];if(window.__GROOPIE_EXTENSION__){enhancers.unshift(window.__GROOPIE_EXTENSION__);}composer=redux.compose;reducer=(0,redux.combineReducers)({runtime:runtimeReducer,shared:sharedReducer,router:(0,connected_react_router.connectRouter)(platformfrom_dll_reference_platform_dll.history),modules:loader.getReducer()});store=(0,redux.createStore)(reducer,{},composer.apply(void 0,[redux.applyMiddleware.apply(void 0,enhancers)]));loader.setSagaRunner(sagaMiddleware.run);loader.setStore(store);sagaMiddleware.run(regeneratorfrom_dll_reference_dependencies_dll_default().mark(function rooSaga(){return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function rooSaga$(_context){while(1){switch(_context.prev=_context.next){case 0:_context.next=2;return (0,effects.all)(saga.map(effects.fork));case 2:case"end":return _context.stop();}}},rooSaga);}));return _context2.abrupt("return",[store,loader]);case 11:case"end":return _context2.stop();}}},_callee);})));
+/* harmony default export */ const runtime_store = (_asyncToGenerator(regeneratorfrom_dll_reference_dependencies_dll_default().mark(function _callee(){var loader,sagaMiddleware,enhancers,composer,reducer,store;return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function _callee$(_context2){while(1){switch(_context2.prev=_context2.next){case 0:loader=(0,platformfrom_dll_reference_platform_dll.createModuleLoader)();sagaMiddleware=redux_saga_core_npm_proxy_cjsfrom_dll_reference_dependencies_dll_default()();enhancers=[sagaMiddleware,(0,libfrom_dll_reference_dependencies_dll.routerMiddleware)(platformfrom_dll_reference_platform_dll.history),(0,platformfrom_dll_reference_platform_dll.moduleLoaderMiddleware)(loader)];if(window.__GROOPIE_EXTENSION__){enhancers.unshift(window.__GROOPIE_EXTENSION__);}composer=reduxfrom_dll_reference_dependencies_dll.compose;reducer=(0,reduxfrom_dll_reference_dependencies_dll.combineReducers)({runtime:runtimeReducer,shared:sharedReducer,router:(0,libfrom_dll_reference_dependencies_dll.connectRouter)(platformfrom_dll_reference_platform_dll.history),modules:loader.getReducer()});store=(0,reduxfrom_dll_reference_dependencies_dll.createStore)(reducer,{},composer.apply(void 0,[reduxfrom_dll_reference_dependencies_dll.applyMiddleware.apply(void 0,enhancers)]));loader.setSagaRunner(sagaMiddleware.run);loader.setStore(store);sagaMiddleware.run(regeneratorfrom_dll_reference_dependencies_dll_default().mark(function rooSaga(){return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function rooSaga$(_context){while(1){switch(_context.prev=_context.next){case 0:_context.next=2;return (0,redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.all)(saga.map(redux_saga_effects_npm_proxy_cjsfrom_dll_reference_dependencies_dll.fork));case 2:case"end":return _context.stop();}}},rooSaga);}));return _context2.abrupt("return",[store,loader]);case 11:case"end":return _context2.stop();}}},_callee);})));
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/component/ReduxProvider.jsx
-var ReduxProvider=function ReduxProvider(props){var _React$useState=reactfrom_dll_reference_dependencies_dll.useState(),_React$useState2=_slicedToArray(_React$useState,2),_=_React$useState2[0],setErrorState=_React$useState2[1];var _React$useState3=reactfrom_dll_reference_dependencies_dll.useState({store:void 0,moduleLoader:void 0,isReady:false}),_React$useState4=_slicedToArray(_React$useState3,2),state=_React$useState4[0],setState=_React$useState4[1];var setupProviders=function(){var _ref=_asyncToGenerator(regeneratorfrom_dll_reference_dependencies_dll_default().mark(function _callee(){var _yield$setupStore,_yield$setupStore2,store,moduleLoader;return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function _callee$(_context){while(1){switch(_context.prev=_context.next){case 0:_context.prev=0;_context.next=3;return runtime_store();case 3:_yield$setupStore=_context.sent;_yield$setupStore2=_slicedToArray(_yield$setupStore,2);store=_yield$setupStore2[0];moduleLoader=_yield$setupStore2[1];setState({store:store,moduleLoader:moduleLoader,isReady:true});_context.next=13;break;case 10:_context.prev=10;_context.t0=_context["catch"](0);setErrorState(function(){throw _context.t0;});case 13:case"end":return _context.stop();}}},_callee,null,[[0,10]]);}));return function setupProviders(){return _ref.apply(this,arguments);};}();reactfrom_dll_reference_dependencies_dll.useEffect(function(){setupProviders();},[]);if(!state.isReady){return null;}return reactfrom_dll_reference_dependencies_dll.createElement(platformfrom_dll_reference_platform_dll.ModuleContext.Provider,{value:state.moduleLoader},reactfrom_dll_reference_dependencies_dll.createElement(react_redux.Provider,{store:state.store},props.children));};/* harmony default export */ const component_ReduxProvider = (ReduxProvider);
+var ReduxProvider=function ReduxProvider(props){var _React$useState=reactfrom_dll_reference_dependencies_dll.useState(),_React$useState2=_slicedToArray(_React$useState,2),_=_React$useState2[0],setErrorState=_React$useState2[1];var _React$useState3=reactfrom_dll_reference_dependencies_dll.useState({store:void 0,moduleLoader:void 0,isReady:false}),_React$useState4=_slicedToArray(_React$useState3,2),state=_React$useState4[0],setState=_React$useState4[1];var setupProviders=function(){var _ref=_asyncToGenerator(regeneratorfrom_dll_reference_dependencies_dll_default().mark(function _callee(){var _yield$setupStore,_yield$setupStore2,store,moduleLoader;return regeneratorfrom_dll_reference_dependencies_dll_default().wrap(function _callee$(_context){while(1){switch(_context.prev=_context.next){case 0:_context.prev=0;_context.next=3;return runtime_store();case 3:_yield$setupStore=_context.sent;_yield$setupStore2=_slicedToArray(_yield$setupStore,2);store=_yield$setupStore2[0];moduleLoader=_yield$setupStore2[1];setState({store:store,moduleLoader:moduleLoader,isReady:true});_context.next=13;break;case 10:_context.prev=10;_context.t0=_context["catch"](0);setErrorState(function(){throw _context.t0;});case 13:case"end":return _context.stop();}}},_callee,null,[[0,10]]);}));return function setupProviders(){return _ref.apply(this,arguments);};}();reactfrom_dll_reference_dependencies_dll.useEffect(function(){setupProviders();},[]);if(!state.isReady){return null;}return reactfrom_dll_reference_dependencies_dll.createElement(platformfrom_dll_reference_platform_dll.ModuleContext.Provider,{value:state.moduleLoader},reactfrom_dll_reference_dependencies_dll.createElement(react_redux_libfrom_dll_reference_dependencies_dll.Provider,{store:state.store},props.children));};/* harmony default export */ const component_ReduxProvider = (ReduxProvider);
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/selector/index.js
 var getEntrypoint=function getEntrypoint(state){return state.runtime.entrypoint;};var getIsReady=function getIsReady(state){return state.runtime.ready;};
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/component/Entrypoint.jsx
-var Entrypoint=function Entrypoint(props){var dispatch=(0,react_redux.useDispatch)();(0,reactfrom_dll_reference_dependencies_dll.useEffect)(function(){dispatch(platformfrom_dll_reference_platform_dll.actions.init(props.fetchContext));},[]);var entrypoint=(0,react_redux.useSelector)(getEntrypoint);return reactfrom_dll_reference_dependencies_dll.createElement(platformfrom_dll_reference_platform_dll.Module,{name:entrypoint});};/* harmony default export */ const component_Entrypoint = (Entrypoint);
+var Entrypoint=function Entrypoint(props){var dispatch=(0,react_redux_libfrom_dll_reference_dependencies_dll.useDispatch)();(0,reactfrom_dll_reference_dependencies_dll.useEffect)(function(){dispatch(platformfrom_dll_reference_platform_dll.actions.init(props.fetchContext));},[]);var entrypoint=(0,react_redux_libfrom_dll_reference_dependencies_dll.useSelector)(getEntrypoint);return reactfrom_dll_reference_dependencies_dll.createElement(platformfrom_dll_reference_platform_dll.Module,{name:entrypoint});};/* harmony default export */ const component_Entrypoint = (Entrypoint);
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/component/Main.jsx
-var Main=function Main(props){return reactfrom_dll_reference_dependencies_dll.createElement(component_ReduxProvider,null,reactfrom_dll_reference_dependencies_dll.createElement(connected_react_router.ConnectedRouter,{history:platformfrom_dll_reference_platform_dll.history},reactfrom_dll_reference_dependencies_dll.createElement(react_routerfrom_dll_reference_dependencies_dll.Switch,null,reactfrom_dll_reference_dependencies_dll.createElement(component_Entrypoint,props))));};/* harmony default export */ const component_Main = (Main);
+var Main=function Main(props){return reactfrom_dll_reference_dependencies_dll.createElement(component_ReduxProvider,null,reactfrom_dll_reference_dependencies_dll.createElement(libfrom_dll_reference_dependencies_dll.ConnectedRouter,{history:platformfrom_dll_reference_platform_dll.history},reactfrom_dll_reference_dependencies_dll.createElement(react_routerfrom_dll_reference_dependencies_dll.Switch,null,reactfrom_dll_reference_dependencies_dll.createElement(component_Entrypoint,props))));};/* harmony default export */ const component_Main = (Main);
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/runtime/index.js
 /* harmony default export */ const rocker_runtime = ({Main:component_Main});
-
-/***/ }),
-
-/***/ "./node_modules/connected-react-router/index.js":
-/*!******************************************************!*\
-  !*** ./node_modules/connected-react-router/index.js ***!
-  \******************************************************/
-/***/ (() => {
-
-
-
-/***/ }),
-
-/***/ "./node_modules/react-redux/index.js":
-/*!*******************************************!*\
-  !*** ./node_modules/react-redux/index.js ***!
-  \*******************************************/
-/***/ (() => {
-
-
-
-/***/ }),
-
-/***/ "./node_modules/redux-saga/effects/index.js":
-/*!**************************************************!*\
-  !*** ./node_modules/redux-saga/effects/index.js ***!
-  \**************************************************/
-/***/ (() => {
-
-
-
-/***/ }),
-
-/***/ "./node_modules/redux-saga/index.js":
-/*!******************************************!*\
-  !*** ./node_modules/redux-saga/index.js ***!
-  \******************************************/
-/***/ (() => {
-
-
-
-/***/ }),
-
-/***/ "./node_modules/redux/index.js":
-/*!*************************************!*\
-  !*** ./node_modules/redux/index.js ***!
-  \*************************************/
-/***/ (() => {
-
-
 
 /***/ }),
 
@@ -245,6 +195,26 @@ module.exports = (__webpack_require__(/*! dll-reference platform_dll */ "dll-ref
 
 /***/ }),
 
+/***/ "./node_modules/connected-react-router/lib/index.js":
+/*!********************************************************************************************************!*\
+  !*** delegated ./node_modules/connected-react-router/lib/index.js from dll-reference dependencies_dll ***!
+  \********************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/connected-react-router/lib/index.js");
+
+/***/ }),
+
+/***/ "./node_modules/react-redux/lib/index.js":
+/*!*********************************************************************************************!*\
+  !*** delegated ./node_modules/react-redux/lib/index.js from dll-reference dependencies_dll ***!
+  \*********************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/react-redux/lib/index.js");
+
+/***/ }),
+
 /***/ "./node_modules/react-router/index.js":
 /*!******************************************************************************************!*\
   !*** delegated ./node_modules/react-router/index.js from dll-reference dependencies_dll ***!
@@ -262,6 +232,36 @@ module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/react/index.js");
+
+/***/ }),
+
+/***/ "./node_modules/redux-saga/dist/redux-saga-core-npm-proxy.cjs.js":
+/*!*********************************************************************************************************************!*\
+  !*** delegated ./node_modules/redux-saga/dist/redux-saga-core-npm-proxy.cjs.js from dll-reference dependencies_dll ***!
+  \*********************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/redux-saga/dist/redux-saga-core-npm-proxy.cjs.js");
+
+/***/ }),
+
+/***/ "./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js":
+/*!************************************************************************************************************************!*\
+  !*** delegated ./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js from dll-reference dependencies_dll ***!
+  \************************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/redux-saga/dist/redux-saga-effects-npm-proxy.cjs.js");
+
+/***/ }),
+
+/***/ "./node_modules/redux/lib/redux.js":
+/*!***************************************************************************************!*\
+  !*** delegated ./node_modules/redux/lib/redux.js from dll-reference dependencies_dll ***!
+  \***************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/redux/lib/redux.js");
 
 /***/ }),
 

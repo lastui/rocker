@@ -7074,10 +7074,9 @@ module.exports = isEqualWith;
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-/* provided dependency */ var process = __webpack_require__(/*! process */ "?eee4");
 
 
-module.exports = __webpack_require__(/*! ./loose-envify */ "./node_modules/loose-envify/loose-envify.js")(process.env);
+module.exports = __webpack_require__(/*! ./loose-envify */ "./node_modules/loose-envify/loose-envify.js")(({"NODE_ENV":"development"}));
 
 
 /***/ }),
@@ -7089,7 +7088,6 @@ module.exports = __webpack_require__(/*! ./loose-envify */ "./node_modules/loose
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-/* provided dependency */ var process = __webpack_require__(/*! process */ "?eee4");
 
 
 var stream = __webpack_require__(/*! stream */ "../node_modules/stream-browserify/index.js");
@@ -7099,7 +7097,7 @@ var replace = __webpack_require__(/*! ./replace */ "./node_modules/loose-envify/
 var jsonExtRe = /\.json$/;
 
 module.exports = function(rootEnv) {
-  rootEnv = rootEnv || process.env;
+  rootEnv = rootEnv || ({"NODE_ENV":"development"});
   return function (file, trOpts) {
     if (jsonExtRe.test(file)) {
       return stream.PassThrough();
@@ -53891,8 +53889,8 @@ exports.deprecate = function(fn, msg) {
 var debugs = {};
 var debugEnvRegex = /^$/;
 
-if (process.env.NODE_DEBUG) {
-  var debugEnv = process.env.NODE_DEBUG;
+if (({"NODE_ENV":"development"}).NODE_DEBUG) {
+  var debugEnv = ({"NODE_ENV":"development"}).NODE_DEBUG;
   debugEnv = debugEnv.replace(/[|\\{}()[\]^$+?.]/g, '\\$&')
     .replace(/\*/g, '.*')
     .replace(/,/g, '$|^')
@@ -54576,16 +54574,6 @@ module.exports = function whichTypedArray(value) {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 module.exports = __webpack_require__;
-
-/***/ }),
-
-/***/ "?eee4":
-/*!*************************!*\
-  !*** process (ignored) ***!
-  \*************************/
-/***/ (() => {
-
-/* (ignored) */
 
 /***/ }),
 
