@@ -19,6 +19,10 @@ config.entry = {
 		"redux",
 		"redux-saga",
 		"redux-saga/effects",
+		"resolve-pathname",
+		"value-equal",
+		"warning",
+		"regenerator-runtime/runtime.js",
 	],
 };
 
