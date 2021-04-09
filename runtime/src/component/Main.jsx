@@ -1,18 +1,14 @@
 import React from "react";
-import { ConnectedRouter } from "connected-react-router";
 import { Switch } from "react-router";
-import { history } from "@lastui/rocker/platform";
-import ReduxProvider from "./ReduxProvider";
+import Provider from "./Provider";
 import Entrypoint from "./Entrypoint";
 
 const Main = (props) => (
-	<ReduxProvider>
-		<ConnectedRouter history={history}>
-			<Switch>
-				<Entrypoint {...props} />
-			</Switch>
-		</ConnectedRouter>
-	</ReduxProvider>
+	<Provider>
+		<Switch>
+			<Entrypoint {...props} />
+		</Switch>
+	</Provider>
 );
 
 export default Main;

@@ -25,8 +25,6 @@ export default async () => {
 		enhancers.unshift(window.__GROOPIE_EXTENSION__);
 	}
 
-	const composer = compose; //window.__GROOPIE_EXTENSION__ || compose
-
 	const reducer = combineReducers({
 		runtime: runtimeReducer,
 		shared: sharedReducer,
@@ -37,7 +35,7 @@ export default async () => {
 	const store = createStore(
 		reducer,
 		{},
-		composer(...[applyMiddleware(...enhancers)])
+		compose(...[applyMiddleware(...enhancers)])
 	);
 
 	loader.setSagaRunner(sagaMiddleware.run);

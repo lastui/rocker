@@ -9,32 +9,35 @@ const Module = (props = {}) => {
   );
 
   useEffect(() => {
-    const name = props.name
-    if (name) {
-      moduleLoader.loadModule(name).then((module) => {
-        moduleLoader.setModuleMountState(name, true);
-        setLoadedModule(module);
-      });
+    if (!props.name) {
+      return;
     }
+    const name = props.name;
+    moduleLoader.loadModule(name).then((module) => {
+      moduleLoader.setModuleMountState(name, true);
+      setLoadedModule(module);
+    });
     return () => {
-      if (name) {
-        moduleLoader.setModuleMountState(name, false);
-      }
+      moduleLoader.setModuleMountState(name, false);
     };
   }, [props.name]);
 
+  if (!props.name) {
+    return <React.Fragment />;
+  }
+
   if (!loadedModule) {
-    console.debug(`module ${props.name} is not loaded`)
+    console.debug(`module ${props.name} is not loaded`);
     // FIXME does not update need to store loadedModule in state
     return <React.Fragment />;
   }
 
   if (!loadedModule.root) {
-    console.debug(`module ${props.name} does not have view`)
+    console.debug(`module ${props.name} does not have view`);
     return <React.Fragment />;
   }
 
-  console.debug(`module ${props.name} ready`)
+  console.debug(`module ${props.name} ready`);
   // FIXME if children?
   const ModuleComponent = loadedModule.root;
 

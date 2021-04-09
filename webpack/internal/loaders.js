@@ -28,7 +28,7 @@ module.exports = {
 				],
 			},
 		    {
-		       test: /\.txt/,
+		       test: /\.(txt|json)$/,
 		       type: 'asset/source',
 		    },
 		    {

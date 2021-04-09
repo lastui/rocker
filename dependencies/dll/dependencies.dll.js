@@ -211,6 +211,7377 @@ module.exports.default = module.exports, module.exports.__esModule = true;
 
 /***/ }),
 
+/***/ "./node_modules/@formatjs/ecma402-abstract/262.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/262.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OrdinaryHasInstance = exports.SecFromTime = exports.MinFromTime = exports.HourFromTime = exports.DateFromTime = exports.MonthFromTime = exports.InLeapYear = exports.DayWithinYear = exports.DaysInYear = exports.YearFromTime = exports.TimeFromYear = exports.DayFromYear = exports.WeekDay = exports.Day = exports.Type = exports.HasOwnProperty = exports.ArrayCreate = exports.SameValue = exports.ToObject = exports.TimeClip = exports.ToNumber = exports.ToString = void 0;
+/**
+ * https://tc39.es/ecma262/#sec-tostring
+ */
+function ToString(o) {
+    // Only symbol is irregular...
+    if (typeof o === 'symbol') {
+        throw TypeError('Cannot convert a Symbol value to a string');
+    }
+    return String(o);
+}
+exports.ToString = ToString;
+/**
+ * https://tc39.es/ecma262/#sec-tonumber
+ * @param val
+ */
+function ToNumber(val) {
+    if (val === undefined) {
+        return NaN;
+    }
+    if (val === null) {
+        return +0;
+    }
+    if (typeof val === 'boolean') {
+        return val ? 1 : +0;
+    }
+    if (typeof val === 'number') {
+        return val;
+    }
+    if (typeof val === 'symbol' || typeof val === 'bigint') {
+        throw new TypeError('Cannot convert symbol/bigint to number');
+    }
+    return Number(val);
+}
+exports.ToNumber = ToNumber;
+/**
+ * https://tc39.es/ecma262/#sec-tointeger
+ * @param n
+ */
+function ToInteger(n) {
+    var number = ToNumber(n);
+    if (isNaN(number) || SameValue(number, -0)) {
+        return 0;
+    }
+    if (isFinite(number)) {
+        return number;
+    }
+    var integer = Math.floor(Math.abs(number));
+    if (number < 0) {
+        integer = -integer;
+    }
+    if (SameValue(integer, -0)) {
+        return 0;
+    }
+    return integer;
+}
+/**
+ * https://tc39.es/ecma262/#sec-timeclip
+ * @param time
+ */
+function TimeClip(time) {
+    if (!isFinite(time)) {
+        return NaN;
+    }
+    if (Math.abs(time) > 8.64 * 1e16) {
+        return NaN;
+    }
+    return ToInteger(time);
+}
+exports.TimeClip = TimeClip;
+/**
+ * https://tc39.es/ecma262/#sec-toobject
+ * @param arg
+ */
+function ToObject(arg) {
+    if (arg == null) {
+        throw new TypeError('undefined/null cannot be converted to object');
+    }
+    return Object(arg);
+}
+exports.ToObject = ToObject;
+/**
+ * https://www.ecma-international.org/ecma-262/11.0/index.html#sec-samevalue
+ * @param x
+ * @param y
+ */
+function SameValue(x, y) {
+    if (Object.is) {
+        return Object.is(x, y);
+    }
+    // SameValue algorithm
+    if (x === y) {
+        // Steps 1-5, 7-10
+        // Steps 6.b-6.e: +0 != -0
+        return x !== 0 || 1 / x === 1 / y;
+    }
+    // Step 6.a: NaN == NaN
+    return x !== x && y !== y;
+}
+exports.SameValue = SameValue;
+/**
+ * https://www.ecma-international.org/ecma-262/11.0/index.html#sec-arraycreate
+ * @param len
+ */
+function ArrayCreate(len) {
+    return new Array(len);
+}
+exports.ArrayCreate = ArrayCreate;
+/**
+ * https://www.ecma-international.org/ecma-262/11.0/index.html#sec-hasownproperty
+ * @param o
+ * @param prop
+ */
+function HasOwnProperty(o, prop) {
+    return Object.prototype.hasOwnProperty.call(o, prop);
+}
+exports.HasOwnProperty = HasOwnProperty;
+/**
+ * https://www.ecma-international.org/ecma-262/11.0/index.html#sec-type
+ * @param x
+ */
+function Type(x) {
+    if (x === null) {
+        return 'Null';
+    }
+    if (typeof x === 'undefined') {
+        return 'Undefined';
+    }
+    if (typeof x === 'function' || typeof x === 'object') {
+        return 'Object';
+    }
+    if (typeof x === 'number') {
+        return 'Number';
+    }
+    if (typeof x === 'boolean') {
+        return 'Boolean';
+    }
+    if (typeof x === 'string') {
+        return 'String';
+    }
+    if (typeof x === 'symbol') {
+        return 'Symbol';
+    }
+    if (typeof x === 'bigint') {
+        return 'BigInt';
+    }
+}
+exports.Type = Type;
+var MS_PER_DAY = 86400000;
+/**
+ * https://www.ecma-international.org/ecma-262/11.0/index.html#eqn-modulo
+ * @param x
+ * @param y
+ * @return k of the same sign as y
+ */
+function mod(x, y) {
+    return x - Math.floor(x / y) * y;
+}
+/**
+ * https://tc39.es/ecma262/#eqn-Day
+ * @param t
+ */
+function Day(t) {
+    return Math.floor(t / MS_PER_DAY);
+}
+exports.Day = Day;
+/**
+ * https://tc39.es/ecma262/#sec-week-day
+ * @param t
+ */
+function WeekDay(t) {
+    return mod(Day(t) + 4, 7);
+}
+exports.WeekDay = WeekDay;
+/**
+ * https://tc39.es/ecma262/#sec-year-number
+ * @param y
+ */
+function DayFromYear(y) {
+    return (365 * (y - 1970) +
+        Math.floor((y - 1969) / 4) -
+        Math.floor((y - 1901) / 100) +
+        Math.floor((y - 1601) / 400));
+}
+exports.DayFromYear = DayFromYear;
+/**
+ * https://tc39.es/ecma262/#sec-year-number
+ * @param y
+ */
+function TimeFromYear(y) {
+    return MS_PER_DAY * DayFromYear(y);
+}
+exports.TimeFromYear = TimeFromYear;
+/**
+ * https://tc39.es/ecma262/#sec-year-number
+ * @param t
+ */
+function YearFromTime(t) {
+    var min = Math.ceil(t / MS_PER_DAY / 366);
+    var y = min;
+    while (TimeFromYear(y) <= t) {
+        y++;
+    }
+    return y - 1;
+}
+exports.YearFromTime = YearFromTime;
+function DaysInYear(y) {
+    if (y % 4 !== 0) {
+        return 365;
+    }
+    if (y % 100 !== 0) {
+        return 366;
+    }
+    if (y % 400 !== 0) {
+        return 365;
+    }
+    return 366;
+}
+exports.DaysInYear = DaysInYear;
+function DayWithinYear(t) {
+    return Day(t) - DayFromYear(YearFromTime(t));
+}
+exports.DayWithinYear = DayWithinYear;
+function InLeapYear(t) {
+    return DaysInYear(YearFromTime(t)) === 365 ? 0 : 1;
+}
+exports.InLeapYear = InLeapYear;
+/**
+ * https://tc39.es/ecma262/#sec-month-number
+ * @param t
+ */
+function MonthFromTime(t) {
+    var dwy = DayWithinYear(t);
+    var leap = InLeapYear(t);
+    if (dwy >= 0 && dwy < 31) {
+        return 0;
+    }
+    if (dwy < 59 + leap) {
+        return 1;
+    }
+    if (dwy < 90 + leap) {
+        return 2;
+    }
+    if (dwy < 120 + leap) {
+        return 3;
+    }
+    if (dwy < 151 + leap) {
+        return 4;
+    }
+    if (dwy < 181 + leap) {
+        return 5;
+    }
+    if (dwy < 212 + leap) {
+        return 6;
+    }
+    if (dwy < 243 + leap) {
+        return 7;
+    }
+    if (dwy < 273 + leap) {
+        return 8;
+    }
+    if (dwy < 304 + leap) {
+        return 9;
+    }
+    if (dwy < 334 + leap) {
+        return 10;
+    }
+    if (dwy < 365 + leap) {
+        return 11;
+    }
+    throw new Error('Invalid time');
+}
+exports.MonthFromTime = MonthFromTime;
+function DateFromTime(t) {
+    var dwy = DayWithinYear(t);
+    var mft = MonthFromTime(t);
+    var leap = InLeapYear(t);
+    if (mft === 0) {
+        return dwy + 1;
+    }
+    if (mft === 1) {
+        return dwy - 30;
+    }
+    if (mft === 2) {
+        return dwy - 58 - leap;
+    }
+    if (mft === 3) {
+        return dwy - 89 - leap;
+    }
+    if (mft === 4) {
+        return dwy - 119 - leap;
+    }
+    if (mft === 5) {
+        return dwy - 150 - leap;
+    }
+    if (mft === 6) {
+        return dwy - 180 - leap;
+    }
+    if (mft === 7) {
+        return dwy - 211 - leap;
+    }
+    if (mft === 8) {
+        return dwy - 242 - leap;
+    }
+    if (mft === 9) {
+        return dwy - 272 - leap;
+    }
+    if (mft === 10) {
+        return dwy - 303 - leap;
+    }
+    if (mft === 11) {
+        return dwy - 333 - leap;
+    }
+    throw new Error('Invalid time');
+}
+exports.DateFromTime = DateFromTime;
+var HOURS_PER_DAY = 24;
+var MINUTES_PER_HOUR = 60;
+var SECONDS_PER_MINUTE = 60;
+var MS_PER_SECOND = 1e3;
+var MS_PER_MINUTE = MS_PER_SECOND * SECONDS_PER_MINUTE;
+var MS_PER_HOUR = MS_PER_MINUTE * MINUTES_PER_HOUR;
+function HourFromTime(t) {
+    return mod(Math.floor(t / MS_PER_HOUR), HOURS_PER_DAY);
+}
+exports.HourFromTime = HourFromTime;
+function MinFromTime(t) {
+    return mod(Math.floor(t / MS_PER_MINUTE), MINUTES_PER_HOUR);
+}
+exports.MinFromTime = MinFromTime;
+function SecFromTime(t) {
+    return mod(Math.floor(t / MS_PER_SECOND), SECONDS_PER_MINUTE);
+}
+exports.SecFromTime = SecFromTime;
+function IsCallable(fn) {
+    return typeof fn === 'function';
+}
+/**
+ * The abstract operation OrdinaryHasInstance implements
+ * the default algorithm for determining if an object O
+ * inherits from the instance object inheritance path
+ * provided by constructor C.
+ * @param C class
+ * @param O object
+ * @param internalSlots internalSlots
+ */
+function OrdinaryHasInstance(C, O, internalSlots) {
+    if (!IsCallable(C)) {
+        return false;
+    }
+    if (internalSlots === null || internalSlots === void 0 ? void 0 : internalSlots.boundTargetFunction) {
+        var BC = internalSlots === null || internalSlots === void 0 ? void 0 : internalSlots.boundTargetFunction;
+        return O instanceof BC;
+    }
+    if (typeof O !== 'object') {
+        return false;
+    }
+    var P = C.prototype;
+    if (typeof P !== 'object') {
+        throw new TypeError('OrdinaryHasInstance called on an object with an invalid prototype property.');
+    }
+    return Object.prototype.isPrototypeOf.call(P, O);
+}
+exports.OrdinaryHasInstance = OrdinaryHasInstance;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/BestAvailableLocale.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/BestAvailableLocale.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BestAvailableLocale = void 0;
+/**
+ * https://tc39.es/ecma402/#sec-bestavailablelocale
+ * @param availableLocales
+ * @param locale
+ */
+function BestAvailableLocale(availableLocales, locale) {
+    var candidate = locale;
+    while (true) {
+        if (availableLocales.has(candidate)) {
+            return candidate;
+        }
+        var pos = candidate.lastIndexOf('-');
+        if (!~pos) {
+            return undefined;
+        }
+        if (pos >= 2 && candidate[pos - 2] === '-') {
+            pos -= 2;
+        }
+        candidate = candidate.slice(0, pos);
+    }
+}
+exports.BestAvailableLocale = BestAvailableLocale;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/BestFitMatcher.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/BestFitMatcher.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BestFitMatcher = void 0;
+var BestAvailableLocale_1 = __webpack_require__(/*! ./BestAvailableLocale */ "./node_modules/@formatjs/ecma402-abstract/BestAvailableLocale.js");
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+/**
+ * https://tc39.es/ecma402/#sec-bestfitmatcher
+ * @param availableLocales
+ * @param requestedLocales
+ * @param getDefaultLocale
+ */
+function BestFitMatcher(availableLocales, requestedLocales, getDefaultLocale) {
+    var minimizedAvailableLocaleMap = {};
+    var minimizedAvailableLocales = new Set();
+    availableLocales.forEach(function (locale) {
+        var minimizedLocale = new Intl.Locale(locale)
+            .minimize()
+            .toString();
+        minimizedAvailableLocaleMap[minimizedLocale] = locale;
+        minimizedAvailableLocales.add(minimizedLocale);
+    });
+    var foundLocale;
+    for (var _i = 0, requestedLocales_1 = requestedLocales; _i < requestedLocales_1.length; _i++) {
+        var l = requestedLocales_1[_i];
+        if (foundLocale) {
+            break;
+        }
+        var noExtensionLocale = l.replace(utils_1.UNICODE_EXTENSION_SEQUENCE_REGEX, '');
+        if (availableLocales.has(noExtensionLocale)) {
+            foundLocale = noExtensionLocale;
+            break;
+        }
+        if (minimizedAvailableLocales.has(noExtensionLocale)) {
+            foundLocale = minimizedAvailableLocaleMap[noExtensionLocale];
+            break;
+        }
+        var locale = new Intl.Locale(noExtensionLocale);
+        var maximizedRequestedLocale = locale.maximize().toString();
+        var minimizedRequestedLocale = locale.minimize().toString();
+        // Check minimized locale
+        if (minimizedAvailableLocales.has(minimizedRequestedLocale)) {
+            foundLocale = minimizedAvailableLocaleMap[minimizedRequestedLocale];
+            break;
+        }
+        // Lookup algo on maximized locale
+        foundLocale = BestAvailableLocale_1.BestAvailableLocale(minimizedAvailableLocales, maximizedRequestedLocale);
+    }
+    return {
+        locale: foundLocale || getDefaultLocale(),
+    };
+}
+exports.BestFitMatcher = BestFitMatcher;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeLocaleList.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/CanonicalizeLocaleList.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CanonicalizeLocaleList = void 0;
+/**
+ * http://ecma-international.org/ecma-402/7.0/index.html#sec-canonicalizelocalelist
+ * @param locales
+ */
+function CanonicalizeLocaleList(locales) {
+    // TODO
+    return Intl.getCanonicalLocales(locales);
+}
+exports.CanonicalizeLocaleList = CanonicalizeLocaleList;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeTimeZoneName.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/CanonicalizeTimeZoneName.js ***!
+  \*****************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CanonicalizeTimeZoneName = void 0;
+/**
+ * https://tc39.es/ecma402/#sec-canonicalizetimezonename
+ * @param tz
+ */
+function CanonicalizeTimeZoneName(tz, _a) {
+    var tzData = _a.tzData, uppercaseLinks = _a.uppercaseLinks;
+    var uppercasedTz = tz.toUpperCase();
+    var uppercasedZones = Object.keys(tzData).reduce(function (all, z) {
+        all[z.toUpperCase()] = z;
+        return all;
+    }, {});
+    var ianaTimeZone = uppercaseLinks[uppercasedTz] || uppercasedZones[uppercasedTz];
+    if (ianaTimeZone === 'Etc/UTC' || ianaTimeZone === 'Etc/GMT') {
+        return 'UTC';
+    }
+    return ianaTimeZone;
+}
+exports.CanonicalizeTimeZoneName = CanonicalizeTimeZoneName;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/CoerceOptionsToObject.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/CoerceOptionsToObject.js ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CoerceOptionsToObject = void 0;
+var _262_1 = __webpack_require__(/*! ./262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+/**
+ * https://tc39.es/ecma402/#sec-coerceoptionstoobject
+ * @param options
+ * @returns
+ */
+function CoerceOptionsToObject(options) {
+    if (typeof options === 'undefined') {
+        return Object.create(null);
+    }
+    return _262_1.ToObject(options);
+}
+exports.CoerceOptionsToObject = CoerceOptionsToObject;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/BasicFormatMatcher.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/BasicFormatMatcher.js ***!
+  \**************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BasicFormatMatcher = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var utils_2 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/utils.js");
+/**
+ * https://tc39.es/ecma402/#sec-basicformatmatcher
+ * @param options
+ * @param formats
+ */
+function BasicFormatMatcher(options, formats) {
+    var bestScore = -Infinity;
+    var bestFormat = formats[0];
+    utils_1.invariant(Array.isArray(formats), 'formats should be a list of things');
+    for (var _i = 0, formats_1 = formats; _i < formats_1.length; _i++) {
+        var format = formats_1[_i];
+        var score = 0;
+        for (var _a = 0, DATE_TIME_PROPS_1 = utils_2.DATE_TIME_PROPS; _a < DATE_TIME_PROPS_1.length; _a++) {
+            var prop = DATE_TIME_PROPS_1[_a];
+            var optionsProp = options[prop];
+            var formatProp = format[prop];
+            if (optionsProp === undefined && formatProp !== undefined) {
+                score -= utils_2.additionPenalty;
+            }
+            else if (optionsProp !== undefined && formatProp === undefined) {
+                score -= utils_2.removalPenalty;
+            }
+            else if (optionsProp !== formatProp) {
+                var values = ['2-digit', 'numeric', 'narrow', 'short', 'long'];
+                var optionsPropIndex = values.indexOf(optionsProp);
+                var formatPropIndex = values.indexOf(formatProp);
+                var delta = Math.max(-2, Math.min(formatPropIndex - optionsPropIndex, 2));
+                if (delta === 2) {
+                    score -= utils_2.longMorePenalty;
+                }
+                else if (delta === 1) {
+                    score -= utils_2.shortMorePenalty;
+                }
+                else if (delta === -1) {
+                    score -= utils_2.shortLessPenalty;
+                }
+                else if (delta === -2) {
+                    score -= utils_2.longLessPenalty;
+                }
+            }
+        }
+        if (score > bestScore) {
+            bestScore = score;
+            bestFormat = format;
+        }
+    }
+    return tslib_1.__assign({}, bestFormat);
+}
+exports.BasicFormatMatcher = BasicFormatMatcher;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/BestFitFormatMatcher.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/BestFitFormatMatcher.js ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BestFitFormatMatcher = exports.bestFitFormatMatcherScore = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var utils_2 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/utils.js");
+var skeleton_1 = __webpack_require__(/*! ./skeleton */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/skeleton.js");
+function isNumericType(t) {
+    return t === 'numeric' || t === '2-digit';
+}
+/**
+ * Credit: https://github.com/andyearnshaw/Intl.js/blob/0958dc1ad8153f1056653ea22b8208f0df289a4e/src/12.datetimeformat.js#L611
+ * with some modifications
+ * @param options
+ * @param format
+ */
+function bestFitFormatMatcherScore(options, format) {
+    var score = 0;
+    if (options.hour12 && !format.hour12) {
+        score -= utils_2.removalPenalty;
+    }
+    else if (!options.hour12 && format.hour12) {
+        score -= utils_2.additionPenalty;
+    }
+    for (var _i = 0, DATE_TIME_PROPS_1 = utils_2.DATE_TIME_PROPS; _i < DATE_TIME_PROPS_1.length; _i++) {
+        var prop = DATE_TIME_PROPS_1[_i];
+        var optionsProp = options[prop];
+        var formatProp = format[prop];
+        if (optionsProp === undefined && formatProp !== undefined) {
+            score -= utils_2.additionPenalty;
+        }
+        else if (optionsProp !== undefined && formatProp === undefined) {
+            score -= utils_2.removalPenalty;
+        }
+        else if (optionsProp !== formatProp) {
+            // extra penalty for numeric vs non-numeric
+            if (isNumericType(optionsProp) !==
+                isNumericType(formatProp)) {
+                score -= utils_2.differentNumericTypePenalty;
+            }
+            else {
+                var values = ['2-digit', 'numeric', 'narrow', 'short', 'long'];
+                var optionsPropIndex = values.indexOf(optionsProp);
+                var formatPropIndex = values.indexOf(formatProp);
+                var delta = Math.max(-2, Math.min(formatPropIndex - optionsPropIndex, 2));
+                if (delta === 2) {
+                    score -= utils_2.longMorePenalty;
+                }
+                else if (delta === 1) {
+                    score -= utils_2.shortMorePenalty;
+                }
+                else if (delta === -1) {
+                    score -= utils_2.shortLessPenalty;
+                }
+                else if (delta === -2) {
+                    score -= utils_2.longLessPenalty;
+                }
+            }
+        }
+    }
+    return score;
+}
+exports.bestFitFormatMatcherScore = bestFitFormatMatcherScore;
+/**
+ * https://tc39.es/ecma402/#sec-bestfitformatmatcher
+ * Just alias to basic for now
+ * @param options
+ * @param formats
+ * @param implDetails Implementation details
+ */
+function BestFitFormatMatcher(options, formats) {
+    var bestScore = -Infinity;
+    var bestFormat = formats[0];
+    utils_1.invariant(Array.isArray(formats), 'formats should be a list of things');
+    for (var _i = 0, formats_1 = formats; _i < formats_1.length; _i++) {
+        var format = formats_1[_i];
+        var score = bestFitFormatMatcherScore(options, format);
+        if (score > bestScore) {
+            bestScore = score;
+            bestFormat = format;
+        }
+    }
+    var skeletonFormat = tslib_1.__assign({}, bestFormat);
+    var patternFormat = { rawPattern: bestFormat.rawPattern };
+    skeleton_1.processDateTimePattern(bestFormat.rawPattern, patternFormat);
+    // Kinda following https://github.com/unicode-org/icu/blob/dd50e38f459d84e9bf1b0c618be8483d318458ad/icu4j/main/classes/core/src/com/ibm/icu/text/DateTimePatternGenerator.java
+    // Method adjustFieldTypes
+    for (var prop in skeletonFormat) {
+        var skeletonValue = skeletonFormat[prop];
+        var patternValue = patternFormat[prop];
+        var requestedValue = options[prop];
+        // Don't mess with minute/second or we can get in the situation of
+        // 7:0:0 which is weird
+        if (prop === 'minute' || prop === 'second') {
+            continue;
+        }
+        // Nothing to do here
+        if (!requestedValue) {
+            continue;
+        }
+        // https://unicode.org/reports/tr35/tr35-dates.html#Matching_Skeletons
+        // Looks like we should not convert numeric to alphabetic but the other way
+        // around is ok
+        if (isNumericType(patternValue) &&
+            !isNumericType(requestedValue)) {
+            continue;
+        }
+        if (skeletonValue === requestedValue) {
+            continue;
+        }
+        patternFormat[prop] = requestedValue;
+    }
+    // Copy those over
+    patternFormat.pattern = skeletonFormat.pattern;
+    patternFormat.pattern12 = skeletonFormat.pattern12;
+    patternFormat.skeleton = skeletonFormat.skeleton;
+    patternFormat.rangePatterns = skeletonFormat.rangePatterns;
+    patternFormat.rangePatterns12 = skeletonFormat.rangePatterns12;
+    return patternFormat;
+}
+exports.BestFitFormatMatcher = BestFitFormatMatcher;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/DateTimeStyleFormat.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/DateTimeStyleFormat.js ***!
+  \***************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DateTimeStyleFormat = void 0;
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+function DateTimeStyleFormat(dateStyle, timeStyle, dataLocaleData) {
+    var dateFormat, timeFormat;
+    if (timeStyle !== undefined) {
+        utils_1.invariant(timeStyle === 'full' ||
+            timeStyle === 'long' ||
+            timeStyle === 'medium' ||
+            timeStyle === 'short', 'invalid timeStyle');
+        timeFormat = dataLocaleData.timeFormat[timeStyle];
+    }
+    if (dateStyle !== undefined) {
+        utils_1.invariant(dateStyle === 'full' ||
+            dateStyle === 'long' ||
+            dateStyle === 'medium' ||
+            dateStyle === 'short', 'invalid dateStyle');
+        dateFormat = dataLocaleData.dateFormat[dateStyle];
+    }
+    if (dateStyle !== undefined && timeStyle !== undefined) {
+        var format = {};
+        for (var field in dateFormat) {
+            if (field !== 'pattern') {
+                // @ts-ignore
+                format[field] = dateFormat[field];
+            }
+        }
+        for (var field in timeFormat) {
+            if (field !== 'pattern' && field !== 'pattern12') {
+                // @ts-ignore
+                format[field] = timeFormat[field];
+            }
+        }
+        var connector = dataLocaleData.dateTimeFormat[dateStyle];
+        var pattern = connector
+            .replace('{0}', timeFormat.pattern)
+            .replace('{1}', dateFormat.pattern);
+        format.pattern = pattern;
+        if ('pattern12' in timeFormat) {
+            var pattern12 = connector
+                .replace('{0}', timeFormat.pattern12)
+                .replace('{1}', dateFormat.pattern);
+            format.pattern12 = pattern12;
+        }
+        return format;
+    }
+    if (timeStyle !== undefined) {
+        return timeFormat;
+    }
+    utils_1.invariant(dateStyle !== undefined, 'dateStyle should not be undefined');
+    return dateFormat;
+}
+exports.DateTimeStyleFormat = DateTimeStyleFormat;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTime.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTime.js ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormatDateTime = void 0;
+var PartitionDateTimePattern_1 = __webpack_require__(/*! ./PartitionDateTimePattern */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/PartitionDateTimePattern.js");
+/**
+ * https://tc39.es/ecma402/#sec-formatdatetime
+ * @param dtf DateTimeFormat
+ * @param x
+ */
+function FormatDateTime(dtf, x, implDetails) {
+    var parts = PartitionDateTimePattern_1.PartitionDateTimePattern(dtf, x, implDetails);
+    var result = '';
+    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        result += part.value;
+    }
+    return result;
+}
+exports.FormatDateTime = FormatDateTime;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimePattern.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimePattern.js ***!
+  \*****************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormatDateTimePattern = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/utils.js");
+var ToLocalTime_1 = __webpack_require__(/*! ./ToLocalTime */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/ToLocalTime.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+function pad(n) {
+    if (n < 10) {
+        return "0" + n;
+    }
+    return String(n);
+}
+function offsetToGmtString(gmtFormat, hourFormat, offsetInMs, style) {
+    var offsetInMinutes = Math.floor(offsetInMs / 60000);
+    var mins = Math.abs(offsetInMinutes) % 60;
+    var hours = Math.floor(Math.abs(offsetInMinutes) / 60);
+    var _a = hourFormat.split(';'), positivePattern = _a[0], negativePattern = _a[1];
+    var offsetStr = '';
+    var pattern = offsetInMs < 0 ? negativePattern : positivePattern;
+    if (style === 'long') {
+        offsetStr = pattern
+            .replace('HH', pad(hours))
+            .replace('H', String(hours))
+            .replace('mm', pad(mins))
+            .replace('m', String(mins));
+    }
+    else if (mins || hours) {
+        if (!mins) {
+            pattern = pattern.replace(/:?m+/, '');
+        }
+        offsetStr = pattern.replace(/H+/, String(hours)).replace(/m+/, String(mins));
+    }
+    return gmtFormat.replace('{0}', offsetStr);
+}
+/**
+ * https://tc39.es/ecma402/#sec-partitiondatetimepattern
+ * @param dtf
+ * @param x
+ */
+function FormatDateTimePattern(dtf, patternParts, x, _a) {
+    var getInternalSlots = _a.getInternalSlots, localeData = _a.localeData, getDefaultTimeZone = _a.getDefaultTimeZone, tzData = _a.tzData;
+    x = _262_1.TimeClip(x);
+    /** IMPL START */
+    var internalSlots = getInternalSlots(dtf);
+    var dataLocale = internalSlots.dataLocale;
+    var dataLocaleData = localeData[dataLocale];
+    /** IMPL END */
+    var locale = internalSlots.locale;
+    var nfOptions = Object.create(null);
+    nfOptions.useGrouping = false;
+    var nf = new Intl.NumberFormat(locale, nfOptions);
+    var nf2Options = Object.create(null);
+    nf2Options.minimumIntegerDigits = 2;
+    nf2Options.useGrouping = false;
+    var nf2 = new Intl.NumberFormat(locale, nf2Options);
+    var tm = ToLocalTime_1.ToLocalTime(x, 
+    // @ts-ignore
+    internalSlots.calendar, internalSlots.timeZone, { tzData: tzData });
+    var result = [];
+    for (var _i = 0, patternParts_1 = patternParts; _i < patternParts_1.length; _i++) {
+        var patternPart = patternParts_1[_i];
+        var p = patternPart.type;
+        if (p === 'literal') {
+            result.push({
+                type: 'literal',
+                value: patternPart.value,
+            });
+        }
+        else if (utils_1.DATE_TIME_PROPS.indexOf(p) > -1) {
+            var fv = '';
+            var f = internalSlots[p];
+            // @ts-ignore
+            var v = tm[p];
+            if (p === 'year' && v <= 0) {
+                v = 1 - v;
+            }
+            if (p === 'month') {
+                v++;
+            }
+            var hourCycle = internalSlots.hourCycle;
+            if (p === 'hour' && (hourCycle === 'h11' || hourCycle === 'h12')) {
+                v = v % 12;
+                if (v === 0 && hourCycle === 'h12') {
+                    v = 12;
+                }
+            }
+            if (p === 'hour' && hourCycle === 'h24') {
+                if (v === 0) {
+                    v = 24;
+                }
+            }
+            if (f === 'numeric') {
+                fv = nf.format(v);
+            }
+            else if (f === '2-digit') {
+                fv = nf2.format(v);
+                if (fv.length > 2) {
+                    fv = fv.slice(fv.length - 2, fv.length);
+                }
+            }
+            else if (f === 'narrow' || f === 'short' || f === 'long') {
+                if (p === 'era') {
+                    fv = dataLocaleData[p][f][v];
+                }
+                else if (p === 'timeZoneName') {
+                    var timeZoneName = dataLocaleData.timeZoneName, gmtFormat = dataLocaleData.gmtFormat, hourFormat = dataLocaleData.hourFormat;
+                    var timeZone = internalSlots.timeZone || getDefaultTimeZone();
+                    var timeZoneData = timeZoneName[timeZone];
+                    if (timeZoneData && timeZoneData[f]) {
+                        fv = timeZoneData[f][+tm.inDST];
+                    }
+                    else {
+                        // Fallback to gmtFormat
+                        fv = offsetToGmtString(gmtFormat, hourFormat, tm.timeZoneOffset, f);
+                    }
+                }
+                else if (p === 'month') {
+                    fv = dataLocaleData.month[f][v - 1];
+                }
+                else {
+                    fv = dataLocaleData[p][f][v];
+                }
+            }
+            result.push({
+                type: p,
+                value: fv,
+            });
+        }
+        else if (p === 'ampm') {
+            var v = tm.hour;
+            var fv = void 0;
+            if (v > 11) {
+                fv = dataLocaleData.pm;
+            }
+            else {
+                fv = dataLocaleData.am;
+            }
+            result.push({
+                type: 'dayPeriod',
+                value: fv,
+            });
+        }
+        else if (p === 'relatedYear') {
+            var v = tm.relatedYear;
+            // @ts-ignore
+            var fv = nf.format(v);
+            result.push({
+                // @ts-ignore TODO: Fix TS type
+                type: 'relatedYear',
+                value: fv,
+            });
+        }
+        else if (p === 'yearName') {
+            var v = tm.yearName;
+            // @ts-ignore
+            var fv = nf.format(v);
+            result.push({
+                // @ts-ignore TODO: Fix TS type
+                type: 'yearName',
+                value: fv,
+            });
+        }
+    }
+    return result;
+}
+exports.FormatDateTimePattern = FormatDateTimePattern;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimeRange.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimeRange.js ***!
+  \***************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormatDateTimeRange = void 0;
+var PartitionDateTimeRangePattern_1 = __webpack_require__(/*! ./PartitionDateTimeRangePattern */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/PartitionDateTimeRangePattern.js");
+function FormatDateTimeRange(dtf, x, y, implDetails) {
+    var parts = PartitionDateTimeRangePattern_1.PartitionDateTimeRangePattern(dtf, x, y, implDetails);
+    var result = '';
+    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        result += part.value;
+    }
+    return result;
+}
+exports.FormatDateTimeRange = FormatDateTimeRange;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimeRangeToParts.js":
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimeRangeToParts.js ***!
+  \**********************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormatDateTimeRangeToParts = void 0;
+var PartitionDateTimeRangePattern_1 = __webpack_require__(/*! ./PartitionDateTimeRangePattern */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/PartitionDateTimeRangePattern.js");
+function FormatDateTimeRangeToParts(dtf, x, y, implDetails) {
+    var parts = PartitionDateTimeRangePattern_1.PartitionDateTimeRangePattern(dtf, x, y, implDetails);
+    var result = new Array(0);
+    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        result.push({
+            type: part.type,
+            value: part.value,
+            source: part.source,
+        });
+    }
+    return result;
+}
+exports.FormatDateTimeRangeToParts = FormatDateTimeRangeToParts;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimeToParts.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimeToParts.js ***!
+  \*****************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormatDateTimeToParts = void 0;
+var PartitionDateTimePattern_1 = __webpack_require__(/*! ./PartitionDateTimePattern */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/PartitionDateTimePattern.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+/**
+ * https://tc39.es/ecma402/#sec-formatdatetimetoparts
+ *
+ * @param dtf
+ * @param x
+ * @param implDetails
+ */
+function FormatDateTimeToParts(dtf, x, implDetails) {
+    var parts = PartitionDateTimePattern_1.PartitionDateTimePattern(dtf, x, implDetails);
+    var result = _262_1.ArrayCreate(0);
+    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        result.push({
+            type: part.type,
+            value: part.value,
+        });
+    }
+    return result;
+}
+exports.FormatDateTimeToParts = FormatDateTimeToParts;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/InitializeDateTimeFormat.js":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/InitializeDateTimeFormat.js ***!
+  \********************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InitializeDateTimeFormat = void 0;
+var CanonicalizeLocaleList_1 = __webpack_require__(/*! ../CanonicalizeLocaleList */ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeLocaleList.js");
+var ToDateTimeOptions_1 = __webpack_require__(/*! ./ToDateTimeOptions */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/ToDateTimeOptions.js");
+var GetOption_1 = __webpack_require__(/*! ../GetOption */ "./node_modules/@formatjs/ecma402-abstract/GetOption.js");
+var ResolveLocale_1 = __webpack_require__(/*! ../ResolveLocale */ "./node_modules/@formatjs/ecma402-abstract/ResolveLocale.js");
+var IsValidTimeZoneName_1 = __webpack_require__(/*! ../IsValidTimeZoneName */ "./node_modules/@formatjs/ecma402-abstract/IsValidTimeZoneName.js");
+var CanonicalizeTimeZoneName_1 = __webpack_require__(/*! ../CanonicalizeTimeZoneName */ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeTimeZoneName.js");
+var BasicFormatMatcher_1 = __webpack_require__(/*! ./BasicFormatMatcher */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/BasicFormatMatcher.js");
+var BestFitFormatMatcher_1 = __webpack_require__(/*! ./BestFitFormatMatcher */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/BestFitFormatMatcher.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var utils_2 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/utils.js");
+var DateTimeStyleFormat_1 = __webpack_require__(/*! ./DateTimeStyleFormat */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/DateTimeStyleFormat.js");
+function isTimeRelated(opt) {
+    for (var _i = 0, _a = ['hour', 'minute', 'second']; _i < _a.length; _i++) {
+        var prop = _a[_i];
+        var value = opt[prop];
+        if (value !== undefined) {
+            return true;
+        }
+    }
+    return false;
+}
+function resolveHourCycle(hc, hcDefault, hour12) {
+    if (hc == null) {
+        hc = hcDefault;
+    }
+    if (hour12 !== undefined) {
+        if (hour12) {
+            if (hcDefault === 'h11' || hcDefault === 'h23') {
+                hc = 'h11';
+            }
+            else {
+                hc = 'h12';
+            }
+        }
+        else {
+            utils_1.invariant(!hour12, 'hour12 must not be set');
+            if (hcDefault === 'h11' || hcDefault === 'h23') {
+                hc = 'h23';
+            }
+            else {
+                hc = 'h24';
+            }
+        }
+    }
+    return hc;
+}
+var TYPE_REGEX = /^[a-z0-9]{3,8}$/i;
+/**
+ * https://tc39.es/ecma402/#sec-initializedatetimeformat
+ * @param dtf DateTimeFormat
+ * @param locales locales
+ * @param opts options
+ */
+function InitializeDateTimeFormat(dtf, locales, opts, _a) {
+    var getInternalSlots = _a.getInternalSlots, availableLocales = _a.availableLocales, localeData = _a.localeData, getDefaultLocale = _a.getDefaultLocale, getDefaultTimeZone = _a.getDefaultTimeZone, relevantExtensionKeys = _a.relevantExtensionKeys, tzData = _a.tzData, uppercaseLinks = _a.uppercaseLinks;
+    // @ts-ignore
+    var requestedLocales = CanonicalizeLocaleList_1.CanonicalizeLocaleList(locales);
+    var options = ToDateTimeOptions_1.ToDateTimeOptions(opts, 'any', 'date');
+    var opt = Object.create(null);
+    var matcher = GetOption_1.GetOption(options, 'localeMatcher', 'string', ['lookup', 'best fit'], 'best fit');
+    opt.localeMatcher = matcher;
+    var calendar = GetOption_1.GetOption(options, 'calendar', 'string', undefined, undefined);
+    if (calendar !== undefined && !TYPE_REGEX.test(calendar)) {
+        throw new RangeError('Malformed calendar');
+    }
+    var internalSlots = getInternalSlots(dtf);
+    opt.ca = calendar;
+    var numberingSystem = GetOption_1.GetOption(options, 'numberingSystem', 'string', undefined, undefined);
+    if (numberingSystem !== undefined && !TYPE_REGEX.test(numberingSystem)) {
+        throw new RangeError('Malformed numbering system');
+    }
+    opt.nu = numberingSystem;
+    var hour12 = GetOption_1.GetOption(options, 'hour12', 'boolean', undefined, undefined);
+    var hourCycle = GetOption_1.GetOption(options, 'hourCycle', 'string', ['h11', 'h12', 'h23', 'h24'], undefined);
+    if (hour12 !== undefined) {
+        // @ts-ignore
+        hourCycle = null;
+    }
+    opt.hc = hourCycle;
+    var r = ResolveLocale_1.ResolveLocale(availableLocales, requestedLocales, opt, relevantExtensionKeys, localeData, getDefaultLocale);
+    internalSlots.locale = r.locale;
+    calendar = r.ca;
+    internalSlots.calendar = calendar;
+    internalSlots.hourCycle = r.hc;
+    internalSlots.numberingSystem = r.nu;
+    var dataLocale = r.dataLocale;
+    internalSlots.dataLocale = dataLocale;
+    var timeZone = options.timeZone;
+    if (timeZone !== undefined) {
+        timeZone = String(timeZone);
+        if (!IsValidTimeZoneName_1.IsValidTimeZoneName(timeZone, { tzData: tzData, uppercaseLinks: uppercaseLinks })) {
+            throw new RangeError('Invalid timeZoneName');
+        }
+        timeZone = CanonicalizeTimeZoneName_1.CanonicalizeTimeZoneName(timeZone, { tzData: tzData, uppercaseLinks: uppercaseLinks });
+    }
+    else {
+        timeZone = getDefaultTimeZone();
+    }
+    internalSlots.timeZone = timeZone;
+    opt = Object.create(null);
+    opt.weekday = GetOption_1.GetOption(options, 'weekday', 'string', ['narrow', 'short', 'long'], undefined);
+    opt.era = GetOption_1.GetOption(options, 'era', 'string', ['narrow', 'short', 'long'], undefined);
+    opt.year = GetOption_1.GetOption(options, 'year', 'string', ['2-digit', 'numeric'], undefined);
+    opt.month = GetOption_1.GetOption(options, 'month', 'string', ['2-digit', 'numeric', 'narrow', 'short', 'long'], undefined);
+    opt.day = GetOption_1.GetOption(options, 'day', 'string', ['2-digit', 'numeric'], undefined);
+    opt.hour = GetOption_1.GetOption(options, 'hour', 'string', ['2-digit', 'numeric'], undefined);
+    opt.minute = GetOption_1.GetOption(options, 'minute', 'string', ['2-digit', 'numeric'], undefined);
+    opt.second = GetOption_1.GetOption(options, 'second', 'string', ['2-digit', 'numeric'], undefined);
+    opt.timeZoneName = GetOption_1.GetOption(options, 'timeZoneName', 'string', ['short', 'long'], undefined);
+    var dataLocaleData = localeData[dataLocale];
+    utils_1.invariant(!!dataLocaleData, "Missing locale data for " + dataLocale);
+    var formats = dataLocaleData.formats[calendar];
+    // UNSPECCED: IMPLEMENTATION DETAILS
+    if (!formats) {
+        throw new RangeError("Calendar \"" + calendar + "\" is not supported. Try setting \"calendar\" to 1 of the following: " + Object.keys(dataLocaleData.formats).join(', '));
+    }
+    var formatMatcher = GetOption_1.GetOption(options, 'formatMatcher', 'string', ['basic', 'best fit'], 'best fit');
+    var dateStyle = GetOption_1.GetOption(options, 'dateStyle', 'string', ['full', 'long', 'medium', 'short'], undefined);
+    internalSlots.dateStyle = dateStyle;
+    var timeStyle = GetOption_1.GetOption(options, 'timeStyle', 'string', ['full', 'long', 'medium', 'short'], undefined);
+    internalSlots.timeStyle = timeStyle;
+    var bestFormat;
+    if (dateStyle === undefined && timeStyle === undefined) {
+        if (formatMatcher === 'basic') {
+            bestFormat = BasicFormatMatcher_1.BasicFormatMatcher(opt, formats);
+        }
+        else {
+            // IMPL DETAILS START
+            if (isTimeRelated(opt)) {
+                var hc = resolveHourCycle(internalSlots.hourCycle, dataLocaleData.hourCycle, hour12);
+                opt.hour12 = hc === 'h11' || hc === 'h12';
+            }
+            // IMPL DETAILS END
+            bestFormat = BestFitFormatMatcher_1.BestFitFormatMatcher(opt, formats);
+        }
+    }
+    else {
+        for (var _i = 0, DATE_TIME_PROPS_1 = utils_2.DATE_TIME_PROPS; _i < DATE_TIME_PROPS_1.length; _i++) {
+            var prop = DATE_TIME_PROPS_1[_i];
+            var p = opt[prop];
+            if (p !== undefined) {
+                throw new TypeError("Intl.DateTimeFormat can't set option " + prop + " when " + (dateStyle ? 'dateStyle' : 'timeStyle') + " is used");
+            }
+        }
+        bestFormat = DateTimeStyleFormat_1.DateTimeStyleFormat(dateStyle, timeStyle, dataLocaleData);
+    }
+    // IMPL DETAIL START
+    // For debugging
+    internalSlots.format = bestFormat;
+    // IMPL DETAIL END
+    for (var prop in opt) {
+        var p = bestFormat[prop];
+        if (p !== undefined) {
+            internalSlots[prop] = p;
+        }
+    }
+    var pattern;
+    var rangePatterns;
+    if (internalSlots.hour !== undefined) {
+        var hc = resolveHourCycle(internalSlots.hourCycle, dataLocaleData.hourCycle, hour12);
+        internalSlots.hourCycle = hc;
+        if (hc === 'h11' || hc === 'h12') {
+            pattern = bestFormat.pattern12;
+            rangePatterns = bestFormat.rangePatterns12;
+        }
+        else {
+            pattern = bestFormat.pattern;
+            rangePatterns = bestFormat.rangePatterns;
+        }
+    }
+    else {
+        // @ts-ignore
+        internalSlots.hourCycle = undefined;
+        pattern = bestFormat.pattern;
+        rangePatterns = bestFormat.rangePatterns;
+    }
+    internalSlots.pattern = pattern;
+    internalSlots.rangePatterns = rangePatterns;
+    return dtf;
+}
+exports.InitializeDateTimeFormat = InitializeDateTimeFormat;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/PartitionDateTimePattern.js":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/PartitionDateTimePattern.js ***!
+  \********************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PartitionDateTimePattern = void 0;
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+var FormatDateTimePattern_1 = __webpack_require__(/*! ./FormatDateTimePattern */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimePattern.js");
+var PartitionPattern_1 = __webpack_require__(/*! ../PartitionPattern */ "./node_modules/@formatjs/ecma402-abstract/PartitionPattern.js");
+/**
+ * https://tc39.es/ecma402/#sec-partitiondatetimepattern
+ * @param dtf
+ * @param x
+ */
+function PartitionDateTimePattern(dtf, x, implDetails) {
+    x = _262_1.TimeClip(x);
+    if (isNaN(x)) {
+        throw new RangeError('invalid time');
+    }
+    /** IMPL START */
+    var getInternalSlots = implDetails.getInternalSlots;
+    var internalSlots = getInternalSlots(dtf);
+    /** IMPL END */
+    var pattern = internalSlots.pattern;
+    return FormatDateTimePattern_1.FormatDateTimePattern(dtf, PartitionPattern_1.PartitionPattern(pattern), x, implDetails);
+}
+exports.PartitionDateTimePattern = PartitionDateTimePattern;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/PartitionDateTimeRangePattern.js":
+/*!*************************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/PartitionDateTimeRangePattern.js ***!
+  \*************************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PartitionDateTimeRangePattern = void 0;
+var date_time_1 = __webpack_require__(/*! ../types/date-time */ "./node_modules/@formatjs/ecma402-abstract/types/date-time.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+var ToLocalTime_1 = __webpack_require__(/*! ./ToLocalTime */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/ToLocalTime.js");
+var FormatDateTimePattern_1 = __webpack_require__(/*! ./FormatDateTimePattern */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimePattern.js");
+var PartitionPattern_1 = __webpack_require__(/*! ../PartitionPattern */ "./node_modules/@formatjs/ecma402-abstract/PartitionPattern.js");
+var TABLE_2_FIELDS = [
+    'era',
+    'year',
+    'month',
+    'day',
+    'ampm',
+    'hour',
+    'minute',
+    'second',
+];
+function PartitionDateTimeRangePattern(dtf, x, y, implDetails) {
+    x = _262_1.TimeClip(x);
+    if (isNaN(x)) {
+        throw new RangeError('Invalid start time');
+    }
+    y = _262_1.TimeClip(y);
+    if (isNaN(y)) {
+        throw new RangeError('Invalid end time');
+    }
+    /** IMPL START */
+    var getInternalSlots = implDetails.getInternalSlots, tzData = implDetails.tzData;
+    var internalSlots = getInternalSlots(dtf);
+    /** IMPL END */
+    var tm1 = ToLocalTime_1.ToLocalTime(x, 
+    // @ts-ignore
+    internalSlots.calendar, internalSlots.timeZone, { tzData: tzData });
+    var tm2 = ToLocalTime_1.ToLocalTime(y, 
+    // @ts-ignore
+    internalSlots.calendar, internalSlots.timeZone, { tzData: tzData });
+    var pattern = internalSlots.pattern, rangePatterns = internalSlots.rangePatterns;
+    var rangePattern;
+    var dateFieldsPracticallyEqual = true;
+    var patternContainsLargerDateField = false;
+    for (var _i = 0, TABLE_2_FIELDS_1 = TABLE_2_FIELDS; _i < TABLE_2_FIELDS_1.length; _i++) {
+        var fieldName = TABLE_2_FIELDS_1[_i];
+        if (dateFieldsPracticallyEqual && !patternContainsLargerDateField) {
+            if (fieldName === 'ampm') {
+                var rp = rangePatterns.ampm;
+                if (rangePattern !== undefined && rp === undefined) {
+                    patternContainsLargerDateField = true;
+                }
+                else {
+                    var v1 = tm1.hour;
+                    var v2 = tm2.hour;
+                    if ((v1 > 11 && v2 < 11) || (v1 < 11 && v2 > 11)) {
+                        dateFieldsPracticallyEqual = false;
+                    }
+                    rangePattern = rp;
+                }
+            }
+            else {
+                var rp = rangePatterns[fieldName];
+                if (rangePattern !== undefined && rp === undefined) {
+                    patternContainsLargerDateField = true;
+                }
+                else {
+                    var v1 = tm1[fieldName];
+                    var v2 = tm2[fieldName];
+                    if (!_262_1.SameValue(v1, v2)) {
+                        dateFieldsPracticallyEqual = false;
+                    }
+                    rangePattern = rp;
+                }
+            }
+        }
+    }
+    if (dateFieldsPracticallyEqual) {
+        var result_2 = FormatDateTimePattern_1.FormatDateTimePattern(dtf, PartitionPattern_1.PartitionPattern(pattern), x, implDetails);
+        for (var _a = 0, result_1 = result_2; _a < result_1.length; _a++) {
+            var r = result_1[_a];
+            r.source = date_time_1.RangePatternType.shared;
+        }
+        return result_2;
+    }
+    var result = [];
+    if (rangePattern === undefined) {
+        rangePattern = rangePatterns.default;
+        /** IMPL DETAILS */
+        // Now we have to replace {0} & {1} with actual pattern
+        for (var _b = 0, _c = rangePattern.patternParts; _b < _c.length; _b++) {
+            var patternPart = _c[_b];
+            if (patternPart.pattern === '{0}' || patternPart.pattern === '{1}') {
+                patternPart.pattern = pattern;
+            }
+        }
+    }
+    for (var _d = 0, _e = rangePattern.patternParts; _d < _e.length; _d++) {
+        var rangePatternPart = _e[_d];
+        var source = rangePatternPart.source, pattern_1 = rangePatternPart.pattern;
+        var z = void 0;
+        if (source === date_time_1.RangePatternType.startRange ||
+            source === date_time_1.RangePatternType.shared) {
+            z = x;
+        }
+        else {
+            z = y;
+        }
+        var patternParts = PartitionPattern_1.PartitionPattern(pattern_1);
+        var partResult = FormatDateTimePattern_1.FormatDateTimePattern(dtf, patternParts, z, implDetails);
+        for (var _f = 0, partResult_1 = partResult; _f < partResult_1.length; _f++) {
+            var r = partResult_1[_f];
+            r.source = source;
+        }
+        result = result.concat(partResult);
+    }
+    return result;
+}
+exports.PartitionDateTimeRangePattern = PartitionDateTimeRangePattern;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/ToDateTimeOptions.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/ToDateTimeOptions.js ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ToDateTimeOptions = void 0;
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+/**
+ * https://tc39.es/ecma402/#sec-todatetimeoptions
+ * @param options
+ * @param required
+ * @param defaults
+ */
+function ToDateTimeOptions(options, required, defaults) {
+    if (options === undefined) {
+        options = null;
+    }
+    else {
+        options = _262_1.ToObject(options);
+    }
+    options = Object.create(options);
+    var needDefaults = true;
+    if (required === 'date' || required === 'any') {
+        for (var _i = 0, _a = ['weekday', 'year', 'month', 'day']; _i < _a.length; _i++) {
+            var prop = _a[_i];
+            var value = options[prop];
+            if (value !== undefined) {
+                needDefaults = false;
+            }
+        }
+    }
+    if (required === 'time' || required === 'any') {
+        for (var _b = 0, _c = ['hour', 'minute', 'second']; _b < _c.length; _b++) {
+            var prop = _c[_b];
+            var value = options[prop];
+            if (value !== undefined) {
+                needDefaults = false;
+            }
+        }
+    }
+    if (options.dateStyle !== undefined || options.timeStyle !== undefined) {
+        needDefaults = false;
+    }
+    if (required === 'date' && options.timeStyle) {
+        throw new TypeError('Intl.DateTimeFormat date was required but timeStyle was included');
+    }
+    if (required === 'time' && options.dateStyle) {
+        throw new TypeError('Intl.DateTimeFormat time was required but dateStyle was included');
+    }
+    if (needDefaults && (defaults === 'date' || defaults === 'all')) {
+        for (var _d = 0, _e = ['year', 'month', 'day']; _d < _e.length; _d++) {
+            var prop = _e[_d];
+            options[prop] = 'numeric';
+        }
+    }
+    if (needDefaults && (defaults === 'time' || defaults === 'all')) {
+        for (var _f = 0, _g = ['hour', 'minute', 'second']; _f < _g.length; _f++) {
+            var prop = _g[_f];
+            options[prop] = 'numeric';
+        }
+    }
+    return options;
+}
+exports.ToDateTimeOptions = ToDateTimeOptions;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/ToLocalTime.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/ToLocalTime.js ***!
+  \*******************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ToLocalTime = void 0;
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+function getApplicableZoneData(t, timeZone, tzData) {
+    var _a;
+    var zoneData = tzData[timeZone];
+    // We don't have data for this so just say it's UTC
+    if (!zoneData) {
+        return [0, false];
+    }
+    var i = 0;
+    var offset = 0;
+    var dst = false;
+    for (; i <= zoneData.length; i++) {
+        if (i === zoneData.length || zoneData[i][0] * 1e3 > t) {
+            ;
+            _a = zoneData[i - 1], offset = _a[2], dst = _a[3];
+            break;
+        }
+    }
+    return [offset * 1e3, dst];
+}
+/**
+ * https://tc39.es/ecma402/#sec-tolocaltime
+ * @param t
+ * @param calendar
+ * @param timeZone
+ */
+function ToLocalTime(t, calendar, timeZone, _a) {
+    var tzData = _a.tzData;
+    utils_1.invariant(_262_1.Type(t) === 'Number', 'invalid time');
+    utils_1.invariant(calendar === 'gregory', 'We only support Gregory calendar right now');
+    var _b = getApplicableZoneData(t, timeZone, tzData), timeZoneOffset = _b[0], inDST = _b[1];
+    var tz = t + timeZoneOffset;
+    var year = _262_1.YearFromTime(tz);
+    return {
+        weekday: _262_1.WeekDay(tz),
+        era: year < 0 ? 'BC' : 'AD',
+        year: year,
+        relatedYear: undefined,
+        yearName: undefined,
+        month: _262_1.MonthFromTime(tz),
+        day: _262_1.DateFromTime(tz),
+        hour: _262_1.HourFromTime(tz),
+        minute: _262_1.MinFromTime(tz),
+        second: _262_1.SecFromTime(tz),
+        inDST: inDST,
+        // IMPORTANT: Not in spec
+        timeZoneOffset: timeZoneOffset,
+    };
+}
+exports.ToLocalTime = ToLocalTime;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/skeleton.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/skeleton.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.splitRangePattern = exports.splitFallbackRangePattern = exports.parseDateTimeSkeleton = exports.processDateTimePattern = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var date_time_1 = __webpack_require__(/*! ../types/date-time */ "./node_modules/@formatjs/ecma402-abstract/types/date-time.js");
+/**
+ * https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
+ * Credit: https://github.com/caridy/intl-datetimeformat-pattern/blob/master/index.js
+ * with some tweaks
+ */
+var DATE_TIME_REGEX = /(?:[Eec]{1,6}|G{1,5}|[Qq]{1,5}|(?:[yYur]+|U{1,5})|[ML]{1,5}|d{1,2}|D{1,3}|F{1}|[abB]{1,5}|[hkHK]{1,2}|w{1,2}|W{1}|m{1,2}|s{1,2}|[zZOvVxX]{1,4})(?=([^']*'[^']*')*[^']*$)/g;
+// trim patterns after transformations
+var expPatternTrimmer = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+function matchSkeletonPattern(match, result) {
+    var len = match.length;
+    switch (match[0]) {
+        // Era
+        case 'G':
+            result.era = len === 4 ? 'long' : len === 5 ? 'narrow' : 'short';
+            return '{era}';
+        // Year
+        case 'y':
+        case 'Y':
+        case 'u':
+        case 'U':
+        case 'r':
+            result.year = len === 2 ? '2-digit' : 'numeric';
+            return '{year}';
+        // Quarter
+        case 'q':
+        case 'Q':
+            throw new RangeError('`w/Q` (quarter) patterns are not supported');
+        // Month
+        case 'M':
+        case 'L':
+            result.month = ['numeric', '2-digit', 'short', 'long', 'narrow'][len - 1];
+            return '{month}';
+        // Week
+        case 'w':
+        case 'W':
+            throw new RangeError('`w/W` (week of year) patterns are not supported');
+        case 'd':
+            result.day = ['numeric', '2-digit'][len - 1];
+            return '{day}';
+        case 'D':
+        case 'F':
+        case 'g':
+            result.day = 'numeric';
+            return '{day}';
+        // Weekday
+        case 'E':
+            result.weekday = len === 4 ? 'long' : len === 5 ? 'narrow' : 'short';
+            return '{weekday}';
+        case 'e':
+            result.weekday = [
+                undefined,
+                undefined,
+                'short',
+                'long',
+                'narrow',
+                'short',
+            ][len - 1];
+            return '{weekday}';
+        case 'c':
+            result.weekday = [
+                undefined,
+                undefined,
+                'short',
+                'long',
+                'narrow',
+                'short',
+            ][len - 1];
+            return '{weekday}';
+        // Period
+        case 'a': // AM, PM
+        case 'b': // am, pm, noon, midnight
+        case 'B': // flexible day periods
+            result.hour12 = true;
+            return '{ampm}';
+        // Hour
+        case 'h':
+            result.hour = ['numeric', '2-digit'][len - 1];
+            result.hour12 = true;
+            return '{hour}';
+        case 'H':
+            result.hour = ['numeric', '2-digit'][len - 1];
+            return '{hour}';
+        case 'K':
+            result.hour = ['numeric', '2-digit'][len - 1];
+            result.hour12 = true;
+            return '{hour}';
+        case 'k':
+            result.hour = ['numeric', '2-digit'][len - 1];
+            return '{hour}';
+        case 'j':
+        case 'J':
+        case 'C':
+            throw new RangeError('`j/J/C` (hour) patterns are not supported, use `h/H/K/k` instead');
+        // Minute
+        case 'm':
+            result.minute = ['numeric', '2-digit'][len - 1];
+            return '{minute}';
+        // Second
+        case 's':
+            result.second = ['numeric', '2-digit'][len - 1];
+            return '{second}';
+        case 'S':
+        case 'A':
+            result.second = 'numeric';
+            return '{second}';
+        // Zone
+        case 'z': // 1..3, 4: specific non-location format
+        case 'Z': // 1..3, 4, 5: The ISO8601 varios formats
+        case 'O': // 1, 4: miliseconds in day short, long
+        case 'v': // 1, 4: generic non-location format
+        case 'V': // 1, 2, 3, 4: time zone ID or city
+        case 'X': // 1, 2, 3, 4: The ISO8601 varios formats
+        case 'x': // 1, 2, 3, 4: The ISO8601 varios formats
+            result.timeZoneName = len < 4 ? 'short' : 'long';
+            return '{timeZoneName}';
+    }
+    return '';
+}
+function skeletonTokenToTable2(c) {
+    switch (c) {
+        // Era
+        case 'G':
+            return 'era';
+        // Year
+        case 'y':
+        case 'Y':
+        case 'u':
+        case 'U':
+        case 'r':
+            return 'year';
+        // Month
+        case 'M':
+        case 'L':
+            return 'month';
+        // Day
+        case 'd':
+        case 'D':
+        case 'F':
+        case 'g':
+            return 'day';
+        // Period
+        case 'a': // AM, PM
+        case 'b': // am, pm, noon, midnight
+        case 'B': // flexible day periods
+            return 'ampm';
+        // Hour
+        case 'h':
+        case 'H':
+        case 'K':
+        case 'k':
+            return 'hour';
+        // Minute
+        case 'm':
+            return 'minute';
+        // Second
+        case 's':
+        case 'S':
+        case 'A':
+            return 'second';
+        default:
+            throw new RangeError('Invalid range pattern token');
+    }
+}
+function processDateTimePattern(pattern, result) {
+    var literals = [];
+    // Use skeleton to populate result, but use mapped pattern to populate pattern
+    var pattern12 = pattern
+        // Double apostrophe
+        .replace(/'{2}/g, '{apostrophe}')
+        // Apostrophe-escaped
+        .replace(/'(.*?)'/g, function (_, literal) {
+        literals.push(literal);
+        return "$$" + (literals.length - 1) + "$$";
+    })
+        .replace(DATE_TIME_REGEX, function (m) { return matchSkeletonPattern(m, result || {}); });
+    //Restore literals
+    if (literals.length) {
+        pattern12 = pattern12
+            .replace(/\$\$(\d+)\$\$/g, function (_, i) {
+            return literals[+i];
+        })
+            .replace(/\{apostrophe\}/g, "'");
+    }
+    // Handle apostrophe-escaped things
+    return [
+        pattern12
+            .replace(/([\s\uFEFF\xA0])\{ampm\}([\s\uFEFF\xA0])/, '$1')
+            .replace('{ampm}', '')
+            .replace(expPatternTrimmer, ''),
+        pattern12,
+    ];
+}
+exports.processDateTimePattern = processDateTimePattern;
+/**
+ * Parse Date time skeleton into Intl.DateTimeFormatOptions
+ * Ref: https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
+ * @public
+ * @param skeleton skeleton string
+ */
+function parseDateTimeSkeleton(skeleton, rawPattern, rangePatterns, intervalFormatFallback) {
+    if (rawPattern === void 0) { rawPattern = skeleton; }
+    var result = {
+        pattern: '',
+        pattern12: '',
+        skeleton: skeleton,
+        rawPattern: rawPattern,
+        rangePatterns: {},
+        rangePatterns12: {},
+    };
+    if (rangePatterns) {
+        for (var k in rangePatterns) {
+            var key = skeletonTokenToTable2(k);
+            var rawPattern_1 = rangePatterns[k];
+            var intervalResult = {
+                patternParts: [],
+            };
+            var _a = processDateTimePattern(rawPattern_1, intervalResult), pattern_1 = _a[0], pattern12_1 = _a[1];
+            result.rangePatterns[key] = tslib_1.__assign(tslib_1.__assign({}, intervalResult), { patternParts: splitRangePattern(pattern_1) });
+            result.rangePatterns12[key] = tslib_1.__assign(tslib_1.__assign({}, intervalResult), { patternParts: splitRangePattern(pattern12_1) });
+        }
+    }
+    else if (intervalFormatFallback) {
+        var patternParts = splitFallbackRangePattern(intervalFormatFallback);
+        result.rangePatterns.default = {
+            patternParts: patternParts,
+        };
+        result.rangePatterns12.default = {
+            patternParts: patternParts,
+        };
+    }
+    // Process skeleton
+    skeleton.replace(DATE_TIME_REGEX, function (m) { return matchSkeletonPattern(m, result); });
+    var _b = processDateTimePattern(rawPattern), pattern = _b[0], pattern12 = _b[1];
+    result.pattern = pattern;
+    result.pattern12 = pattern12;
+    return result;
+}
+exports.parseDateTimeSkeleton = parseDateTimeSkeleton;
+function splitFallbackRangePattern(pattern) {
+    var parts = pattern.split(/(\{[0|1]\})/g).filter(Boolean);
+    return parts.map(function (pattern) {
+        switch (pattern) {
+            case '{0}':
+                return {
+                    source: date_time_1.RangePatternType.startRange,
+                    pattern: pattern,
+                };
+            case '{1}':
+                return {
+                    source: date_time_1.RangePatternType.endRange,
+                    pattern: pattern,
+                };
+            default:
+                return {
+                    source: date_time_1.RangePatternType.shared,
+                    pattern: pattern,
+                };
+        }
+    });
+}
+exports.splitFallbackRangePattern = splitFallbackRangePattern;
+function splitRangePattern(pattern) {
+    var PART_REGEX = /\{(.*?)\}/g;
+    // Map of part and index within the string
+    var parts = {};
+    var match;
+    var splitIndex = 0;
+    while ((match = PART_REGEX.exec(pattern))) {
+        if (!(match[0] in parts)) {
+            parts[match[0]] = match.index;
+        }
+        else {
+            splitIndex = match.index;
+            break;
+        }
+    }
+    if (!splitIndex) {
+        return [
+            {
+                source: date_time_1.RangePatternType.startRange,
+                pattern: pattern,
+            },
+        ];
+    }
+    return [
+        {
+            source: date_time_1.RangePatternType.startRange,
+            pattern: pattern.slice(0, splitIndex),
+        },
+        {
+            source: date_time_1.RangePatternType.endRange,
+            pattern: pattern.slice(splitIndex),
+        },
+    ];
+}
+exports.splitRangePattern = splitRangePattern;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/utils.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/utils.js ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.shortMorePenalty = exports.shortLessPenalty = exports.longMorePenalty = exports.longLessPenalty = exports.differentNumericTypePenalty = exports.additionPenalty = exports.removalPenalty = exports.DATE_TIME_PROPS = void 0;
+exports.DATE_TIME_PROPS = [
+    'weekday',
+    'era',
+    'year',
+    'month',
+    'day',
+    'hour',
+    'minute',
+    'second',
+    'timeZoneName',
+];
+exports.removalPenalty = 120;
+exports.additionPenalty = 20;
+exports.differentNumericTypePenalty = 15;
+exports.longLessPenalty = 8;
+exports.longMorePenalty = 6;
+exports.shortLessPenalty = 6;
+exports.shortMorePenalty = 3;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DefaultNumberOption.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DefaultNumberOption.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DefaultNumberOption = void 0;
+/**
+ * https://tc39.es/ecma402/#sec-defaultnumberoption
+ * @param val
+ * @param min
+ * @param max
+ * @param fallback
+ */
+function DefaultNumberOption(val, min, max, fallback) {
+    if (val !== undefined) {
+        val = Number(val);
+        if (isNaN(val) || val < min || val > max) {
+            throw new RangeError(val + " is outside of range [" + min + ", " + max + "]");
+        }
+        return Math.floor(val);
+    }
+    return fallback;
+}
+exports.DefaultNumberOption = DefaultNumberOption;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/DisplayNames/CanonicalCodeForDisplayNames.js":
+/*!**********************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/DisplayNames/CanonicalCodeForDisplayNames.js ***!
+  \**********************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CanonicalCodeForDisplayNames = void 0;
+var CanonicalizeLocaleList_1 = __webpack_require__(/*! ../CanonicalizeLocaleList */ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeLocaleList.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var IsWellFormedCurrencyCode_1 = __webpack_require__(/*! ../IsWellFormedCurrencyCode */ "./node_modules/@formatjs/ecma402-abstract/IsWellFormedCurrencyCode.js");
+var UNICODE_REGION_SUBTAG_REGEX = /^([a-z]{2}|[0-9]{3})$/i;
+var ALPHA_4 = /^[a-z]{4}$/i;
+function isUnicodeRegionSubtag(region) {
+    return UNICODE_REGION_SUBTAG_REGEX.test(region);
+}
+function isUnicodeScriptSubtag(script) {
+    return ALPHA_4.test(script);
+}
+function CanonicalCodeForDisplayNames(type, code) {
+    if (type === 'language') {
+        return CanonicalizeLocaleList_1.CanonicalizeLocaleList([code])[0];
+    }
+    if (type === 'region') {
+        if (!isUnicodeRegionSubtag(code)) {
+            throw RangeError('invalid region');
+        }
+        return code.toUpperCase();
+    }
+    if (type === 'script') {
+        if (!isUnicodeScriptSubtag(code)) {
+            throw RangeError('invalid script');
+        }
+        return "" + code[0].toUpperCase() + code.slice(1).toLowerCase();
+    }
+    utils_1.invariant(type === 'currency', 'invalid type');
+    if (!IsWellFormedCurrencyCode_1.IsWellFormedCurrencyCode(code)) {
+        throw RangeError('invalid currency');
+    }
+    return code.toUpperCase();
+}
+exports.CanonicalCodeForDisplayNames = CanonicalCodeForDisplayNames;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/GetNumberOption.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/GetNumberOption.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+/**
+ * https://tc39.es/ecma402/#sec-getnumberoption
+ * @param options
+ * @param property
+ * @param min
+ * @param max
+ * @param fallback
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GetNumberOption = void 0;
+var DefaultNumberOption_1 = __webpack_require__(/*! ./DefaultNumberOption */ "./node_modules/@formatjs/ecma402-abstract/DefaultNumberOption.js");
+function GetNumberOption(options, property, minimum, maximum, fallback) {
+    var val = options[property];
+    return DefaultNumberOption_1.DefaultNumberOption(val, minimum, maximum, fallback);
+}
+exports.GetNumberOption = GetNumberOption;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/GetOption.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/GetOption.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GetOption = void 0;
+var _262_1 = __webpack_require__(/*! ./262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+/**
+ * https://tc39.es/ecma402/#sec-getoption
+ * @param opts
+ * @param prop
+ * @param type
+ * @param values
+ * @param fallback
+ */
+function GetOption(opts, prop, type, values, fallback) {
+    if (typeof opts !== 'object') {
+        throw new TypeError('Options must be an object');
+    }
+    var value = opts[prop];
+    if (value !== undefined) {
+        if (type !== 'boolean' && type !== 'string') {
+            throw new TypeError('invalid type');
+        }
+        if (type === 'boolean') {
+            value = Boolean(value);
+        }
+        if (type === 'string') {
+            value = _262_1.ToString(value);
+        }
+        if (values !== undefined && !values.filter(function (val) { return val == value; }).length) {
+            throw new RangeError(value + " is not within " + values.join(', '));
+        }
+        return value;
+    }
+    return fallback;
+}
+exports.GetOption = GetOption;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/GetOptionsObject.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/GetOptionsObject.js ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GetOptionsObject = void 0;
+/**
+ * https://tc39.es/ecma402/#sec-getoptionsobject
+ * @param options
+ * @returns
+ */
+function GetOptionsObject(options) {
+    if (typeof options === 'undefined') {
+        return Object.create(null);
+    }
+    if (typeof options === 'object') {
+        return options;
+    }
+    throw new TypeError('Options must be an object');
+}
+exports.GetOptionsObject = GetOptionsObject;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/IsSanctionedSimpleUnitIdentifier.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/IsSanctionedSimpleUnitIdentifier.js ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IsSanctionedSimpleUnitIdentifier = exports.SIMPLE_UNITS = exports.removeUnitNamespace = exports.SANCTIONED_UNITS = void 0;
+/**
+ * https://tc39.es/ecma402/#table-sanctioned-simple-unit-identifiers
+ */
+exports.SANCTIONED_UNITS = [
+    'angle-degree',
+    'area-acre',
+    'area-hectare',
+    'concentr-percent',
+    'digital-bit',
+    'digital-byte',
+    'digital-gigabit',
+    'digital-gigabyte',
+    'digital-kilobit',
+    'digital-kilobyte',
+    'digital-megabit',
+    'digital-megabyte',
+    'digital-petabyte',
+    'digital-terabit',
+    'digital-terabyte',
+    'duration-day',
+    'duration-hour',
+    'duration-millisecond',
+    'duration-minute',
+    'duration-month',
+    'duration-second',
+    'duration-week',
+    'duration-year',
+    'length-centimeter',
+    'length-foot',
+    'length-inch',
+    'length-kilometer',
+    'length-meter',
+    'length-mile-scandinavian',
+    'length-mile',
+    'length-millimeter',
+    'length-yard',
+    'mass-gram',
+    'mass-kilogram',
+    'mass-ounce',
+    'mass-pound',
+    'mass-stone',
+    'temperature-celsius',
+    'temperature-fahrenheit',
+    'volume-fluid-ounce',
+    'volume-gallon',
+    'volume-liter',
+    'volume-milliliter',
+];
+// In CLDR, the unit name always follows the form `namespace-unit` pattern.
+// For example: `digital-bit` instead of `bit`. This function removes the namespace prefix.
+function removeUnitNamespace(unit) {
+    return unit.slice(unit.indexOf('-') + 1);
+}
+exports.removeUnitNamespace = removeUnitNamespace;
+/**
+ * https://tc39.es/ecma402/#table-sanctioned-simple-unit-identifiers
+ */
+exports.SIMPLE_UNITS = exports.SANCTIONED_UNITS.map(removeUnitNamespace);
+/**
+ * https://tc39.es/ecma402/#sec-issanctionedsimpleunitidentifier
+ */
+function IsSanctionedSimpleUnitIdentifier(unitIdentifier) {
+    return exports.SIMPLE_UNITS.indexOf(unitIdentifier) > -1;
+}
+exports.IsSanctionedSimpleUnitIdentifier = IsSanctionedSimpleUnitIdentifier;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/IsValidTimeZoneName.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/IsValidTimeZoneName.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IsValidTimeZoneName = void 0;
+/**
+ * https://tc39.es/ecma402/#sec-isvalidtimezonename
+ * @param tz
+ * @param implDetails implementation details
+ */
+function IsValidTimeZoneName(tz, _a) {
+    var tzData = _a.tzData, uppercaseLinks = _a.uppercaseLinks;
+    var uppercasedTz = tz.toUpperCase();
+    var zoneNames = new Set();
+    Object.keys(tzData)
+        .map(function (z) { return z.toUpperCase(); })
+        .forEach(function (z) { return zoneNames.add(z); });
+    return zoneNames.has(uppercasedTz) || uppercasedTz in uppercaseLinks;
+}
+exports.IsValidTimeZoneName = IsValidTimeZoneName;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/IsWellFormedCurrencyCode.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/IsWellFormedCurrencyCode.js ***!
+  \*****************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IsWellFormedCurrencyCode = void 0;
+/**
+ * This follows https://tc39.es/ecma402/#sec-case-sensitivity-and-case-mapping
+ * @param str string to convert
+ */
+function toUpperCase(str) {
+    return str.replace(/([a-z])/g, function (_, c) { return c.toUpperCase(); });
+}
+var NOT_A_Z_REGEX = /[^A-Z]/;
+/**
+ * https://tc39.es/ecma402/#sec-iswellformedcurrencycode
+ */
+function IsWellFormedCurrencyCode(currency) {
+    currency = toUpperCase(currency);
+    if (currency.length !== 3) {
+        return false;
+    }
+    if (NOT_A_Z_REGEX.test(currency)) {
+        return false;
+    }
+    return true;
+}
+exports.IsWellFormedCurrencyCode = IsWellFormedCurrencyCode;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/IsWellFormedUnitIdentifier.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/IsWellFormedUnitIdentifier.js ***!
+  \*******************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IsWellFormedUnitIdentifier = void 0;
+var IsSanctionedSimpleUnitIdentifier_1 = __webpack_require__(/*! ./IsSanctionedSimpleUnitIdentifier */ "./node_modules/@formatjs/ecma402-abstract/IsSanctionedSimpleUnitIdentifier.js");
+/**
+ * This follows https://tc39.es/ecma402/#sec-case-sensitivity-and-case-mapping
+ * @param str string to convert
+ */
+function toLowerCase(str) {
+    return str.replace(/([A-Z])/g, function (_, c) { return c.toLowerCase(); });
+}
+/**
+ * https://tc39.es/ecma402/#sec-iswellformedunitidentifier
+ * @param unit
+ */
+function IsWellFormedUnitIdentifier(unit) {
+    unit = toLowerCase(unit);
+    if (IsSanctionedSimpleUnitIdentifier_1.IsSanctionedSimpleUnitIdentifier(unit)) {
+        return true;
+    }
+    var units = unit.split('-per-');
+    if (units.length !== 2) {
+        return false;
+    }
+    var numerator = units[0], denominator = units[1];
+    if (!IsSanctionedSimpleUnitIdentifier_1.IsSanctionedSimpleUnitIdentifier(numerator) ||
+        !IsSanctionedSimpleUnitIdentifier_1.IsSanctionedSimpleUnitIdentifier(denominator)) {
+        return false;
+    }
+    return true;
+}
+exports.IsWellFormedUnitIdentifier = IsWellFormedUnitIdentifier;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/LookupMatcher.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/LookupMatcher.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LookupMatcher = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var BestAvailableLocale_1 = __webpack_require__(/*! ./BestAvailableLocale */ "./node_modules/@formatjs/ecma402-abstract/BestAvailableLocale.js");
+/**
+ * https://tc39.es/ecma402/#sec-lookupmatcher
+ * @param availableLocales
+ * @param requestedLocales
+ * @param getDefaultLocale
+ */
+function LookupMatcher(availableLocales, requestedLocales, getDefaultLocale) {
+    var result = { locale: '' };
+    for (var _i = 0, requestedLocales_1 = requestedLocales; _i < requestedLocales_1.length; _i++) {
+        var locale = requestedLocales_1[_i];
+        var noExtensionLocale = locale.replace(utils_1.UNICODE_EXTENSION_SEQUENCE_REGEX, '');
+        var availableLocale = BestAvailableLocale_1.BestAvailableLocale(availableLocales, noExtensionLocale);
+        if (availableLocale) {
+            result.locale = availableLocale;
+            if (locale !== noExtensionLocale) {
+                result.extension = locale.slice(noExtensionLocale.length + 1, locale.length);
+            }
+            return result;
+        }
+    }
+    result.locale = getDefaultLocale();
+    return result;
+}
+exports.LookupMatcher = LookupMatcher;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/LookupSupportedLocales.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/LookupSupportedLocales.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LookupSupportedLocales = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var BestAvailableLocale_1 = __webpack_require__(/*! ./BestAvailableLocale */ "./node_modules/@formatjs/ecma402-abstract/BestAvailableLocale.js");
+/**
+ * https://tc39.es/ecma402/#sec-lookupsupportedlocales
+ * @param availableLocales
+ * @param requestedLocales
+ */
+function LookupSupportedLocales(availableLocales, requestedLocales) {
+    var subset = [];
+    for (var _i = 0, requestedLocales_1 = requestedLocales; _i < requestedLocales_1.length; _i++) {
+        var locale = requestedLocales_1[_i];
+        var noExtensionLocale = locale.replace(utils_1.UNICODE_EXTENSION_SEQUENCE_REGEX, '');
+        var availableLocale = BestAvailableLocale_1.BestAvailableLocale(availableLocales, noExtensionLocale);
+        if (availableLocale) {
+            subset.push(availableLocale);
+        }
+    }
+    return subset;
+}
+exports.LookupSupportedLocales = LookupSupportedLocales;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ComputeExponent.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/ComputeExponent.js ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ComputeExponent = void 0;
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var ComputeExponentForMagnitude_1 = __webpack_require__(/*! ./ComputeExponentForMagnitude */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ComputeExponentForMagnitude.js");
+var FormatNumericToString_1 = __webpack_require__(/*! ./FormatNumericToString */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/FormatNumericToString.js");
+/**
+ * The abstract operation ComputeExponent computes an exponent (power of ten) by which to scale x
+ * according to the number formatting settings. It handles cases such as 999 rounding up to 1000,
+ * requiring a different exponent.
+ *
+ * NOT IN SPEC: it returns [exponent, magnitude].
+ */
+function ComputeExponent(numberFormat, x, _a) {
+    var getInternalSlots = _a.getInternalSlots;
+    if (x === 0) {
+        return [0, 0];
+    }
+    if (x < 0) {
+        x = -x;
+    }
+    var magnitude = utils_1.getMagnitude(x);
+    var exponent = ComputeExponentForMagnitude_1.ComputeExponentForMagnitude(numberFormat, magnitude, {
+        getInternalSlots: getInternalSlots,
+    });
+    // Preserve more precision by doing multiplication when exponent is negative.
+    x = exponent < 0 ? x * Math.pow(10, -exponent) : x / Math.pow(10, exponent);
+    var formatNumberResult = FormatNumericToString_1.FormatNumericToString(getInternalSlots(numberFormat), x);
+    if (formatNumberResult.roundedNumber === 0) {
+        return [exponent, magnitude];
+    }
+    var newMagnitude = utils_1.getMagnitude(formatNumberResult.roundedNumber);
+    if (newMagnitude === magnitude - exponent) {
+        return [exponent, magnitude];
+    }
+    return [
+        ComputeExponentForMagnitude_1.ComputeExponentForMagnitude(numberFormat, magnitude + 1, {
+            getInternalSlots: getInternalSlots,
+        }),
+        magnitude + 1,
+    ];
+}
+exports.ComputeExponent = ComputeExponent;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ComputeExponentForMagnitude.js":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/ComputeExponentForMagnitude.js ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ComputeExponentForMagnitude = void 0;
+/**
+ * The abstract operation ComputeExponentForMagnitude computes an exponent by which to scale a
+ * number of the given magnitude (power of ten of the most significant digit) according to the
+ * locale and the desired notation (scientific, engineering, or compact).
+ */
+function ComputeExponentForMagnitude(numberFormat, magnitude, _a) {
+    var getInternalSlots = _a.getInternalSlots;
+    var internalSlots = getInternalSlots(numberFormat);
+    var notation = internalSlots.notation, dataLocaleData = internalSlots.dataLocaleData, numberingSystem = internalSlots.numberingSystem;
+    switch (notation) {
+        case 'standard':
+            return 0;
+        case 'scientific':
+            return magnitude;
+        case 'engineering':
+            return Math.floor(magnitude / 3) * 3;
+        default: {
+            // Let exponent be an implementation- and locale-dependent (ILD) integer by which to scale a
+            // number of the given magnitude in compact notation for the current locale.
+            var compactDisplay = internalSlots.compactDisplay, style = internalSlots.style, currencyDisplay = internalSlots.currencyDisplay;
+            var thresholdMap = void 0;
+            if (style === 'currency' && currencyDisplay !== 'name') {
+                var currency = dataLocaleData.numbers.currency[numberingSystem] ||
+                    dataLocaleData.numbers.currency[dataLocaleData.numbers.nu[0]];
+                thresholdMap = currency.short;
+            }
+            else {
+                var decimal = dataLocaleData.numbers.decimal[numberingSystem] ||
+                    dataLocaleData.numbers.decimal[dataLocaleData.numbers.nu[0]];
+                thresholdMap = compactDisplay === 'long' ? decimal.long : decimal.short;
+            }
+            if (!thresholdMap) {
+                return 0;
+            }
+            var num = String(Math.pow(10, magnitude));
+            var thresholds = Object.keys(thresholdMap); // TODO: this can be pre-processed
+            if (num < thresholds[0]) {
+                return 0;
+            }
+            if (num > thresholds[thresholds.length - 1]) {
+                return thresholds[thresholds.length - 1].length - 1;
+            }
+            var i = thresholds.indexOf(num);
+            if (i === -1) {
+                return 0;
+            }
+            // See https://unicode.org/reports/tr35/tr35-numbers.html#Compact_Number_Formats
+            // Special handling if the pattern is precisely `0`.
+            var magnitudeKey = thresholds[i];
+            // TODO: do we need to handle plural here?
+            var compactPattern = thresholdMap[magnitudeKey].other;
+            if (compactPattern === '0') {
+                return 0;
+            }
+            // Example: in zh-TW, `10000000` maps to `0000萬`. So we need to return 8 - 4 = 4 here.
+            return (magnitudeKey.length -
+                thresholdMap[magnitudeKey].other.match(/0+/)[0].length);
+        }
+    }
+}
+exports.ComputeExponentForMagnitude = ComputeExponentForMagnitude;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/CurrencyDigits.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/CurrencyDigits.js ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CurrencyDigits = void 0;
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+/**
+ * https://tc39.es/ecma402/#sec-currencydigits
+ */
+function CurrencyDigits(c, _a) {
+    var currencyDigitsData = _a.currencyDigitsData;
+    return _262_1.HasOwnProperty(currencyDigitsData, c)
+        ? currencyDigitsData[c]
+        : 2;
+}
+exports.CurrencyDigits = CurrencyDigits;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/FormatNumericToParts.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/FormatNumericToParts.js ***!
+  \**************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormatNumericToParts = void 0;
+var PartitionNumberPattern_1 = __webpack_require__(/*! ./PartitionNumberPattern */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/PartitionNumberPattern.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+function FormatNumericToParts(nf, x, implDetails) {
+    var parts = PartitionNumberPattern_1.PartitionNumberPattern(nf, x, implDetails);
+    var result = _262_1.ArrayCreate(0);
+    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        result.push({
+            type: part.type,
+            value: part.value,
+        });
+    }
+    return result;
+}
+exports.FormatNumericToParts = FormatNumericToParts;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/FormatNumericToString.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/FormatNumericToString.js ***!
+  \***************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormatNumericToString = void 0;
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+var ToRawPrecision_1 = __webpack_require__(/*! ./ToRawPrecision */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ToRawPrecision.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var ToRawFixed_1 = __webpack_require__(/*! ./ToRawFixed */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ToRawFixed.js");
+/**
+ * https://tc39.es/ecma402/#sec-formatnumberstring
+ */
+function FormatNumericToString(intlObject, x) {
+    var isNegative = x < 0 || _262_1.SameValue(x, -0);
+    if (isNegative) {
+        x = -x;
+    }
+    var result;
+    var rourndingType = intlObject.roundingType;
+    switch (rourndingType) {
+        case 'significantDigits':
+            result = ToRawPrecision_1.ToRawPrecision(x, intlObject.minimumSignificantDigits, intlObject.maximumSignificantDigits);
+            break;
+        case 'fractionDigits':
+            result = ToRawFixed_1.ToRawFixed(x, intlObject.minimumFractionDigits, intlObject.maximumFractionDigits);
+            break;
+        default:
+            result = ToRawPrecision_1.ToRawPrecision(x, 1, 2);
+            if (result.integerDigitsCount > 1) {
+                result = ToRawFixed_1.ToRawFixed(x, 0, 0);
+            }
+            break;
+    }
+    x = result.roundedNumber;
+    var string = result.formattedString;
+    var int = result.integerDigitsCount;
+    var minInteger = intlObject.minimumIntegerDigits;
+    if (int < minInteger) {
+        var forwardZeros = utils_1.repeat('0', minInteger - int);
+        string = forwardZeros + string;
+    }
+    if (isNegative) {
+        x = -x;
+    }
+    return { roundedNumber: x, formattedString: string };
+}
+exports.FormatNumericToString = FormatNumericToString;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/InitializeNumberFormat.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/InitializeNumberFormat.js ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InitializeNumberFormat = void 0;
+var CanonicalizeLocaleList_1 = __webpack_require__(/*! ../CanonicalizeLocaleList */ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeLocaleList.js");
+var GetOption_1 = __webpack_require__(/*! ../GetOption */ "./node_modules/@formatjs/ecma402-abstract/GetOption.js");
+var ResolveLocale_1 = __webpack_require__(/*! ../ResolveLocale */ "./node_modules/@formatjs/ecma402-abstract/ResolveLocale.js");
+var SetNumberFormatUnitOptions_1 = __webpack_require__(/*! ./SetNumberFormatUnitOptions */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/SetNumberFormatUnitOptions.js");
+var CurrencyDigits_1 = __webpack_require__(/*! ./CurrencyDigits */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/CurrencyDigits.js");
+var SetNumberFormatDigitOptions_1 = __webpack_require__(/*! ./SetNumberFormatDigitOptions */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/SetNumberFormatDigitOptions.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var CoerceOptionsToObject_1 = __webpack_require__(/*! ../CoerceOptionsToObject */ "./node_modules/@formatjs/ecma402-abstract/CoerceOptionsToObject.js");
+/**
+ * https://tc39.es/ecma402/#sec-initializenumberformat
+ */
+function InitializeNumberFormat(nf, locales, opts, _a) {
+    var getInternalSlots = _a.getInternalSlots, localeData = _a.localeData, availableLocales = _a.availableLocales, numberingSystemNames = _a.numberingSystemNames, getDefaultLocale = _a.getDefaultLocale, currencyDigitsData = _a.currencyDigitsData;
+    // @ts-ignore
+    var requestedLocales = CanonicalizeLocaleList_1.CanonicalizeLocaleList(locales);
+    var options = CoerceOptionsToObject_1.CoerceOptionsToObject(opts);
+    var opt = Object.create(null);
+    var matcher = GetOption_1.GetOption(options, 'localeMatcher', 'string', ['lookup', 'best fit'], 'best fit');
+    opt.localeMatcher = matcher;
+    var numberingSystem = GetOption_1.GetOption(options, 'numberingSystem', 'string', undefined, undefined);
+    if (numberingSystem !== undefined &&
+        numberingSystemNames.indexOf(numberingSystem) < 0) {
+        // 8.a. If numberingSystem does not match the Unicode Locale Identifier type nonterminal,
+        // throw a RangeError exception.
+        throw RangeError("Invalid numberingSystems: " + numberingSystem);
+    }
+    opt.nu = numberingSystem;
+    var r = ResolveLocale_1.ResolveLocale(availableLocales, requestedLocales, opt, 
+    // [[RelevantExtensionKeys]] slot, which is a constant
+    ['nu'], localeData, getDefaultLocale);
+    var dataLocaleData = localeData[r.dataLocale];
+    utils_1.invariant(!!dataLocaleData, "Missing locale data for " + r.dataLocale);
+    var internalSlots = getInternalSlots(nf);
+    internalSlots.locale = r.locale;
+    internalSlots.dataLocale = r.dataLocale;
+    internalSlots.numberingSystem = r.nu;
+    internalSlots.dataLocaleData = dataLocaleData;
+    SetNumberFormatUnitOptions_1.SetNumberFormatUnitOptions(nf, options, { getInternalSlots: getInternalSlots });
+    var style = internalSlots.style;
+    var mnfdDefault;
+    var mxfdDefault;
+    if (style === 'currency') {
+        var currency = internalSlots.currency;
+        var cDigits = CurrencyDigits_1.CurrencyDigits(currency, { currencyDigitsData: currencyDigitsData });
+        mnfdDefault = cDigits;
+        mxfdDefault = cDigits;
+    }
+    else {
+        mnfdDefault = 0;
+        mxfdDefault = style === 'percent' ? 0 : 3;
+    }
+    var notation = GetOption_1.GetOption(options, 'notation', 'string', ['standard', 'scientific', 'engineering', 'compact'], 'standard');
+    internalSlots.notation = notation;
+    SetNumberFormatDigitOptions_1.SetNumberFormatDigitOptions(internalSlots, options, mnfdDefault, mxfdDefault, notation);
+    var compactDisplay = GetOption_1.GetOption(options, 'compactDisplay', 'string', ['short', 'long'], 'short');
+    if (notation === 'compact') {
+        internalSlots.compactDisplay = compactDisplay;
+    }
+    var useGrouping = GetOption_1.GetOption(options, 'useGrouping', 'boolean', undefined, true);
+    internalSlots.useGrouping = useGrouping;
+    var signDisplay = GetOption_1.GetOption(options, 'signDisplay', 'string', ['auto', 'never', 'always', 'exceptZero'], 'auto');
+    internalSlots.signDisplay = signDisplay;
+    return nf;
+}
+exports.InitializeNumberFormat = InitializeNumberFormat;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/PartitionNumberPattern.js":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/PartitionNumberPattern.js ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PartitionNumberPattern = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var FormatNumericToString_1 = __webpack_require__(/*! ./FormatNumericToString */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/FormatNumericToString.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+var ComputeExponent_1 = __webpack_require__(/*! ./ComputeExponent */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ComputeExponent.js");
+var format_to_parts_1 = tslib_1.__importDefault(__webpack_require__(/*! ./format_to_parts */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/format_to_parts.js"));
+/**
+ * https://tc39.es/ecma402/#sec-formatnumberstring
+ */
+function PartitionNumberPattern(numberFormat, x, _a) {
+    var _b;
+    var getInternalSlots = _a.getInternalSlots;
+    var internalSlots = getInternalSlots(numberFormat);
+    var pl = internalSlots.pl, dataLocaleData = internalSlots.dataLocaleData, numberingSystem = internalSlots.numberingSystem;
+    var symbols = dataLocaleData.numbers.symbols[numberingSystem] ||
+        dataLocaleData.numbers.symbols[dataLocaleData.numbers.nu[0]];
+    var magnitude = 0;
+    var exponent = 0;
+    var n;
+    if (isNaN(x)) {
+        n = symbols.nan;
+    }
+    else if (!isFinite(x)) {
+        n = symbols.infinity;
+    }
+    else {
+        if (internalSlots.style === 'percent') {
+            x *= 100;
+        }
+        ;
+        _b = ComputeExponent_1.ComputeExponent(numberFormat, x, {
+            getInternalSlots: getInternalSlots,
+        }), exponent = _b[0], magnitude = _b[1];
+        // Preserve more precision by doing multiplication when exponent is negative.
+        x = exponent < 0 ? x * Math.pow(10, -exponent) : x / Math.pow(10, exponent);
+        var formatNumberResult = FormatNumericToString_1.FormatNumericToString(internalSlots, x);
+        n = formatNumberResult.formattedString;
+        x = formatNumberResult.roundedNumber;
+    }
+    // Based on https://tc39.es/ecma402/#sec-getnumberformatpattern
+    // We need to do this before `x` is rounded.
+    var sign;
+    var signDisplay = internalSlots.signDisplay;
+    switch (signDisplay) {
+        case 'never':
+            sign = 0;
+            break;
+        case 'auto':
+            if (_262_1.SameValue(x, 0) || x > 0 || isNaN(x)) {
+                sign = 0;
+            }
+            else {
+                sign = -1;
+            }
+            break;
+        case 'always':
+            if (_262_1.SameValue(x, 0) || x > 0 || isNaN(x)) {
+                sign = 1;
+            }
+            else {
+                sign = -1;
+            }
+            break;
+        default:
+            // x === 0 -> x is 0 or x is -0
+            if (x === 0 || isNaN(x)) {
+                sign = 0;
+            }
+            else if (x > 0) {
+                sign = 1;
+            }
+            else {
+                sign = -1;
+            }
+    }
+    return format_to_parts_1.default({ roundedNumber: x, formattedString: n, exponent: exponent, magnitude: magnitude, sign: sign }, internalSlots.dataLocaleData, pl, internalSlots);
+}
+exports.PartitionNumberPattern = PartitionNumberPattern;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/SetNumberFormatDigitOptions.js":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/SetNumberFormatDigitOptions.js ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SetNumberFormatDigitOptions = void 0;
+var GetNumberOption_1 = __webpack_require__(/*! ../GetNumberOption */ "./node_modules/@formatjs/ecma402-abstract/GetNumberOption.js");
+var DefaultNumberOption_1 = __webpack_require__(/*! ../DefaultNumberOption */ "./node_modules/@formatjs/ecma402-abstract/DefaultNumberOption.js");
+/**
+ * https://tc39.es/ecma402/#sec-setnfdigitoptions
+ */
+function SetNumberFormatDigitOptions(internalSlots, opts, mnfdDefault, mxfdDefault, notation) {
+    var mnid = GetNumberOption_1.GetNumberOption(opts, 'minimumIntegerDigits', 1, 21, 1);
+    var mnfd = opts.minimumFractionDigits;
+    var mxfd = opts.maximumFractionDigits;
+    var mnsd = opts.minimumSignificantDigits;
+    var mxsd = opts.maximumSignificantDigits;
+    internalSlots.minimumIntegerDigits = mnid;
+    if (mnsd !== undefined || mxsd !== undefined) {
+        internalSlots.roundingType = 'significantDigits';
+        mnsd = DefaultNumberOption_1.DefaultNumberOption(mnsd, 1, 21, 1);
+        mxsd = DefaultNumberOption_1.DefaultNumberOption(mxsd, mnsd, 21, 21);
+        internalSlots.minimumSignificantDigits = mnsd;
+        internalSlots.maximumSignificantDigits = mxsd;
+    }
+    else if (mnfd !== undefined || mxfd !== undefined) {
+        internalSlots.roundingType = 'fractionDigits';
+        mnfd = DefaultNumberOption_1.DefaultNumberOption(mnfd, 0, 20, mnfdDefault);
+        var mxfdActualDefault = Math.max(mnfd, mxfdDefault);
+        mxfd = DefaultNumberOption_1.DefaultNumberOption(mxfd, mnfd, 20, mxfdActualDefault);
+        internalSlots.minimumFractionDigits = mnfd;
+        internalSlots.maximumFractionDigits = mxfd;
+    }
+    else if (notation === 'compact') {
+        internalSlots.roundingType = 'compactRounding';
+    }
+    else {
+        internalSlots.roundingType = 'fractionDigits';
+        internalSlots.minimumFractionDigits = mnfdDefault;
+        internalSlots.maximumFractionDigits = mxfdDefault;
+    }
+}
+exports.SetNumberFormatDigitOptions = SetNumberFormatDigitOptions;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/SetNumberFormatUnitOptions.js":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/SetNumberFormatUnitOptions.js ***!
+  \********************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SetNumberFormatUnitOptions = void 0;
+var GetOption_1 = __webpack_require__(/*! ../GetOption */ "./node_modules/@formatjs/ecma402-abstract/GetOption.js");
+var IsWellFormedCurrencyCode_1 = __webpack_require__(/*! ../IsWellFormedCurrencyCode */ "./node_modules/@formatjs/ecma402-abstract/IsWellFormedCurrencyCode.js");
+var IsWellFormedUnitIdentifier_1 = __webpack_require__(/*! ../IsWellFormedUnitIdentifier */ "./node_modules/@formatjs/ecma402-abstract/IsWellFormedUnitIdentifier.js");
+/**
+ * https://tc39.es/ecma402/#sec-setnumberformatunitoptions
+ */
+function SetNumberFormatUnitOptions(nf, options, _a) {
+    if (options === void 0) { options = Object.create(null); }
+    var getInternalSlots = _a.getInternalSlots;
+    var internalSlots = getInternalSlots(nf);
+    var style = GetOption_1.GetOption(options, 'style', 'string', ['decimal', 'percent', 'currency', 'unit'], 'decimal');
+    internalSlots.style = style;
+    var currency = GetOption_1.GetOption(options, 'currency', 'string', undefined, undefined);
+    if (currency !== undefined && !IsWellFormedCurrencyCode_1.IsWellFormedCurrencyCode(currency)) {
+        throw RangeError('Malformed currency code');
+    }
+    if (style === 'currency' && currency === undefined) {
+        throw TypeError('currency cannot be undefined');
+    }
+    var currencyDisplay = GetOption_1.GetOption(options, 'currencyDisplay', 'string', ['code', 'symbol', 'narrowSymbol', 'name'], 'symbol');
+    var currencySign = GetOption_1.GetOption(options, 'currencySign', 'string', ['standard', 'accounting'], 'standard');
+    var unit = GetOption_1.GetOption(options, 'unit', 'string', undefined, undefined);
+    if (unit !== undefined && !IsWellFormedUnitIdentifier_1.IsWellFormedUnitIdentifier(unit)) {
+        throw RangeError('Invalid unit argument for Intl.NumberFormat()');
+    }
+    if (style === 'unit' && unit === undefined) {
+        throw TypeError('unit cannot be undefined');
+    }
+    var unitDisplay = GetOption_1.GetOption(options, 'unitDisplay', 'string', ['short', 'narrow', 'long'], 'short');
+    if (style === 'currency') {
+        internalSlots.currency = currency.toUpperCase();
+        internalSlots.currencyDisplay = currencyDisplay;
+        internalSlots.currencySign = currencySign;
+    }
+    if (style === 'unit') {
+        internalSlots.unit = unit;
+        internalSlots.unitDisplay = unitDisplay;
+    }
+}
+exports.SetNumberFormatUnitOptions = SetNumberFormatUnitOptions;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ToRawFixed.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/ToRawFixed.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ToRawFixed = void 0;
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+/**
+ * TODO: dedup with intl-pluralrules and support BigInt
+ * https://tc39.es/ecma402/#sec-torawfixed
+ * @param x a finite non-negative Number or BigInt
+ * @param minFraction and integer between 0 and 20
+ * @param maxFraction and integer between 0 and 20
+ */
+function ToRawFixed(x, minFraction, maxFraction) {
+    var f = maxFraction;
+    var n = Math.round(x * Math.pow(10, f));
+    var xFinal = n / Math.pow(10, f);
+    // n is a positive integer, but it is possible to be greater than 1e21.
+    // In such case we will go the slow path.
+    // See also: https://tc39.es/ecma262/#sec-numeric-types-number-tostring
+    var m;
+    if (n < 1e21) {
+        m = n.toString();
+    }
+    else {
+        m = n.toString();
+        var _a = m.split('e'), mantissa = _a[0], exponent = _a[1];
+        m = mantissa.replace('.', '');
+        m = m + utils_1.repeat('0', Math.max(+exponent - m.length + 1, 0));
+    }
+    var int;
+    if (f !== 0) {
+        var k = m.length;
+        if (k <= f) {
+            var z = utils_1.repeat('0', f + 1 - k);
+            m = z + m;
+            k = f + 1;
+        }
+        var a = m.slice(0, k - f);
+        var b = m.slice(k - f);
+        m = a + "." + b;
+        int = a.length;
+    }
+    else {
+        int = m.length;
+    }
+    var cut = maxFraction - minFraction;
+    while (cut > 0 && m[m.length - 1] === '0') {
+        m = m.slice(0, -1);
+        cut--;
+    }
+    if (m[m.length - 1] === '.') {
+        m = m.slice(0, -1);
+    }
+    return { formattedString: m, roundedNumber: xFinal, integerDigitsCount: int };
+}
+exports.ToRawFixed = ToRawFixed;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ToRawPrecision.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/ToRawPrecision.js ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ToRawPrecision = void 0;
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+function ToRawPrecision(x, minPrecision, maxPrecision) {
+    var p = maxPrecision;
+    var m;
+    var e;
+    var xFinal;
+    if (x === 0) {
+        m = utils_1.repeat('0', p);
+        e = 0;
+        xFinal = 0;
+    }
+    else {
+        var xToString = x.toString();
+        // If xToString is formatted as scientific notation, the number is either very small or very
+        // large. If the precision of the formatted string is lower that requested max precision, we
+        // should still infer them from the formatted string, otherwise the formatted result might have
+        // precision loss (e.g. 1e41 will not have 0 in every trailing digits).
+        var xToStringExponentIndex = xToString.indexOf('e');
+        var _a = xToString.split('e'), xToStringMantissa = _a[0], xToStringExponent = _a[1];
+        var xToStringMantissaWithoutDecimalPoint = xToStringMantissa.replace('.', '');
+        if (xToStringExponentIndex >= 0 &&
+            xToStringMantissaWithoutDecimalPoint.length <= p) {
+            e = +xToStringExponent;
+            m =
+                xToStringMantissaWithoutDecimalPoint +
+                    utils_1.repeat('0', p - xToStringMantissaWithoutDecimalPoint.length);
+            xFinal = x;
+        }
+        else {
+            e = utils_1.getMagnitude(x);
+            var decimalPlaceOffset = e - p + 1;
+            // n is the integer containing the required precision digits. To derive the formatted string,
+            // we will adjust its decimal place in the logic below.
+            var n = Math.round(adjustDecimalPlace(x, decimalPlaceOffset));
+            // The rounding caused the change of magnitude, so we should increment `e` by 1.
+            if (adjustDecimalPlace(n, p - 1) >= 10) {
+                e = e + 1;
+                // Divide n by 10 to swallow one precision.
+                n = Math.floor(n / 10);
+            }
+            m = n.toString();
+            // Equivalent of n * 10 ** (e - p + 1)
+            xFinal = adjustDecimalPlace(n, p - 1 - e);
+        }
+    }
+    var int;
+    if (e >= p - 1) {
+        m = m + utils_1.repeat('0', e - p + 1);
+        int = e + 1;
+    }
+    else if (e >= 0) {
+        m = m.slice(0, e + 1) + "." + m.slice(e + 1);
+        int = e + 1;
+    }
+    else {
+        m = "0." + utils_1.repeat('0', -e - 1) + m;
+        int = 1;
+    }
+    if (m.indexOf('.') >= 0 && maxPrecision > minPrecision) {
+        var cut = maxPrecision - minPrecision;
+        while (cut > 0 && m[m.length - 1] === '0') {
+            m = m.slice(0, -1);
+            cut--;
+        }
+        if (m[m.length - 1] === '.') {
+            m = m.slice(0, -1);
+        }
+    }
+    return { formattedString: m, roundedNumber: xFinal, integerDigitsCount: int };
+    // x / (10 ** magnitude), but try to preserve as much floating point precision as possible.
+    function adjustDecimalPlace(x, magnitude) {
+        return magnitude < 0 ? x * Math.pow(10, -magnitude) : x / Math.pow(10, magnitude);
+    }
+}
+exports.ToRawPrecision = ToRawPrecision;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/digit-mapping.json":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/digit-mapping.json ***!
+  \*********************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = "{ \"adlm\": [\"𞥐\", \"𞥑\", \"𞥒\", \"𞥓\", \"𞥔\", \"𞥕\", \"𞥖\", \"𞥗\", \"𞥘\", \"𞥙\"], \"ahom\": [\"𑜰\", \"𑜱\", \"𑜲\", \"𑜳\", \"𑜴\", \"𑜵\", \"𑜶\", \"𑜷\", \"𑜸\", \"𑜹\"], \"arab\": [\"٠\", \"١\", \"٢\", \"٣\", \"٤\", \"٥\", \"٦\", \"٧\", \"٨\", \"٩\"], \"arabext\": [\"۰\", \"۱\", \"۲\", \"۳\", \"۴\", \"۵\", \"۶\", \"۷\", \"۸\", \"۹\"], \"bali\": [\"᭐\", \"᭑\", \"᭒\", \"᭓\", \"᭔\", \"᭕\", \"᭖\", \"᭗\", \"᭘\", \"᭙\"], \"beng\": [\"০\", \"১\", \"২\", \"৩\", \"৪\", \"৫\", \"৬\", \"৭\", \"৮\", \"৯\"], \"bhks\": [\"𑱐\", \"𑱑\", \"𑱒\", \"𑱓\", \"𑱔\", \"𑱕\", \"𑱖\", \"𑱗\", \"𑱘\", \"𑱙\"], \"brah\": [\"𑁦\", \"𑁧\", \"𑁨\", \"𑁩\", \"𑁪\", \"𑁫\", \"𑁬\", \"𑁭\", \"𑁮\", \"𑁯\"], \"cakm\": [\"𑄶\", \"𑄷\", \"𑄸\", \"𑄹\", \"𑄺\", \"𑄻\", \"𑄼\", \"𑄽\", \"𑄾\", \"𑄿\"], \"cham\": [\"꩐\", \"꩑\", \"꩒\", \"꩓\", \"꩔\", \"꩕\", \"꩖\", \"꩗\", \"꩘\", \"꩙\"], \"deva\": [\"०\", \"१\", \"२\", \"३\", \"४\", \"५\", \"६\", \"७\", \"८\", \"९\"], \"diak\": [\"𑥐\", \"𑥑\", \"𑥒\", \"𑥓\", \"𑥔\", \"𑥕\", \"𑥖\", \"𑥗\", \"𑥘\", \"𑥙\"], \"fullwide\": [\"０\", \"１\", \"２\", \"３\", \"４\", \"５\", \"６\", \"７\", \"８\", \"９\"], \"gong\": [\"𑶠\", \"𑶡\", \"𑶢\", \"𑶣\", \"𑶤\", \"𑶥\", \"𑶦\", \"𑶧\", \"𑶨\", \"𑶩\"], \"gonm\": [\"𑵐\", \"𑵑\", \"𑵒\", \"𑵓\", \"𑵔\", \"𑵕\", \"𑵖\", \"𑵗\", \"𑵘\", \"𑵙\"], \"gujr\": [\"૦\", \"૧\", \"૨\", \"૩\", \"૪\", \"૫\", \"૬\", \"૭\", \"૮\", \"૯\"], \"guru\": [\"੦\", \"੧\", \"੨\", \"੩\", \"੪\", \"੫\", \"੬\", \"੭\", \"੮\", \"੯\"], \"hanidec\": [\"〇\", \"一\", \"二\", \"三\", \"四\", \"五\", \"六\", \"七\", \"八\", \"九\"], \"hmng\": [\"𖭐\", \"𖭑\", \"𖭒\", \"𖭓\", \"𖭔\", \"𖭕\", \"𖭖\", \"𖭗\", \"𖭘\", \"𖭙\"], \"hmnp\": [\"𞅀\", \"𞅁\", \"𞅂\", \"𞅃\", \"𞅄\", \"𞅅\", \"𞅆\", \"𞅇\", \"𞅈\", \"𞅉\"], \"java\": [\"꧐\", \"꧑\", \"꧒\", \"꧓\", \"꧔\", \"꧕\", \"꧖\", \"꧗\", \"꧘\", \"꧙\"], \"kali\": [\"꤀\", \"꤁\", \"꤂\", \"꤃\", \"꤄\", \"꤅\", \"꤆\", \"꤇\", \"꤈\", \"꤉\"], \"khmr\": [\"០\", \"១\", \"២\", \"៣\", \"៤\", \"៥\", \"៦\", \"៧\", \"៨\", \"៩\"], \"knda\": [\"೦\", \"೧\", \"೨\", \"೩\", \"೪\", \"೫\", \"೬\", \"೭\", \"೮\", \"೯\"], \"lana\": [\"᪀\", \"᪁\", \"᪂\", \"᪃\", \"᪄\", \"᪅\", \"᪆\", \"᪇\", \"᪈\", \"᪉\"], \"lanatham\": [\"᪐\", \"᪑\", \"᪒\", \"᪓\", \"᪔\", \"᪕\", \"᪖\", \"᪗\", \"᪘\", \"᪙\"], \"laoo\": [\"໐\", \"໑\", \"໒\", \"໓\", \"໔\", \"໕\", \"໖\", \"໗\", \"໘\", \"໙\"], \"lepc\": [\"᪐\", \"᪑\", \"᪒\", \"᪓\", \"᪔\", \"᪕\", \"᪖\", \"᪗\", \"᪘\", \"᪙\"], \"limb\": [\"᥆\", \"᥇\", \"᥈\", \"᥉\", \"᥊\", \"᥋\", \"᥌\", \"᥍\", \"᥎\", \"᥏\"], \"mathbold\": [\"𝟎\", \"𝟏\", \"𝟐\", \"𝟑\", \"𝟒\", \"𝟓\", \"𝟔\", \"𝟕\", \"𝟖\", \"𝟗\"], \"mathdbl\": [\"𝟘\", \"𝟙\", \"𝟚\", \"𝟛\", \"𝟜\", \"𝟝\", \"𝟞\", \"𝟟\", \"𝟠\", \"𝟡\"], \"mathmono\": [\"𝟶\", \"𝟷\", \"𝟸\", \"𝟹\", \"𝟺\", \"𝟻\", \"𝟼\", \"𝟽\", \"𝟾\", \"𝟿\"], \"mathsanb\": [\"𝟬\", \"𝟭\", \"𝟮\", \"𝟯\", \"𝟰\", \"𝟱\", \"𝟲\", \"𝟳\", \"𝟴\", \"𝟵\"], \"mathsans\": [\"𝟢\", \"𝟣\", \"𝟤\", \"𝟥\", \"𝟦\", \"𝟧\", \"𝟨\", \"𝟩\", \"𝟪\", \"𝟫\"], \"mlym\": [\"൦\", \"൧\", \"൨\", \"൩\", \"൪\", \"൫\", \"൬\", \"൭\", \"൮\", \"൯\"], \"modi\": [\"𑙐\", \"𑙑\", \"𑙒\", \"𑙓\", \"𑙔\", \"𑙕\", \"𑙖\", \"𑙗\", \"𑙘\", \"𑙙\"], \"mong\": [\"᠐\", \"᠑\", \"᠒\", \"᠓\", \"᠔\", \"᠕\", \"᠖\", \"᠗\", \"᠘\", \"᠙\"], \"mroo\": [\"𖩠\", \"𖩡\", \"𖩢\", \"𖩣\", \"𖩤\", \"𖩥\", \"𖩦\", \"𖩧\", \"𖩨\", \"𖩩\"], \"mtei\": [\"꯰\", \"꯱\", \"꯲\", \"꯳\", \"꯴\", \"꯵\", \"꯶\", \"꯷\", \"꯸\", \"꯹\"], \"mymr\": [\"၀\", \"၁\", \"၂\", \"၃\", \"၄\", \"၅\", \"၆\", \"၇\", \"၈\", \"၉\"], \"mymrshan\": [\"႐\", \"႑\", \"႒\", \"႓\", \"႔\", \"႕\", \"႖\", \"႗\", \"႘\", \"႙\"], \"mymrtlng\": [\"꧰\", \"꧱\", \"꧲\", \"꧳\", \"꧴\", \"꧵\", \"꧶\", \"꧷\", \"꧸\", \"꧹\"], \"newa\": [\"𑑐\", \"𑑑\", \"𑑒\", \"𑑓\", \"𑑔\", \"𑑕\", \"𑑖\", \"𑑗\", \"𑑘\", \"𑑙\"], \"nkoo\": [\"߀\", \"߁\", \"߂\", \"߃\", \"߄\", \"߅\", \"߆\", \"߇\", \"߈\", \"߉\"], \"olck\": [\"᱐\", \"᱑\", \"᱒\", \"᱓\", \"᱔\", \"᱕\", \"᱖\", \"᱗\", \"᱘\", \"᱙\"], \"orya\": [\"୦\", \"୧\", \"୨\", \"୩\", \"୪\", \"୫\", \"୬\", \"୭\", \"୮\", \"୯\"], \"osma\": [\"𐒠\", \"𐒡\", \"𐒢\", \"𐒣\", \"𐒤\", \"𐒥\", \"𐒦\", \"𐒧\", \"𐒨\", \"𐒩\"], \"rohg\": [\"𐴰\", \"𐴱\", \"𐴲\", \"𐴳\", \"𐴴\", \"𐴵\", \"𐴶\", \"𐴷\", \"𐴸\", \"𐴹\"], \"saur\": [\"꣐\", \"꣑\", \"꣒\", \"꣓\", \"꣔\", \"꣕\", \"꣖\", \"꣗\", \"꣘\", \"꣙\"], \"segment\": [\"🯰\", \"🯱\", \"🯲\", \"🯳\", \"🯴\", \"🯵\", \"🯶\", \"🯷\", \"🯸\", \"🯹\"], \"shrd\": [\"𑇐\", \"𑇑\", \"𑇒\", \"𑇓\", \"𑇔\", \"𑇕\", \"𑇖\", \"𑇗\", \"𑇘\", \"𑇙\"], \"sind\": [\"𑋰\", \"𑋱\", \"𑋲\", \"𑋳\", \"𑋴\", \"𑋵\", \"𑋶\", \"𑋷\", \"𑋸\", \"𑋹\"], \"sinh\": [\"෦\", \"෧\", \"෨\", \"෩\", \"෪\", \"෫\", \"෬\", \"෭\", \"෮\", \"෯\"], \"sora\": [\"𑃰\", \"𑃱\", \"𑃲\", \"𑃳\", \"𑃴\", \"𑃵\", \"𑃶\", \"𑃷\", \"𑃸\", \"𑃹\"], \"sund\": [\"᮰\", \"᮱\", \"᮲\", \"᮳\", \"᮴\", \"᮵\", \"᮶\", \"᮷\", \"᮸\", \"᮹\"], \"takr\": [\"𑛀\", \"𑛁\", \"𑛂\", \"𑛃\", \"𑛄\", \"𑛅\", \"𑛆\", \"𑛇\", \"𑛈\", \"𑛉\"], \"talu\": [\"᧐\", \"᧑\", \"᧒\", \"᧓\", \"᧔\", \"᧕\", \"᧖\", \"᧗\", \"᧘\", \"᧙\"], \"tamldec\": [\"௦\", \"௧\", \"௨\", \"௩\", \"௪\", \"௫\", \"௬\", \"௭\", \"௮\", \"௯\"], \"telu\": [\"౦\", \"౧\", \"౨\", \"౩\", \"౪\", \"౫\", \"౬\", \"౭\", \"౮\", \"౯\"], \"thai\": [\"๐\", \"๑\", \"๒\", \"๓\", \"๔\", \"๕\", \"๖\", \"๗\", \"๘\", \"๙\"], \"tibt\": [\"༠\", \"༡\", \"༢\", \"༣\", \"༤\", \"༥\", \"༦\", \"༧\", \"༨\", \"༩\"], \"tirh\": [\"𑓐\", \"𑓑\", \"𑓒\", \"𑓓\", \"𑓔\", \"𑓕\", \"𑓖\", \"𑓗\", \"𑓘\", \"𑓙\"], \"vaii\": [\"ᘠ\", \"ᘡ\", \"ᘢ\", \"ᘣ\", \"ᘤ\", \"ᘥ\", \"ᘦ\", \"ᘧ\", \"ᘨ\", \"ᘩ\"], \"wara\": [\"𑣠\", \"𑣡\", \"𑣢\", \"𑣣\", \"𑣤\", \"𑣥\", \"𑣦\", \"𑣧\", \"𑣨\", \"𑣩\"], \"wcho\": [\"𞋰\", \"𞋱\", \"𞋲\", \"𞋳\", \"𞋴\", \"𞋵\", \"𞋶\", \"𞋷\", \"𞋸\", \"𞋹\"] }\n";
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/format_to_parts.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/NumberFormat/format_to_parts.js ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var ToRawFixed_1 = __webpack_require__(/*! ./ToRawFixed */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ToRawFixed.js");
+var digitMapping = tslib_1.__importStar(__webpack_require__(/*! ./digit-mapping.json */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/digit-mapping.json"));
+// This is from: unicode-12.1.0/General_Category/Symbol/regex.js
+// IE11 does not support unicode flag, otherwise this is just /\p{S}/u.
+var S_UNICODE_REGEX = /[\$\+<->\^`\|~\xA2-\xA6\xA8\xA9\xAC\xAE-\xB1\xB4\xB8\xD7\xF7\u02C2-\u02C5\u02D2-\u02DF\u02E5-\u02EB\u02ED\u02EF-\u02FF\u0375\u0384\u0385\u03F6\u0482\u058D-\u058F\u0606-\u0608\u060B\u060E\u060F\u06DE\u06E9\u06FD\u06FE\u07F6\u07FE\u07FF\u09F2\u09F3\u09FA\u09FB\u0AF1\u0B70\u0BF3-\u0BFA\u0C7F\u0D4F\u0D79\u0E3F\u0F01-\u0F03\u0F13\u0F15-\u0F17\u0F1A-\u0F1F\u0F34\u0F36\u0F38\u0FBE-\u0FC5\u0FC7-\u0FCC\u0FCE\u0FCF\u0FD5-\u0FD8\u109E\u109F\u1390-\u1399\u166D\u17DB\u1940\u19DE-\u19FF\u1B61-\u1B6A\u1B74-\u1B7C\u1FBD\u1FBF-\u1FC1\u1FCD-\u1FCF\u1FDD-\u1FDF\u1FED-\u1FEF\u1FFD\u1FFE\u2044\u2052\u207A-\u207C\u208A-\u208C\u20A0-\u20BF\u2100\u2101\u2103-\u2106\u2108\u2109\u2114\u2116-\u2118\u211E-\u2123\u2125\u2127\u2129\u212E\u213A\u213B\u2140-\u2144\u214A-\u214D\u214F\u218A\u218B\u2190-\u2307\u230C-\u2328\u232B-\u2426\u2440-\u244A\u249C-\u24E9\u2500-\u2767\u2794-\u27C4\u27C7-\u27E5\u27F0-\u2982\u2999-\u29D7\u29DC-\u29FB\u29FE-\u2B73\u2B76-\u2B95\u2B98-\u2BFF\u2CE5-\u2CEA\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u2FF0-\u2FFB\u3004\u3012\u3013\u3020\u3036\u3037\u303E\u303F\u309B\u309C\u3190\u3191\u3196-\u319F\u31C0-\u31E3\u3200-\u321E\u322A-\u3247\u3250\u3260-\u327F\u328A-\u32B0\u32C0-\u33FF\u4DC0-\u4DFF\uA490-\uA4C6\uA700-\uA716\uA720\uA721\uA789\uA78A\uA828-\uA82B\uA836-\uA839\uAA77-\uAA79\uAB5B\uFB29\uFBB2-\uFBC1\uFDFC\uFDFD\uFE62\uFE64-\uFE66\uFE69\uFF04\uFF0B\uFF1C-\uFF1E\uFF3E\uFF40\uFF5C\uFF5E\uFFE0-\uFFE6\uFFE8-\uFFEE\uFFFC\uFFFD]|\uD800[\uDD37-\uDD3F\uDD79-\uDD89\uDD8C-\uDD8E\uDD90-\uDD9B\uDDA0\uDDD0-\uDDFC]|\uD802[\uDC77\uDC78\uDEC8]|\uD805\uDF3F|\uD807[\uDFD5-\uDFF1]|\uD81A[\uDF3C-\uDF3F\uDF45]|\uD82F\uDC9C|\uD834[\uDC00-\uDCF5\uDD00-\uDD26\uDD29-\uDD64\uDD6A-\uDD6C\uDD83\uDD84\uDD8C-\uDDA9\uDDAE-\uDDE8\uDE00-\uDE41\uDE45\uDF00-\uDF56]|\uD835[\uDEC1\uDEDB\uDEFB\uDF15\uDF35\uDF4F\uDF6F\uDF89\uDFA9\uDFC3]|\uD836[\uDC00-\uDDFF\uDE37-\uDE3A\uDE6D-\uDE74\uDE76-\uDE83\uDE85\uDE86]|\uD838[\uDD4F\uDEFF]|\uD83B[\uDCAC\uDCB0\uDD2E\uDEF0\uDEF1]|\uD83C[\uDC00-\uDC2B\uDC30-\uDC93\uDCA0-\uDCAE\uDCB1-\uDCBF\uDCC1-\uDCCF\uDCD1-\uDCF5\uDD10-\uDD6C\uDD70-\uDDAC\uDDE6-\uDE02\uDE10-\uDE3B\uDE40-\uDE48\uDE50\uDE51\uDE60-\uDE65\uDF00-\uDFFF]|\uD83D[\uDC00-\uDED5\uDEE0-\uDEEC\uDEF0-\uDEFA\uDF00-\uDF73\uDF80-\uDFD8\uDFE0-\uDFEB]|\uD83E[\uDC00-\uDC0B\uDC10-\uDC47\uDC50-\uDC59\uDC60-\uDC87\uDC90-\uDCAD\uDD00-\uDD0B\uDD0D-\uDD71\uDD73-\uDD76\uDD7A-\uDDA2\uDDA5-\uDDAA\uDDAE-\uDDCA\uDDCD-\uDE53\uDE60-\uDE6D\uDE70-\uDE73\uDE78-\uDE7A\uDE80-\uDE82\uDE90-\uDE95]/;
+// /^\p{S}/u
+var CARET_S_UNICODE_REGEX = new RegExp("^" + S_UNICODE_REGEX.source);
+// /\p{S}$/u
+var S_DOLLAR_UNICODE_REGEX = new RegExp(S_UNICODE_REGEX.source + "$");
+var CLDR_NUMBER_PATTERN = /[#0](?:[\.,][#0]+)*/g;
+function formatToParts(numberResult, data, pl, options) {
+    var sign = numberResult.sign, exponent = numberResult.exponent, magnitude = numberResult.magnitude;
+    var notation = options.notation, style = options.style, numberingSystem = options.numberingSystem;
+    var defaultNumberingSystem = data.numbers.nu[0];
+    // #region Part 1: partition and interpolate the CLDR number pattern.
+    // ----------------------------------------------------------
+    var compactNumberPattern = null;
+    if (notation === 'compact' && magnitude) {
+        compactNumberPattern = getCompactDisplayPattern(numberResult, pl, data, style, options.compactDisplay, options.currencyDisplay, numberingSystem);
+    }
+    // This is used multiple times
+    var nonNameCurrencyPart;
+    if (style === 'currency' && options.currencyDisplay !== 'name') {
+        var byCurrencyDisplay = data.currencies[options.currency];
+        if (byCurrencyDisplay) {
+            switch (options.currencyDisplay) {
+                case 'code':
+                    nonNameCurrencyPart = options.currency;
+                    break;
+                case 'symbol':
+                    nonNameCurrencyPart = byCurrencyDisplay.symbol;
+                    break;
+                default:
+                    nonNameCurrencyPart = byCurrencyDisplay.narrow;
+                    break;
+            }
+        }
+        else {
+            // Fallback for unknown currency
+            nonNameCurrencyPart = options.currency;
+        }
+    }
+    var numberPattern;
+    if (!compactNumberPattern) {
+        // Note: if the style is unit, or is currency and the currency display is name,
+        // its unit parts will be interpolated in part 2. So here we can fallback to decimal.
+        if (style === 'decimal' ||
+            style === 'unit' ||
+            (style === 'currency' && options.currencyDisplay === 'name')) {
+            // Shortcut for decimal
+            var decimalData = data.numbers.decimal[numberingSystem] ||
+                data.numbers.decimal[defaultNumberingSystem];
+            numberPattern = getPatternForSign(decimalData.standard, sign);
+        }
+        else if (style === 'currency') {
+            var currencyData = data.numbers.currency[numberingSystem] ||
+                data.numbers.currency[defaultNumberingSystem];
+            // We replace number pattern part with `0` for easier postprocessing.
+            numberPattern = getPatternForSign(currencyData[options.currencySign], sign);
+        }
+        else {
+            // percent
+            var percentPattern = data.numbers.percent[numberingSystem] ||
+                data.numbers.percent[defaultNumberingSystem];
+            numberPattern = getPatternForSign(percentPattern, sign);
+        }
+    }
+    else {
+        numberPattern = compactNumberPattern;
+    }
+    // Extract the decimal number pattern string. It looks like "#,##0,00", which will later be
+    // used to infer decimal group sizes.
+    var decimalNumberPattern = CLDR_NUMBER_PATTERN.exec(numberPattern)[0];
+    // Now we start to substitute patterns
+    // 1. replace strings like `0` and `#,##0.00` with `{0}`
+    // 2. unquote characters (invariant: the quoted characters does not contain the special tokens)
+    numberPattern = numberPattern
+        .replace(CLDR_NUMBER_PATTERN, '{0}')
+        .replace(/'(.)'/g, '$1');
+    // Handle currency spacing (both compact and non-compact).
+    if (style === 'currency' && options.currencyDisplay !== 'name') {
+        var currencyData = data.numbers.currency[numberingSystem] ||
+            data.numbers.currency[defaultNumberingSystem];
+        // See `currencySpacing` substitution rule in TR-35.
+        // Here we always assume the currencyMatch is "[:^S:]" and surroundingMatch is "[:digit:]".
+        //
+        // Example 1: for pattern "#,##0.00¤" with symbol "US$", we replace "¤" with the symbol,
+        // but insert an extra non-break space before the symbol, because "[:^S:]" matches "U" in
+        // "US$" and "[:digit:]" matches the latn numbering system digits.
+        //
+        // Example 2: for pattern "¤#,##0.00" with symbol "US$", there is no spacing between symbol
+        // and number, because `$` does not match "[:^S:]".
+        //
+        // Implementation note: here we do the best effort to infer the insertion.
+        // We also assume that `beforeInsertBetween` and `afterInsertBetween` will never be `;`.
+        var afterCurrency = currencyData.currencySpacing.afterInsertBetween;
+        if (afterCurrency && !S_DOLLAR_UNICODE_REGEX.test(nonNameCurrencyPart)) {
+            numberPattern = numberPattern.replace('¤{0}', "\u00A4" + afterCurrency + "{0}");
+        }
+        var beforeCurrency = currencyData.currencySpacing.beforeInsertBetween;
+        if (beforeCurrency && !CARET_S_UNICODE_REGEX.test(nonNameCurrencyPart)) {
+            numberPattern = numberPattern.replace('{0}¤', "{0}" + beforeCurrency + "\u00A4");
+        }
+    }
+    // The following tokens are special: `{0}`, `¤`, `%`, `-`, `+`, `{c:...}.
+    var numberPatternParts = numberPattern.split(/({c:[^}]+}|\{0\}|[¤%\-\+])/g);
+    var numberParts = [];
+    var symbols = data.numbers.symbols[numberingSystem] ||
+        data.numbers.symbols[defaultNumberingSystem];
+    for (var _i = 0, numberPatternParts_1 = numberPatternParts; _i < numberPatternParts_1.length; _i++) {
+        var part = numberPatternParts_1[_i];
+        if (!part) {
+            continue;
+        }
+        switch (part) {
+            case '{0}': {
+                // We only need to handle scientific and engineering notation here.
+                numberParts.push.apply(numberParts, paritionNumberIntoParts(symbols, numberResult, notation, exponent, numberingSystem, 
+                // If compact number pattern exists, do not insert group separators.
+                !compactNumberPattern && options.useGrouping, decimalNumberPattern));
+                break;
+            }
+            case '-':
+                numberParts.push({ type: 'minusSign', value: symbols.minusSign });
+                break;
+            case '+':
+                numberParts.push({ type: 'plusSign', value: symbols.plusSign });
+                break;
+            case '%':
+                numberParts.push({ type: 'percentSign', value: symbols.percentSign });
+                break;
+            case '¤':
+                // Computed above when handling currency spacing.
+                numberParts.push({ type: 'currency', value: nonNameCurrencyPart });
+                break;
+            default:
+                if (/^\{c:/.test(part)) {
+                    numberParts.push({
+                        type: 'compact',
+                        value: part.substring(3, part.length - 1),
+                    });
+                }
+                else {
+                    // literal
+                    numberParts.push({ type: 'literal', value: part });
+                }
+                break;
+        }
+    }
+    // #endregion
+    // #region Part 2: interpolate unit pattern if necessary.
+    // ----------------------------------------------
+    switch (style) {
+        case 'currency': {
+            // `currencyDisplay: 'name'` has similar pattern handling as units.
+            if (options.currencyDisplay === 'name') {
+                var unitPattern = (data.numbers.currency[numberingSystem] ||
+                    data.numbers.currency[defaultNumberingSystem]).unitPattern;
+                // Select plural
+                var unitName = void 0;
+                var currencyNameData = data.currencies[options.currency];
+                if (currencyNameData) {
+                    unitName = selectPlural(pl, numberResult.roundedNumber * Math.pow(10, exponent), currencyNameData.displayName);
+                }
+                else {
+                    // Fallback for unknown currency
+                    unitName = options.currency;
+                }
+                // Do {0} and {1} substitution
+                var unitPatternParts = unitPattern.split(/(\{[01]\})/g);
+                var result = [];
+                for (var _a = 0, unitPatternParts_1 = unitPatternParts; _a < unitPatternParts_1.length; _a++) {
+                    var part = unitPatternParts_1[_a];
+                    switch (part) {
+                        case '{0}':
+                            result.push.apply(result, numberParts);
+                            break;
+                        case '{1}':
+                            result.push({ type: 'currency', value: unitName });
+                            break;
+                        default:
+                            if (part) {
+                                result.push({ type: 'literal', value: part });
+                            }
+                            break;
+                    }
+                }
+                return result;
+            }
+            else {
+                return numberParts;
+            }
+        }
+        case 'unit': {
+            var unit = options.unit, unitDisplay = options.unitDisplay;
+            var unitData = data.units.simple[unit];
+            var unitPattern = void 0;
+            if (unitData) {
+                // Simple unit pattern
+                unitPattern = selectPlural(pl, numberResult.roundedNumber * Math.pow(10, exponent), data.units.simple[unit][unitDisplay]);
+            }
+            else {
+                // See: http://unicode.org/reports/tr35/tr35-general.html#perUnitPatterns
+                // If cannot find unit in the simple pattern, it must be "per" compound pattern.
+                // Implementation note: we are not following TR-35 here because we need to format to parts!
+                var _b = unit.split('-per-'), numeratorUnit = _b[0], denominatorUnit = _b[1];
+                unitData = data.units.simple[numeratorUnit];
+                var numeratorUnitPattern = selectPlural(pl, numberResult.roundedNumber * Math.pow(10, exponent), data.units.simple[numeratorUnit][unitDisplay]);
+                var perUnitPattern = data.units.simple[denominatorUnit].perUnit[unitDisplay];
+                if (perUnitPattern) {
+                    // perUnitPattern exists, combine it with numeratorUnitPattern
+                    unitPattern = perUnitPattern.replace('{0}', numeratorUnitPattern);
+                }
+                else {
+                    // get compoundUnit pattern (e.g. "{0} per {1}"), repalce {0} with numerator pattern and {1} with
+                    // the denominator pattern in singular form.
+                    var perPattern = data.units.compound.per[unitDisplay];
+                    var denominatorPattern = selectPlural(pl, 1, data.units.simple[denominatorUnit][unitDisplay]);
+                    unitPattern = unitPattern = perPattern
+                        .replace('{0}', numeratorUnitPattern)
+                        .replace('{1}', denominatorPattern.replace('{0}', ''));
+                }
+            }
+            var result = [];
+            // We need spacing around "{0}" because they are not treated as "unit" parts, but "literal".
+            for (var _c = 0, _d = unitPattern.split(/(\s*\{0\}\s*)/); _c < _d.length; _c++) {
+                var part = _d[_c];
+                var interpolateMatch = /^(\s*)\{0\}(\s*)$/.exec(part);
+                if (interpolateMatch) {
+                    // Space before "{0}"
+                    if (interpolateMatch[1]) {
+                        result.push({ type: 'literal', value: interpolateMatch[1] });
+                    }
+                    // "{0}" itself
+                    result.push.apply(result, numberParts);
+                    // Space after "{0}"
+                    if (interpolateMatch[2]) {
+                        result.push({ type: 'literal', value: interpolateMatch[2] });
+                    }
+                }
+                else if (part) {
+                    result.push({ type: 'unit', value: part });
+                }
+            }
+            return result;
+        }
+        default:
+            return numberParts;
+    }
+    // #endregion
+}
+exports.default = formatToParts;
+// A subset of https://tc39.es/ecma402/#sec-partitionnotationsubpattern
+// Plus the exponent parts handling.
+function paritionNumberIntoParts(symbols, numberResult, notation, exponent, numberingSystem, useGrouping, 
+/**
+ * This is the decimal number pattern without signs or symbols.
+ * It is used to infer the group size when `useGrouping` is true.
+ *
+ * A typical value looks like "#,##0.00" (primary group size is 3).
+ * Some locales like Hindi has secondary group size of 2 (e.g. "#,##,##0.00").
+ */
+decimalNumberPattern) {
+    var result = [];
+    // eslint-disable-next-line prefer-const
+    var n = numberResult.formattedString, x = numberResult.roundedNumber;
+    if (isNaN(x)) {
+        return [{ type: 'nan', value: n }];
+    }
+    else if (!isFinite(x)) {
+        return [{ type: 'infinity', value: n }];
+    }
+    var digitReplacementTable = digitMapping[numberingSystem];
+    if (digitReplacementTable) {
+        n = n.replace(/\d/g, function (digit) { return digitReplacementTable[+digit] || digit; });
+    }
+    // TODO: Else use an implementation dependent algorithm to map n to the appropriate
+    // representation of n in the given numbering system.
+    var decimalSepIndex = n.indexOf('.');
+    var integer;
+    var fraction;
+    if (decimalSepIndex > 0) {
+        integer = n.slice(0, decimalSepIndex);
+        fraction = n.slice(decimalSepIndex + 1);
+    }
+    else {
+        integer = n;
+    }
+    // #region Grouping integer digits
+    // The weird compact and x >= 10000 check is to ensure consistency with Node.js and Chrome.
+    // Note that `de` does not have compact form for thousands, but Node.js does not insert grouping separator
+    // unless the rounded number is greater than 10000:
+    //   NumberFormat('de', {notation: 'compact', compactDisplay: 'short'}).format(1234) //=> "1234"
+    //   NumberFormat('de').format(1234) //=> "1.234"
+    if (useGrouping && (notation !== 'compact' || x >= 10000)) {
+        var groupSepSymbol = symbols.group;
+        var groups = [];
+        // > There may be two different grouping sizes: The primary grouping size used for the least
+        // > significant integer group, and the secondary grouping size used for more significant groups.
+        // > If a pattern contains multiple grouping separators, the interval between the last one and the
+        // > end of the integer defines the primary grouping size, and the interval between the last two
+        // > defines the secondary grouping size. All others are ignored.
+        var integerNumberPattern = decimalNumberPattern.split('.')[0];
+        var patternGroups = integerNumberPattern.split(',');
+        var primaryGroupingSize = 3;
+        var secondaryGroupingSize = 3;
+        if (patternGroups.length > 1) {
+            primaryGroupingSize = patternGroups[patternGroups.length - 1].length;
+        }
+        if (patternGroups.length > 2) {
+            secondaryGroupingSize = patternGroups[patternGroups.length - 2].length;
+        }
+        var i = integer.length - primaryGroupingSize;
+        if (i > 0) {
+            // Slice the least significant integer group
+            groups.push(integer.slice(i, i + primaryGroupingSize));
+            // Then iteratively push the more signicant groups
+            // TODO: handle surrogate pairs in some numbering system digits
+            for (i -= secondaryGroupingSize; i > 0; i -= secondaryGroupingSize) {
+                groups.push(integer.slice(i, i + secondaryGroupingSize));
+            }
+            groups.push(integer.slice(0, i + secondaryGroupingSize));
+        }
+        else {
+            groups.push(integer);
+        }
+        while (groups.length > 0) {
+            var integerGroup = groups.pop();
+            result.push({ type: 'integer', value: integerGroup });
+            if (groups.length > 0) {
+                result.push({ type: 'group', value: groupSepSymbol });
+            }
+        }
+    }
+    else {
+        result.push({ type: 'integer', value: integer });
+    }
+    // #endregion
+    if (fraction !== undefined) {
+        result.push({ type: 'decimal', value: symbols.decimal }, { type: 'fraction', value: fraction });
+    }
+    if ((notation === 'scientific' || notation === 'engineering') &&
+        isFinite(x)) {
+        result.push({ type: 'exponentSeparator', value: symbols.exponential });
+        if (exponent < 0) {
+            result.push({ type: 'exponentMinusSign', value: symbols.minusSign });
+            exponent = -exponent;
+        }
+        var exponentResult = ToRawFixed_1.ToRawFixed(exponent, 0, 0);
+        result.push({
+            type: 'exponentInteger',
+            value: exponentResult.formattedString,
+        });
+    }
+    return result;
+}
+function getPatternForSign(pattern, sign) {
+    if (pattern.indexOf(';') < 0) {
+        pattern = pattern + ";-" + pattern;
+    }
+    var _a = pattern.split(';'), zeroPattern = _a[0], negativePattern = _a[1];
+    switch (sign) {
+        case 0:
+            return zeroPattern;
+        case -1:
+            return negativePattern;
+        default:
+            return negativePattern.indexOf('-') >= 0
+                ? negativePattern.replace(/-/g, '+')
+                : "+" + zeroPattern;
+    }
+}
+// Find the CLDR pattern for compact notation based on the magnitude of data and style.
+//
+// Example return value: "¤ {c:laki}000;¤{c:laki} -0" (`sw` locale):
+// - Notice the `{c:...}` token that wraps the compact literal.
+// - The consecutive zeros are normalized to single zero to match CLDR_NUMBER_PATTERN.
+//
+// Returning null means the compact display pattern cannot be found.
+function getCompactDisplayPattern(numberResult, pl, data, style, compactDisplay, currencyDisplay, numberingSystem) {
+    var _a;
+    var roundedNumber = numberResult.roundedNumber, sign = numberResult.sign, magnitude = numberResult.magnitude;
+    var magnitudeKey = String(Math.pow(10, magnitude));
+    var defaultNumberingSystem = data.numbers.nu[0];
+    var pattern;
+    if (style === 'currency' && currencyDisplay !== 'name') {
+        var byNumberingSystem = data.numbers.currency;
+        var currencyData = byNumberingSystem[numberingSystem] ||
+            byNumberingSystem[defaultNumberingSystem];
+        // NOTE: compact notation ignores currencySign!
+        var compactPluralRules = (_a = currencyData.short) === null || _a === void 0 ? void 0 : _a[magnitudeKey];
+        if (!compactPluralRules) {
+            return null;
+        }
+        pattern = selectPlural(pl, roundedNumber, compactPluralRules);
+    }
+    else {
+        var byNumberingSystem = data.numbers.decimal;
+        var byCompactDisplay = byNumberingSystem[numberingSystem] ||
+            byNumberingSystem[defaultNumberingSystem];
+        var compactPlaralRule = byCompactDisplay[compactDisplay][magnitudeKey];
+        if (!compactPlaralRule) {
+            return null;
+        }
+        pattern = selectPlural(pl, roundedNumber, compactPlaralRule);
+    }
+    // See https://unicode.org/reports/tr35/tr35-numbers.html#Compact_Number_Formats
+    // > If the value is precisely “0”, either explicit or defaulted, then the normal number format
+    // > pattern for that sort of object is supplied.
+    if (pattern === '0') {
+        return null;
+    }
+    pattern = getPatternForSign(pattern, sign)
+        // Extract compact literal from the pattern
+        .replace(/([^\s;\-\+\d¤]+)/g, '{c:$1}')
+        // We replace one or more zeros with a single zero so it matches `CLDR_NUMBER_PATTERN`.
+        .replace(/0+/, '0');
+    return pattern;
+}
+function selectPlural(pl, x, rules) {
+    return rules[pl.select(x)] || rules.other;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/PartitionPattern.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/PartitionPattern.js ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PartitionPattern = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+/**
+ * https://tc39.es/ecma402/#sec-partitionpattern
+ * @param pattern
+ */
+function PartitionPattern(pattern) {
+    var result = [];
+    var beginIndex = pattern.indexOf('{');
+    var endIndex = 0;
+    var nextIndex = 0;
+    var length = pattern.length;
+    while (beginIndex < pattern.length && beginIndex > -1) {
+        endIndex = pattern.indexOf('}', beginIndex);
+        utils_1.invariant(endIndex > beginIndex, "Invalid pattern " + pattern);
+        if (beginIndex > nextIndex) {
+            result.push({
+                type: 'literal',
+                value: pattern.substring(nextIndex, beginIndex),
+            });
+        }
+        result.push({
+            type: pattern.substring(beginIndex + 1, endIndex),
+            value: undefined,
+        });
+        nextIndex = endIndex + 1;
+        beginIndex = pattern.indexOf('{', nextIndex);
+    }
+    if (nextIndex < length) {
+        result.push({
+            type: 'literal',
+            value: pattern.substring(nextIndex, length),
+        });
+    }
+    return result;
+}
+exports.PartitionPattern = PartitionPattern;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/PluralRules/GetOperands.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/PluralRules/GetOperands.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GetOperands = void 0;
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+/**
+ * http://ecma-international.org/ecma-402/7.0/index.html#sec-getoperands
+ * @param s
+ */
+function GetOperands(s) {
+    utils_1.invariant(typeof s === 'string', "GetOperands should have been called with a string");
+    var n = _262_1.ToNumber(s);
+    utils_1.invariant(isFinite(n), 'n should be finite');
+    var dp = s.indexOf('.');
+    var iv;
+    var f;
+    var v;
+    var fv = '';
+    if (dp === -1) {
+        iv = n;
+        f = 0;
+        v = 0;
+    }
+    else {
+        iv = s.slice(0, dp);
+        fv = s.slice(dp, s.length);
+        f = _262_1.ToNumber(fv);
+        v = fv.length;
+    }
+    var i = Math.abs(_262_1.ToNumber(iv));
+    var w;
+    var t;
+    if (f !== 0) {
+        var ft = fv.replace(/0+$/, '');
+        w = ft.length;
+        t = _262_1.ToNumber(ft);
+    }
+    else {
+        w = 0;
+        t = 0;
+    }
+    return {
+        Number: n,
+        IntegerDigits: i,
+        NumberOfFractionDigits: v,
+        NumberOfFractionDigitsWithoutTrailing: w,
+        FractionDigits: f,
+        FractionDigitsWithoutTrailing: t,
+    };
+}
+exports.GetOperands = GetOperands;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/PluralRules/InitializePluralRules.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/PluralRules/InitializePluralRules.js ***!
+  \**************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InitializePluralRules = void 0;
+var CanonicalizeLocaleList_1 = __webpack_require__(/*! ../CanonicalizeLocaleList */ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeLocaleList.js");
+var GetOption_1 = __webpack_require__(/*! ../GetOption */ "./node_modules/@formatjs/ecma402-abstract/GetOption.js");
+var SetNumberFormatDigitOptions_1 = __webpack_require__(/*! ../NumberFormat/SetNumberFormatDigitOptions */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/SetNumberFormatDigitOptions.js");
+var ResolveLocale_1 = __webpack_require__(/*! ../ResolveLocale */ "./node_modules/@formatjs/ecma402-abstract/ResolveLocale.js");
+var CoerceOptionsToObject_1 = __webpack_require__(/*! ../CoerceOptionsToObject */ "./node_modules/@formatjs/ecma402-abstract/CoerceOptionsToObject.js");
+function InitializePluralRules(pl, locales, options, _a) {
+    var availableLocales = _a.availableLocales, relevantExtensionKeys = _a.relevantExtensionKeys, localeData = _a.localeData, getDefaultLocale = _a.getDefaultLocale, getInternalSlots = _a.getInternalSlots;
+    var requestedLocales = CanonicalizeLocaleList_1.CanonicalizeLocaleList(locales);
+    var opt = Object.create(null);
+    var opts = CoerceOptionsToObject_1.CoerceOptionsToObject(options);
+    var internalSlots = getInternalSlots(pl);
+    internalSlots.initializedPluralRules = true;
+    var matcher = GetOption_1.GetOption(opts, 'localeMatcher', 'string', ['best fit', 'lookup'], 'best fit');
+    opt.localeMatcher = matcher;
+    internalSlots.type = GetOption_1.GetOption(opts, 'type', 'string', ['cardinal', 'ordinal'], 'cardinal');
+    SetNumberFormatDigitOptions_1.SetNumberFormatDigitOptions(internalSlots, opts, 0, 3, 'standard');
+    var r = ResolveLocale_1.ResolveLocale(availableLocales, requestedLocales, opt, relevantExtensionKeys, localeData, getDefaultLocale);
+    internalSlots.locale = r.locale;
+    return pl;
+}
+exports.InitializePluralRules = InitializePluralRules;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/PluralRules/ResolvePlural.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/PluralRules/ResolvePlural.js ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ResolvePlural = void 0;
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+var FormatNumericToString_1 = __webpack_require__(/*! ../NumberFormat/FormatNumericToString */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/FormatNumericToString.js");
+var GetOperands_1 = __webpack_require__(/*! ./GetOperands */ "./node_modules/@formatjs/ecma402-abstract/PluralRules/GetOperands.js");
+/**
+ * http://ecma-international.org/ecma-402/7.0/index.html#sec-resolveplural
+ * @param pl
+ * @param n
+ * @param PluralRuleSelect Has to pass in bc it's implementation-specific
+ */
+function ResolvePlural(pl, n, _a) {
+    var getInternalSlots = _a.getInternalSlots, PluralRuleSelect = _a.PluralRuleSelect;
+    var internalSlots = getInternalSlots(pl);
+    utils_1.invariant(_262_1.Type(internalSlots) === 'Object', 'pl has to be an object');
+    utils_1.invariant('initializedPluralRules' in internalSlots, 'pluralrules must be initialized');
+    utils_1.invariant(_262_1.Type(n) === 'Number', 'n must be a number');
+    if (!isFinite(n)) {
+        return 'other';
+    }
+    var locale = internalSlots.locale, type = internalSlots.type;
+    var res = FormatNumericToString_1.FormatNumericToString(internalSlots, n);
+    var s = res.formattedString;
+    var operands = GetOperands_1.GetOperands(s);
+    return PluralRuleSelect(locale, type, n, operands);
+}
+exports.ResolvePlural = ResolvePlural;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/FormatRelativeTime.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/FormatRelativeTime.js ***!
+  \******************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormatRelativeTime = void 0;
+var PartitionRelativeTimePattern_1 = __webpack_require__(/*! ./PartitionRelativeTimePattern */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/PartitionRelativeTimePattern.js");
+function FormatRelativeTime(rtf, value, unit, implDetails) {
+    var parts = PartitionRelativeTimePattern_1.PartitionRelativeTimePattern(rtf, value, unit, implDetails);
+    var result = '';
+    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        result += part.value;
+    }
+    return result;
+}
+exports.FormatRelativeTime = FormatRelativeTime;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/FormatRelativeTimeToParts.js":
+/*!*************************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/FormatRelativeTimeToParts.js ***!
+  \*************************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormatRelativeTimeToParts = void 0;
+var PartitionRelativeTimePattern_1 = __webpack_require__(/*! ./PartitionRelativeTimePattern */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/PartitionRelativeTimePattern.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+function FormatRelativeTimeToParts(rtf, value, unit, implDetails) {
+    var parts = PartitionRelativeTimePattern_1.PartitionRelativeTimePattern(rtf, value, unit, implDetails);
+    var result = _262_1.ArrayCreate(0);
+    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        var o = {
+            type: part.type,
+            value: part.value,
+        };
+        if ('unit' in part) {
+            o.unit = part.unit;
+        }
+        result.push(o);
+    }
+    return result;
+}
+exports.FormatRelativeTimeToParts = FormatRelativeTimeToParts;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/InitializeRelativeTimeFormat.js":
+/*!****************************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/InitializeRelativeTimeFormat.js ***!
+  \****************************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InitializeRelativeTimeFormat = void 0;
+var CanonicalizeLocaleList_1 = __webpack_require__(/*! ../CanonicalizeLocaleList */ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeLocaleList.js");
+var GetOption_1 = __webpack_require__(/*! ../GetOption */ "./node_modules/@formatjs/ecma402-abstract/GetOption.js");
+var ResolveLocale_1 = __webpack_require__(/*! ../ResolveLocale */ "./node_modules/@formatjs/ecma402-abstract/ResolveLocale.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var CoerceOptionsToObject_1 = __webpack_require__(/*! ../CoerceOptionsToObject */ "./node_modules/@formatjs/ecma402-abstract/CoerceOptionsToObject.js");
+var NUMBERING_SYSTEM_REGEX = /^[a-z0-9]{3,8}(-[a-z0-9]{3,8})*$/i;
+function InitializeRelativeTimeFormat(rtf, locales, options, _a) {
+    var getInternalSlots = _a.getInternalSlots, availableLocales = _a.availableLocales, relevantExtensionKeys = _a.relevantExtensionKeys, localeData = _a.localeData, getDefaultLocale = _a.getDefaultLocale;
+    var internalSlots = getInternalSlots(rtf);
+    internalSlots.initializedRelativeTimeFormat = true;
+    var requestedLocales = CanonicalizeLocaleList_1.CanonicalizeLocaleList(locales);
+    var opt = Object.create(null);
+    var opts = CoerceOptionsToObject_1.CoerceOptionsToObject(options);
+    var matcher = GetOption_1.GetOption(opts, 'localeMatcher', 'string', ['best fit', 'lookup'], 'best fit');
+    opt.localeMatcher = matcher;
+    var numberingSystem = GetOption_1.GetOption(opts, 
+    // @ts-expect-error TS option is wack
+    'numberingSystem', 'string', undefined, undefined);
+    if (numberingSystem !== undefined) {
+        if (!NUMBERING_SYSTEM_REGEX.test(numberingSystem)) {
+            throw new RangeError("Invalid numbering system " + numberingSystem);
+        }
+    }
+    opt.nu = numberingSystem;
+    var r = ResolveLocale_1.ResolveLocale(availableLocales, requestedLocales, opt, relevantExtensionKeys, localeData, getDefaultLocale);
+    var locale = r.locale, nu = r.nu;
+    internalSlots.locale = locale;
+    internalSlots.style = GetOption_1.GetOption(opts, 'style', 'string', ['long', 'narrow', 'short'], 'long');
+    internalSlots.numeric = GetOption_1.GetOption(opts, 'numeric', 'string', ['always', 'auto'], 'always');
+    var fields = localeData[r.dataLocale];
+    utils_1.invariant(!!fields, "Missing locale data for " + r.dataLocale);
+    internalSlots.fields = fields;
+    internalSlots.numberFormat = new Intl.NumberFormat(locales);
+    internalSlots.pluralRules = new Intl.PluralRules(locales);
+    internalSlots.numberingSystem = nu;
+    return rtf;
+}
+exports.InitializeRelativeTimeFormat = InitializeRelativeTimeFormat;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/MakePartsList.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/MakePartsList.js ***!
+  \*************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MakePartsList = void 0;
+var PartitionPattern_1 = __webpack_require__(/*! ../PartitionPattern */ "./node_modules/@formatjs/ecma402-abstract/PartitionPattern.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+function MakePartsList(pattern, unit, parts) {
+    var patternParts = PartitionPattern_1.PartitionPattern(pattern);
+    var result = [];
+    for (var _i = 0, patternParts_1 = patternParts; _i < patternParts_1.length; _i++) {
+        var patternPart = patternParts_1[_i];
+        if (patternPart.type === 'literal') {
+            result.push({
+                type: 'literal',
+                value: patternPart.value,
+            });
+        }
+        else {
+            utils_1.invariant(patternPart.type === '0', "Malformed pattern " + pattern);
+            for (var _a = 0, parts_1 = parts; _a < parts_1.length; _a++) {
+                var part = parts_1[_a];
+                result.push({
+                    type: part.type,
+                    value: part.value,
+                    unit: unit,
+                });
+            }
+        }
+    }
+    return result;
+}
+exports.MakePartsList = MakePartsList;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/PartitionRelativeTimePattern.js":
+/*!****************************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/PartitionRelativeTimePattern.js ***!
+  \****************************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PartitionRelativeTimePattern = void 0;
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var SingularRelativeTimeUnit_1 = __webpack_require__(/*! ./SingularRelativeTimeUnit */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/SingularRelativeTimeUnit.js");
+var MakePartsList_1 = __webpack_require__(/*! ./MakePartsList */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/MakePartsList.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+function PartitionRelativeTimePattern(rtf, value, unit, _a) {
+    var getInternalSlots = _a.getInternalSlots;
+    utils_1.invariant(_262_1.Type(value) === 'Number', "value must be number, instead got " + typeof value, TypeError);
+    utils_1.invariant(_262_1.Type(unit) === 'String', "unit must be number, instead got " + typeof value, TypeError);
+    if (isNaN(value) || !isFinite(value)) {
+        throw new RangeError("Invalid value " + value);
+    }
+    var resolvedUnit = SingularRelativeTimeUnit_1.SingularRelativeTimeUnit(unit);
+    var _b = getInternalSlots(rtf), fields = _b.fields, style = _b.style, numeric = _b.numeric, pluralRules = _b.pluralRules, numberFormat = _b.numberFormat;
+    var entry = resolvedUnit;
+    if (style === 'short') {
+        entry = resolvedUnit + "-short";
+    }
+    else if (style === 'narrow') {
+        entry = resolvedUnit + "-narrow";
+    }
+    if (!(entry in fields)) {
+        entry = resolvedUnit;
+    }
+    var patterns = fields[entry];
+    if (numeric === 'auto') {
+        if (_262_1.ToString(value) in patterns) {
+            return [
+                {
+                    type: 'literal',
+                    value: patterns[_262_1.ToString(value)],
+                },
+            ];
+        }
+    }
+    var tl = 'future';
+    if (_262_1.SameValue(value, -0) || value < 0) {
+        tl = 'past';
+    }
+    var po = patterns[tl];
+    var fv = typeof numberFormat.formatToParts === 'function'
+        ? numberFormat.formatToParts(Math.abs(value))
+        : // TODO: If formatToParts is not supported, we assume the whole formatted
+            // number is a part
+            [
+                {
+                    type: 'literal',
+                    value: numberFormat.format(Math.abs(value)),
+                    unit: unit,
+                },
+            ];
+    var pr = pluralRules.select(value);
+    var pattern = po[pr];
+    return MakePartsList_1.MakePartsList(pattern, resolvedUnit, fv);
+}
+exports.PartitionRelativeTimePattern = PartitionRelativeTimePattern;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/SingularRelativeTimeUnit.js":
+/*!************************************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/SingularRelativeTimeUnit.js ***!
+  \************************************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SingularRelativeTimeUnit = void 0;
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var _262_1 = __webpack_require__(/*! ../262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+/**
+ * https://tc39.es/proposal-intl-relative-time/#sec-singularrelativetimeunit
+ * @param unit
+ */
+function SingularRelativeTimeUnit(unit) {
+    utils_1.invariant(_262_1.Type(unit) === 'String', 'unit must be a string');
+    if (unit === 'seconds')
+        return 'second';
+    if (unit === 'minutes')
+        return 'minute';
+    if (unit === 'hours')
+        return 'hour';
+    if (unit === 'days')
+        return 'day';
+    if (unit === 'weeks')
+        return 'week';
+    if (unit === 'months')
+        return 'month';
+    if (unit === 'quarters')
+        return 'quarter';
+    if (unit === 'years')
+        return 'year';
+    if (unit !== 'second' &&
+        unit !== 'minute' &&
+        unit !== 'hour' &&
+        unit !== 'day' &&
+        unit !== 'week' &&
+        unit !== 'month' &&
+        unit !== 'quarter' &&
+        unit !== 'year') {
+        throw new RangeError('invalid unit');
+    }
+    return unit;
+}
+exports.SingularRelativeTimeUnit = SingularRelativeTimeUnit;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/ResolveLocale.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/ResolveLocale.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ResolveLocale = void 0;
+var LookupMatcher_1 = __webpack_require__(/*! ./LookupMatcher */ "./node_modules/@formatjs/ecma402-abstract/LookupMatcher.js");
+var BestFitMatcher_1 = __webpack_require__(/*! ./BestFitMatcher */ "./node_modules/@formatjs/ecma402-abstract/BestFitMatcher.js");
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+var UnicodeExtensionValue_1 = __webpack_require__(/*! ./UnicodeExtensionValue */ "./node_modules/@formatjs/ecma402-abstract/UnicodeExtensionValue.js");
+/**
+ * https://tc39.es/ecma402/#sec-resolvelocale
+ */
+function ResolveLocale(availableLocales, requestedLocales, options, relevantExtensionKeys, localeData, getDefaultLocale) {
+    var matcher = options.localeMatcher;
+    var r;
+    if (matcher === 'lookup') {
+        r = LookupMatcher_1.LookupMatcher(availableLocales, requestedLocales, getDefaultLocale);
+    }
+    else {
+        r = BestFitMatcher_1.BestFitMatcher(availableLocales, requestedLocales, getDefaultLocale);
+    }
+    var foundLocale = r.locale;
+    var result = { locale: '', dataLocale: foundLocale };
+    var supportedExtension = '-u';
+    for (var _i = 0, relevantExtensionKeys_1 = relevantExtensionKeys; _i < relevantExtensionKeys_1.length; _i++) {
+        var key = relevantExtensionKeys_1[_i];
+        utils_1.invariant(foundLocale in localeData, "Missing locale data for " + foundLocale);
+        var foundLocaleData = localeData[foundLocale];
+        utils_1.invariant(typeof foundLocaleData === 'object' && foundLocaleData !== null, "locale data " + key + " must be an object");
+        var keyLocaleData = foundLocaleData[key];
+        utils_1.invariant(Array.isArray(keyLocaleData), "keyLocaleData for " + key + " must be an array");
+        var value = keyLocaleData[0];
+        utils_1.invariant(typeof value === 'string' || value === null, "value must be string or null but got " + typeof value + " in key " + key);
+        var supportedExtensionAddition = '';
+        if (r.extension) {
+            var requestedValue = UnicodeExtensionValue_1.UnicodeExtensionValue(r.extension, key);
+            if (requestedValue !== undefined) {
+                if (requestedValue !== '') {
+                    if (~keyLocaleData.indexOf(requestedValue)) {
+                        value = requestedValue;
+                        supportedExtensionAddition = "-" + key + "-" + value;
+                    }
+                }
+                else if (~requestedValue.indexOf('true')) {
+                    value = 'true';
+                    supportedExtensionAddition = "-" + key;
+                }
+            }
+        }
+        if (key in options) {
+            var optionsValue = options[key];
+            utils_1.invariant(typeof optionsValue === 'string' ||
+                typeof optionsValue === 'undefined' ||
+                optionsValue === null, 'optionsValue must be String, Undefined or Null');
+            if (~keyLocaleData.indexOf(optionsValue)) {
+                if (optionsValue !== value) {
+                    value = optionsValue;
+                    supportedExtensionAddition = '';
+                }
+            }
+        }
+        result[key] = value;
+        supportedExtension += supportedExtensionAddition;
+    }
+    if (supportedExtension.length > 2) {
+        var privateIndex = foundLocale.indexOf('-x-');
+        if (privateIndex === -1) {
+            foundLocale = foundLocale + supportedExtension;
+        }
+        else {
+            var preExtension = foundLocale.slice(0, privateIndex);
+            var postExtension = foundLocale.slice(privateIndex, foundLocale.length);
+            foundLocale = preExtension + supportedExtension + postExtension;
+        }
+        foundLocale = Intl.getCanonicalLocales(foundLocale)[0];
+    }
+    result.locale = foundLocale;
+    return result;
+}
+exports.ResolveLocale = ResolveLocale;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/SupportedLocales.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/SupportedLocales.js ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SupportedLocales = void 0;
+var _262_1 = __webpack_require__(/*! ./262 */ "./node_modules/@formatjs/ecma402-abstract/262.js");
+var GetOption_1 = __webpack_require__(/*! ./GetOption */ "./node_modules/@formatjs/ecma402-abstract/GetOption.js");
+var LookupSupportedLocales_1 = __webpack_require__(/*! ./LookupSupportedLocales */ "./node_modules/@formatjs/ecma402-abstract/LookupSupportedLocales.js");
+/**
+ * https://tc39.es/ecma402/#sec-supportedlocales
+ * @param availableLocales
+ * @param requestedLocales
+ * @param options
+ */
+function SupportedLocales(availableLocales, requestedLocales, options) {
+    var matcher = 'best fit';
+    if (options !== undefined) {
+        options = _262_1.ToObject(options);
+        matcher = GetOption_1.GetOption(options, 'localeMatcher', 'string', ['lookup', 'best fit'], 'best fit');
+    }
+    if (matcher === 'best fit') {
+        return LookupSupportedLocales_1.LookupSupportedLocales(availableLocales, requestedLocales);
+    }
+    return LookupSupportedLocales_1.LookupSupportedLocales(availableLocales, requestedLocales);
+}
+exports.SupportedLocales = SupportedLocales;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/UnicodeExtensionValue.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/UnicodeExtensionValue.js ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UnicodeExtensionValue = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+/**
+ * https://tc39.es/ecma402/#sec-unicodeextensionvalue
+ * @param extension
+ * @param key
+ */
+function UnicodeExtensionValue(extension, key) {
+    utils_1.invariant(key.length === 2, 'key must have 2 elements');
+    var size = extension.length;
+    var searchValue = "-" + key + "-";
+    var pos = extension.indexOf(searchValue);
+    if (pos !== -1) {
+        var start = pos + 4;
+        var end = start;
+        var k = start;
+        var done = false;
+        while (!done) {
+            var e = extension.indexOf('-', k);
+            var len = void 0;
+            if (e === -1) {
+                len = size - k;
+            }
+            else {
+                len = e - k;
+            }
+            if (len === 2) {
+                done = true;
+            }
+            else if (e === -1) {
+                end = size;
+                done = true;
+            }
+            else {
+                end = e;
+                k = e + 1;
+            }
+        }
+        return extension.slice(start, end);
+    }
+    searchValue = "-" + key;
+    pos = extension.indexOf(searchValue);
+    if (pos !== -1 && pos + 3 === size) {
+        return '';
+    }
+    return undefined;
+}
+exports.UnicodeExtensionValue = UnicodeExtensionValue;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/data.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/data.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isMissingLocaleDataError = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var MissingLocaleDataError = /** @class */ (function (_super) {
+    tslib_1.__extends(MissingLocaleDataError, _super);
+    function MissingLocaleDataError() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.type = 'MISSING_LOCALE_DATA';
+        return _this;
+    }
+    return MissingLocaleDataError;
+}(Error));
+function isMissingLocaleDataError(e) {
+    return e.type === 'MISSING_LOCALE_DATA';
+}
+exports.isMissingLocaleDataError = isMissingLocaleDataError;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/index.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/index.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.invariant = exports.isMissingLocaleDataError = exports.defineProperty = exports.getMagnitude = exports.setMultiInternalSlots = exports.setInternalSlot = exports.isLiteralPart = exports.getMultiInternalSlots = exports.getInternalSlot = exports.parseDateTimeSkeleton = exports.DATE_TIME_PROPS = exports._formatToParts = exports.BestFitFormatMatcher = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var BestFitFormatMatcher_1 = __webpack_require__(/*! ./DateTimeFormat/BestFitFormatMatcher */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/BestFitFormatMatcher.js");
+Object.defineProperty(exports, "BestFitFormatMatcher", ({ enumerable: true, get: function () { return BestFitFormatMatcher_1.BestFitFormatMatcher; } }));
+tslib_1.__exportStar(__webpack_require__(/*! ./CanonicalizeLocaleList */ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeLocaleList.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./CanonicalizeTimeZoneName */ "./node_modules/@formatjs/ecma402-abstract/CanonicalizeTimeZoneName.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./CoerceOptionsToObject */ "./node_modules/@formatjs/ecma402-abstract/CoerceOptionsToObject.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DateTimeFormat/BasicFormatMatcher */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/BasicFormatMatcher.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DateTimeFormat/DateTimeStyleFormat */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/DateTimeStyleFormat.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DateTimeFormat/FormatDateTime */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTime.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DateTimeFormat/FormatDateTimeRange */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimeRange.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DateTimeFormat/FormatDateTimeRangeToParts */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimeRangeToParts.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DateTimeFormat/FormatDateTimeToParts */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/FormatDateTimeToParts.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DateTimeFormat/InitializeDateTimeFormat */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/InitializeDateTimeFormat.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DateTimeFormat/PartitionDateTimePattern */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/PartitionDateTimePattern.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DateTimeFormat/ToDateTimeOptions */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/ToDateTimeOptions.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./DisplayNames/CanonicalCodeForDisplayNames */ "./node_modules/@formatjs/ecma402-abstract/DisplayNames/CanonicalCodeForDisplayNames.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./GetNumberOption */ "./node_modules/@formatjs/ecma402-abstract/GetNumberOption.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./GetOption */ "./node_modules/@formatjs/ecma402-abstract/GetOption.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./GetOptionsObject */ "./node_modules/@formatjs/ecma402-abstract/GetOptionsObject.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./IsSanctionedSimpleUnitIdentifier */ "./node_modules/@formatjs/ecma402-abstract/IsSanctionedSimpleUnitIdentifier.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./IsValidTimeZoneName */ "./node_modules/@formatjs/ecma402-abstract/IsValidTimeZoneName.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./IsWellFormedCurrencyCode */ "./node_modules/@formatjs/ecma402-abstract/IsWellFormedCurrencyCode.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./IsWellFormedUnitIdentifier */ "./node_modules/@formatjs/ecma402-abstract/IsWellFormedUnitIdentifier.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/ComputeExponent */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ComputeExponent.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/ComputeExponentForMagnitude */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ComputeExponentForMagnitude.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/CurrencyDigits */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/CurrencyDigits.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/FormatNumericToParts */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/FormatNumericToParts.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/FormatNumericToString */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/FormatNumericToString.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/InitializeNumberFormat */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/InitializeNumberFormat.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/PartitionNumberPattern */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/PartitionNumberPattern.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/SetNumberFormatDigitOptions */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/SetNumberFormatDigitOptions.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/SetNumberFormatUnitOptions */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/SetNumberFormatUnitOptions.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/ToRawFixed */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ToRawFixed.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./NumberFormat/ToRawPrecision */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/ToRawPrecision.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./PartitionPattern */ "./node_modules/@formatjs/ecma402-abstract/PartitionPattern.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./PluralRules/GetOperands */ "./node_modules/@formatjs/ecma402-abstract/PluralRules/GetOperands.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./PluralRules/InitializePluralRules */ "./node_modules/@formatjs/ecma402-abstract/PluralRules/InitializePluralRules.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./PluralRules/ResolvePlural */ "./node_modules/@formatjs/ecma402-abstract/PluralRules/ResolvePlural.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./RelativeTimeFormat/FormatRelativeTime */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/FormatRelativeTime.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./RelativeTimeFormat/FormatRelativeTimeToParts */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/FormatRelativeTimeToParts.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./RelativeTimeFormat/InitializeRelativeTimeFormat */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/InitializeRelativeTimeFormat.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./RelativeTimeFormat/MakePartsList */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/MakePartsList.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./RelativeTimeFormat/PartitionRelativeTimePattern */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/PartitionRelativeTimePattern.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./RelativeTimeFormat/SingularRelativeTimeUnit */ "./node_modules/@formatjs/ecma402-abstract/RelativeTimeFormat/SingularRelativeTimeUnit.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./ResolveLocale */ "./node_modules/@formatjs/ecma402-abstract/ResolveLocale.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./SupportedLocales */ "./node_modules/@formatjs/ecma402-abstract/SupportedLocales.js"), exports);
+var format_to_parts_1 = __webpack_require__(/*! ./NumberFormat/format_to_parts */ "./node_modules/@formatjs/ecma402-abstract/NumberFormat/format_to_parts.js");
+Object.defineProperty(exports, "_formatToParts", ({ enumerable: true, get: function () { return tslib_1.__importDefault(format_to_parts_1).default; } }));
+var utils_1 = __webpack_require__(/*! ./DateTimeFormat/utils */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/utils.js");
+Object.defineProperty(exports, "DATE_TIME_PROPS", ({ enumerable: true, get: function () { return utils_1.DATE_TIME_PROPS; } }));
+var skeleton_1 = __webpack_require__(/*! ./DateTimeFormat/skeleton */ "./node_modules/@formatjs/ecma402-abstract/DateTimeFormat/skeleton.js");
+Object.defineProperty(exports, "parseDateTimeSkeleton", ({ enumerable: true, get: function () { return skeleton_1.parseDateTimeSkeleton; } }));
+var utils_2 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+Object.defineProperty(exports, "getInternalSlot", ({ enumerable: true, get: function () { return utils_2.getInternalSlot; } }));
+Object.defineProperty(exports, "getMultiInternalSlots", ({ enumerable: true, get: function () { return utils_2.getMultiInternalSlots; } }));
+Object.defineProperty(exports, "isLiteralPart", ({ enumerable: true, get: function () { return utils_2.isLiteralPart; } }));
+Object.defineProperty(exports, "setInternalSlot", ({ enumerable: true, get: function () { return utils_2.setInternalSlot; } }));
+Object.defineProperty(exports, "setMultiInternalSlots", ({ enumerable: true, get: function () { return utils_2.setMultiInternalSlots; } }));
+Object.defineProperty(exports, "getMagnitude", ({ enumerable: true, get: function () { return utils_2.getMagnitude; } }));
+Object.defineProperty(exports, "defineProperty", ({ enumerable: true, get: function () { return utils_2.defineProperty; } }));
+var data_1 = __webpack_require__(/*! ./data */ "./node_modules/@formatjs/ecma402-abstract/data.js");
+Object.defineProperty(exports, "isMissingLocaleDataError", ({ enumerable: true, get: function () { return data_1.isMissingLocaleDataError; } }));
+tslib_1.__exportStar(__webpack_require__(/*! ./types/relative-time */ "./node_modules/@formatjs/ecma402-abstract/types/relative-time.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./types/date-time */ "./node_modules/@formatjs/ecma402-abstract/types/date-time.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./types/list */ "./node_modules/@formatjs/ecma402-abstract/types/list.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./types/plural-rules */ "./node_modules/@formatjs/ecma402-abstract/types/plural-rules.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./types/number */ "./node_modules/@formatjs/ecma402-abstract/types/number.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./types/displaynames */ "./node_modules/@formatjs/ecma402-abstract/types/displaynames.js"), exports);
+var utils_3 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/ecma402-abstract/utils.js");
+Object.defineProperty(exports, "invariant", ({ enumerable: true, get: function () { return utils_3.invariant; } }));
+tslib_1.__exportStar(__webpack_require__(/*! ./262 */ "./node_modules/@formatjs/ecma402-abstract/262.js"), exports);
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/types/date-time.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/types/date-time.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RangePatternType = void 0;
+var RangePatternType;
+(function (RangePatternType) {
+    RangePatternType["startRange"] = "startRange";
+    RangePatternType["shared"] = "shared";
+    RangePatternType["endRange"] = "endRange";
+})(RangePatternType = exports.RangePatternType || (exports.RangePatternType = {}));
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/types/displaynames.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/types/displaynames.js ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/types/list.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/types/list.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/types/number.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/types/number.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/types/plural-rules.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/types/plural-rules.js ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/types/relative-time.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/types/relative-time.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/ecma402-abstract/utils.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@formatjs/ecma402-abstract/utils.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.invariant = exports.UNICODE_EXTENSION_SEQUENCE_REGEX = exports.defineProperty = exports.isLiteralPart = exports.getMultiInternalSlots = exports.getInternalSlot = exports.setMultiInternalSlots = exports.setInternalSlot = exports.repeat = exports.getMagnitude = void 0;
+/**
+ * Cannot do Math.log(x) / Math.log(10) bc if IEEE floating point issue
+ * @param x number
+ */
+function getMagnitude(x) {
+    // Cannot count string length via Number.toString because it may use scientific notation
+    // for very small or very large numbers.
+    return Math.floor(Math.log(x) * Math.LOG10E);
+}
+exports.getMagnitude = getMagnitude;
+function repeat(s, times) {
+    if (typeof s.repeat === 'function') {
+        return s.repeat(times);
+    }
+    var arr = new Array(times);
+    for (var i = 0; i < arr.length; i++) {
+        arr[i] = s;
+    }
+    return arr.join('');
+}
+exports.repeat = repeat;
+function setInternalSlot(map, pl, field, value) {
+    if (!map.get(pl)) {
+        map.set(pl, Object.create(null));
+    }
+    var slots = map.get(pl);
+    slots[field] = value;
+}
+exports.setInternalSlot = setInternalSlot;
+function setMultiInternalSlots(map, pl, props) {
+    for (var _i = 0, _a = Object.keys(props); _i < _a.length; _i++) {
+        var k = _a[_i];
+        setInternalSlot(map, pl, k, props[k]);
+    }
+}
+exports.setMultiInternalSlots = setMultiInternalSlots;
+function getInternalSlot(map, pl, field) {
+    return getMultiInternalSlots(map, pl, field)[field];
+}
+exports.getInternalSlot = getInternalSlot;
+function getMultiInternalSlots(map, pl) {
+    var fields = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        fields[_i - 2] = arguments[_i];
+    }
+    var slots = map.get(pl);
+    if (!slots) {
+        throw new TypeError(pl + " InternalSlot has not been initialized");
+    }
+    return fields.reduce(function (all, f) {
+        all[f] = slots[f];
+        return all;
+    }, Object.create(null));
+}
+exports.getMultiInternalSlots = getMultiInternalSlots;
+function isLiteralPart(patternPart) {
+    return patternPart.type === 'literal';
+}
+exports.isLiteralPart = isLiteralPart;
+/*
+  17 ECMAScript Standard Built-in Objects:
+    Every built-in Function object, including constructors, that is not
+    identified as an anonymous function has a name property whose value
+    is a String.
+
+    Unless otherwise specified, the name property of a built-in Function
+    object, if it exists, has the attributes { [[Writable]]: false,
+    [[Enumerable]]: false, [[Configurable]]: true }.
+*/
+function defineProperty(target, name, _a) {
+    var value = _a.value;
+    Object.defineProperty(target, name, {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: value,
+    });
+}
+exports.defineProperty = defineProperty;
+exports.UNICODE_EXTENSION_SEQUENCE_REGEX = /-u(?:-[0-9a-z]{2,8})+/gi;
+function invariant(condition, message, Err) {
+    if (Err === void 0) { Err = Error; }
+    if (!condition) {
+        throw new Err(message);
+    }
+}
+exports.invariant = invariant;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/icu-messageformat-parser/error.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@formatjs/icu-messageformat-parser/error.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ErrorKind = void 0;
+var ErrorKind;
+(function (ErrorKind) {
+    /** Argument is unclosed (e.g. `{0`) */
+    ErrorKind[ErrorKind["EXPECT_ARGUMENT_CLOSING_BRACE"] = 1] = "EXPECT_ARGUMENT_CLOSING_BRACE";
+    /** Argument is empty (e.g. `{}`). */
+    ErrorKind[ErrorKind["EMPTY_ARGUMENT"] = 2] = "EMPTY_ARGUMENT";
+    /** Argument is malformed (e.g. `{foo!}``) */
+    ErrorKind[ErrorKind["MALFORMED_ARGUMENT"] = 3] = "MALFORMED_ARGUMENT";
+    /** Expect an argument type (e.g. `{foo,}`) */
+    ErrorKind[ErrorKind["EXPECT_ARGUMENT_TYPE"] = 4] = "EXPECT_ARGUMENT_TYPE";
+    /** Unsupported argument type (e.g. `{foo,foo}`) */
+    ErrorKind[ErrorKind["INVALID_ARGUMENT_TYPE"] = 5] = "INVALID_ARGUMENT_TYPE";
+    /** Expect an argument style (e.g. `{foo, number, }`) */
+    ErrorKind[ErrorKind["EXPECT_ARGUMENT_STYLE"] = 6] = "EXPECT_ARGUMENT_STYLE";
+    /** The number skeleton is invalid. */
+    ErrorKind[ErrorKind["INVALID_NUMBER_SKELETON"] = 7] = "INVALID_NUMBER_SKELETON";
+    /** The date time skeleton is invalid. */
+    ErrorKind[ErrorKind["INVALID_DATE_TIME_SKELETON"] = 8] = "INVALID_DATE_TIME_SKELETON";
+    /** Exepct a number skeleton following the `::` (e.g. `{foo, number, ::}`) */
+    ErrorKind[ErrorKind["EXPECT_NUMBER_SKELETON"] = 9] = "EXPECT_NUMBER_SKELETON";
+    /** Exepct a date time skeleton following the `::` (e.g. `{foo, date, ::}`) */
+    ErrorKind[ErrorKind["EXPECT_DATE_TIME_SKELETON"] = 10] = "EXPECT_DATE_TIME_SKELETON";
+    /** Unmatched apostrophes in the argument style (e.g. `{foo, number, 'test`) */
+    ErrorKind[ErrorKind["UNCLOSED_QUOTE_IN_ARGUMENT_STYLE"] = 11] = "UNCLOSED_QUOTE_IN_ARGUMENT_STYLE";
+    /** Missing select argument options (e.g. `{foo, select}`) */
+    ErrorKind[ErrorKind["EXPECT_SELECT_ARGUMENT_OPTIONS"] = 12] = "EXPECT_SELECT_ARGUMENT_OPTIONS";
+    /** Expecting an offset value in `plural` or `selectordinal` argument (e.g `{foo, plural, offset}`) */
+    ErrorKind[ErrorKind["EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE"] = 13] = "EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE";
+    /** Offset value in `plural` or `selectordinal` is invalid (e.g. `{foo, plural, offset: x}`) */
+    ErrorKind[ErrorKind["INVALID_PLURAL_ARGUMENT_OFFSET_VALUE"] = 14] = "INVALID_PLURAL_ARGUMENT_OFFSET_VALUE";
+    /** Expecting a selector in `select` argument (e.g `{foo, select}`) */
+    ErrorKind[ErrorKind["EXPECT_SELECT_ARGUMENT_SELECTOR"] = 15] = "EXPECT_SELECT_ARGUMENT_SELECTOR";
+    /** Expecting a selector in `plural` or `selectordinal` argument (e.g `{foo, plural}`) */
+    ErrorKind[ErrorKind["EXPECT_PLURAL_ARGUMENT_SELECTOR"] = 16] = "EXPECT_PLURAL_ARGUMENT_SELECTOR";
+    /** Expecting a message fragment after the `select` selector (e.g. `{foo, select, apple}`) */
+    ErrorKind[ErrorKind["EXPECT_SELECT_ARGUMENT_SELECTOR_FRAGMENT"] = 17] = "EXPECT_SELECT_ARGUMENT_SELECTOR_FRAGMENT";
+    /**
+     * Expecting a message fragment after the `plural` or `selectordinal` selector
+     * (e.g. `{foo, plural, one}`)
+     */
+    ErrorKind[ErrorKind["EXPECT_PLURAL_ARGUMENT_SELECTOR_FRAGMENT"] = 18] = "EXPECT_PLURAL_ARGUMENT_SELECTOR_FRAGMENT";
+    /** Selector in `plural` or `selectordinal` is malformed (e.g. `{foo, plural, =x {#}}`) */
+    ErrorKind[ErrorKind["INVALID_PLURAL_ARGUMENT_SELECTOR"] = 19] = "INVALID_PLURAL_ARGUMENT_SELECTOR";
+    /**
+     * Duplicate selectors in `plural` or `selectordinal` argument.
+     * (e.g. {foo, plural, one {#} one {#}})
+     */
+    ErrorKind[ErrorKind["DUPLICATE_PLURAL_ARGUMENT_SELECTOR"] = 20] = "DUPLICATE_PLURAL_ARGUMENT_SELECTOR";
+    /** Duplicate selectors in `select` argument.
+     * (e.g. {foo, select, apple {apple} apple {apple}})
+     */
+    ErrorKind[ErrorKind["DUPLICATE_SELECT_ARGUMENT_SELECTOR"] = 21] = "DUPLICATE_SELECT_ARGUMENT_SELECTOR";
+    /** Plural or select argument option must have `other` clause. */
+    ErrorKind[ErrorKind["MISSING_OTHER_CLAUSE"] = 22] = "MISSING_OTHER_CLAUSE";
+    /** The tag is malformed. (e.g. `<bold!>foo</bold!>) */
+    ErrorKind[ErrorKind["INVALID_TAG"] = 23] = "INVALID_TAG";
+    /** The tag name is invalid. (e.g. `<123>foo</123>`) */
+    ErrorKind[ErrorKind["INVALID_TAG_NAME"] = 25] = "INVALID_TAG_NAME";
+    /** The closing tag does not match the opening tag. (e.g. `<bold>foo</italic>`) */
+    ErrorKind[ErrorKind["UNMATCHED_CLOSING_TAG"] = 26] = "UNMATCHED_CLOSING_TAG";
+    /** The opening tag has unmatched closing tag. (e.g. `<bold>foo`) */
+    ErrorKind[ErrorKind["UNCLOSED_TAG"] = 27] = "UNCLOSED_TAG";
+})(ErrorKind = exports.ErrorKind || (exports.ErrorKind = {}));
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/icu-messageformat-parser/index.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@formatjs/icu-messageformat-parser/index.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parse = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/icu-messageformat-parser/error.js");
+var parser_1 = __webpack_require__(/*! ./parser */ "./node_modules/@formatjs/icu-messageformat-parser/parser.js");
+var types_1 = __webpack_require__(/*! ./types */ "./node_modules/@formatjs/icu-messageformat-parser/types.js");
+function pruneLocation(els) {
+    els.forEach(function (el) {
+        delete el.location;
+        if (types_1.isSelectElement(el) || types_1.isPluralElement(el)) {
+            for (var k in el.options) {
+                delete el.options[k].location;
+                pruneLocation(el.options[k].value);
+            }
+        }
+        else if (types_1.isNumberElement(el) && types_1.isNumberSkeleton(el.style)) {
+            delete el.style.location;
+        }
+        else if ((types_1.isDateElement(el) || types_1.isTimeElement(el)) &&
+            types_1.isDateTimeSkeleton(el.style)) {
+            delete el.style.location;
+        }
+        else if (types_1.isTagElement(el)) {
+            pruneLocation(el.children);
+        }
+    });
+}
+function parse(message, opts) {
+    if (opts === void 0) { opts = {}; }
+    opts = tslib_1.__assign({ shouldParseSkeletons: true }, opts);
+    var result = new parser_1.Parser(message, opts).parse();
+    if (result.err) {
+        var error = SyntaxError(error_1.ErrorKind[result.err.kind]);
+        // @ts-expect-error Assign to error object
+        error.location = result.err.location;
+        // @ts-expect-error Assign to error object
+        error.originalMessage = result.err.message;
+        throw error;
+    }
+    if (!(opts === null || opts === void 0 ? void 0 : opts.captureLocation)) {
+        pruneLocation(result.val);
+    }
+    return result.val;
+}
+exports.parse = parse;
+tslib_1.__exportStar(__webpack_require__(/*! ./types */ "./node_modules/@formatjs/icu-messageformat-parser/types.js"), exports);
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/icu-messageformat-parser/parser.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@formatjs/icu-messageformat-parser/parser.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Parser = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/icu-messageformat-parser/error.js");
+var types_1 = __webpack_require__(/*! ./types */ "./node_modules/@formatjs/icu-messageformat-parser/types.js");
+var regex_generated_1 = __webpack_require__(/*! ./regex.generated */ "./node_modules/@formatjs/icu-messageformat-parser/regex.generated.js");
+var icu_skeleton_parser_1 = __webpack_require__(/*! @formatjs/icu-skeleton-parser */ "./node_modules/@formatjs/icu-skeleton-parser/index.js");
+function createLocation(start, end) {
+    return { start: start, end: end };
+}
+// #region Ponyfills
+// Consolidate these variables up top for easier toggling during debugging
+var hasNativeStartsWith = !!String.prototype.startsWith;
+var hasNativeFromCodePoint = !!String.fromCodePoint;
+var hasNativeFromEntries = !!Object.fromEntries;
+var hasNativeCodePointAt = !!String.prototype.codePointAt;
+var hasTrimStart = !!String.prototype.trimStart;
+var hasTrimEnd = !!String.prototype.trimEnd;
+var hasNativeIsSafeInteger = !!Number.isSafeInteger;
+var isSafeInteger = hasNativeIsSafeInteger
+    ? Number.isSafeInteger
+    : function (n) {
+        return (typeof n === 'number' &&
+            isFinite(n) &&
+            Math.floor(n) === n &&
+            Math.abs(n) <= 0x1fffffffffffff);
+    };
+// IE11 does not support y and u.
+var REGEX_SUPPORTS_U_AND_Y = true;
+try {
+    RE('([^\\p{White_Space}\\p{Pattern_Syntax}]*)', 'yu');
+}
+catch (_) {
+    REGEX_SUPPORTS_U_AND_Y = false;
+}
+var startsWith = hasNativeStartsWith
+    ? // Native
+        function startsWith(s, search, position) {
+            return s.startsWith(search, position);
+        }
+    : // For IE11
+        function startsWith(s, search, position) {
+            return s.slice(position, position + search.length) === search;
+        };
+var fromCodePoint = hasNativeFromCodePoint
+    ? String.fromCodePoint
+    : // IE11
+        function fromCodePoint() {
+            var codePoints = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                codePoints[_i] = arguments[_i];
+            }
+            var elements = '';
+            var length = codePoints.length;
+            var i = 0;
+            var code;
+            while (length > i) {
+                code = codePoints[i++];
+                if (code > 0x10ffff)
+                    throw RangeError(code + ' is not a valid code point');
+                elements +=
+                    code < 0x10000
+                        ? String.fromCharCode(code)
+                        : String.fromCharCode(((code -= 0x10000) >> 10) + 0xd800, (code % 0x400) + 0xdc00);
+            }
+            return elements;
+        };
+var fromEntries = 
+// native
+hasNativeFromEntries
+    ? Object.fromEntries
+    : // Ponyfill
+        function fromEntries(entries) {
+            var obj = {};
+            for (var _i = 0, entries_1 = entries; _i < entries_1.length; _i++) {
+                var _a = entries_1[_i], k = _a[0], v = _a[1];
+                obj[k] = v;
+            }
+            return obj;
+        };
+var codePointAt = hasNativeCodePointAt
+    ? // Native
+        function codePointAt(s, index) {
+            return s.codePointAt(index);
+        }
+    : // IE 11
+        function codePointAt(s, index) {
+            var size = s.length;
+            if (index < 0 || index >= size) {
+                return undefined;
+            }
+            var first = s.charCodeAt(index);
+            var second;
+            return first < 0xd800 ||
+                first > 0xdbff ||
+                index + 1 === size ||
+                (second = s.charCodeAt(index + 1)) < 0xdc00 ||
+                second > 0xdfff
+                ? first
+                : ((first - 0xd800) << 10) + (second - 0xdc00) + 0x10000;
+        };
+var trimStart = hasTrimStart
+    ? // Native
+        function trimStart(s) {
+            return s.trimStart();
+        }
+    : // Ponyfill
+        function trimStart(s) {
+            return s.replace(regex_generated_1.SPACE_SEPARATOR_START_REGEX, '');
+        };
+var trimEnd = hasTrimEnd
+    ? // Native
+        function trimEnd(s) {
+            return s.trimEnd();
+        }
+    : // Ponyfill
+        function trimEnd(s) {
+            return s.replace(regex_generated_1.SPACE_SEPARATOR_END_REGEX, '');
+        };
+// Prevent minifier to translate new RegExp to literal form that might cause syntax error on IE11.
+function RE(s, flag) {
+    return new RegExp(s, flag);
+}
+// #endregion
+var matchIdentifierAtIndex;
+if (REGEX_SUPPORTS_U_AND_Y) {
+    // Native
+    var IDENTIFIER_PREFIX_RE_1 = RE('([^\\p{White_Space}\\p{Pattern_Syntax}]*)', 'yu');
+    matchIdentifierAtIndex = function matchIdentifierAtIndex(s, index) {
+        var _a;
+        IDENTIFIER_PREFIX_RE_1.lastIndex = index;
+        var match = IDENTIFIER_PREFIX_RE_1.exec(s);
+        return (_a = match[1]) !== null && _a !== void 0 ? _a : '';
+    };
+}
+else {
+    // IE11
+    matchIdentifierAtIndex = function matchIdentifierAtIndex(s, index) {
+        var match = [];
+        while (true) {
+            var c = codePointAt(s, index);
+            if (c === undefined || _isWhiteSpace(c) || _isPatternSyntax(c)) {
+                break;
+            }
+            match.push(c);
+            index += c >= 0x10000 ? 2 : 1;
+        }
+        return fromCodePoint.apply(void 0, match);
+    };
+}
+var Parser = /** @class */ (function () {
+    function Parser(message, options) {
+        if (options === void 0) { options = {}; }
+        this.message = message;
+        this.position = { offset: 0, line: 1, column: 1 };
+        this.ignoreTag = !!options.ignoreTag;
+        this.requiresOtherClause = !!options.requiresOtherClause;
+        this.shouldParseSkeletons = !!options.shouldParseSkeletons;
+    }
+    Parser.prototype.parse = function () {
+        if (this.offset() !== 0) {
+            throw Error('parser can only be used once');
+        }
+        return this.parseMessage(0, '', false);
+    };
+    Parser.prototype.parseMessage = function (nestingLevel, parentArgType, expectingCloseTag) {
+        var elements = [];
+        while (!this.isEOF()) {
+            var char = this.char();
+            if (char === 123 /* `{` */) {
+                var result = this.parseArgument(nestingLevel, expectingCloseTag);
+                if (result.err) {
+                    return result;
+                }
+                elements.push(result.val);
+            }
+            else if (char === 125 /* `}` */ && nestingLevel > 0) {
+                break;
+            }
+            else if (char === 35 /* `#` */ &&
+                (parentArgType === 'plural' || parentArgType === 'selectordinal')) {
+                var position = this.clonePosition();
+                this.bump();
+                elements.push({
+                    type: types_1.TYPE.pound,
+                    location: createLocation(position, this.clonePosition()),
+                });
+            }
+            else if (char === 60 /* `<` */ &&
+                !this.ignoreTag &&
+                this.peek() === 47 // char code for '/'
+            ) {
+                if (expectingCloseTag) {
+                    break;
+                }
+                else {
+                    return this.error(error_1.ErrorKind.UNMATCHED_CLOSING_TAG, createLocation(this.clonePosition(), this.clonePosition()));
+                }
+            }
+            else if (char === 60 /* `<` */ &&
+                !this.ignoreTag &&
+                _isAlpha(this.peek() || 0)) {
+                var result = this.parseTag(nestingLevel, parentArgType);
+                if (result.err) {
+                    return result;
+                }
+                elements.push(result.val);
+            }
+            else {
+                var result = this.parseLiteral(nestingLevel, parentArgType);
+                if (result.err) {
+                    return result;
+                }
+                elements.push(result.val);
+            }
+        }
+        return { val: elements, err: null };
+    };
+    /**
+     * A tag name must start with an ASCII lower/upper case letter. The grammar is based on the
+     * [custom element name][] except that a dash is NOT always mandatory and uppercase letters
+     * are accepted:
+     *
+     * ```
+     * tag ::= "<" tagName (whitespace)* "/>" | "<" tagName (whitespace)* ">" message "</" tagName (whitespace)* ">"
+     * tagName ::= [a-z] (PENChar)*
+     * PENChar ::=
+     *     "-" | "." | [0-9] | "_" | [a-z] | [A-Z] | #xB7 | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x37D] |
+     *     [#x37F-#x1FFF] | [#x200C-#x200D] | [#x203F-#x2040] | [#x2070-#x218F] | [#x2C00-#x2FEF] |
+     *     [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+     * ```
+     *
+     * [custom element name]: https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name
+     * NOTE: We're a bit more lax here since HTML technically does not allow uppercase HTML element but we do
+     * since other tag-based engines like React allow it
+     */
+    Parser.prototype.parseTag = function (nestingLevel, parentArgType) {
+        var startPosition = this.clonePosition();
+        this.bump(); // `<`
+        var tagName = this.parseTagName();
+        this.bumpSpace();
+        if (this.bumpIf('/>')) {
+            // Self closing tag
+            return {
+                val: {
+                    type: types_1.TYPE.literal,
+                    value: "<" + tagName + "/>",
+                    location: createLocation(startPosition, this.clonePosition()),
+                },
+                err: null,
+            };
+        }
+        else if (this.bumpIf('>')) {
+            var childrenResult = this.parseMessage(nestingLevel + 1, parentArgType, true);
+            if (childrenResult.err) {
+                return childrenResult;
+            }
+            var children = childrenResult.val;
+            // Expecting a close tag
+            var endTagStartPosition = this.clonePosition();
+            if (this.bumpIf('</')) {
+                if (this.isEOF() || !_isAlpha(this.char())) {
+                    return this.error(error_1.ErrorKind.INVALID_TAG, createLocation(endTagStartPosition, this.clonePosition()));
+                }
+                var closingTagNameStartPosition = this.clonePosition();
+                var closingTagName = this.parseTagName();
+                if (tagName !== closingTagName) {
+                    return this.error(error_1.ErrorKind.UNMATCHED_CLOSING_TAG, createLocation(closingTagNameStartPosition, this.clonePosition()));
+                }
+                this.bumpSpace();
+                if (!this.bumpIf('>')) {
+                    return this.error(error_1.ErrorKind.INVALID_TAG, createLocation(endTagStartPosition, this.clonePosition()));
+                }
+                return {
+                    val: {
+                        type: types_1.TYPE.tag,
+                        value: tagName,
+                        children: children,
+                        location: createLocation(startPosition, this.clonePosition()),
+                    },
+                    err: null,
+                };
+            }
+            else {
+                return this.error(error_1.ErrorKind.UNCLOSED_TAG, createLocation(startPosition, this.clonePosition()));
+            }
+        }
+        else {
+            return this.error(error_1.ErrorKind.INVALID_TAG, createLocation(startPosition, this.clonePosition()));
+        }
+    };
+    /**
+     * This method assumes that the caller has peeked ahead for the first tag character.
+     */
+    Parser.prototype.parseTagName = function () {
+        var startOffset = this.offset();
+        this.bump(); // the first tag name character
+        while (!this.isEOF() && _isPotentialElementNameChar(this.char())) {
+            this.bump();
+        }
+        return this.message.slice(startOffset, this.offset());
+    };
+    Parser.prototype.parseLiteral = function (nestingLevel, parentArgType) {
+        var start = this.clonePosition();
+        var value = '';
+        while (true) {
+            var parseQuoteResult = this.tryParseQuote(parentArgType);
+            if (parseQuoteResult) {
+                value += parseQuoteResult;
+                continue;
+            }
+            var parseUnquotedResult = this.tryParseUnquoted(nestingLevel, parentArgType);
+            if (parseUnquotedResult) {
+                value += parseUnquotedResult;
+                continue;
+            }
+            var parseLeftAngleResult = this.tryParseLeftAngleBracket();
+            if (parseLeftAngleResult) {
+                value += parseLeftAngleResult;
+                continue;
+            }
+            break;
+        }
+        var location = createLocation(start, this.clonePosition());
+        return {
+            val: { type: types_1.TYPE.literal, value: value, location: location },
+            err: null,
+        };
+    };
+    Parser.prototype.tryParseLeftAngleBracket = function () {
+        if (!this.isEOF() &&
+            this.char() === 60 /* `<` */ &&
+            (this.ignoreTag ||
+                // If at the opening tag or closing tag position, bail.
+                !_isAlphaOrSlash(this.peek() || 0))) {
+            this.bump(); // `<`
+            return '<';
+        }
+        return null;
+    };
+    /**
+     * Starting with ICU 4.8, an ASCII apostrophe only starts quoted text if it immediately precedes
+     * a character that requires quoting (that is, "only where needed"), and works the same in
+     * nested messages as on the top level of the pattern. The new behavior is otherwise compatible.
+     */
+    Parser.prototype.tryParseQuote = function (parentArgType) {
+        if (this.isEOF() || this.char() !== 39 /* `'` */) {
+            return null;
+        }
+        // Parse escaped char following the apostrophe, or early return if there is no escaped char.
+        // Check if is valid escaped character
+        switch (this.peek()) {
+            case 39 /* `'` */:
+                // double quote, should return as a single quote.
+                this.bump();
+                this.bump();
+                return "'";
+            // '{', '<', '>', '}'
+            case 123:
+            case 60:
+            case 62:
+            case 125:
+                break;
+            case 35: // '#'
+                if (parentArgType === 'plural' || parentArgType === 'selectordinal') {
+                    break;
+                }
+                return null;
+            default:
+                return null;
+        }
+        this.bump(); // apostrophe
+        var codePoints = [this.char()]; // escaped char
+        this.bump();
+        // read chars until the optional closing apostrophe is found
+        while (!this.isEOF()) {
+            var ch = this.char();
+            if (ch === 39 /* `'` */) {
+                if (this.peek() === 39 /* `'` */) {
+                    codePoints.push(39);
+                    // Bump one more time because we need to skip 2 characters.
+                    this.bump();
+                }
+                else {
+                    // Optional closing apostrophe.
+                    this.bump();
+                    break;
+                }
+            }
+            else {
+                codePoints.push(ch);
+            }
+            this.bump();
+        }
+        return fromCodePoint.apply(void 0, codePoints);
+    };
+    Parser.prototype.tryParseUnquoted = function (nestingLevel, parentArgType) {
+        if (this.isEOF()) {
+            return null;
+        }
+        var ch = this.char();
+        if (ch === 60 /* `<` */ ||
+            ch === 123 /* `{` */ ||
+            (ch === 35 /* `#` */ &&
+                (parentArgType === 'plural' || parentArgType === 'selectordinal')) ||
+            (ch === 125 /* `}` */ && nestingLevel > 0)) {
+            return null;
+        }
+        else {
+            this.bump();
+            return fromCodePoint(ch);
+        }
+    };
+    Parser.prototype.parseArgument = function (nestingLevel, expectingCloseTag) {
+        var openingBracePosition = this.clonePosition();
+        this.bump(); // `{`
+        this.bumpSpace();
+        if (this.isEOF()) {
+            return this.error(error_1.ErrorKind.EXPECT_ARGUMENT_CLOSING_BRACE, createLocation(openingBracePosition, this.clonePosition()));
+        }
+        if (this.char() === 125 /* `}` */) {
+            this.bump();
+            return this.error(error_1.ErrorKind.EMPTY_ARGUMENT, createLocation(openingBracePosition, this.clonePosition()));
+        }
+        // argument name
+        var value = this.parseIdentifierIfPossible().value;
+        if (!value) {
+            return this.error(error_1.ErrorKind.MALFORMED_ARGUMENT, createLocation(openingBracePosition, this.clonePosition()));
+        }
+        this.bumpSpace();
+        if (this.isEOF()) {
+            return this.error(error_1.ErrorKind.EXPECT_ARGUMENT_CLOSING_BRACE, createLocation(openingBracePosition, this.clonePosition()));
+        }
+        switch (this.char()) {
+            // Simple argument: `{name}`
+            case 125 /* `}` */: {
+                this.bump(); // `}`
+                return {
+                    val: {
+                        type: types_1.TYPE.argument,
+                        // value does not include the opening and closing braces.
+                        value: value,
+                        location: createLocation(openingBracePosition, this.clonePosition()),
+                    },
+                    err: null,
+                };
+            }
+            // Argument with options: `{name, format, ...}`
+            case 44 /* `,` */: {
+                this.bump(); // `,`
+                this.bumpSpace();
+                if (this.isEOF()) {
+                    return this.error(error_1.ErrorKind.EXPECT_ARGUMENT_CLOSING_BRACE, createLocation(openingBracePosition, this.clonePosition()));
+                }
+                return this.parseArgumentOptions(nestingLevel, expectingCloseTag, value, openingBracePosition);
+            }
+            default:
+                return this.error(error_1.ErrorKind.MALFORMED_ARGUMENT, createLocation(openingBracePosition, this.clonePosition()));
+        }
+    };
+    /**
+     * Advance the parser until the end of the identifier, if it is currently on
+     * an identifier character. Return an empty string otherwise.
+     */
+    Parser.prototype.parseIdentifierIfPossible = function () {
+        var startingPosition = this.clonePosition();
+        var startOffset = this.offset();
+        var value = matchIdentifierAtIndex(this.message, startOffset);
+        var endOffset = startOffset + value.length;
+        this.bumpTo(endOffset);
+        var endPosition = this.clonePosition();
+        var location = createLocation(startingPosition, endPosition);
+        return { value: value, location: location };
+    };
+    Parser.prototype.parseArgumentOptions = function (nestingLevel, expectingCloseTag, value, openingBracePosition) {
+        var _a;
+        // Parse this range:
+        // {name, type, style}
+        //        ^---^
+        var typeStartPosition = this.clonePosition();
+        var argType = this.parseIdentifierIfPossible().value;
+        var typeEndPosition = this.clonePosition();
+        switch (argType) {
+            case '':
+                // Expecting a style string number, date, time, plural, selectordinal, or select.
+                return this.error(error_1.ErrorKind.EXPECT_ARGUMENT_TYPE, createLocation(typeStartPosition, typeEndPosition));
+            case 'number':
+            case 'date':
+            case 'time': {
+                // Parse this range:
+                // {name, number, style}
+                //              ^-------^
+                this.bumpSpace();
+                var styleAndLocation = null;
+                if (this.bumpIf(',')) {
+                    this.bumpSpace();
+                    var styleStartPosition = this.clonePosition();
+                    var result = this.parseSimpleArgStyleIfPossible();
+                    if (result.err) {
+                        return result;
+                    }
+                    var style = trimEnd(result.val);
+                    if (style.length === 0) {
+                        return this.error(error_1.ErrorKind.EXPECT_ARGUMENT_STYLE, createLocation(this.clonePosition(), this.clonePosition()));
+                    }
+                    var styleLocation = createLocation(styleStartPosition, this.clonePosition());
+                    styleAndLocation = { style: style, styleLocation: styleLocation };
+                }
+                var argCloseResult = this.tryParseArgumentClose(openingBracePosition);
+                if (argCloseResult.err) {
+                    return argCloseResult;
+                }
+                var location_1 = createLocation(openingBracePosition, this.clonePosition());
+                // Extract style or skeleton
+                if (styleAndLocation && startsWith(styleAndLocation === null || styleAndLocation === void 0 ? void 0 : styleAndLocation.style, '::', 0)) {
+                    // Skeleton starts with `::`.
+                    var skeleton = trimStart(styleAndLocation.style.slice(2));
+                    if (argType === 'number') {
+                        var result = this.parseNumberSkeletonFromString(skeleton, styleAndLocation.styleLocation);
+                        if (result.err) {
+                            return result;
+                        }
+                        return {
+                            val: { type: types_1.TYPE.number, value: value, location: location_1, style: result.val },
+                            err: null,
+                        };
+                    }
+                    else {
+                        if (skeleton.length === 0) {
+                            return this.error(error_1.ErrorKind.EXPECT_DATE_TIME_SKELETON, location_1);
+                        }
+                        var style = {
+                            type: types_1.SKELETON_TYPE.dateTime,
+                            pattern: skeleton,
+                            location: styleAndLocation.styleLocation,
+                            parsedOptions: this.shouldParseSkeletons
+                                ? icu_skeleton_parser_1.parseDateTimeSkeleton(skeleton)
+                                : {},
+                        };
+                        var type = argType === 'date' ? types_1.TYPE.date : types_1.TYPE.time;
+                        return {
+                            val: { type: type, value: value, location: location_1, style: style },
+                            err: null,
+                        };
+                    }
+                }
+                // Regular style or no style.
+                return {
+                    val: {
+                        type: argType === 'number'
+                            ? types_1.TYPE.number
+                            : argType === 'date'
+                                ? types_1.TYPE.date
+                                : types_1.TYPE.time,
+                        value: value,
+                        location: location_1,
+                        style: (_a = styleAndLocation === null || styleAndLocation === void 0 ? void 0 : styleAndLocation.style) !== null && _a !== void 0 ? _a : null,
+                    },
+                    err: null,
+                };
+            }
+            case 'plural':
+            case 'selectordinal':
+            case 'select': {
+                // Parse this range:
+                // {name, plural, options}
+                //              ^---------^
+                var typeEndPosition_1 = this.clonePosition();
+                this.bumpSpace();
+                if (!this.bumpIf(',')) {
+                    return this.error(error_1.ErrorKind.EXPECT_SELECT_ARGUMENT_OPTIONS, createLocation(typeEndPosition_1, tslib_1.__assign({}, typeEndPosition_1)));
+                }
+                this.bumpSpace();
+                // Parse offset:
+                // {name, plural, offset:1, options}
+                //                ^-----^
+                //
+                // or the first option:
+                //
+                // {name, plural, one {...} other {...}}
+                //                ^--^
+                var identifierAndLocation = this.parseIdentifierIfPossible();
+                var pluralOffset = 0;
+                if (argType !== 'select' && identifierAndLocation.value === 'offset') {
+                    if (!this.bumpIf(':')) {
+                        return this.error(error_1.ErrorKind.EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE, createLocation(this.clonePosition(), this.clonePosition()));
+                    }
+                    this.bumpSpace();
+                    var result = this.tryParseDecimalInteger(error_1.ErrorKind.EXPECT_PLURAL_ARGUMENT_OFFSET_VALUE, error_1.ErrorKind.INVALID_PLURAL_ARGUMENT_OFFSET_VALUE);
+                    if (result.err) {
+                        return result;
+                    }
+                    // Parse another identifier for option parsing
+                    this.bumpSpace();
+                    identifierAndLocation = this.parseIdentifierIfPossible();
+                    pluralOffset = result.val;
+                }
+                var optionsResult = this.tryParsePluralOrSelectOptions(nestingLevel, argType, expectingCloseTag, identifierAndLocation);
+                if (optionsResult.err) {
+                    return optionsResult;
+                }
+                var argCloseResult = this.tryParseArgumentClose(openingBracePosition);
+                if (argCloseResult.err) {
+                    return argCloseResult;
+                }
+                var location_2 = createLocation(openingBracePosition, this.clonePosition());
+                if (argType === 'select') {
+                    return {
+                        val: {
+                            type: types_1.TYPE.select,
+                            value: value,
+                            options: fromEntries(optionsResult.val),
+                            location: location_2,
+                        },
+                        err: null,
+                    };
+                }
+                else {
+                    return {
+                        val: {
+                            type: types_1.TYPE.plural,
+                            value: value,
+                            options: fromEntries(optionsResult.val),
+                            offset: pluralOffset,
+                            pluralType: argType === 'plural' ? 'cardinal' : 'ordinal',
+                            location: location_2,
+                        },
+                        err: null,
+                    };
+                }
+            }
+            default:
+                return this.error(error_1.ErrorKind.INVALID_ARGUMENT_TYPE, createLocation(typeStartPosition, typeEndPosition));
+        }
+    };
+    Parser.prototype.tryParseArgumentClose = function (openingBracePosition) {
+        // Parse: {value, number, ::currency/GBP }
+        //
+        if (this.isEOF() || this.char() !== 125 /* `}` */) {
+            return this.error(error_1.ErrorKind.EXPECT_ARGUMENT_CLOSING_BRACE, createLocation(openingBracePosition, this.clonePosition()));
+        }
+        this.bump(); // `}`
+        return { val: true, err: null };
+    };
+    /**
+     * See: https://github.com/unicode-org/icu/blob/af7ed1f6d2298013dc303628438ec4abe1f16479/icu4c/source/common/messagepattern.cpp#L659
+     */
+    Parser.prototype.parseSimpleArgStyleIfPossible = function () {
+        var nestedBraces = 0;
+        var startPosition = this.clonePosition();
+        while (!this.isEOF()) {
+            var ch = this.char();
+            switch (ch) {
+                case 39 /* `'` */: {
+                    // Treat apostrophe as quoting but include it in the style part.
+                    // Find the end of the quoted literal text.
+                    this.bump();
+                    var apostrophePosition = this.clonePosition();
+                    if (!this.bumpUntil("'")) {
+                        return this.error(error_1.ErrorKind.UNCLOSED_QUOTE_IN_ARGUMENT_STYLE, createLocation(apostrophePosition, this.clonePosition()));
+                    }
+                    this.bump();
+                    break;
+                }
+                case 123 /* `{` */: {
+                    nestedBraces += 1;
+                    this.bump();
+                    break;
+                }
+                case 125 /* `}` */: {
+                    if (nestedBraces > 0) {
+                        nestedBraces -= 1;
+                    }
+                    else {
+                        return {
+                            val: this.message.slice(startPosition.offset, this.offset()),
+                            err: null,
+                        };
+                    }
+                    break;
+                }
+                default:
+                    this.bump();
+                    break;
+            }
+        }
+        return {
+            val: this.message.slice(startPosition.offset, this.offset()),
+            err: null,
+        };
+    };
+    Parser.prototype.parseNumberSkeletonFromString = function (skeleton, location) {
+        var tokens = [];
+        try {
+            tokens = icu_skeleton_parser_1.parseNumberSkeletonFromString(skeleton);
+        }
+        catch (e) {
+            return this.error(error_1.ErrorKind.INVALID_NUMBER_SKELETON, location);
+        }
+        return {
+            val: {
+                type: types_1.SKELETON_TYPE.number,
+                tokens: tokens,
+                location: location,
+                parsedOptions: this.shouldParseSkeletons
+                    ? icu_skeleton_parser_1.parseNumberSkeleton(tokens)
+                    : {},
+            },
+            err: null,
+        };
+    };
+    /**
+     * @param nesting_level The current nesting level of messages.
+     *     This can be positive when parsing message fragment in select or plural argument options.
+     * @param parent_arg_type The parent argument's type.
+     * @param parsed_first_identifier If provided, this is the first identifier-like selector of
+     *     the argument. It is a by-product of a previous parsing attempt.
+     * @param expecting_close_tag If true, this message is directly or indirectly nested inside
+     *     between a pair of opening and closing tags. The nested message will not parse beyond
+     *     the closing tag boundary.
+     */
+    Parser.prototype.tryParsePluralOrSelectOptions = function (nestingLevel, parentArgType, expectCloseTag, parsedFirstIdentifier) {
+        var _a;
+        var hasOtherClause = false;
+        var options = [];
+        var parsedSelectors = new Set();
+        var selector = parsedFirstIdentifier.value, selectorLocation = parsedFirstIdentifier.location;
+        // Parse:
+        // one {one apple}
+        // ^--^
+        while (true) {
+            if (selector.length === 0) {
+                var startPosition = this.clonePosition();
+                if (parentArgType !== 'select' && this.bumpIf('=')) {
+                    // Try parse `={number}` selector
+                    var result = this.tryParseDecimalInteger(error_1.ErrorKind.EXPECT_PLURAL_ARGUMENT_SELECTOR, error_1.ErrorKind.INVALID_PLURAL_ARGUMENT_SELECTOR);
+                    if (result.err) {
+                        return result;
+                    }
+                    selectorLocation = createLocation(startPosition, this.clonePosition());
+                    selector = this.message.slice(startPosition.offset, this.offset());
+                }
+                else {
+                    break;
+                }
+            }
+            // Duplicate selector clauses
+            if (parsedSelectors.has(selector)) {
+                return this.error(parentArgType === 'select'
+                    ? error_1.ErrorKind.DUPLICATE_SELECT_ARGUMENT_SELECTOR
+                    : error_1.ErrorKind.DUPLICATE_PLURAL_ARGUMENT_SELECTOR, selectorLocation);
+            }
+            if (selector === 'other') {
+                hasOtherClause = true;
+            }
+            // Parse:
+            // one {one apple}
+            //     ^----------^
+            this.bumpSpace();
+            var openingBracePosition = this.clonePosition();
+            if (!this.bumpIf('{')) {
+                return this.error(parentArgType === 'select'
+                    ? error_1.ErrorKind.EXPECT_SELECT_ARGUMENT_SELECTOR_FRAGMENT
+                    : error_1.ErrorKind.EXPECT_PLURAL_ARGUMENT_SELECTOR_FRAGMENT, createLocation(this.clonePosition(), this.clonePosition()));
+            }
+            var fragmentResult = this.parseMessage(nestingLevel + 1, parentArgType, expectCloseTag);
+            if (fragmentResult.err) {
+                return fragmentResult;
+            }
+            var argCloseResult = this.tryParseArgumentClose(openingBracePosition);
+            if (argCloseResult.err) {
+                return argCloseResult;
+            }
+            options.push([
+                selector,
+                {
+                    value: fragmentResult.val,
+                    location: createLocation(openingBracePosition, this.clonePosition()),
+                },
+            ]);
+            // Keep track of the existing selectors
+            parsedSelectors.add(selector);
+            // Prep next selector clause.
+            this.bumpSpace();
+            (_a = this.parseIdentifierIfPossible(), selector = _a.value, selectorLocation = _a.location);
+        }
+        if (options.length === 0) {
+            return this.error(parentArgType === 'select'
+                ? error_1.ErrorKind.EXPECT_SELECT_ARGUMENT_SELECTOR
+                : error_1.ErrorKind.EXPECT_PLURAL_ARGUMENT_SELECTOR, createLocation(this.clonePosition(), this.clonePosition()));
+        }
+        if (this.requiresOtherClause && !hasOtherClause) {
+            return this.error(error_1.ErrorKind.MISSING_OTHER_CLAUSE, createLocation(this.clonePosition(), this.clonePosition()));
+        }
+        return { val: options, err: null };
+    };
+    Parser.prototype.tryParseDecimalInteger = function (expectNumberError, invalidNumberError) {
+        var sign = 1;
+        var startingPosition = this.clonePosition();
+        if (this.bumpIf('+')) {
+        }
+        else if (this.bumpIf('-')) {
+            sign = -1;
+        }
+        var hasDigits = false;
+        var decimal = 0;
+        while (!this.isEOF()) {
+            var ch = this.char();
+            if (ch >= 48 /* `0` */ && ch <= 57 /* `9` */) {
+                hasDigits = true;
+                decimal = decimal * 10 + (ch - 48);
+                this.bump();
+            }
+            else {
+                break;
+            }
+        }
+        var location = createLocation(startingPosition, this.clonePosition());
+        if (!hasDigits) {
+            return this.error(expectNumberError, location);
+        }
+        decimal *= sign;
+        if (!isSafeInteger(decimal)) {
+            return this.error(invalidNumberError, location);
+        }
+        return { val: decimal, err: null };
+    };
+    Parser.prototype.offset = function () {
+        return this.position.offset;
+    };
+    Parser.prototype.isEOF = function () {
+        return this.offset() === this.message.length;
+    };
+    Parser.prototype.clonePosition = function () {
+        // This is much faster than `Object.assign` or spread.
+        return {
+            offset: this.position.offset,
+            line: this.position.line,
+            column: this.position.column,
+        };
+    };
+    /**
+     * Return the code point at the current position of the parser.
+     * Throws if the index is out of bound.
+     */
+    Parser.prototype.char = function () {
+        var offset = this.position.offset;
+        if (offset >= this.message.length) {
+            throw Error('out of bound');
+        }
+        var code = codePointAt(this.message, offset);
+        if (code === undefined) {
+            throw Error("Offset " + offset + " is at invalid UTF-16 code unit boundary");
+        }
+        return code;
+    };
+    Parser.prototype.error = function (kind, location) {
+        return {
+            val: null,
+            err: {
+                kind: kind,
+                message: this.message,
+                location: location,
+            },
+        };
+    };
+    /** Bump the parser to the next UTF-16 code unit. */
+    Parser.prototype.bump = function () {
+        if (this.isEOF()) {
+            return;
+        }
+        var code = this.char();
+        if (code === 10 /* '\n' */) {
+            this.position.line += 1;
+            this.position.column = 1;
+            this.position.offset += 1;
+        }
+        else {
+            this.position.column += 1;
+            // 0 ~ 0x10000 -> unicode BMP, otherwise skip the surrogate pair.
+            this.position.offset += code < 0x10000 ? 1 : 2;
+        }
+    };
+    /**
+     * If the substring starting at the current position of the parser has
+     * the given prefix, then bump the parser to the character immediately
+     * following the prefix and return true. Otherwise, don't bump the parser
+     * and return false.
+     */
+    Parser.prototype.bumpIf = function (prefix) {
+        if (startsWith(this.message, prefix, this.offset())) {
+            for (var i = 0; i < prefix.length; i++) {
+                this.bump();
+            }
+            return true;
+        }
+        return false;
+    };
+    /**
+     * Bump the parser until the pattern character is found and return `true`.
+     * Otherwise bump to the end of the file and return `false`.
+     */
+    Parser.prototype.bumpUntil = function (pattern) {
+        var currentOffset = this.offset();
+        var index = this.message.indexOf(pattern, currentOffset);
+        if (index >= 0) {
+            this.bumpTo(index);
+            return true;
+        }
+        else {
+            this.bumpTo(this.message.length);
+            return false;
+        }
+    };
+    /**
+     * Bump the parser to the target offset.
+     * If target offset is beyond the end of the input, bump the parser to the end of the input.
+     */
+    Parser.prototype.bumpTo = function (targetOffset) {
+        if (this.offset() > targetOffset) {
+            throw Error("targetOffset " + targetOffset + " must be greater than or equal to the current offset " + this.offset());
+        }
+        targetOffset = Math.min(targetOffset, this.message.length);
+        while (true) {
+            var offset = this.offset();
+            if (offset === targetOffset) {
+                break;
+            }
+            if (offset > targetOffset) {
+                throw Error("targetOffset " + targetOffset + " is at invalid UTF-16 code unit boundary");
+            }
+            this.bump();
+            if (this.isEOF()) {
+                break;
+            }
+        }
+    };
+    /** advance the parser through all whitespace to the next non-whitespace code unit. */
+    Parser.prototype.bumpSpace = function () {
+        while (!this.isEOF() && _isWhiteSpace(this.char())) {
+            this.bump();
+        }
+    };
+    /**
+     * Peek at the *next* Unicode codepoint in the input without advancing the parser.
+     * If the input has been exhausted, then this returns null.
+     */
+    Parser.prototype.peek = function () {
+        if (this.isEOF()) {
+            return null;
+        }
+        var code = this.char();
+        var offset = this.offset();
+        var nextCode = this.message.charCodeAt(offset + (code >= 0x10000 ? 2 : 1));
+        return nextCode !== null && nextCode !== void 0 ? nextCode : null;
+    };
+    return Parser;
+}());
+exports.Parser = Parser;
+/**
+ * This check if codepoint is alphabet (lower & uppercase)
+ * @param codepoint
+ * @returns
+ */
+function _isAlpha(codepoint) {
+    return ((codepoint >= 97 && codepoint <= 122) ||
+        (codepoint >= 65 && codepoint <= 90));
+}
+function _isAlphaOrSlash(codepoint) {
+    return _isAlpha(codepoint) || codepoint === 47; /* '/' */
+}
+/** See `parseTag` function docs. */
+function _isPotentialElementNameChar(c) {
+    return (c === 45 /* '-' */ ||
+        c === 46 /* '.' */ ||
+        (c >= 48 && c <= 57) /* 0..9 */ ||
+        c === 95 /* '_' */ ||
+        (c >= 97 && c <= 122) /** a..z */ ||
+        (c >= 65 && c <= 90) /* A..Z */ ||
+        c == 0xb7 ||
+        (c >= 0xc0 && c <= 0xd6) ||
+        (c >= 0xd8 && c <= 0xf6) ||
+        (c >= 0xf8 && c <= 0x37d) ||
+        (c >= 0x37f && c <= 0x1fff) ||
+        (c >= 0x200c && c <= 0x200d) ||
+        (c >= 0x203f && c <= 0x2040) ||
+        (c >= 0x2070 && c <= 0x218f) ||
+        (c >= 0x2c00 && c <= 0x2fef) ||
+        (c >= 0x3001 && c <= 0xd7ff) ||
+        (c >= 0xf900 && c <= 0xfdcf) ||
+        (c >= 0xfdf0 && c <= 0xfffd) ||
+        (c >= 0x10000 && c <= 0xeffff));
+}
+/**
+ * Code point equivalent of regex `\p{White_Space}`.
+ * From: https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt
+ */
+function _isWhiteSpace(c) {
+    return ((c >= 0x0009 && c <= 0x000d) ||
+        c === 0x0020 ||
+        c === 0x0085 ||
+        (c >= 0x200e && c <= 0x200f) ||
+        c === 0x2028 ||
+        c === 0x2029);
+}
+/**
+ * Code point equivalent of regex `\p{Pattern_Syntax}`.
+ * See https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt
+ */
+function _isPatternSyntax(c) {
+    return ((c >= 0x0021 && c <= 0x0023) ||
+        c === 0x0024 ||
+        (c >= 0x0025 && c <= 0x0027) ||
+        c === 0x0028 ||
+        c === 0x0029 ||
+        c === 0x002a ||
+        c === 0x002b ||
+        c === 0x002c ||
+        c === 0x002d ||
+        (c >= 0x002e && c <= 0x002f) ||
+        (c >= 0x003a && c <= 0x003b) ||
+        (c >= 0x003c && c <= 0x003e) ||
+        (c >= 0x003f && c <= 0x0040) ||
+        c === 0x005b ||
+        c === 0x005c ||
+        c === 0x005d ||
+        c === 0x005e ||
+        c === 0x0060 ||
+        c === 0x007b ||
+        c === 0x007c ||
+        c === 0x007d ||
+        c === 0x007e ||
+        c === 0x00a1 ||
+        (c >= 0x00a2 && c <= 0x00a5) ||
+        c === 0x00a6 ||
+        c === 0x00a7 ||
+        c === 0x00a9 ||
+        c === 0x00ab ||
+        c === 0x00ac ||
+        c === 0x00ae ||
+        c === 0x00b0 ||
+        c === 0x00b1 ||
+        c === 0x00b6 ||
+        c === 0x00bb ||
+        c === 0x00bf ||
+        c === 0x00d7 ||
+        c === 0x00f7 ||
+        (c >= 0x2010 && c <= 0x2015) ||
+        (c >= 0x2016 && c <= 0x2017) ||
+        c === 0x2018 ||
+        c === 0x2019 ||
+        c === 0x201a ||
+        (c >= 0x201b && c <= 0x201c) ||
+        c === 0x201d ||
+        c === 0x201e ||
+        c === 0x201f ||
+        (c >= 0x2020 && c <= 0x2027) ||
+        (c >= 0x2030 && c <= 0x2038) ||
+        c === 0x2039 ||
+        c === 0x203a ||
+        (c >= 0x203b && c <= 0x203e) ||
+        (c >= 0x2041 && c <= 0x2043) ||
+        c === 0x2044 ||
+        c === 0x2045 ||
+        c === 0x2046 ||
+        (c >= 0x2047 && c <= 0x2051) ||
+        c === 0x2052 ||
+        c === 0x2053 ||
+        (c >= 0x2055 && c <= 0x205e) ||
+        (c >= 0x2190 && c <= 0x2194) ||
+        (c >= 0x2195 && c <= 0x2199) ||
+        (c >= 0x219a && c <= 0x219b) ||
+        (c >= 0x219c && c <= 0x219f) ||
+        c === 0x21a0 ||
+        (c >= 0x21a1 && c <= 0x21a2) ||
+        c === 0x21a3 ||
+        (c >= 0x21a4 && c <= 0x21a5) ||
+        c === 0x21a6 ||
+        (c >= 0x21a7 && c <= 0x21ad) ||
+        c === 0x21ae ||
+        (c >= 0x21af && c <= 0x21cd) ||
+        (c >= 0x21ce && c <= 0x21cf) ||
+        (c >= 0x21d0 && c <= 0x21d1) ||
+        c === 0x21d2 ||
+        c === 0x21d3 ||
+        c === 0x21d4 ||
+        (c >= 0x21d5 && c <= 0x21f3) ||
+        (c >= 0x21f4 && c <= 0x22ff) ||
+        (c >= 0x2300 && c <= 0x2307) ||
+        c === 0x2308 ||
+        c === 0x2309 ||
+        c === 0x230a ||
+        c === 0x230b ||
+        (c >= 0x230c && c <= 0x231f) ||
+        (c >= 0x2320 && c <= 0x2321) ||
+        (c >= 0x2322 && c <= 0x2328) ||
+        c === 0x2329 ||
+        c === 0x232a ||
+        (c >= 0x232b && c <= 0x237b) ||
+        c === 0x237c ||
+        (c >= 0x237d && c <= 0x239a) ||
+        (c >= 0x239b && c <= 0x23b3) ||
+        (c >= 0x23b4 && c <= 0x23db) ||
+        (c >= 0x23dc && c <= 0x23e1) ||
+        (c >= 0x23e2 && c <= 0x2426) ||
+        (c >= 0x2427 && c <= 0x243f) ||
+        (c >= 0x2440 && c <= 0x244a) ||
+        (c >= 0x244b && c <= 0x245f) ||
+        (c >= 0x2500 && c <= 0x25b6) ||
+        c === 0x25b7 ||
+        (c >= 0x25b8 && c <= 0x25c0) ||
+        c === 0x25c1 ||
+        (c >= 0x25c2 && c <= 0x25f7) ||
+        (c >= 0x25f8 && c <= 0x25ff) ||
+        (c >= 0x2600 && c <= 0x266e) ||
+        c === 0x266f ||
+        (c >= 0x2670 && c <= 0x2767) ||
+        c === 0x2768 ||
+        c === 0x2769 ||
+        c === 0x276a ||
+        c === 0x276b ||
+        c === 0x276c ||
+        c === 0x276d ||
+        c === 0x276e ||
+        c === 0x276f ||
+        c === 0x2770 ||
+        c === 0x2771 ||
+        c === 0x2772 ||
+        c === 0x2773 ||
+        c === 0x2774 ||
+        c === 0x2775 ||
+        (c >= 0x2794 && c <= 0x27bf) ||
+        (c >= 0x27c0 && c <= 0x27c4) ||
+        c === 0x27c5 ||
+        c === 0x27c6 ||
+        (c >= 0x27c7 && c <= 0x27e5) ||
+        c === 0x27e6 ||
+        c === 0x27e7 ||
+        c === 0x27e8 ||
+        c === 0x27e9 ||
+        c === 0x27ea ||
+        c === 0x27eb ||
+        c === 0x27ec ||
+        c === 0x27ed ||
+        c === 0x27ee ||
+        c === 0x27ef ||
+        (c >= 0x27f0 && c <= 0x27ff) ||
+        (c >= 0x2800 && c <= 0x28ff) ||
+        (c >= 0x2900 && c <= 0x2982) ||
+        c === 0x2983 ||
+        c === 0x2984 ||
+        c === 0x2985 ||
+        c === 0x2986 ||
+        c === 0x2987 ||
+        c === 0x2988 ||
+        c === 0x2989 ||
+        c === 0x298a ||
+        c === 0x298b ||
+        c === 0x298c ||
+        c === 0x298d ||
+        c === 0x298e ||
+        c === 0x298f ||
+        c === 0x2990 ||
+        c === 0x2991 ||
+        c === 0x2992 ||
+        c === 0x2993 ||
+        c === 0x2994 ||
+        c === 0x2995 ||
+        c === 0x2996 ||
+        c === 0x2997 ||
+        c === 0x2998 ||
+        (c >= 0x2999 && c <= 0x29d7) ||
+        c === 0x29d8 ||
+        c === 0x29d9 ||
+        c === 0x29da ||
+        c === 0x29db ||
+        (c >= 0x29dc && c <= 0x29fb) ||
+        c === 0x29fc ||
+        c === 0x29fd ||
+        (c >= 0x29fe && c <= 0x2aff) ||
+        (c >= 0x2b00 && c <= 0x2b2f) ||
+        (c >= 0x2b30 && c <= 0x2b44) ||
+        (c >= 0x2b45 && c <= 0x2b46) ||
+        (c >= 0x2b47 && c <= 0x2b4c) ||
+        (c >= 0x2b4d && c <= 0x2b73) ||
+        (c >= 0x2b74 && c <= 0x2b75) ||
+        (c >= 0x2b76 && c <= 0x2b95) ||
+        c === 0x2b96 ||
+        (c >= 0x2b97 && c <= 0x2bff) ||
+        (c >= 0x2e00 && c <= 0x2e01) ||
+        c === 0x2e02 ||
+        c === 0x2e03 ||
+        c === 0x2e04 ||
+        c === 0x2e05 ||
+        (c >= 0x2e06 && c <= 0x2e08) ||
+        c === 0x2e09 ||
+        c === 0x2e0a ||
+        c === 0x2e0b ||
+        c === 0x2e0c ||
+        c === 0x2e0d ||
+        (c >= 0x2e0e && c <= 0x2e16) ||
+        c === 0x2e17 ||
+        (c >= 0x2e18 && c <= 0x2e19) ||
+        c === 0x2e1a ||
+        c === 0x2e1b ||
+        c === 0x2e1c ||
+        c === 0x2e1d ||
+        (c >= 0x2e1e && c <= 0x2e1f) ||
+        c === 0x2e20 ||
+        c === 0x2e21 ||
+        c === 0x2e22 ||
+        c === 0x2e23 ||
+        c === 0x2e24 ||
+        c === 0x2e25 ||
+        c === 0x2e26 ||
+        c === 0x2e27 ||
+        c === 0x2e28 ||
+        c === 0x2e29 ||
+        (c >= 0x2e2a && c <= 0x2e2e) ||
+        c === 0x2e2f ||
+        (c >= 0x2e30 && c <= 0x2e39) ||
+        (c >= 0x2e3a && c <= 0x2e3b) ||
+        (c >= 0x2e3c && c <= 0x2e3f) ||
+        c === 0x2e40 ||
+        c === 0x2e41 ||
+        c === 0x2e42 ||
+        (c >= 0x2e43 && c <= 0x2e4f) ||
+        (c >= 0x2e50 && c <= 0x2e51) ||
+        c === 0x2e52 ||
+        (c >= 0x2e53 && c <= 0x2e7f) ||
+        (c >= 0x3001 && c <= 0x3003) ||
+        c === 0x3008 ||
+        c === 0x3009 ||
+        c === 0x300a ||
+        c === 0x300b ||
+        c === 0x300c ||
+        c === 0x300d ||
+        c === 0x300e ||
+        c === 0x300f ||
+        c === 0x3010 ||
+        c === 0x3011 ||
+        (c >= 0x3012 && c <= 0x3013) ||
+        c === 0x3014 ||
+        c === 0x3015 ||
+        c === 0x3016 ||
+        c === 0x3017 ||
+        c === 0x3018 ||
+        c === 0x3019 ||
+        c === 0x301a ||
+        c === 0x301b ||
+        c === 0x301c ||
+        c === 0x301d ||
+        (c >= 0x301e && c <= 0x301f) ||
+        c === 0x3020 ||
+        c === 0x3030 ||
+        c === 0xfd3e ||
+        c === 0xfd3f ||
+        (c >= 0xfe45 && c <= 0xfe46));
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/icu-messageformat-parser/regex.generated.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@formatjs/icu-messageformat-parser/regex.generated.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.WHITE_SPACE_REGEX = exports.SPACE_SEPARATOR_END_REGEX = exports.SPACE_SEPARATOR_START_REGEX = void 0;
+// @generated from regex-gen.ts
+exports.SPACE_SEPARATOR_START_REGEX = /^[ \xA0\u1680\u2000-\u200A\u202F\u205F\u3000]*/i;
+exports.SPACE_SEPARATOR_END_REGEX = /[ \xA0\u1680\u2000-\u200A\u202F\u205F\u3000]*$/i;
+exports.WHITE_SPACE_REGEX = /[\t-\r \x85\u200E\u200F\u2028\u2029]/i;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/icu-messageformat-parser/types.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@formatjs/icu-messageformat-parser/types.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createNumberElement = exports.createLiteralElement = exports.isDateTimeSkeleton = exports.isNumberSkeleton = exports.isTagElement = exports.isPoundElement = exports.isPluralElement = exports.isSelectElement = exports.isTimeElement = exports.isDateElement = exports.isNumberElement = exports.isArgumentElement = exports.isLiteralElement = exports.SKELETON_TYPE = exports.TYPE = void 0;
+var TYPE;
+(function (TYPE) {
+    /**
+     * Raw text
+     */
+    TYPE[TYPE["literal"] = 0] = "literal";
+    /**
+     * Variable w/o any format, e.g `var` in `this is a {var}`
+     */
+    TYPE[TYPE["argument"] = 1] = "argument";
+    /**
+     * Variable w/ number format
+     */
+    TYPE[TYPE["number"] = 2] = "number";
+    /**
+     * Variable w/ date format
+     */
+    TYPE[TYPE["date"] = 3] = "date";
+    /**
+     * Variable w/ time format
+     */
+    TYPE[TYPE["time"] = 4] = "time";
+    /**
+     * Variable w/ select format
+     */
+    TYPE[TYPE["select"] = 5] = "select";
+    /**
+     * Variable w/ plural format
+     */
+    TYPE[TYPE["plural"] = 6] = "plural";
+    /**
+     * Only possible within plural argument.
+     * This is the `#` symbol that will be substituted with the count.
+     */
+    TYPE[TYPE["pound"] = 7] = "pound";
+    /**
+     * XML-like tag
+     */
+    TYPE[TYPE["tag"] = 8] = "tag";
+})(TYPE = exports.TYPE || (exports.TYPE = {}));
+var SKELETON_TYPE;
+(function (SKELETON_TYPE) {
+    SKELETON_TYPE[SKELETON_TYPE["number"] = 0] = "number";
+    SKELETON_TYPE[SKELETON_TYPE["dateTime"] = 1] = "dateTime";
+})(SKELETON_TYPE = exports.SKELETON_TYPE || (exports.SKELETON_TYPE = {}));
+/**
+ * Type Guards
+ */
+function isLiteralElement(el) {
+    return el.type === TYPE.literal;
+}
+exports.isLiteralElement = isLiteralElement;
+function isArgumentElement(el) {
+    return el.type === TYPE.argument;
+}
+exports.isArgumentElement = isArgumentElement;
+function isNumberElement(el) {
+    return el.type === TYPE.number;
+}
+exports.isNumberElement = isNumberElement;
+function isDateElement(el) {
+    return el.type === TYPE.date;
+}
+exports.isDateElement = isDateElement;
+function isTimeElement(el) {
+    return el.type === TYPE.time;
+}
+exports.isTimeElement = isTimeElement;
+function isSelectElement(el) {
+    return el.type === TYPE.select;
+}
+exports.isSelectElement = isSelectElement;
+function isPluralElement(el) {
+    return el.type === TYPE.plural;
+}
+exports.isPluralElement = isPluralElement;
+function isPoundElement(el) {
+    return el.type === TYPE.pound;
+}
+exports.isPoundElement = isPoundElement;
+function isTagElement(el) {
+    return el.type === TYPE.tag;
+}
+exports.isTagElement = isTagElement;
+function isNumberSkeleton(el) {
+    return !!(el && typeof el === 'object' && el.type === SKELETON_TYPE.number);
+}
+exports.isNumberSkeleton = isNumberSkeleton;
+function isDateTimeSkeleton(el) {
+    return !!(el && typeof el === 'object' && el.type === SKELETON_TYPE.dateTime);
+}
+exports.isDateTimeSkeleton = isDateTimeSkeleton;
+function createLiteralElement(value) {
+    return {
+        type: TYPE.literal,
+        value: value,
+    };
+}
+exports.createLiteralElement = createLiteralElement;
+function createNumberElement(value, style) {
+    return {
+        type: TYPE.number,
+        value: value,
+        style: style,
+    };
+}
+exports.createNumberElement = createNumberElement;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/icu-skeleton-parser/date-time.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@formatjs/icu-skeleton-parser/date-time.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseDateTimeSkeleton = void 0;
+/**
+ * https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
+ * Credit: https://github.com/caridy/intl-datetimeformat-pattern/blob/master/index.js
+ * with some tweaks
+ */
+var DATE_TIME_REGEX = /(?:[Eec]{1,6}|G{1,5}|[Qq]{1,5}|(?:[yYur]+|U{1,5})|[ML]{1,5}|d{1,2}|D{1,3}|F{1}|[abB]{1,5}|[hkHK]{1,2}|w{1,2}|W{1}|m{1,2}|s{1,2}|[zZOvVxX]{1,4})(?=([^']*'[^']*')*[^']*$)/g;
+/**
+ * Parse Date time skeleton into Intl.DateTimeFormatOptions
+ * Ref: https://unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
+ * @public
+ * @param skeleton skeleton string
+ */
+function parseDateTimeSkeleton(skeleton) {
+    var result = {};
+    skeleton.replace(DATE_TIME_REGEX, function (match) {
+        var len = match.length;
+        switch (match[0]) {
+            // Era
+            case 'G':
+                result.era = len === 4 ? 'long' : len === 5 ? 'narrow' : 'short';
+                break;
+            // Year
+            case 'y':
+                result.year = len === 2 ? '2-digit' : 'numeric';
+                break;
+            case 'Y':
+            case 'u':
+            case 'U':
+            case 'r':
+                throw new RangeError('`Y/u/U/r` (year) patterns are not supported, use `y` instead');
+            // Quarter
+            case 'q':
+            case 'Q':
+                throw new RangeError('`q/Q` (quarter) patterns are not supported');
+            // Month
+            case 'M':
+            case 'L':
+                result.month = ['numeric', '2-digit', 'short', 'long', 'narrow'][len - 1];
+                break;
+            // Week
+            case 'w':
+            case 'W':
+                throw new RangeError('`w/W` (week) patterns are not supported');
+            case 'd':
+                result.day = ['numeric', '2-digit'][len - 1];
+                break;
+            case 'D':
+            case 'F':
+            case 'g':
+                throw new RangeError('`D/F/g` (day) patterns are not supported, use `d` instead');
+            // Weekday
+            case 'E':
+                result.weekday = len === 4 ? 'short' : len === 5 ? 'narrow' : 'short';
+                break;
+            case 'e':
+                if (len < 4) {
+                    throw new RangeError('`e..eee` (weekday) patterns are not supported');
+                }
+                result.weekday = ['short', 'long', 'narrow', 'short'][len - 4];
+                break;
+            case 'c':
+                if (len < 4) {
+                    throw new RangeError('`c..ccc` (weekday) patterns are not supported');
+                }
+                result.weekday = ['short', 'long', 'narrow', 'short'][len - 4];
+                break;
+            // Period
+            case 'a': // AM, PM
+                result.hour12 = true;
+                break;
+            case 'b': // am, pm, noon, midnight
+            case 'B': // flexible day periods
+                throw new RangeError('`b/B` (period) patterns are not supported, use `a` instead');
+            // Hour
+            case 'h':
+                result.hourCycle = 'h12';
+                result.hour = ['numeric', '2-digit'][len - 1];
+                break;
+            case 'H':
+                result.hourCycle = 'h23';
+                result.hour = ['numeric', '2-digit'][len - 1];
+                break;
+            case 'K':
+                result.hourCycle = 'h11';
+                result.hour = ['numeric', '2-digit'][len - 1];
+                break;
+            case 'k':
+                result.hourCycle = 'h24';
+                result.hour = ['numeric', '2-digit'][len - 1];
+                break;
+            case 'j':
+            case 'J':
+            case 'C':
+                throw new RangeError('`j/J/C` (hour) patterns are not supported, use `h/H/K/k` instead');
+            // Minute
+            case 'm':
+                result.minute = ['numeric', '2-digit'][len - 1];
+                break;
+            // Second
+            case 's':
+                result.second = ['numeric', '2-digit'][len - 1];
+                break;
+            case 'S':
+            case 'A':
+                throw new RangeError('`S/A` (second) patterns are not supported, use `s` instead');
+            // Zone
+            case 'z': // 1..3, 4: specific non-location format
+                result.timeZoneName = len < 4 ? 'short' : 'long';
+                break;
+            case 'Z': // 1..3, 4, 5: The ISO8601 varios formats
+            case 'O': // 1, 4: miliseconds in day short, long
+            case 'v': // 1, 4: generic non-location format
+            case 'V': // 1, 2, 3, 4: time zone ID or city
+            case 'X': // 1, 2, 3, 4: The ISO8601 varios formats
+            case 'x': // 1, 2, 3, 4: The ISO8601 varios formats
+                throw new RangeError('`Z/O/v/V/X/x` (timeZone) patterns are not supported, use `z` instead');
+        }
+        return '';
+    });
+    return result;
+}
+exports.parseDateTimeSkeleton = parseDateTimeSkeleton;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/icu-skeleton-parser/index.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/@formatjs/icu-skeleton-parser/index.js ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+tslib_1.__exportStar(__webpack_require__(/*! ./date-time */ "./node_modules/@formatjs/icu-skeleton-parser/date-time.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./number */ "./node_modules/@formatjs/icu-skeleton-parser/number.js"), exports);
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/icu-skeleton-parser/number.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/@formatjs/icu-skeleton-parser/number.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseNumberSkeleton = exports.parseNumberSkeletonFromString = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var regex_generated_1 = __webpack_require__(/*! ./regex.generated */ "./node_modules/@formatjs/icu-skeleton-parser/regex.generated.js");
+function parseNumberSkeletonFromString(skeleton) {
+    if (skeleton.length === 0) {
+        throw new Error('Number skeleton cannot be empty');
+    }
+    // Parse the skeleton
+    var stringTokens = skeleton
+        .split(regex_generated_1.WHITE_SPACE_REGEX)
+        .filter(function (x) { return x.length > 0; });
+    var tokens = [];
+    for (var _i = 0, stringTokens_1 = stringTokens; _i < stringTokens_1.length; _i++) {
+        var stringToken = stringTokens_1[_i];
+        var stemAndOptions = stringToken.split('/');
+        if (stemAndOptions.length === 0) {
+            throw new Error('Invalid number skeleton');
+        }
+        var stem = stemAndOptions[0], options = stemAndOptions.slice(1);
+        for (var _a = 0, options_1 = options; _a < options_1.length; _a++) {
+            var option = options_1[_a];
+            if (option.length === 0) {
+                throw new Error('Invalid number skeleton');
+            }
+        }
+        tokens.push({ stem: stem, options: options });
+    }
+    return tokens;
+}
+exports.parseNumberSkeletonFromString = parseNumberSkeletonFromString;
+function icuUnitToEcma(unit) {
+    return unit.replace(/^(.*?)-/, '');
+}
+var FRACTION_PRECISION_REGEX = /^\.(?:(0+)(\*)?|(#+)|(0+)(#+))$/g;
+var SIGNIFICANT_PRECISION_REGEX = /^(@+)?(\+|#+)?$/g;
+var INTEGER_WIDTH_REGEX = /(\*)(0+)|(#+)(0+)|(0+)/g;
+var CONCISE_INTEGER_WIDTH_REGEX = /^(0+)$/;
+function parseSignificantPrecision(str) {
+    var result = {};
+    str.replace(SIGNIFICANT_PRECISION_REGEX, function (_, g1, g2) {
+        // @@@ case
+        if (typeof g2 !== 'string') {
+            result.minimumSignificantDigits = g1.length;
+            result.maximumSignificantDigits = g1.length;
+        }
+        // @@@+ case
+        else if (g2 === '+') {
+            result.minimumSignificantDigits = g1.length;
+        }
+        // .### case
+        else if (g1[0] === '#') {
+            result.maximumSignificantDigits = g1.length;
+        }
+        // .@@## or .@@@ case
+        else {
+            result.minimumSignificantDigits = g1.length;
+            result.maximumSignificantDigits =
+                g1.length + (typeof g2 === 'string' ? g2.length : 0);
+        }
+        return '';
+    });
+    return result;
+}
+function parseSign(str) {
+    switch (str) {
+        case 'sign-auto':
+            return {
+                signDisplay: 'auto',
+            };
+        case 'sign-accounting':
+        case '()':
+            return {
+                currencySign: 'accounting',
+            };
+        case 'sign-always':
+        case '+!':
+            return {
+                signDisplay: 'always',
+            };
+        case 'sign-accounting-always':
+        case '()!':
+            return {
+                signDisplay: 'always',
+                currencySign: 'accounting',
+            };
+        case 'sign-except-zero':
+        case '+?':
+            return {
+                signDisplay: 'exceptZero',
+            };
+        case 'sign-accounting-except-zero':
+        case '()?':
+            return {
+                signDisplay: 'exceptZero',
+                currencySign: 'accounting',
+            };
+        case 'sign-never':
+        case '+_':
+            return {
+                signDisplay: 'never',
+            };
+    }
+}
+function parseConciseScientificAndEngineeringStem(stem) {
+    // Engineering
+    var result;
+    if (stem[0] === 'E' && stem[1] === 'E') {
+        result = {
+            notation: 'engineering',
+        };
+        stem = stem.slice(2);
+    }
+    else if (stem[0] === 'E') {
+        result = {
+            notation: 'scientific',
+        };
+        stem = stem.slice(1);
+    }
+    if (result) {
+        var signDisplay = stem.slice(0, 2);
+        if (signDisplay === '+!') {
+            result.signDisplay = 'always';
+            stem = stem.slice(2);
+        }
+        else if (signDisplay === '+?') {
+            result.signDisplay = 'exceptZero';
+            stem = stem.slice(2);
+        }
+        if (!CONCISE_INTEGER_WIDTH_REGEX.test(stem)) {
+            throw new Error('Malformed concise eng/scientific notation');
+        }
+        result.minimumIntegerDigits = stem.length;
+    }
+    return result;
+}
+function parseNotationOptions(opt) {
+    var result = {};
+    var signOpts = parseSign(opt);
+    if (signOpts) {
+        return signOpts;
+    }
+    return result;
+}
+/**
+ * https://github.com/unicode-org/icu/blob/master/docs/userguide/format_parse/numbers/skeletons.md#skeleton-stems-and-options
+ */
+function parseNumberSkeleton(tokens) {
+    var result = {};
+    for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
+        var token = tokens_1[_i];
+        switch (token.stem) {
+            case 'percent':
+            case '%':
+                result.style = 'percent';
+                continue;
+            case '%x100':
+                result.style = 'percent';
+                result.scale = 100;
+                continue;
+            case 'currency':
+                result.style = 'currency';
+                result.currency = token.options[0];
+                continue;
+            case 'group-off':
+            case ',_':
+                result.useGrouping = false;
+                continue;
+            case 'precision-integer':
+            case '.':
+                result.maximumFractionDigits = 0;
+                continue;
+            case 'measure-unit':
+            case 'unit':
+                result.style = 'unit';
+                result.unit = icuUnitToEcma(token.options[0]);
+                continue;
+            case 'compact-short':
+            case 'K':
+                result.notation = 'compact';
+                result.compactDisplay = 'short';
+                continue;
+            case 'compact-long':
+            case 'KK':
+                result.notation = 'compact';
+                result.compactDisplay = 'long';
+                continue;
+            case 'scientific':
+                result = tslib_1.__assign(tslib_1.__assign(tslib_1.__assign({}, result), { notation: 'scientific' }), token.options.reduce(function (all, opt) { return (tslib_1.__assign(tslib_1.__assign({}, all), parseNotationOptions(opt))); }, {}));
+                continue;
+            case 'engineering':
+                result = tslib_1.__assign(tslib_1.__assign(tslib_1.__assign({}, result), { notation: 'engineering' }), token.options.reduce(function (all, opt) { return (tslib_1.__assign(tslib_1.__assign({}, all), parseNotationOptions(opt))); }, {}));
+                continue;
+            case 'notation-simple':
+                result.notation = 'standard';
+                continue;
+            // https://github.com/unicode-org/icu/blob/master/icu4c/source/i18n/unicode/unumberformatter.h
+            case 'unit-width-narrow':
+                result.currencyDisplay = 'narrowSymbol';
+                result.unitDisplay = 'narrow';
+                continue;
+            case 'unit-width-short':
+                result.currencyDisplay = 'code';
+                result.unitDisplay = 'short';
+                continue;
+            case 'unit-width-full-name':
+                result.currencyDisplay = 'name';
+                result.unitDisplay = 'long';
+                continue;
+            case 'unit-width-iso-code':
+                result.currencyDisplay = 'symbol';
+                continue;
+            case 'scale':
+                result.scale = parseFloat(token.options[0]);
+                continue;
+            // https://unicode-org.github.io/icu/userguide/format_parse/numbers/skeletons.html#integer-width
+            case 'integer-width':
+                if (token.options.length > 1) {
+                    throw new RangeError('integer-width stems only accept a single optional option');
+                }
+                token.options[0].replace(INTEGER_WIDTH_REGEX, function (_, g1, g2, g3, g4, g5) {
+                    if (g1) {
+                        result.minimumIntegerDigits = g2.length;
+                    }
+                    else if (g3 && g4) {
+                        throw new Error('We currently do not support maximum integer digits');
+                    }
+                    else if (g5) {
+                        throw new Error('We currently do not support exact integer digits');
+                    }
+                    return '';
+                });
+                continue;
+        }
+        // https://unicode-org.github.io/icu/userguide/format_parse/numbers/skeletons.html#integer-width
+        if (CONCISE_INTEGER_WIDTH_REGEX.test(token.stem)) {
+            result.minimumIntegerDigits = token.stem.length;
+            continue;
+        }
+        if (FRACTION_PRECISION_REGEX.test(token.stem)) {
+            // Precision
+            // https://unicode-org.github.io/icu/userguide/format_parse/numbers/skeletons.html#fraction-precision
+            // precision-integer case
+            if (token.options.length > 1) {
+                throw new RangeError('Fraction-precision stems only accept a single optional option');
+            }
+            token.stem.replace(FRACTION_PRECISION_REGEX, function (_, g1, g2, g3, g4, g5) {
+                // .000* case (before ICU67 it was .000+)
+                if (g2 === '*') {
+                    result.minimumFractionDigits = g1.length;
+                }
+                // .### case
+                else if (g3 && g3[0] === '#') {
+                    result.maximumFractionDigits = g3.length;
+                }
+                // .00## case
+                else if (g4 && g5) {
+                    result.minimumFractionDigits = g4.length;
+                    result.maximumFractionDigits = g4.length + g5.length;
+                }
+                else {
+                    result.minimumFractionDigits = g1.length;
+                    result.maximumFractionDigits = g1.length;
+                }
+                return '';
+            });
+            if (token.options.length) {
+                result = tslib_1.__assign(tslib_1.__assign({}, result), parseSignificantPrecision(token.options[0]));
+            }
+            continue;
+        }
+        // https://unicode-org.github.io/icu/userguide/format_parse/numbers/skeletons.html#significant-digits-precision
+        if (SIGNIFICANT_PRECISION_REGEX.test(token.stem)) {
+            result = tslib_1.__assign(tslib_1.__assign({}, result), parseSignificantPrecision(token.stem));
+            continue;
+        }
+        var signOpts = parseSign(token.stem);
+        if (signOpts) {
+            result = tslib_1.__assign(tslib_1.__assign({}, result), signOpts);
+        }
+        var conciseScientificAndEngineeringOpts = parseConciseScientificAndEngineeringStem(token.stem);
+        if (conciseScientificAndEngineeringOpts) {
+            result = tslib_1.__assign(tslib_1.__assign({}, result), conciseScientificAndEngineeringOpts);
+        }
+    }
+    return result;
+}
+exports.parseNumberSkeleton = parseNumberSkeleton;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/icu-skeleton-parser/regex.generated.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@formatjs/icu-skeleton-parser/regex.generated.js ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.WHITE_SPACE_REGEX = void 0;
+// @generated from regex-gen.ts
+exports.WHITE_SPACE_REGEX = /[\t-\r \x85\u200E\u200F\u2028\u2029]/i;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/@formatjs/intl/index.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createIntl = exports.formatNumberToParts = exports.formatNumber = exports.formatRelativeTime = exports.formatPlural = exports.formatList = exports.formatDisplayName = exports.formatTimeToParts = exports.formatTime = exports.formatDateToParts = exports.formatDate = exports.formatMessage = exports.getNamedFormat = exports.createFormatters = exports.DEFAULT_INTL_CONFIG = exports.filterProps = exports.createIntlCache = exports.defineMessage = exports.defineMessages = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+tslib_1.__exportStar(__webpack_require__(/*! ./src/types */ "./node_modules/@formatjs/intl/src/types.js"), exports);
+function defineMessages(msgs) {
+    return msgs;
+}
+exports.defineMessages = defineMessages;
+function defineMessage(msg) {
+    return msg;
+}
+exports.defineMessage = defineMessage;
+var utils_1 = __webpack_require__(/*! ./src/utils */ "./node_modules/@formatjs/intl/src/utils.js");
+Object.defineProperty(exports, "createIntlCache", ({ enumerable: true, get: function () { return utils_1.createIntlCache; } }));
+Object.defineProperty(exports, "filterProps", ({ enumerable: true, get: function () { return utils_1.filterProps; } }));
+Object.defineProperty(exports, "DEFAULT_INTL_CONFIG", ({ enumerable: true, get: function () { return utils_1.DEFAULT_INTL_CONFIG; } }));
+Object.defineProperty(exports, "createFormatters", ({ enumerable: true, get: function () { return utils_1.createFormatters; } }));
+Object.defineProperty(exports, "getNamedFormat", ({ enumerable: true, get: function () { return utils_1.getNamedFormat; } }));
+tslib_1.__exportStar(__webpack_require__(/*! ./src/error */ "./node_modules/@formatjs/intl/src/error.js"), exports);
+var message_1 = __webpack_require__(/*! ./src/message */ "./node_modules/@formatjs/intl/src/message.js");
+Object.defineProperty(exports, "formatMessage", ({ enumerable: true, get: function () { return message_1.formatMessage; } }));
+var dateTime_1 = __webpack_require__(/*! ./src/dateTime */ "./node_modules/@formatjs/intl/src/dateTime.js");
+Object.defineProperty(exports, "formatDate", ({ enumerable: true, get: function () { return dateTime_1.formatDate; } }));
+Object.defineProperty(exports, "formatDateToParts", ({ enumerable: true, get: function () { return dateTime_1.formatDateToParts; } }));
+Object.defineProperty(exports, "formatTime", ({ enumerable: true, get: function () { return dateTime_1.formatTime; } }));
+Object.defineProperty(exports, "formatTimeToParts", ({ enumerable: true, get: function () { return dateTime_1.formatTimeToParts; } }));
+var displayName_1 = __webpack_require__(/*! ./src/displayName */ "./node_modules/@formatjs/intl/src/displayName.js");
+Object.defineProperty(exports, "formatDisplayName", ({ enumerable: true, get: function () { return displayName_1.formatDisplayName; } }));
+var list_1 = __webpack_require__(/*! ./src/list */ "./node_modules/@formatjs/intl/src/list.js");
+Object.defineProperty(exports, "formatList", ({ enumerable: true, get: function () { return list_1.formatList; } }));
+var plural_1 = __webpack_require__(/*! ./src/plural */ "./node_modules/@formatjs/intl/src/plural.js");
+Object.defineProperty(exports, "formatPlural", ({ enumerable: true, get: function () { return plural_1.formatPlural; } }));
+var relativeTime_1 = __webpack_require__(/*! ./src/relativeTime */ "./node_modules/@formatjs/intl/src/relativeTime.js");
+Object.defineProperty(exports, "formatRelativeTime", ({ enumerable: true, get: function () { return relativeTime_1.formatRelativeTime; } }));
+var number_1 = __webpack_require__(/*! ./src/number */ "./node_modules/@formatjs/intl/src/number.js");
+Object.defineProperty(exports, "formatNumber", ({ enumerable: true, get: function () { return number_1.formatNumber; } }));
+Object.defineProperty(exports, "formatNumberToParts", ({ enumerable: true, get: function () { return number_1.formatNumberToParts; } }));
+var create_intl_1 = __webpack_require__(/*! ./src/create-intl */ "./node_modules/@formatjs/intl/src/create-intl.js");
+Object.defineProperty(exports, "createIntl", ({ enumerable: true, get: function () { return create_intl_1.createIntl; } }));
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/create-intl.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/create-intl.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createIntl = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/intl/src/utils.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/intl/src/error.js");
+var number_1 = __webpack_require__(/*! ./number */ "./node_modules/@formatjs/intl/src/number.js");
+var relativeTime_1 = __webpack_require__(/*! ./relativeTime */ "./node_modules/@formatjs/intl/src/relativeTime.js");
+var dateTime_1 = __webpack_require__(/*! ./dateTime */ "./node_modules/@formatjs/intl/src/dateTime.js");
+var plural_1 = __webpack_require__(/*! ./plural */ "./node_modules/@formatjs/intl/src/plural.js");
+var message_1 = __webpack_require__(/*! ./message */ "./node_modules/@formatjs/intl/src/message.js");
+var list_1 = __webpack_require__(/*! ./list */ "./node_modules/@formatjs/intl/src/list.js");
+var displayName_1 = __webpack_require__(/*! ./displayName */ "./node_modules/@formatjs/intl/src/displayName.js");
+function messagesContainString(messages) {
+    var firstMessage = messages ? messages[Object.keys(messages)[0]] : undefined;
+    return typeof firstMessage === 'string';
+}
+function verifyConfigMessages(config) {
+    if (config.defaultRichTextElements &&
+        messagesContainString(config.messages || {})) {
+        console.warn("[@formatjs/intl] \"defaultRichTextElements\" was specified but \"message\" was not pre-compiled. \nPlease consider using \"@formatjs/cli\" to pre-compile your messages for performance.\nFor more details see https://formatjs.io/docs/getting-started/message-distribution");
+    }
+}
+/**
+ * Create intl object
+ * @param config intl config
+ * @param cache cache for formatter instances to prevent memory leak
+ */
+function createIntl(config, cache) {
+    var formatters = utils_1.createFormatters(cache);
+    var resolvedConfig = tslib_1.__assign(tslib_1.__assign({}, utils_1.DEFAULT_INTL_CONFIG), config);
+    var locale = resolvedConfig.locale, defaultLocale = resolvedConfig.defaultLocale, onError = resolvedConfig.onError;
+    if (!locale) {
+        if (onError) {
+            onError(new error_1.InvalidConfigError("\"locale\" was not configured, using \"" + defaultLocale + "\" as fallback. See https://formatjs.io/docs/react-intl/api#intlshape for more details"));
+        }
+        // Since there's no registered locale data for `locale`, this will
+        // fallback to the `defaultLocale` to make sure things can render.
+        // The `messages` are overridden to the `defaultProps` empty object
+        // to maintain referential equality across re-renders. It's assumed
+        // each <FormattedMessage> contains a `defaultMessage` prop.
+        resolvedConfig.locale = resolvedConfig.defaultLocale || 'en';
+    }
+    else if (!Intl.NumberFormat.supportedLocalesOf(locale).length && onError) {
+        onError(new error_1.MissingDataError("Missing locale data for locale: \"" + locale + "\" in Intl.NumberFormat. Using default locale: \"" + defaultLocale + "\" as fallback. See https://formatjs.io/docs/react-intl#runtime-requirements for more details"));
+    }
+    else if (!Intl.DateTimeFormat.supportedLocalesOf(locale).length &&
+        onError) {
+        onError(new error_1.MissingDataError("Missing locale data for locale: \"" + locale + "\" in Intl.DateTimeFormat. Using default locale: \"" + defaultLocale + "\" as fallback. See https://formatjs.io/docs/react-intl#runtime-requirements for more details"));
+    }
+    verifyConfigMessages(resolvedConfig);
+    return tslib_1.__assign(tslib_1.__assign({}, resolvedConfig), { formatters: formatters, formatNumber: number_1.formatNumber.bind(null, resolvedConfig, formatters.getNumberFormat), formatNumberToParts: number_1.formatNumberToParts.bind(null, resolvedConfig, formatters.getNumberFormat), formatRelativeTime: relativeTime_1.formatRelativeTime.bind(null, resolvedConfig, formatters.getRelativeTimeFormat), formatDate: dateTime_1.formatDate.bind(null, resolvedConfig, formatters.getDateTimeFormat), formatDateToParts: dateTime_1.formatDateToParts.bind(null, resolvedConfig, formatters.getDateTimeFormat), formatTime: dateTime_1.formatTime.bind(null, resolvedConfig, formatters.getDateTimeFormat), formatDateTimeRange: dateTime_1.formatDateTimeRange.bind(null, resolvedConfig, formatters.getDateTimeFormat), formatTimeToParts: dateTime_1.formatTimeToParts.bind(null, resolvedConfig, formatters.getDateTimeFormat), formatPlural: plural_1.formatPlural.bind(null, resolvedConfig, formatters.getPluralRules), formatMessage: message_1.formatMessage.bind(null, resolvedConfig, formatters), formatList: list_1.formatList.bind(null, resolvedConfig, formatters.getListFormat), formatDisplayName: displayName_1.formatDisplayName.bind(null, resolvedConfig, formatters.getDisplayNames) });
+}
+exports.createIntl = createIntl;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/dateTime.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/dateTime.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.formatTimeToParts = exports.formatDateToParts = exports.formatDateTimeRange = exports.formatTime = exports.formatDate = exports.getFormatter = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/intl/src/utils.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/intl/src/error.js");
+var DATE_TIME_FORMAT_OPTIONS = [
+    'localeMatcher',
+    'formatMatcher',
+    'timeZone',
+    'hour12',
+    'weekday',
+    'era',
+    'year',
+    'month',
+    'day',
+    'hour',
+    'minute',
+    'second',
+    'timeZoneName',
+    'hourCycle',
+    'dateStyle',
+    'timeStyle',
+    'calendar',
+    // 'dayPeriod',
+    'numberingSystem',
+];
+function getFormatter(_a, type, getDateTimeFormat, options) {
+    var locale = _a.locale, formats = _a.formats, onError = _a.onError, timeZone = _a.timeZone;
+    if (options === void 0) { options = {}; }
+    var format = options.format;
+    var defaults = tslib_1.__assign(tslib_1.__assign({}, (timeZone && { timeZone: timeZone })), (format && utils_1.getNamedFormat(formats, type, format, onError)));
+    var filteredOptions = utils_1.filterProps(options, DATE_TIME_FORMAT_OPTIONS, 
+    // @ts-expect-error es2020 has a lot stuff from es2021 bleed in
+    defaults);
+    if (type === 'time' &&
+        !filteredOptions.hour &&
+        !filteredOptions.minute &&
+        !filteredOptions.second &&
+        !filteredOptions.timeStyle &&
+        !filteredOptions.dateStyle) {
+        // Add default formatting options if hour, minute, or second isn't defined.
+        filteredOptions = tslib_1.__assign(tslib_1.__assign({}, filteredOptions), { hour: 'numeric', minute: 'numeric' });
+    }
+    return getDateTimeFormat(locale, filteredOptions);
+}
+exports.getFormatter = getFormatter;
+function formatDate(config, getDateTimeFormat) {
+    var _a = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        _a[_i - 2] = arguments[_i];
+    }
+    var value = _a[0], _b = _a[1], options = _b === void 0 ? {} : _b;
+    var date = typeof value === 'string' ? new Date(value || 0) : value;
+    try {
+        return getFormatter(config, 'date', getDateTimeFormat, options).format(date);
+    }
+    catch (e) {
+        config.onError(new error_1.IntlError(error_1.IntlErrorCode.FORMAT_ERROR, 'Error formatting date.', e));
+    }
+    return String(date);
+}
+exports.formatDate = formatDate;
+function formatTime(config, getDateTimeFormat) {
+    var _a = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        _a[_i - 2] = arguments[_i];
+    }
+    var value = _a[0], _b = _a[1], options = _b === void 0 ? {} : _b;
+    var date = typeof value === 'string' ? new Date(value || 0) : value;
+    try {
+        return getFormatter(config, 'time', getDateTimeFormat, options).format(date);
+    }
+    catch (e) {
+        config.onError(new error_1.IntlError(error_1.IntlErrorCode.FORMAT_ERROR, 'Error formatting time.', e));
+    }
+    return String(date);
+}
+exports.formatTime = formatTime;
+function formatDateTimeRange(config, getDateTimeFormat) {
+    var _a = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        _a[_i - 2] = arguments[_i];
+    }
+    var from = _a[0], to = _a[1], _b = _a[2], options = _b === void 0 ? {} : _b;
+    var timeZone = config.timeZone, locale = config.locale, onError = config.onError;
+    var filteredOptions = utils_1.filterProps(options, DATE_TIME_FORMAT_OPTIONS, timeZone ? { timeZone: timeZone } : {});
+    try {
+        return getDateTimeFormat(locale, filteredOptions).formatRange(from, to);
+    }
+    catch (e) {
+        onError(new error_1.IntlError(error_1.IntlErrorCode.FORMAT_ERROR, 'Error formatting date time range.', e));
+    }
+    return String(from);
+}
+exports.formatDateTimeRange = formatDateTimeRange;
+function formatDateToParts(config, getDateTimeFormat) {
+    var _a = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        _a[_i - 2] = arguments[_i];
+    }
+    var value = _a[0], _b = _a[1], options = _b === void 0 ? {} : _b;
+    var date = typeof value === 'string' ? new Date(value || 0) : value;
+    try {
+        return getFormatter(config, 'date', getDateTimeFormat, options).formatToParts(date);
+    }
+    catch (e) {
+        config.onError(new error_1.IntlError(error_1.IntlErrorCode.FORMAT_ERROR, 'Error formatting date.', e));
+    }
+    return [];
+}
+exports.formatDateToParts = formatDateToParts;
+function formatTimeToParts(config, getDateTimeFormat) {
+    var _a = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        _a[_i - 2] = arguments[_i];
+    }
+    var value = _a[0], _b = _a[1], options = _b === void 0 ? {} : _b;
+    var date = typeof value === 'string' ? new Date(value || 0) : value;
+    try {
+        return getFormatter(config, 'time', getDateTimeFormat, options).formatToParts(date);
+    }
+    catch (e) {
+        config.onError(new error_1.IntlError(error_1.IntlErrorCode.FORMAT_ERROR, 'Error formatting time.', e));
+    }
+    return [];
+}
+exports.formatTimeToParts = formatTimeToParts;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/displayName.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/displayName.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.formatDisplayName = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/intl/src/utils.js");
+var intl_messageformat_1 = __webpack_require__(/*! intl-messageformat */ "./node_modules/intl-messageformat/index.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/intl/src/error.js");
+var DISPLAY_NAMES_OPTONS = [
+    'localeMatcher',
+    'style',
+    'type',
+    'fallback',
+];
+function formatDisplayName(_a, getDisplayNames, value, options) {
+    var locale = _a.locale, onError = _a.onError;
+    var DisplayNames = Intl.DisplayNames;
+    if (!DisplayNames) {
+        onError(new intl_messageformat_1.FormatError("Intl.DisplayNames is not available in this environment.\nTry polyfilling it using \"@formatjs/intl-displaynames\"\n", intl_messageformat_1.ErrorCode.MISSING_INTL_API));
+    }
+    var filteredOptions = utils_1.filterProps(options, DISPLAY_NAMES_OPTONS);
+    try {
+        return getDisplayNames(locale, filteredOptions).of(value);
+    }
+    catch (e) {
+        onError(new error_1.IntlError(error_1.IntlErrorCode.FORMAT_ERROR, 'Error formatting display name.', e));
+    }
+}
+exports.formatDisplayName = formatDisplayName;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/error.js":
+/*!**************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/error.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MissingTranslationError = exports.MessageFormatError = exports.MissingDataError = exports.InvalidConfigError = exports.UnsupportedFormatterError = exports.IntlError = exports.IntlErrorCode = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var IntlErrorCode;
+(function (IntlErrorCode) {
+    IntlErrorCode["FORMAT_ERROR"] = "FORMAT_ERROR";
+    IntlErrorCode["UNSUPPORTED_FORMATTER"] = "UNSUPPORTED_FORMATTER";
+    IntlErrorCode["INVALID_CONFIG"] = "INVALID_CONFIG";
+    IntlErrorCode["MISSING_DATA"] = "MISSING_DATA";
+    IntlErrorCode["MISSING_TRANSLATION"] = "MISSING_TRANSLATION";
+})(IntlErrorCode = exports.IntlErrorCode || (exports.IntlErrorCode = {}));
+var IntlError = /** @class */ (function (_super) {
+    tslib_1.__extends(IntlError, _super);
+    function IntlError(code, message, exception) {
+        var _this = _super.call(this, "[@formatjs/intl Error " + code + "] " + message + " \n" + (exception ? "\n" + exception.message + "\n" + exception.stack : '')) || this;
+        _this.code = code;
+        if (typeof Error.captureStackTrace === 'function') {
+            Error.captureStackTrace(_this, IntlError);
+        }
+        return _this;
+    }
+    return IntlError;
+}(Error));
+exports.IntlError = IntlError;
+var UnsupportedFormatterError = /** @class */ (function (_super) {
+    tslib_1.__extends(UnsupportedFormatterError, _super);
+    function UnsupportedFormatterError(message, exception) {
+        return _super.call(this, IntlErrorCode.UNSUPPORTED_FORMATTER, message, exception) || this;
+    }
+    return UnsupportedFormatterError;
+}(IntlError));
+exports.UnsupportedFormatterError = UnsupportedFormatterError;
+var InvalidConfigError = /** @class */ (function (_super) {
+    tslib_1.__extends(InvalidConfigError, _super);
+    function InvalidConfigError(message, exception) {
+        return _super.call(this, IntlErrorCode.INVALID_CONFIG, message, exception) || this;
+    }
+    return InvalidConfigError;
+}(IntlError));
+exports.InvalidConfigError = InvalidConfigError;
+var MissingDataError = /** @class */ (function (_super) {
+    tslib_1.__extends(MissingDataError, _super);
+    function MissingDataError(message, exception) {
+        return _super.call(this, IntlErrorCode.MISSING_DATA, message, exception) || this;
+    }
+    return MissingDataError;
+}(IntlError));
+exports.MissingDataError = MissingDataError;
+var MessageFormatError = /** @class */ (function (_super) {
+    tslib_1.__extends(MessageFormatError, _super);
+    function MessageFormatError(message, locale, descriptor, exception) {
+        var _this = _super.call(this, IntlErrorCode.FORMAT_ERROR, message + " \nLocale: " + locale + "\nMessageID: " + (descriptor === null || descriptor === void 0 ? void 0 : descriptor.id) + "\nDefault Message: " + (descriptor === null || descriptor === void 0 ? void 0 : descriptor.defaultMessage) + "\nDescription: " + (descriptor === null || descriptor === void 0 ? void 0 : descriptor.description) + " \n", exception) || this;
+        _this.descriptor = descriptor;
+        return _this;
+    }
+    return MessageFormatError;
+}(IntlError));
+exports.MessageFormatError = MessageFormatError;
+var MissingTranslationError = /** @class */ (function (_super) {
+    tslib_1.__extends(MissingTranslationError, _super);
+    function MissingTranslationError(descriptor, locale) {
+        var _this = _super.call(this, IntlErrorCode.MISSING_TRANSLATION, "Missing message: \"" + descriptor.id + "\" for locale \"" + locale + "\", using " + (descriptor.defaultMessage ? 'default message' : 'id') + " as fallback.") || this;
+        _this.descriptor = descriptor;
+        return _this;
+    }
+    return MissingTranslationError;
+}(IntlError));
+exports.MissingTranslationError = MissingTranslationError;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/list.js":
+/*!*************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/list.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.formatList = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/intl/src/utils.js");
+var intl_messageformat_1 = __webpack_require__(/*! intl-messageformat */ "./node_modules/intl-messageformat/index.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/intl/src/error.js");
+var LIST_FORMAT_OPTIONS = [
+    'localeMatcher',
+    'type',
+    'style',
+];
+var now = Date.now();
+function generateToken(i) {
+    return now + "_" + i + "_" + now;
+}
+function formatList(_a, getListFormat, values, options) {
+    var locale = _a.locale, onError = _a.onError;
+    if (options === void 0) { options = {}; }
+    var ListFormat = Intl.ListFormat;
+    if (!ListFormat) {
+        onError(new intl_messageformat_1.FormatError("Intl.ListFormat is not available in this environment.\nTry polyfilling it using \"@formatjs/intl-listformat\"\n", intl_messageformat_1.ErrorCode.MISSING_INTL_API));
+    }
+    var filteredOptions = utils_1.filterProps(options, LIST_FORMAT_OPTIONS);
+    try {
+        var richValues_1 = {};
+        var serializedValues = values.map(function (v, i) {
+            if (typeof v === 'object') {
+                var id = generateToken(i);
+                richValues_1[id] = v;
+                return id;
+            }
+            return String(v);
+        });
+        if (!Object.keys(richValues_1).length) {
+            return getListFormat(locale, filteredOptions).format(serializedValues);
+        }
+        var parts = getListFormat(locale, filteredOptions).formatToParts(serializedValues);
+        return parts.reduce(function (all, el) {
+            var val = el.value;
+            if (richValues_1[val]) {
+                all.push(richValues_1[val]);
+            }
+            else if (typeof all[all.length - 1] === 'string') {
+                all[all.length - 1] += val;
+            }
+            else {
+                all.push(val);
+            }
+            return all;
+        }, []);
+    }
+    catch (e) {
+        onError(new error_1.IntlError(error_1.IntlErrorCode.FORMAT_ERROR, 'Error formatting list.', e));
+    }
+    // @ts-ignore
+    return values;
+}
+exports.formatList = formatList;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/message.js":
+/*!****************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/message.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.formatMessage = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var ecma402_abstract_1 = __webpack_require__(/*! @formatjs/ecma402-abstract */ "./node_modules/@formatjs/ecma402-abstract/index.js");
+var intl_messageformat_1 = __webpack_require__(/*! intl-messageformat */ "./node_modules/intl-messageformat/index.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/intl/src/error.js");
+var icu_messageformat_parser_1 = __webpack_require__(/*! @formatjs/icu-messageformat-parser */ "./node_modules/@formatjs/icu-messageformat-parser/index.js");
+function setTimeZoneInOptions(opts, timeZone) {
+    return Object.keys(opts).reduce(function (all, k) {
+        all[k] = tslib_1.__assign({ timeZone: timeZone }, opts[k]);
+        return all;
+    }, {});
+}
+function deepMergeOptions(opts1, opts2) {
+    var keys = Object.keys(tslib_1.__assign(tslib_1.__assign({}, opts1), opts2));
+    return keys.reduce(function (all, k) {
+        all[k] = tslib_1.__assign(tslib_1.__assign({}, (opts1[k] || {})), (opts2[k] || {}));
+        return all;
+    }, {});
+}
+function deepMergeFormatsAndSetTimeZone(f1, timeZone) {
+    if (!timeZone) {
+        return f1;
+    }
+    var mfFormats = intl_messageformat_1.IntlMessageFormat.formats;
+    return tslib_1.__assign(tslib_1.__assign(tslib_1.__assign({}, mfFormats), f1), { date: deepMergeOptions(setTimeZoneInOptions(mfFormats.date, timeZone), setTimeZoneInOptions(f1.date || {}, timeZone)), time: deepMergeOptions(setTimeZoneInOptions(mfFormats.time, timeZone), setTimeZoneInOptions(f1.time || {}, timeZone)) });
+}
+function formatMessage(_a, state, messageDescriptor, values, opts) {
+    var locale = _a.locale, formats = _a.formats, messages = _a.messages, defaultLocale = _a.defaultLocale, defaultFormats = _a.defaultFormats, onError = _a.onError, timeZone = _a.timeZone, defaultRichTextElements = _a.defaultRichTextElements;
+    if (messageDescriptor === void 0) { messageDescriptor = { id: '' }; }
+    var msgId = messageDescriptor.id, defaultMessage = messageDescriptor.defaultMessage;
+    // `id` is a required field of a Message Descriptor.
+    ecma402_abstract_1.invariant(!!msgId, "[@formatjs/intl] An `id` must be provided to format a message. You can either:\n1. Configure your build toolchain with [babel-plugin-formatjs](https://formatjs.io/docs/tooling/babel-plugin)\nor [@formatjs/ts-transformer](https://formatjs.io/docs/tooling/ts-transformer) OR\n2. Configure your `eslint` config to include [eslint-plugin-formatjs](https://formatjs.io/docs/tooling/linter#enforce-id)\nto autofix this issue");
+    var id = String(msgId);
+    var message = 
+    // In case messages is Object.create(null)
+    // e.g import('foo.json') from webpack)
+    // See https://github.com/formatjs/formatjs/issues/1914
+    messages &&
+        Object.prototype.hasOwnProperty.call(messages, id) &&
+        messages[id];
+    // IMPORTANT: Hot path if `message` is AST with a single literal node
+    if (Array.isArray(message) &&
+        message.length === 1 &&
+        message[0].type === icu_messageformat_parser_1.TYPE.literal) {
+        return message[0].value;
+    }
+    // IMPORTANT: Hot path straight lookup for performance
+    if (!values &&
+        message &&
+        typeof message === 'string' &&
+        !defaultRichTextElements) {
+        return message.replace(/'\{(.*?)\}'/gi, "{$1}");
+    }
+    values = tslib_1.__assign(tslib_1.__assign({}, defaultRichTextElements), (values || {}));
+    formats = deepMergeFormatsAndSetTimeZone(formats, timeZone);
+    defaultFormats = deepMergeFormatsAndSetTimeZone(defaultFormats, timeZone);
+    if (!message) {
+        if (!defaultMessage ||
+            (locale && locale.toLowerCase() !== defaultLocale.toLowerCase())) {
+            // This prevents warnings from littering the console in development
+            // when no `messages` are passed into the <IntlProvider> for the
+            // default locale.
+            onError(new error_1.MissingTranslationError(messageDescriptor, locale));
+        }
+        if (defaultMessage) {
+            try {
+                var formatter = state.getMessageFormat(defaultMessage, defaultLocale, defaultFormats, opts);
+                return formatter.format(values);
+            }
+            catch (e) {
+                onError(new error_1.MessageFormatError("Error formatting default message for: \"" + id + "\", rendering default message verbatim", locale, messageDescriptor, e));
+                return typeof defaultMessage === 'string' ? defaultMessage : id;
+            }
+        }
+        return id;
+    }
+    // We have the translated message
+    try {
+        var formatter = state.getMessageFormat(message, locale, formats, tslib_1.__assign({ formatters: state }, (opts || {})));
+        return formatter.format(values);
+    }
+    catch (e) {
+        onError(new error_1.MessageFormatError("Error formatting message: \"" + id + "\", using " + (defaultMessage ? 'default message' : 'id') + " as fallback.", locale, messageDescriptor, e));
+    }
+    if (defaultMessage) {
+        try {
+            var formatter = state.getMessageFormat(defaultMessage, defaultLocale, defaultFormats, opts);
+            return formatter.format(values);
+        }
+        catch (e) {
+            onError(new error_1.MessageFormatError("Error formatting the default message for: \"" + id + "\", rendering message verbatim", locale, messageDescriptor, e));
+        }
+    }
+    if (typeof message === 'string') {
+        return message;
+    }
+    if (typeof defaultMessage === 'string') {
+        return defaultMessage;
+    }
+    return id;
+}
+exports.formatMessage = formatMessage;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/number.js":
+/*!***************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/number.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.formatNumberToParts = exports.formatNumber = exports.getFormatter = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/intl/src/utils.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/intl/src/error.js");
+var NUMBER_FORMAT_OPTIONS = [
+    'localeMatcher',
+    'style',
+    'currency',
+    'currencyDisplay',
+    'unit',
+    'unitDisplay',
+    'useGrouping',
+    'minimumIntegerDigits',
+    'minimumFractionDigits',
+    'maximumFractionDigits',
+    'minimumSignificantDigits',
+    'maximumSignificantDigits',
+    // ES2020 NumberFormat
+    'compactDisplay',
+    'currencyDisplay',
+    'currencySign',
+    'notation',
+    'signDisplay',
+    'unit',
+    'unitDisplay',
+];
+function getFormatter(_a, getNumberFormat, options) {
+    var locale = _a.locale, formats = _a.formats, onError = _a.onError;
+    if (options === void 0) { options = {}; }
+    var format = options.format;
+    var defaults = ((format &&
+        utils_1.getNamedFormat(formats, 'number', format, onError)) ||
+        {});
+    var filteredOptions = utils_1.filterProps(options, NUMBER_FORMAT_OPTIONS, defaults);
+    return getNumberFormat(locale, filteredOptions);
+}
+exports.getFormatter = getFormatter;
+function formatNumber(config, getNumberFormat, value, options) {
+    if (options === void 0) { options = {}; }
+    try {
+        return getFormatter(config, getNumberFormat, options).format(value);
+    }
+    catch (e) {
+        config.onError(new error_1.IntlError(error_1.IntlErrorCode.FORMAT_ERROR, 'Error formatting number.', e));
+    }
+    return String(value);
+}
+exports.formatNumber = formatNumber;
+function formatNumberToParts(config, getNumberFormat, value, options) {
+    if (options === void 0) { options = {}; }
+    try {
+        return getFormatter(config, getNumberFormat, options).formatToParts(value);
+    }
+    catch (e) {
+        config.onError(new error_1.IntlError(error_1.IntlErrorCode.FORMAT_ERROR, 'Error formatting number.', e));
+    }
+    return [];
+}
+exports.formatNumberToParts = formatNumberToParts;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/plural.js":
+/*!***************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/plural.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.formatPlural = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/intl/src/utils.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/intl/src/error.js");
+var intl_messageformat_1 = __webpack_require__(/*! intl-messageformat */ "./node_modules/intl-messageformat/index.js");
+var PLURAL_FORMAT_OPTIONS = [
+    'localeMatcher',
+    'type',
+];
+function formatPlural(_a, getPluralRules, value, options) {
+    var locale = _a.locale, onError = _a.onError;
+    if (options === void 0) { options = {}; }
+    if (!Intl.PluralRules) {
+        onError(new intl_messageformat_1.FormatError("Intl.PluralRules is not available in this environment.\nTry polyfilling it using \"@formatjs/intl-pluralrules\"\n", intl_messageformat_1.ErrorCode.MISSING_INTL_API));
+    }
+    var filteredOptions = utils_1.filterProps(options, PLURAL_FORMAT_OPTIONS);
+    try {
+        return getPluralRules(locale, filteredOptions).select(value);
+    }
+    catch (e) {
+        onError(new error_1.MessageFormatError('Error formatting plural.', e));
+    }
+    return 'other';
+}
+exports.formatPlural = formatPlural;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/relativeTime.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/relativeTime.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.formatRelativeTime = void 0;
+var utils_1 = __webpack_require__(/*! ./utils */ "./node_modules/@formatjs/intl/src/utils.js");
+var intl_messageformat_1 = __webpack_require__(/*! intl-messageformat */ "./node_modules/intl-messageformat/index.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/intl/src/error.js");
+var RELATIVE_TIME_FORMAT_OPTIONS = ['numeric', 'style'];
+function getFormatter(_a, getRelativeTimeFormat, options) {
+    var locale = _a.locale, formats = _a.formats, onError = _a.onError;
+    if (options === void 0) { options = {}; }
+    var format = options.format;
+    var defaults = (!!format && utils_1.getNamedFormat(formats, 'relative', format, onError)) || {};
+    var filteredOptions = utils_1.filterProps(options, RELATIVE_TIME_FORMAT_OPTIONS, defaults);
+    return getRelativeTimeFormat(locale, filteredOptions);
+}
+function formatRelativeTime(config, getRelativeTimeFormat, value, unit, options) {
+    if (options === void 0) { options = {}; }
+    if (!unit) {
+        unit = 'second';
+    }
+    var RelativeTimeFormat = Intl.RelativeTimeFormat;
+    if (!RelativeTimeFormat) {
+        config.onError(new intl_messageformat_1.FormatError("Intl.RelativeTimeFormat is not available in this environment.\nTry polyfilling it using \"@formatjs/intl-relativetimeformat\"\n", intl_messageformat_1.ErrorCode.MISSING_INTL_API));
+    }
+    try {
+        return getFormatter(config, getRelativeTimeFormat, options).format(value, unit);
+    }
+    catch (e) {
+        config.onError(new error_1.MessageFormatError('Error formatting relative time.', e));
+    }
+    return String(value);
+}
+exports.formatRelativeTime = formatRelativeTime;
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/types.js":
+/*!**************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/types.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ "./node_modules/@formatjs/intl/src/utils.js":
+/*!**************************************************!*\
+  !*** ./node_modules/@formatjs/intl/src/utils.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getNamedFormat = exports.createFormatters = exports.createIntlCache = exports.DEFAULT_INTL_CONFIG = exports.filterProps = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var intl_messageformat_1 = __webpack_require__(/*! intl-messageformat */ "./node_modules/intl-messageformat/index.js");
+var memoize = tslib_1.__importStar(__webpack_require__(/*! fast-memoize */ "./node_modules/fast-memoize/src/index.js"));
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/@formatjs/intl/src/error.js");
+function filterProps(props, whitelist, defaults) {
+    if (defaults === void 0) { defaults = {}; }
+    return whitelist.reduce(function (filtered, name) {
+        if (name in props) {
+            filtered[name] = props[name];
+        }
+        else if (name in defaults) {
+            filtered[name] = defaults[name];
+        }
+        return filtered;
+    }, {});
+}
+exports.filterProps = filterProps;
+var defaultErrorHandler = function (error) {
+    if (true) {
+        console.error(error);
+    }
+};
+exports.DEFAULT_INTL_CONFIG = {
+    formats: {},
+    messages: {},
+    timeZone: undefined,
+    defaultLocale: 'en',
+    defaultFormats: {},
+    onError: defaultErrorHandler,
+};
+function createIntlCache() {
+    return {
+        dateTime: {},
+        number: {},
+        message: {},
+        relativeTime: {},
+        pluralRules: {},
+        list: {},
+        displayNames: {},
+    };
+}
+exports.createIntlCache = createIntlCache;
+function createFastMemoizeCache(store) {
+    return {
+        create: function () {
+            return {
+                has: function (key) {
+                    return key in store;
+                },
+                get: function (key) {
+                    return store[key];
+                },
+                set: function (key, value) {
+                    store[key] = value;
+                },
+            };
+        },
+    };
+}
+// @ts-ignore this is to deal with rollup's default import shenanigans
+var _memoizeIntl = memoize.default || memoize;
+var memoizeIntl = _memoizeIntl;
+/**
+ * Create intl formatters and populate cache
+ * @param cache explicit cache to prevent leaking memory
+ */
+function createFormatters(cache) {
+    if (cache === void 0) { cache = createIntlCache(); }
+    var RelativeTimeFormat = Intl.RelativeTimeFormat;
+    var ListFormat = Intl.ListFormat;
+    var DisplayNames = Intl.DisplayNames;
+    var getDateTimeFormat = memoizeIntl(function () {
+        var _a;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return new ((_a = Intl.DateTimeFormat).bind.apply(_a, tslib_1.__spreadArray([void 0], args)))();
+    }, {
+        cache: createFastMemoizeCache(cache.dateTime),
+        strategy: memoizeIntl.strategies.variadic,
+    });
+    var getNumberFormat = memoizeIntl(function () {
+        var _a;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return new ((_a = Intl.NumberFormat).bind.apply(_a, tslib_1.__spreadArray([void 0], args)))();
+    }, {
+        cache: createFastMemoizeCache(cache.number),
+        strategy: memoizeIntl.strategies.variadic,
+    });
+    var getPluralRules = memoizeIntl(function () {
+        var _a;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return new ((_a = Intl.PluralRules).bind.apply(_a, tslib_1.__spreadArray([void 0], args)))();
+    }, {
+        cache: createFastMemoizeCache(cache.pluralRules),
+        strategy: memoizeIntl.strategies.variadic,
+    });
+    return {
+        getDateTimeFormat: getDateTimeFormat,
+        getNumberFormat: getNumberFormat,
+        getMessageFormat: memoizeIntl(function (message, locales, overrideFormats, opts) {
+            return new intl_messageformat_1.IntlMessageFormat(message, locales, overrideFormats, tslib_1.__assign({ formatters: {
+                    getNumberFormat: getNumberFormat,
+                    getDateTimeFormat: getDateTimeFormat,
+                    getPluralRules: getPluralRules,
+                } }, (opts || {})));
+        }, {
+            cache: createFastMemoizeCache(cache.message),
+            strategy: memoizeIntl.strategies.variadic,
+        }),
+        getRelativeTimeFormat: memoizeIntl(function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return new (RelativeTimeFormat.bind.apply(RelativeTimeFormat, tslib_1.__spreadArray([void 0], args)))();
+        }, {
+            cache: createFastMemoizeCache(cache.relativeTime),
+            strategy: memoizeIntl.strategies.variadic,
+        }),
+        getPluralRules: getPluralRules,
+        getListFormat: memoizeIntl(function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return new (ListFormat.bind.apply(ListFormat, tslib_1.__spreadArray([void 0], args)))();
+        }, {
+            cache: createFastMemoizeCache(cache.list),
+            strategy: memoizeIntl.strategies.variadic,
+        }),
+        getDisplayNames: memoizeIntl(function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return new (DisplayNames.bind.apply(DisplayNames, tslib_1.__spreadArray([void 0], args)))();
+        }, {
+            cache: createFastMemoizeCache(cache.displayNames),
+            strategy: memoizeIntl.strategies.variadic,
+        }),
+    };
+}
+exports.createFormatters = createFormatters;
+function getNamedFormat(formats, type, name, onError) {
+    var formatType = formats && formats[type];
+    var format;
+    if (formatType) {
+        format = formatType[name];
+    }
+    if (format) {
+        return format;
+    }
+    onError(new error_1.UnsupportedFormatterError("No " + type + " format named: " + name));
+}
+exports.getNamedFormat = getNamedFormat;
+
+
+/***/ }),
+
 /***/ "./node_modules/@redux-saga/core/dist/io-1d6eccda.js":
 /*!***********************************************************!*\
   !*** ./node_modules/@redux-saga/core/dist/io-1d6eccda.js ***!
@@ -3957,6 +11328,160 @@ exports.default = _default;
 
 /***/ }),
 
+/***/ "./node_modules/fast-memoize/src/index.js":
+/*!************************************************!*\
+  !*** ./node_modules/fast-memoize/src/index.js ***!
+  \************************************************/
+/***/ ((module) => {
+
+//
+// Main
+//
+
+function memoize (fn, options) {
+  var cache = options && options.cache
+    ? options.cache
+    : cacheDefault
+
+  var serializer = options && options.serializer
+    ? options.serializer
+    : serializerDefault
+
+  var strategy = options && options.strategy
+    ? options.strategy
+    : strategyDefault
+
+  return strategy(fn, {
+    cache: cache,
+    serializer: serializer
+  })
+}
+
+//
+// Strategy
+//
+
+function isPrimitive (value) {
+  return value == null || typeof value === 'number' || typeof value === 'boolean' // || typeof value === "string" 'unsafe' primitive for our needs
+}
+
+function monadic (fn, cache, serializer, arg) {
+  var cacheKey = isPrimitive(arg) ? arg : serializer(arg)
+
+  var computedValue = cache.get(cacheKey)
+  if (typeof computedValue === 'undefined') {
+    computedValue = fn.call(this, arg)
+    cache.set(cacheKey, computedValue)
+  }
+
+  return computedValue
+}
+
+function variadic (fn, cache, serializer) {
+  var args = Array.prototype.slice.call(arguments, 3)
+  var cacheKey = serializer(args)
+
+  var computedValue = cache.get(cacheKey)
+  if (typeof computedValue === 'undefined') {
+    computedValue = fn.apply(this, args)
+    cache.set(cacheKey, computedValue)
+  }
+
+  return computedValue
+}
+
+function assemble (fn, context, strategy, cache, serialize) {
+  return strategy.bind(
+    context,
+    fn,
+    cache,
+    serialize
+  )
+}
+
+function strategyDefault (fn, options) {
+  var strategy = fn.length === 1 ? monadic : variadic
+
+  return assemble(
+    fn,
+    this,
+    strategy,
+    options.cache.create(),
+    options.serializer
+  )
+}
+
+function strategyVariadic (fn, options) {
+  var strategy = variadic
+
+  return assemble(
+    fn,
+    this,
+    strategy,
+    options.cache.create(),
+    options.serializer
+  )
+}
+
+function strategyMonadic (fn, options) {
+  var strategy = monadic
+
+  return assemble(
+    fn,
+    this,
+    strategy,
+    options.cache.create(),
+    options.serializer
+  )
+}
+
+//
+// Serializer
+//
+
+function serializerDefault () {
+  return JSON.stringify(arguments)
+}
+
+//
+// Cache
+//
+
+function ObjectWithoutPrototypeCache () {
+  this.cache = Object.create(null)
+}
+
+ObjectWithoutPrototypeCache.prototype.has = function (key) {
+  return (key in this.cache)
+}
+
+ObjectWithoutPrototypeCache.prototype.get = function (key) {
+  return this.cache[key]
+}
+
+ObjectWithoutPrototypeCache.prototype.set = function (key, value) {
+  this.cache[key] = value
+}
+
+var cacheDefault = {
+  create: function create () {
+    return new ObjectWithoutPrototypeCache()
+  }
+}
+
+//
+// API
+//
+
+module.exports = memoize
+module.exports.strategies = {
+  variadic: strategyVariadic,
+  monadic: strategyMonadic
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/history/DOMUtils.js":
 /*!******************************************!*\
   !*** ./node_modules/history/DOMUtils.js ***!
@@ -5487,6 +13012,525 @@ function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
 }
 
 module.exports = hoistNonReactStatics;
+
+
+/***/ }),
+
+/***/ "./node_modules/intl-messageformat/index.js":
+/*!**************************************************!*\
+  !*** ./node_modules/intl-messageformat/index.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var core_1 = __webpack_require__(/*! ./src/core */ "./node_modules/intl-messageformat/src/core.js");
+tslib_1.__exportStar(__webpack_require__(/*! ./src/formatters */ "./node_modules/intl-messageformat/src/formatters.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./src/core */ "./node_modules/intl-messageformat/src/core.js"), exports);
+tslib_1.__exportStar(__webpack_require__(/*! ./src/error */ "./node_modules/intl-messageformat/src/error.js"), exports);
+exports.default = core_1.IntlMessageFormat;
+
+
+/***/ }),
+
+/***/ "./node_modules/intl-messageformat/src/core.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/intl-messageformat/src/core.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IntlMessageFormat = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var icu_messageformat_parser_1 = __webpack_require__(/*! @formatjs/icu-messageformat-parser */ "./node_modules/@formatjs/icu-messageformat-parser/index.js");
+var memoize = tslib_1.__importStar(__webpack_require__(/*! fast-memoize */ "./node_modules/fast-memoize/src/index.js"));
+var formatters_1 = __webpack_require__(/*! ./formatters */ "./node_modules/intl-messageformat/src/formatters.js");
+// -- MessageFormat --------------------------------------------------------
+function mergeConfig(c1, c2) {
+    if (!c2) {
+        return c1;
+    }
+    return tslib_1.__assign(tslib_1.__assign(tslib_1.__assign({}, (c1 || {})), (c2 || {})), Object.keys(c1).reduce(function (all, k) {
+        all[k] = tslib_1.__assign(tslib_1.__assign({}, c1[k]), (c2[k] || {}));
+        return all;
+    }, {}));
+}
+function mergeConfigs(defaultConfig, configs) {
+    if (!configs) {
+        return defaultConfig;
+    }
+    return Object.keys(defaultConfig).reduce(function (all, k) {
+        all[k] = mergeConfig(defaultConfig[k], configs[k]);
+        return all;
+    }, tslib_1.__assign({}, defaultConfig));
+}
+function createFastMemoizeCache(store) {
+    return {
+        create: function () {
+            return {
+                has: function (key) {
+                    return key in store;
+                },
+                get: function (key) {
+                    return store[key];
+                },
+                set: function (key, value) {
+                    store[key] = value;
+                },
+            };
+        },
+    };
+}
+// @ts-ignore this is to deal with rollup's default import shenanigans
+var _memoizeIntl = memoize.default || memoize;
+var memoizeIntl = _memoizeIntl;
+function createDefaultFormatters(cache) {
+    if (cache === void 0) { cache = {
+        number: {},
+        dateTime: {},
+        pluralRules: {},
+    }; }
+    return {
+        getNumberFormat: memoizeIntl(function () {
+            var _a;
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return new ((_a = Intl.NumberFormat).bind.apply(_a, tslib_1.__spreadArray([void 0], args)))();
+        }, {
+            cache: createFastMemoizeCache(cache.number),
+            strategy: memoizeIntl.strategies.variadic,
+        }),
+        getDateTimeFormat: memoizeIntl(function () {
+            var _a;
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return new ((_a = Intl.DateTimeFormat).bind.apply(_a, tslib_1.__spreadArray([void 0], args)))();
+        }, {
+            cache: createFastMemoizeCache(cache.dateTime),
+            strategy: memoizeIntl.strategies.variadic,
+        }),
+        getPluralRules: memoizeIntl(function () {
+            var _a;
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            return new ((_a = Intl.PluralRules).bind.apply(_a, tslib_1.__spreadArray([void 0], args)))();
+        }, {
+            cache: createFastMemoizeCache(cache.pluralRules),
+            strategy: memoizeIntl.strategies.variadic,
+        }),
+    };
+}
+var IntlMessageFormat = /** @class */ (function () {
+    function IntlMessageFormat(message, locales, overrideFormats, opts) {
+        var _this = this;
+        if (locales === void 0) { locales = IntlMessageFormat.defaultLocale; }
+        this.formatterCache = {
+            number: {},
+            dateTime: {},
+            pluralRules: {},
+        };
+        this.format = function (values) {
+            var parts = _this.formatToParts(values);
+            // Hot path for straight simple msg translations
+            if (parts.length === 1) {
+                return parts[0].value;
+            }
+            var result = parts.reduce(function (all, part) {
+                if (!all.length ||
+                    part.type !== formatters_1.PART_TYPE.literal ||
+                    typeof all[all.length - 1] !== 'string') {
+                    all.push(part.value);
+                }
+                else {
+                    all[all.length - 1] += part.value;
+                }
+                return all;
+            }, []);
+            if (result.length <= 1) {
+                return result[0] || '';
+            }
+            return result;
+        };
+        this.formatToParts = function (values) {
+            return formatters_1.formatToParts(_this.ast, _this.locales, _this.formatters, _this.formats, values, undefined, _this.message);
+        };
+        this.resolvedOptions = function () { return ({
+            locale: Intl.NumberFormat.supportedLocalesOf(_this.locales)[0],
+        }); };
+        this.getAst = function () { return _this.ast; };
+        if (typeof message === 'string') {
+            this.message = message;
+            if (!IntlMessageFormat.__parse) {
+                throw new TypeError('IntlMessageFormat.__parse must be set to process `message` of type `string`');
+            }
+            // Parse string messages into an AST.
+            this.ast = IntlMessageFormat.__parse(message, {
+                ignoreTag: opts === null || opts === void 0 ? void 0 : opts.ignoreTag,
+            });
+        }
+        else {
+            this.ast = message;
+        }
+        if (!Array.isArray(this.ast)) {
+            throw new TypeError('A message must be provided as a String or AST.');
+        }
+        // Creates a new object with the specified `formats` merged with the default
+        // formats.
+        this.formats = mergeConfigs(IntlMessageFormat.formats, overrideFormats);
+        // Defined first because it's used to build the format pattern.
+        this.locales = locales;
+        this.formatters =
+            (opts && opts.formatters) || createDefaultFormatters(this.formatterCache);
+    }
+    Object.defineProperty(IntlMessageFormat, "defaultLocale", {
+        get: function () {
+            if (!IntlMessageFormat.memoizedDefaultLocale) {
+                IntlMessageFormat.memoizedDefaultLocale = new Intl.NumberFormat().resolvedOptions().locale;
+            }
+            return IntlMessageFormat.memoizedDefaultLocale;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    IntlMessageFormat.memoizedDefaultLocale = null;
+    IntlMessageFormat.__parse = icu_messageformat_parser_1.parse;
+    // Default format options used as the prototype of the `formats` provided to the
+    // constructor. These are used when constructing the internal Intl.NumberFormat
+    // and Intl.DateTimeFormat instances.
+    IntlMessageFormat.formats = {
+        number: {
+            currency: {
+                style: 'currency',
+            },
+            percent: {
+                style: 'percent',
+            },
+        },
+        date: {
+            short: {
+                month: 'numeric',
+                day: 'numeric',
+                year: '2-digit',
+            },
+            medium: {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+            },
+            long: {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+            },
+            full: {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+            },
+        },
+        time: {
+            short: {
+                hour: 'numeric',
+                minute: 'numeric',
+            },
+            medium: {
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+            },
+            long: {
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                timeZoneName: 'short',
+            },
+            full: {
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                timeZoneName: 'short',
+            },
+        },
+    };
+    return IntlMessageFormat;
+}());
+exports.IntlMessageFormat = IntlMessageFormat;
+
+
+/***/ }),
+
+/***/ "./node_modules/intl-messageformat/src/error.js":
+/*!******************************************************!*\
+  !*** ./node_modules/intl-messageformat/src/error.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MissingValueError = exports.InvalidValueTypeError = exports.InvalidValueError = exports.FormatError = exports.ErrorCode = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var ErrorCode;
+(function (ErrorCode) {
+    // When we have a placeholder but no value to format
+    ErrorCode["MISSING_VALUE"] = "MISSING_VALUE";
+    // When value supplied is invalid
+    ErrorCode["INVALID_VALUE"] = "INVALID_VALUE";
+    // When we need specific Intl API but it's not available
+    ErrorCode["MISSING_INTL_API"] = "MISSING_INTL_API";
+})(ErrorCode = exports.ErrorCode || (exports.ErrorCode = {}));
+var FormatError = /** @class */ (function (_super) {
+    tslib_1.__extends(FormatError, _super);
+    function FormatError(msg, code, originalMessage) {
+        var _this = _super.call(this, msg) || this;
+        _this.code = code;
+        _this.originalMessage = originalMessage;
+        return _this;
+    }
+    FormatError.prototype.toString = function () {
+        return "[formatjs Error: " + this.code + "] " + this.message;
+    };
+    return FormatError;
+}(Error));
+exports.FormatError = FormatError;
+var InvalidValueError = /** @class */ (function (_super) {
+    tslib_1.__extends(InvalidValueError, _super);
+    function InvalidValueError(variableId, value, options, originalMessage) {
+        return _super.call(this, "Invalid values for \"" + variableId + "\": \"" + value + "\". Options are \"" + Object.keys(options).join('", "') + "\"", ErrorCode.INVALID_VALUE, originalMessage) || this;
+    }
+    return InvalidValueError;
+}(FormatError));
+exports.InvalidValueError = InvalidValueError;
+var InvalidValueTypeError = /** @class */ (function (_super) {
+    tslib_1.__extends(InvalidValueTypeError, _super);
+    function InvalidValueTypeError(value, type, originalMessage) {
+        return _super.call(this, "Value for \"" + value + "\" must be of type " + type, ErrorCode.INVALID_VALUE, originalMessage) || this;
+    }
+    return InvalidValueTypeError;
+}(FormatError));
+exports.InvalidValueTypeError = InvalidValueTypeError;
+var MissingValueError = /** @class */ (function (_super) {
+    tslib_1.__extends(MissingValueError, _super);
+    function MissingValueError(variableId, originalMessage) {
+        return _super.call(this, "The intl string context variable \"" + variableId + "\" was not provided to the string \"" + originalMessage + "\"", ErrorCode.MISSING_VALUE, originalMessage) || this;
+    }
+    return MissingValueError;
+}(FormatError));
+exports.MissingValueError = MissingValueError;
+
+
+/***/ }),
+
+/***/ "./node_modules/intl-messageformat/src/formatters.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/intl-messageformat/src/formatters.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.formatToParts = exports.isFormatXMLElementFn = exports.PART_TYPE = void 0;
+var icu_messageformat_parser_1 = __webpack_require__(/*! @formatjs/icu-messageformat-parser */ "./node_modules/@formatjs/icu-messageformat-parser/index.js");
+var error_1 = __webpack_require__(/*! ./error */ "./node_modules/intl-messageformat/src/error.js");
+var PART_TYPE;
+(function (PART_TYPE) {
+    PART_TYPE[PART_TYPE["literal"] = 0] = "literal";
+    PART_TYPE[PART_TYPE["object"] = 1] = "object";
+})(PART_TYPE = exports.PART_TYPE || (exports.PART_TYPE = {}));
+function mergeLiteral(parts) {
+    if (parts.length < 2) {
+        return parts;
+    }
+    return parts.reduce(function (all, part) {
+        var lastPart = all[all.length - 1];
+        if (!lastPart ||
+            lastPart.type !== PART_TYPE.literal ||
+            part.type !== PART_TYPE.literal) {
+            all.push(part);
+        }
+        else {
+            lastPart.value += part.value;
+        }
+        return all;
+    }, []);
+}
+function isFormatXMLElementFn(el) {
+    return typeof el === 'function';
+}
+exports.isFormatXMLElementFn = isFormatXMLElementFn;
+// TODO(skeleton): add skeleton support
+function formatToParts(els, locales, formatters, formats, values, currentPluralValue, 
+// For debugging
+originalMessage) {
+    // Hot path for straight simple msg translations
+    if (els.length === 1 && icu_messageformat_parser_1.isLiteralElement(els[0])) {
+        return [
+            {
+                type: PART_TYPE.literal,
+                value: els[0].value,
+            },
+        ];
+    }
+    var result = [];
+    for (var _i = 0, els_1 = els; _i < els_1.length; _i++) {
+        var el = els_1[_i];
+        // Exit early for string parts.
+        if (icu_messageformat_parser_1.isLiteralElement(el)) {
+            result.push({
+                type: PART_TYPE.literal,
+                value: el.value,
+            });
+            continue;
+        }
+        // TODO: should this part be literal type?
+        // Replace `#` in plural rules with the actual numeric value.
+        if (icu_messageformat_parser_1.isPoundElement(el)) {
+            if (typeof currentPluralValue === 'number') {
+                result.push({
+                    type: PART_TYPE.literal,
+                    value: formatters.getNumberFormat(locales).format(currentPluralValue),
+                });
+            }
+            continue;
+        }
+        var varName = el.value;
+        // Enforce that all required values are provided by the caller.
+        if (!(values && varName in values)) {
+            throw new error_1.MissingValueError(varName, originalMessage);
+        }
+        var value = values[varName];
+        if (icu_messageformat_parser_1.isArgumentElement(el)) {
+            if (!value || typeof value === 'string' || typeof value === 'number') {
+                value =
+                    typeof value === 'string' || typeof value === 'number'
+                        ? String(value)
+                        : '';
+            }
+            result.push({
+                type: typeof value === 'string' ? PART_TYPE.literal : PART_TYPE.object,
+                value: value,
+            });
+            continue;
+        }
+        // Recursively format plural and select parts' option — which can be a
+        // nested pattern structure. The choosing of the option to use is
+        // abstracted-by and delegated-to the part helper object.
+        if (icu_messageformat_parser_1.isDateElement(el)) {
+            var style = typeof el.style === 'string'
+                ? formats.date[el.style]
+                : icu_messageformat_parser_1.isDateTimeSkeleton(el.style)
+                    ? el.style.parsedOptions
+                    : undefined;
+            result.push({
+                type: PART_TYPE.literal,
+                value: formatters
+                    .getDateTimeFormat(locales, style)
+                    .format(value),
+            });
+            continue;
+        }
+        if (icu_messageformat_parser_1.isTimeElement(el)) {
+            var style = typeof el.style === 'string'
+                ? formats.time[el.style]
+                : icu_messageformat_parser_1.isDateTimeSkeleton(el.style)
+                    ? el.style.parsedOptions
+                    : undefined;
+            result.push({
+                type: PART_TYPE.literal,
+                value: formatters
+                    .getDateTimeFormat(locales, style)
+                    .format(value),
+            });
+            continue;
+        }
+        if (icu_messageformat_parser_1.isNumberElement(el)) {
+            var style = typeof el.style === 'string'
+                ? formats.number[el.style]
+                : icu_messageformat_parser_1.isNumberSkeleton(el.style)
+                    ? el.style.parsedOptions
+                    : undefined;
+            if (style && style.scale) {
+                value =
+                    value *
+                        (style.scale || 1);
+            }
+            result.push({
+                type: PART_TYPE.literal,
+                value: formatters
+                    .getNumberFormat(locales, style)
+                    .format(value),
+            });
+            continue;
+        }
+        if (icu_messageformat_parser_1.isTagElement(el)) {
+            var children = el.children, value_1 = el.value;
+            var formatFn = values[value_1];
+            if (!isFormatXMLElementFn(formatFn)) {
+                throw new error_1.InvalidValueTypeError(value_1, 'function', originalMessage);
+            }
+            var parts = formatToParts(children, locales, formatters, formats, values, currentPluralValue);
+            var chunks = formatFn(parts.map(function (p) { return p.value; }));
+            if (!Array.isArray(chunks)) {
+                chunks = [chunks];
+            }
+            result.push.apply(result, chunks.map(function (c) {
+                return {
+                    type: typeof c === 'string' ? PART_TYPE.literal : PART_TYPE.object,
+                    value: c,
+                };
+            }));
+        }
+        if (icu_messageformat_parser_1.isSelectElement(el)) {
+            var opt = el.options[value] || el.options.other;
+            if (!opt) {
+                throw new error_1.InvalidValueError(el.value, value, Object.keys(el.options), originalMessage);
+            }
+            result.push.apply(result, formatToParts(opt.value, locales, formatters, formats, values));
+            continue;
+        }
+        if (icu_messageformat_parser_1.isPluralElement(el)) {
+            var opt = el.options["=" + value];
+            if (!opt) {
+                if (!Intl.PluralRules) {
+                    throw new error_1.FormatError("Intl.PluralRules is not available in this environment.\nTry polyfilling it using \"@formatjs/intl-pluralrules\"\n", error_1.ErrorCode.MISSING_INTL_API, originalMessage);
+                }
+                var rule = formatters
+                    .getPluralRules(locales, { type: el.pluralType })
+                    .select(value - (el.offset || 0));
+                opt = el.options[rule] || el.options.other;
+            }
+            if (!opt) {
+                throw new error_1.InvalidValueError(el.value, value, Object.keys(el.options), originalMessage);
+            }
+            result.push.apply(result, formatToParts(opt.value, locales, formatters, formats, values, value - (el.offset || 0)));
+            continue;
+        }
+    }
+    return mergeLiteral(result);
+}
+exports.formatToParts = formatToParts;
 
 
 /***/ }),
@@ -35019,6 +43063,649 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/react-intl/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/react-intl/index.js ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormattedDateTimeRange = exports.FormattedMessage = exports.FormattedPlural = exports.FormattedRelativeTime = exports.FormattedNumberParts = exports.FormattedTimeParts = exports.FormattedDateParts = exports.FormattedDisplayName = exports.FormattedList = exports.FormattedNumber = exports.FormattedTime = exports.FormattedDate = exports.createIntl = exports.IntlProvider = exports.useIntl = exports.IntlContext = exports.RawIntlProvider = exports.injectIntl = exports.defineMessage = exports.defineMessages = exports.ReactIntlError = exports.ReactIntlErrorCode = exports.MissingTranslationError = exports.MessageFormatError = exports.MissingDataError = exports.InvalidConfigError = exports.UnsupportedFormatterError = exports.createIntlCache = void 0;
+var createFormattedComponent_1 = __webpack_require__(/*! ./src/components/createFormattedComponent */ "./node_modules/react-intl/src/components/createFormattedComponent.js");
+var intl_1 = __webpack_require__(/*! @formatjs/intl */ "./node_modules/@formatjs/intl/index.js");
+Object.defineProperty(exports, "createIntlCache", ({ enumerable: true, get: function () { return intl_1.createIntlCache; } }));
+Object.defineProperty(exports, "UnsupportedFormatterError", ({ enumerable: true, get: function () { return intl_1.UnsupportedFormatterError; } }));
+Object.defineProperty(exports, "InvalidConfigError", ({ enumerable: true, get: function () { return intl_1.InvalidConfigError; } }));
+Object.defineProperty(exports, "MissingDataError", ({ enumerable: true, get: function () { return intl_1.MissingDataError; } }));
+Object.defineProperty(exports, "MessageFormatError", ({ enumerable: true, get: function () { return intl_1.MessageFormatError; } }));
+Object.defineProperty(exports, "MissingTranslationError", ({ enumerable: true, get: function () { return intl_1.MissingTranslationError; } }));
+Object.defineProperty(exports, "ReactIntlErrorCode", ({ enumerable: true, get: function () { return intl_1.IntlErrorCode; } }));
+Object.defineProperty(exports, "ReactIntlError", ({ enumerable: true, get: function () { return intl_1.IntlError; } }));
+function defineMessages(msgs) {
+    return msgs;
+}
+exports.defineMessages = defineMessages;
+function defineMessage(msg) {
+    return msg;
+}
+exports.defineMessage = defineMessage;
+var injectIntl_1 = __webpack_require__(/*! ./src/components/injectIntl */ "./node_modules/react-intl/src/components/injectIntl.js");
+Object.defineProperty(exports, "injectIntl", ({ enumerable: true, get: function () { return __importDefault(injectIntl_1).default; } }));
+Object.defineProperty(exports, "RawIntlProvider", ({ enumerable: true, get: function () { return injectIntl_1.Provider; } }));
+Object.defineProperty(exports, "IntlContext", ({ enumerable: true, get: function () { return injectIntl_1.Context; } }));
+var useIntl_1 = __webpack_require__(/*! ./src/components/useIntl */ "./node_modules/react-intl/src/components/useIntl.js");
+Object.defineProperty(exports, "useIntl", ({ enumerable: true, get: function () { return __importDefault(useIntl_1).default; } }));
+var provider_1 = __webpack_require__(/*! ./src/components/provider */ "./node_modules/react-intl/src/components/provider.js");
+Object.defineProperty(exports, "IntlProvider", ({ enumerable: true, get: function () { return __importDefault(provider_1).default; } }));
+Object.defineProperty(exports, "createIntl", ({ enumerable: true, get: function () { return provider_1.createIntl; } }));
+// IMPORTANT: Explicit here to prevent api-extractor from outputing `import('./src/types').CustomFormatConfig`
+exports.FormattedDate = createFormattedComponent_1.createFormattedComponent('formatDate');
+exports.FormattedTime = createFormattedComponent_1.createFormattedComponent('formatTime');
+exports.FormattedNumber = createFormattedComponent_1.createFormattedComponent('formatNumber');
+exports.FormattedList = createFormattedComponent_1.createFormattedComponent('formatList');
+exports.FormattedDisplayName = createFormattedComponent_1.createFormattedComponent('formatDisplayName');
+exports.FormattedDateParts = createFormattedComponent_1.createFormattedDateTimePartsComponent('formatDate');
+exports.FormattedTimeParts = createFormattedComponent_1.createFormattedDateTimePartsComponent('formatTime');
+var createFormattedComponent_2 = __webpack_require__(/*! ./src/components/createFormattedComponent */ "./node_modules/react-intl/src/components/createFormattedComponent.js");
+Object.defineProperty(exports, "FormattedNumberParts", ({ enumerable: true, get: function () { return createFormattedComponent_2.FormattedNumberParts; } }));
+var relative_1 = __webpack_require__(/*! ./src/components/relative */ "./node_modules/react-intl/src/components/relative.js");
+Object.defineProperty(exports, "FormattedRelativeTime", ({ enumerable: true, get: function () { return __importDefault(relative_1).default; } }));
+var plural_1 = __webpack_require__(/*! ./src/components/plural */ "./node_modules/react-intl/src/components/plural.js");
+Object.defineProperty(exports, "FormattedPlural", ({ enumerable: true, get: function () { return __importDefault(plural_1).default; } }));
+var message_1 = __webpack_require__(/*! ./src/components/message */ "./node_modules/react-intl/src/components/message.js");
+Object.defineProperty(exports, "FormattedMessage", ({ enumerable: true, get: function () { return __importDefault(message_1).default; } }));
+var dateTimeRange_1 = __webpack_require__(/*! ./src/components/dateTimeRange */ "./node_modules/react-intl/src/components/dateTimeRange.js");
+Object.defineProperty(exports, "FormattedDateTimeRange", ({ enumerable: true, get: function () { return __importDefault(dateTimeRange_1).default; } }));
+
+
+/***/ }),
+
+/***/ "./node_modules/react-intl/src/components/createFormattedComponent.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/react-intl/src/components/createFormattedComponent.js ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createFormattedComponent = exports.createFormattedDateTimePartsComponent = exports.FormattedNumberParts = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var React = tslib_1.__importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var useIntl_1 = tslib_1.__importDefault(__webpack_require__(/*! ./useIntl */ "./node_modules/react-intl/src/components/useIntl.js"));
+var DisplayName;
+(function (DisplayName) {
+    DisplayName["formatDate"] = "FormattedDate";
+    DisplayName["formatTime"] = "FormattedTime";
+    DisplayName["formatNumber"] = "FormattedNumber";
+    DisplayName["formatList"] = "FormattedList";
+    // Note that this DisplayName is the locale display name, not to be confused with
+    // the name of the enum, which is for React component display name in dev tools.
+    DisplayName["formatDisplayName"] = "FormattedDisplayName";
+})(DisplayName || (DisplayName = {}));
+var DisplayNameParts;
+(function (DisplayNameParts) {
+    DisplayNameParts["formatDate"] = "FormattedDateParts";
+    DisplayNameParts["formatTime"] = "FormattedTimeParts";
+    DisplayNameParts["formatNumber"] = "FormattedNumberParts";
+    DisplayNameParts["formatList"] = "FormattedListParts";
+})(DisplayNameParts || (DisplayNameParts = {}));
+var FormattedNumberParts = function (props) {
+    var intl = useIntl_1.default();
+    var value = props.value, children = props.children, formatProps = tslib_1.__rest(props, ["value", "children"]);
+    return children(intl.formatNumberToParts(value, formatProps));
+};
+exports.FormattedNumberParts = FormattedNumberParts;
+exports.FormattedNumberParts.displayName = 'FormattedNumberParts';
+function createFormattedDateTimePartsComponent(name) {
+    var ComponentParts = function (props) {
+        var intl = useIntl_1.default();
+        var value = props.value, children = props.children, formatProps = tslib_1.__rest(props, ["value", "children"]);
+        var date = typeof value === 'string' ? new Date(value || 0) : value;
+        var formattedParts = name === 'formatDate'
+            ? intl.formatDateToParts(date, formatProps)
+            : intl.formatTimeToParts(date, formatProps);
+        return children(formattedParts);
+    };
+    ComponentParts.displayName = DisplayNameParts[name];
+    return ComponentParts;
+}
+exports.createFormattedDateTimePartsComponent = createFormattedDateTimePartsComponent;
+function createFormattedComponent(name) {
+    var Component = function (props) {
+        var intl = useIntl_1.default();
+        var value = props.value, children = props.children, formatProps = tslib_1.__rest(props
+        // TODO: fix TS type definition for localeMatcher upstream
+        , ["value", "children"]);
+        // TODO: fix TS type definition for localeMatcher upstream
+        var formattedValue = intl[name](value, formatProps);
+        if (typeof children === 'function') {
+            return children(formattedValue);
+        }
+        var Text = intl.textComponent || React.Fragment;
+        return React.createElement(Text, null, formattedValue);
+    };
+    Component.displayName = DisplayName[name];
+    return Component;
+}
+exports.createFormattedComponent = createFormattedComponent;
+
+
+/***/ }),
+
+/***/ "./node_modules/react-intl/src/components/dateTimeRange.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/react-intl/src/components/dateTimeRange.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var React = tslib_1.__importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var useIntl_1 = tslib_1.__importDefault(__webpack_require__(/*! ./useIntl */ "./node_modules/react-intl/src/components/useIntl.js"));
+var FormattedDateTimeRange = function (props) {
+    var intl = useIntl_1.default();
+    var from = props.from, to = props.to, children = props.children, formatProps = tslib_1.__rest(props, ["from", "to", "children"]);
+    var formattedValue = intl.formatDateTimeRange(from, to, formatProps);
+    if (typeof children === 'function') {
+        return children(formattedValue);
+    }
+    var Text = intl.textComponent || React.Fragment;
+    return React.createElement(Text, null, formattedValue);
+};
+FormattedDateTimeRange.displayName = 'FormattedDateTimeRange';
+exports.default = FormattedDateTimeRange;
+
+
+/***/ }),
+
+/***/ "./node_modules/react-intl/src/components/injectIntl.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/react-intl/src/components/injectIntl.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Context = exports.Provider = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var React = tslib_1.__importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var hoist_non_react_statics_1 = tslib_1.__importDefault(__webpack_require__(/*! hoist-non-react-statics */ "./node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js"));
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/react-intl/src/utils.js");
+function getDisplayName(Component) {
+    return Component.displayName || Component.name || 'Component';
+}
+// TODO: We should provide initial value here
+var IntlContext = React.createContext(null);
+var IntlConsumer = IntlContext.Consumer, IntlProvider = IntlContext.Provider;
+exports.Provider = IntlProvider;
+exports.Context = IntlContext;
+function injectIntl(WrappedComponent, options) {
+    var _a = options || {}, _b = _a.intlPropName, intlPropName = _b === void 0 ? 'intl' : _b, _c = _a.forwardRef, forwardRef = _c === void 0 ? false : _c, _d = _a.enforceContext, enforceContext = _d === void 0 ? true : _d;
+    var WithIntl = function (props) { return (React.createElement(IntlConsumer, null, function (intl) {
+        var _a;
+        if (enforceContext) {
+            utils_1.invariantIntlContext(intl);
+        }
+        var intlProp = (_a = {}, _a[intlPropName] = intl, _a);
+        return (React.createElement(WrappedComponent, tslib_1.__assign({}, props, intlProp, { ref: forwardRef ? props.forwardedRef : null })));
+    })); };
+    WithIntl.displayName = "injectIntl(" + getDisplayName(WrappedComponent) + ")";
+    WithIntl.WrappedComponent = WrappedComponent;
+    if (forwardRef) {
+        return hoist_non_react_statics_1.default(React.forwardRef(function (props, ref) { return (React.createElement(WithIntl, tslib_1.__assign({}, props, { forwardedRef: ref }))); }), WrappedComponent);
+    }
+    return hoist_non_react_statics_1.default(WithIntl, WrappedComponent);
+}
+exports.default = injectIntl;
+
+
+/***/ }),
+
+/***/ "./node_modules/react-intl/src/components/message.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/react-intl/src/components/message.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+/*
+ * Copyright 2015, Yahoo Inc.
+ * Copyrights licensed under the New BSD License.
+ * See the accompanying LICENSE file for terms.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var React = tslib_1.__importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var useIntl_1 = tslib_1.__importDefault(__webpack_require__(/*! ./useIntl */ "./node_modules/react-intl/src/components/useIntl.js"));
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/react-intl/src/utils.js");
+function areEqual(prevProps, nextProps) {
+    var values = prevProps.values, otherProps = tslib_1.__rest(prevProps, ["values"]);
+    var nextValues = nextProps.values, nextOtherProps = tslib_1.__rest(nextProps, ["values"]);
+    return (utils_1.shallowEqual(nextValues, values) &&
+        utils_1.shallowEqual(otherProps, nextOtherProps));
+}
+function FormattedMessage(props) {
+    var intl = useIntl_1.default();
+    var formatMessage = intl.formatMessage, _a = intl.textComponent, Text = _a === void 0 ? React.Fragment : _a;
+    var id = props.id, description = props.description, defaultMessage = props.defaultMessage, values = props.values, children = props.children, _b = props.tagName, Component = _b === void 0 ? Text : _b, ignoreTag = props.ignoreTag;
+    var descriptor = { id: id, description: description, defaultMessage: defaultMessage };
+    var nodes = formatMessage(descriptor, values, {
+        ignoreTag: ignoreTag,
+    });
+    if (!Array.isArray(nodes)) {
+        nodes = [nodes];
+    }
+    if (typeof children === 'function') {
+        return children(nodes);
+    }
+    if (Component) {
+        // Needs to use `createElement()` instead of JSX, otherwise React will
+        // warn about a missing `key` prop with rich-text message formatting.
+        return React.createElement.apply(React, tslib_1.__spreadArray([Component, null], nodes));
+    }
+    return React.createElement(React.Fragment, null, nodes);
+}
+FormattedMessage.displayName = 'FormattedMessage';
+var MemoizedFormattedMessage = React.memo(FormattedMessage, areEqual);
+MemoizedFormattedMessage.displayName = 'MemoizedFormattedMessage';
+exports.default = MemoizedFormattedMessage;
+
+
+/***/ }),
+
+/***/ "./node_modules/react-intl/src/components/plural.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/react-intl/src/components/plural.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+/*
+ * Copyright 2015, Yahoo Inc.
+ * Copyrights licensed under the New BSD License.
+ * See the accompanying LICENSE file for terms.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var React = tslib_1.__importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var useIntl_1 = tslib_1.__importDefault(__webpack_require__(/*! ./useIntl */ "./node_modules/react-intl/src/components/useIntl.js"));
+var FormattedPlural = function (props) {
+    var _a = useIntl_1.default(), formatPlural = _a.formatPlural, Text = _a.textComponent;
+    var value = props.value, other = props.other, children = props.children;
+    var pluralCategory = formatPlural(value, props);
+    var formattedPlural = props[pluralCategory] || other;
+    if (typeof children === 'function') {
+        return children(formattedPlural);
+    }
+    if (Text) {
+        return React.createElement(Text, null, formattedPlural);
+    }
+    // Work around @types/react where React.FC cannot return string
+    return formattedPlural;
+};
+FormattedPlural.defaultProps = {
+    type: 'cardinal',
+};
+FormattedPlural.displayName = 'FormattedPlural';
+exports.default = FormattedPlural;
+
+
+/***/ }),
+
+/***/ "./node_modules/react-intl/src/components/provider.js":
+/*!************************************************************!*\
+  !*** ./node_modules/react-intl/src/components/provider.js ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+/*
+ * Copyright 2015, Yahoo Inc.
+ * Copyrights licensed under the New BSD License.
+ * See the accompanying LICENSE file for terms.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createIntl = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var React = tslib_1.__importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var injectIntl_1 = __webpack_require__(/*! ./injectIntl */ "./node_modules/react-intl/src/components/injectIntl.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/react-intl/src/utils.js");
+var intl_1 = __webpack_require__(/*! @formatjs/intl */ "./node_modules/@formatjs/intl/index.js");
+var intl_messageformat_1 = __webpack_require__(/*! intl-messageformat */ "./node_modules/intl-messageformat/index.js");
+function processIntlConfig(config) {
+    return {
+        locale: config.locale,
+        timeZone: config.timeZone,
+        formats: config.formats,
+        textComponent: config.textComponent,
+        messages: config.messages,
+        defaultLocale: config.defaultLocale,
+        defaultFormats: config.defaultFormats,
+        onError: config.onError,
+        wrapRichTextChunksInFragment: config.wrapRichTextChunksInFragment,
+        defaultRichTextElements: config.defaultRichTextElements,
+    };
+}
+function assignUniqueKeysToFormatXMLElementFnArgument(values) {
+    if (!values) {
+        return values;
+    }
+    return Object.keys(values).reduce(function (acc, k) {
+        var v = values[k];
+        acc[k] = intl_messageformat_1.isFormatXMLElementFn(v)
+            ? utils_1.assignUniqueKeysToParts(v)
+            : v;
+        return acc;
+    }, {});
+}
+var formatMessage = function (config, formatters, descriptor, rawValues) {
+    var rest = [];
+    for (var _i = 4; _i < arguments.length; _i++) {
+        rest[_i - 4] = arguments[_i];
+    }
+    var values = assignUniqueKeysToFormatXMLElementFnArgument(rawValues);
+    var chunks = intl_1.formatMessage.apply(void 0, tslib_1.__spreadArray([config,
+        formatters,
+        descriptor, values], rest));
+    if (Array.isArray(chunks)) {
+        return React.Children.toArray(chunks);
+    }
+    return chunks;
+};
+/**
+ * Create intl object
+ * @param config intl config
+ * @param cache cache for formatter instances to prevent memory leak
+ */
+var createIntl = function (_a, cache) {
+    var rawDefaultRichTextElements = _a.defaultRichTextElements, config = tslib_1.__rest(_a, ["defaultRichTextElements"]);
+    var defaultRichTextElements = assignUniqueKeysToFormatXMLElementFnArgument(rawDefaultRichTextElements);
+    var coreIntl = intl_1.createIntl(tslib_1.__assign(tslib_1.__assign(tslib_1.__assign({}, utils_1.DEFAULT_INTL_CONFIG), config), { defaultRichTextElements: defaultRichTextElements }), cache);
+    return tslib_1.__assign(tslib_1.__assign({}, coreIntl), { formatMessage: formatMessage.bind(null, {
+            locale: coreIntl.locale,
+            timeZone: coreIntl.timeZone,
+            formats: coreIntl.formats,
+            defaultLocale: coreIntl.defaultLocale,
+            defaultFormats: coreIntl.defaultFormats,
+            messages: coreIntl.messages,
+            onError: coreIntl.onError,
+            defaultRichTextElements: defaultRichTextElements,
+        }, coreIntl.formatters) });
+};
+exports.createIntl = createIntl;
+var IntlProvider = /** @class */ (function (_super) {
+    tslib_1.__extends(IntlProvider, _super);
+    function IntlProvider() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.cache = intl_1.createIntlCache();
+        _this.state = {
+            cache: _this.cache,
+            intl: exports.createIntl(processIntlConfig(_this.props), _this.cache),
+            prevConfig: processIntlConfig(_this.props),
+        };
+        return _this;
+    }
+    IntlProvider.getDerivedStateFromProps = function (props, _a) {
+        var prevConfig = _a.prevConfig, cache = _a.cache;
+        var config = processIntlConfig(props);
+        if (!utils_1.shallowEqual(prevConfig, config)) {
+            return {
+                intl: exports.createIntl(config, cache),
+                prevConfig: config,
+            };
+        }
+        return null;
+    };
+    IntlProvider.prototype.render = function () {
+        utils_1.invariantIntlContext(this.state.intl);
+        return React.createElement(injectIntl_1.Provider, { value: this.state.intl }, this.props.children);
+    };
+    IntlProvider.displayName = 'IntlProvider';
+    IntlProvider.defaultProps = utils_1.DEFAULT_INTL_CONFIG;
+    return IntlProvider;
+}(React.PureComponent));
+exports.default = IntlProvider;
+
+
+/***/ }),
+
+/***/ "./node_modules/react-intl/src/components/relative.js":
+/*!************************************************************!*\
+  !*** ./node_modules/react-intl/src/components/relative.js ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/*
+ * Copyright 2015, Yahoo Inc.
+ * Copyrights licensed under the New BSD License.
+ * See the accompanying LICENSE file for terms.
+ */
+var React = tslib_1.__importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var ecma402_abstract_1 = __webpack_require__(/*! @formatjs/ecma402-abstract */ "./node_modules/@formatjs/ecma402-abstract/index.js");
+var useIntl_1 = tslib_1.__importDefault(__webpack_require__(/*! ./useIntl */ "./node_modules/react-intl/src/components/useIntl.js"));
+var MINUTE = 60;
+var HOUR = 60 * 60;
+var DAY = 60 * 60 * 24;
+function selectUnit(seconds) {
+    var absValue = Math.abs(seconds);
+    if (absValue < MINUTE) {
+        return 'second';
+    }
+    if (absValue < HOUR) {
+        return 'minute';
+    }
+    if (absValue < DAY) {
+        return 'hour';
+    }
+    return 'day';
+}
+function getDurationInSeconds(unit) {
+    switch (unit) {
+        case 'second':
+            return 1;
+        case 'minute':
+            return MINUTE;
+        case 'hour':
+            return HOUR;
+        default:
+            return DAY;
+    }
+}
+function valueToSeconds(value, unit) {
+    if (!value) {
+        return 0;
+    }
+    switch (unit) {
+        case 'second':
+            return value;
+        case 'minute':
+            return value * MINUTE;
+        default:
+            return value * HOUR;
+    }
+}
+var INCREMENTABLE_UNITS = [
+    'second',
+    'minute',
+    'hour',
+];
+function canIncrement(unit) {
+    if (unit === void 0) { unit = 'second'; }
+    return INCREMENTABLE_UNITS.includes(unit);
+}
+var SimpleFormattedRelativeTime = function (props) {
+    var _a = useIntl_1.default(), formatRelativeTime = _a.formatRelativeTime, Text = _a.textComponent;
+    var children = props.children, value = props.value, unit = props.unit, otherProps = tslib_1.__rest(props, ["children", "value", "unit"]);
+    var formattedRelativeTime = formatRelativeTime(value || 0, unit, otherProps);
+    if (typeof children === 'function') {
+        return children(formattedRelativeTime);
+    }
+    if (Text) {
+        return React.createElement(Text, null, formattedRelativeTime);
+    }
+    return React.createElement(React.Fragment, null, formattedRelativeTime);
+};
+var FormattedRelativeTime = function (_a) {
+    var value = _a.value, unit = _a.unit, updateIntervalInSeconds = _a.updateIntervalInSeconds, otherProps = tslib_1.__rest(_a, ["value", "unit", "updateIntervalInSeconds"]);
+    ecma402_abstract_1.invariant(!updateIntervalInSeconds ||
+        !!(updateIntervalInSeconds && canIncrement(unit)), 'Cannot schedule update with unit longer than hour');
+    var _b = React.useState(), prevUnit = _b[0], setPrevUnit = _b[1];
+    var _c = React.useState(0), prevValue = _c[0], setPrevValue = _c[1];
+    var _d = React.useState(0), currentValueInSeconds = _d[0], setCurrentValueInSeconds = _d[1];
+    var updateTimer;
+    if (unit !== prevUnit || value !== prevValue) {
+        setPrevValue(value || 0);
+        setPrevUnit(unit);
+        setCurrentValueInSeconds(canIncrement(unit) ? valueToSeconds(value, unit) : 0);
+    }
+    React.useEffect(function () {
+        function clearUpdateTimer() {
+            clearTimeout(updateTimer);
+        }
+        clearUpdateTimer();
+        // If there's no interval and we cannot increment this unit, do nothing
+        if (!updateIntervalInSeconds || !canIncrement(unit)) {
+            return clearUpdateTimer;
+        }
+        // Figure out the next interesting time
+        var nextValueInSeconds = currentValueInSeconds - updateIntervalInSeconds;
+        var nextUnit = selectUnit(nextValueInSeconds);
+        // We've reached the max auto incrementable unit, don't schedule another update
+        if (nextUnit === 'day') {
+            return clearUpdateTimer;
+        }
+        var unitDuration = getDurationInSeconds(nextUnit);
+        var remainder = nextValueInSeconds % unitDuration;
+        var prevInterestingValueInSeconds = nextValueInSeconds - remainder;
+        var nextInterestingValueInSeconds = prevInterestingValueInSeconds >= currentValueInSeconds
+            ? prevInterestingValueInSeconds - unitDuration
+            : prevInterestingValueInSeconds;
+        var delayInSeconds = Math.abs(nextInterestingValueInSeconds - currentValueInSeconds);
+        if (currentValueInSeconds !== nextInterestingValueInSeconds) {
+            updateTimer = setTimeout(function () { return setCurrentValueInSeconds(nextInterestingValueInSeconds); }, delayInSeconds * 1e3);
+        }
+        return clearUpdateTimer;
+    }, [currentValueInSeconds, updateIntervalInSeconds, unit]);
+    var currentValue = value || 0;
+    var currentUnit = unit;
+    if (canIncrement(unit) &&
+        typeof currentValueInSeconds === 'number' &&
+        updateIntervalInSeconds) {
+        currentUnit = selectUnit(currentValueInSeconds);
+        var unitDuration = getDurationInSeconds(currentUnit);
+        currentValue = Math.round(currentValueInSeconds / unitDuration);
+    }
+    return (React.createElement(SimpleFormattedRelativeTime, tslib_1.__assign({ value: currentValue, unit: currentUnit }, otherProps)));
+};
+FormattedRelativeTime.displayName = 'FormattedRelativeTime';
+FormattedRelativeTime.defaultProps = {
+    value: 0,
+    unit: 'second',
+};
+exports.default = FormattedRelativeTime;
+
+
+/***/ }),
+
+/***/ "./node_modules/react-intl/src/components/useIntl.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/react-intl/src/components/useIntl.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var React = tslib_1.__importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var injectIntl_1 = __webpack_require__(/*! ./injectIntl */ "./node_modules/react-intl/src/components/injectIntl.js");
+var utils_1 = __webpack_require__(/*! ../utils */ "./node_modules/react-intl/src/utils.js");
+function useIntl() {
+    var intl = React.useContext(injectIntl_1.Context);
+    utils_1.invariantIntlContext(intl);
+    return intl;
+}
+exports.default = useIntl;
+
+
+/***/ }),
+
+/***/ "./node_modules/react-intl/src/utils.js":
+/*!**********************************************!*\
+  !*** ./node_modules/react-intl/src/utils.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.shallowEqual = exports.assignUniqueKeysToParts = exports.DEFAULT_INTL_CONFIG = exports.invariantIntlContext = void 0;
+var tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var React = tslib_1.__importStar(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var ecma402_abstract_1 = __webpack_require__(/*! @formatjs/ecma402-abstract */ "./node_modules/@formatjs/ecma402-abstract/index.js");
+var intl_1 = __webpack_require__(/*! @formatjs/intl */ "./node_modules/@formatjs/intl/index.js");
+function invariantIntlContext(intl) {
+    ecma402_abstract_1.invariant(intl, '[React Intl] Could not find required `intl` object. ' +
+        '<IntlProvider> needs to exist in the component ancestry.');
+}
+exports.invariantIntlContext = invariantIntlContext;
+exports.DEFAULT_INTL_CONFIG = tslib_1.__assign(tslib_1.__assign({}, intl_1.DEFAULT_INTL_CONFIG), { textComponent: React.Fragment });
+/**
+ * Takes a `formatXMLElementFn`, and composes it in function, which passes
+ * argument `parts` through, assigning unique key to each part, to prevent
+ * "Each child in a list should have a unique "key"" React error.
+ * @param formatXMLElementFn
+ */
+function assignUniqueKeysToParts(formatXMLElementFn) {
+    return function (parts) {
+        // eslint-disable-next-line prefer-rest-params
+        return formatXMLElementFn(React.Children.toArray(parts));
+    };
+}
+exports.assignUniqueKeysToParts = assignUniqueKeysToParts;
+function shallowEqual(objA, objB) {
+    if (objA === objB) {
+        return true;
+    }
+    if (!objA || !objB) {
+        return false;
+    }
+    var aKeys = Object.keys(objA);
+    var bKeys = Object.keys(objB);
+    var len = aKeys.length;
+    if (bKeys.length !== len) {
+        return false;
+    }
+    for (var i = 0; i < len; i++) {
+        var key = aKeys[i];
+        if (objA[key] !== objB[key] ||
+            !Object.prototype.hasOwnProperty.call(objB, key)) {
+            return false;
+        }
+    }
+    return true;
+}
+exports.shallowEqual = shallowEqual;
+
+
+/***/ }),
+
 /***/ "./node_modules/react-is/cjs/react-is.development.js":
 /*!***********************************************************!*\
   !*** ./node_modules/react-is/cjs/react-is.development.js ***!
@@ -45377,6 +54064,279 @@ module.exports = warning;
 
 /***/ }),
 
+/***/ "./node_modules/tslib/tslib.es6.js":
+/*!*****************************************!*\
+  !*** ./node_modules/tslib/tslib.es6.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "__extends": () => (/* binding */ __extends),
+/* harmony export */   "__assign": () => (/* binding */ __assign),
+/* harmony export */   "__rest": () => (/* binding */ __rest),
+/* harmony export */   "__decorate": () => (/* binding */ __decorate),
+/* harmony export */   "__param": () => (/* binding */ __param),
+/* harmony export */   "__metadata": () => (/* binding */ __metadata),
+/* harmony export */   "__awaiter": () => (/* binding */ __awaiter),
+/* harmony export */   "__generator": () => (/* binding */ __generator),
+/* harmony export */   "__createBinding": () => (/* binding */ __createBinding),
+/* harmony export */   "__exportStar": () => (/* binding */ __exportStar),
+/* harmony export */   "__values": () => (/* binding */ __values),
+/* harmony export */   "__read": () => (/* binding */ __read),
+/* harmony export */   "__spread": () => (/* binding */ __spread),
+/* harmony export */   "__spreadArrays": () => (/* binding */ __spreadArrays),
+/* harmony export */   "__spreadArray": () => (/* binding */ __spreadArray),
+/* harmony export */   "__await": () => (/* binding */ __await),
+/* harmony export */   "__asyncGenerator": () => (/* binding */ __asyncGenerator),
+/* harmony export */   "__asyncDelegator": () => (/* binding */ __asyncDelegator),
+/* harmony export */   "__asyncValues": () => (/* binding */ __asyncValues),
+/* harmony export */   "__makeTemplateObject": () => (/* binding */ __makeTemplateObject),
+/* harmony export */   "__importStar": () => (/* binding */ __importStar),
+/* harmony export */   "__importDefault": () => (/* binding */ __importDefault),
+/* harmony export */   "__classPrivateFieldGet": () => (/* binding */ __classPrivateFieldGet),
+/* harmony export */   "__classPrivateFieldSet": () => (/* binding */ __classPrivateFieldSet)
+/* harmony export */ });
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+    if (typeof b !== "function" && b !== null)
+        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    }
+    return __assign.apply(this, arguments);
+}
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
+
+function __decorate(decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
+
+function __param(paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+}
+
+function __metadata(metadataKey, metadataValue) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+}
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
+
+var __createBinding = Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+
+function __exportStar(m, o) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
+}
+
+function __values(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+}
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+}
+
+/** @deprecated */
+function __spread() {
+    for (var ar = [], i = 0; i < arguments.length; i++)
+        ar = ar.concat(__read(arguments[i]));
+    return ar;
+}
+
+/** @deprecated */
+function __spreadArrays() {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+}
+
+function __spreadArray(to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+}
+
+function __await(v) {
+    return this instanceof __await ? (this.v = v, this) : new __await(v);
+}
+
+function __asyncGenerator(thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+}
+
+function __asyncDelegator(o) {
+    var i, p;
+    return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
+    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
+}
+
+function __asyncValues(o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+}
+
+function __makeTemplateObject(cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+
+var __setModuleDefault = Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+};
+
+function __importStar(mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+}
+
+function __importDefault(mod) {
+    return (mod && mod.__esModule) ? mod : { default: mod };
+}
+
+function __classPrivateFieldGet(receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+}
+
+function __classPrivateFieldSet(receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/value-equal/cjs/value-equal.js":
 /*!*****************************************************!*\
   !*** ./node_modules/value-equal/cjs/value-equal.js ***!
@@ -45545,7 +54505,7 @@ module.exports = __webpack_require__;
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Flag the module as loaded
 /******/ 		module.loaded = true;
@@ -45555,6 +54515,18 @@ module.exports = __webpack_require__;
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/global */
 /******/ 	(() => {
 /******/ 		__webpack_require__.g = (function() {
@@ -45565,6 +54537,22 @@ module.exports = __webpack_require__;
 /******/ 				if (typeof window === 'object') return window;
 /******/ 			}
 /******/ 		})();
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/node module decorator */

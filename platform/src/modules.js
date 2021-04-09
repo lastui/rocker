@@ -22,6 +22,9 @@ export function registerModule(scope) {
   if (scope.styles) {
     this.styles = scope.styles;
   }
+  if (scope.locale) {
+    this.locale = scope.locale;
+  }
 }
 
 export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
@@ -127,6 +130,10 @@ export const createModuleLoader = () => {
     if (scope.styles) {
       console.debug(`module ${name} introducing styles`);
       scope.styles.use();
+    }
+    if (scope.locale) {
+      console.debug(`module ${name} introducing locales`);
+      console.log(scope.locale);
     }
     loadedModules[name] = {
       name,

@@ -7,6 +7,13 @@ export const init = (fetchContext) => ({
   }
 });
 
+export const setLanguage = (language) => ({
+  type: constants.SET_LANGUAGE,
+  payload: {
+    language,
+  },
+});
+
 export const addShared = (name, data = {}) => ({
   type: constants.ADD_SHARED,
   payload: {

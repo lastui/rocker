@@ -13,6 +13,7 @@ config.entry = {
 		"object-assign",
 		"react",
 		"react-dom",
+		"react-intl",
 		"react-redux",
 		"react-router",
 		"react-router-dom",
