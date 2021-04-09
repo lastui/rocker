@@ -25,7 +25,13 @@ config.module.rules.push(
 					injectType: "lazyStyleTag",
 				},
 			},
-			"css-loader",
+			{
+				loader: "css-loader",
+				options: {
+			        sourceMap: false,
+			        importLoaders: 1,
+			    }
+			},
 		],
 	},
 	{
@@ -37,8 +43,23 @@ config.module.rules.push(
 					injectType: "lazyStyleTag",
 				},
 			},
-			"css-loader",
-			"sass-loader",
+			{
+				loader: "css-loader",
+				options: {
+			        sourceMap: false,
+			        importLoaders: 1,
+			    }
+			},
+			{
+				loader: "sass-loader",
+				options: {
+					implementation: require('sass'),
+					sassOptions: {
+						fiber: false,
+					},
+					sourceMap: false,
+				},
+			},
 		],
 	},
 	{
