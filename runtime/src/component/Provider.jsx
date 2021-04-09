@@ -1,9 +1,10 @@
 import React from "react";
-import { Provider as ReduxProvider } from "react-redux";
+import { Provider as ReduxProvider, useSelector } from "react-redux";
 import { IntlProvider } from "react-intl";
 import { ModuleContext, history } from "@lastui/rocker/platform";
 import { ConnectedRouter } from "connected-react-router";
 import setupStore from "../store";
+import { getLanguage } from "../selector";
 
 const Provider = (props) => {
 	const [_, setErrorState] = React.useState();
@@ -13,6 +14,8 @@ const Provider = (props) => {
 		moduleLoader: undefined,
 		isReady: false,
 	});
+
+	const language = useSelector(getLanguage);
 
 	const setupProviders = async () => {
 		try {
@@ -40,7 +43,7 @@ const Provider = (props) => {
 	return (
 		<ModuleContext.Provider value={state.moduleLoader}>
 			<ReduxProvider store={state.store}>
-				<IntlProvider locale="en">
+				<IntlProvider locale={language}>
 					<ConnectedRouter history={history}>
 						{props.children}
 					</ConnectedRouter>
