@@ -10,7 +10,6 @@ config.entry = {
 	dependencies: [
 		"connected-react-router",
 		"history",
-		"object-assign",
 		"react",
 		"react-dom",
 		"react-intl",
@@ -20,9 +19,6 @@ config.entry = {
 		"redux",
 		"redux-saga",
 		"redux-saga/effects",
-		"resolve-pathname",
-		"value-equal",
-		"warning",
 		"regenerator-runtime/runtime.js",
 	],
 };
