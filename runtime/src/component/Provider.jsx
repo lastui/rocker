@@ -1,9 +1,11 @@
 import React from "react";
-import { Provider } from "react-redux";
-import { ModuleContext } from "@lastui/rocker/platform";
+import { Provider as ReduxProvider } from "react-redux";
+import { IntlProvider } from "react-intl";
+import { ModuleContext, history } from "@lastui/rocker/platform";
+import { ConnectedRouter } from "connected-react-router";
 import setupStore from "../store";
 
-const ReduxProvider = (props) => {
+const Provider = (props) => {
 	const [_, setErrorState] = React.useState();
 
 	const [state, setState] = React.useState({
@@ -37,11 +39,15 @@ const ReduxProvider = (props) => {
 
 	return (
 		<ModuleContext.Provider value={state.moduleLoader}>
-			<Provider store={state.store}>
-				{props.children}
-			</Provider>
+			<ReduxProvider store={state.store}>
+				<IntlProvider locale="en">
+					<ConnectedRouter history={history}>
+						{props.children}
+					</ConnectedRouter>
+				</IntlProvider>
+			</ReduxProvider>
 		</ModuleContext.Provider>
 	);
 };
 
-export default ReduxProvider;
+export default Provider;
