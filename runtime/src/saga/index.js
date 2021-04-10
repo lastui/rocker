@@ -6,6 +6,9 @@ function* watchInit() {
 }
 
 function* runInit(action) {
+	if (action.payload.initializeRuntime) {
+		yield call(action.payload.initializeRuntime);
+	}
 	const context = yield call(action.payload.fetchContext);
 	yield put(actions.setAvailableModules(context.available));
 	yield put(actions.setEntryPointModule(context.entrypoint));

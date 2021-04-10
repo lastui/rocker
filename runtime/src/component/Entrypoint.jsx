@@ -6,7 +6,7 @@ import { getEntrypoint } from "../selector";
 const Entrypoint = (props) => {
 	const dispatch = useDispatch();
 	useEffect(() => {
-		dispatch(actions.init(props.fetchContext));
+		dispatch(actions.init(props.fetchContext, props.initializeRuntime));
 	}, []);
 	const entrypoint = useSelector(getEntrypoint);
 	return <Module name={entrypoint} />;
