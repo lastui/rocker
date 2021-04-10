@@ -1,9 +1,10 @@
 import * as constants from "./constants";
 
-export const init = (fetchContext) => ({
+export const init = (fetchContext, initializeRuntime) => ({
   type: constants.INIT,
   payload: {
     fetchContext,
+    initializeRuntime,
   }
 });
 
