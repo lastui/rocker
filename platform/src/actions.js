@@ -15,6 +15,21 @@ export const setLanguage = (language) => ({
   },
 });
 
+export const addI18nMessages = (name, data = {}) => ({
+  type: constants.ADD_I18N_MESSAGES,
+  payload: {
+    name,
+    data,
+  },
+});
+
+export const removeI18nMessages = (name) => ({
+  type: constants.REMOVE_I18N_MESSAGES,
+  payload: {
+    name,
+  },
+});
+
 export const addShared = (name, data = {}) => ({
   type: constants.ADD_SHARED,
   payload: {
