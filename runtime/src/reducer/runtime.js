@@ -2,6 +2,7 @@ import { constants } from "@lastui/rocker/platform";
 
 const initialState = {
 	language: "en-US",
+	messages: {},
 	entrypoint: null,
 	ready: false,
 };
@@ -15,6 +16,14 @@ export default (state = initialState, action) => {
 				ready: state.ready,
 			};
 		}
+		case constants.ADD_I18N_MESSAGES: {
+		  console.debug('runtime add i18n messages', action.payload)
+          return state
+        }
+        case constants.REMOVE_I18N_MESSAGES: {
+          console.debug('runtime remove i18n messages', action.payload)
+          return state;
+        }
 		case constants.MODULES_READY: {
 			return {
 				language: state.language,

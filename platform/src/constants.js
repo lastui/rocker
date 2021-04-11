@@ -14,3 +14,6 @@ export const MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
 
 export const ADD_SHARED = "@@shared/ADD_SHARED";
 export const REMOVE_SHARED = "@@shared/REMOVE_SHARED";
+
+export const ADD_I18N_MESSAGES = "@@shared/ADD_I18N_MESSAGES";
+export const REMOVE_I18N_MESSAGES = "@@shared/REMOVE_I18N_MESSAGES";

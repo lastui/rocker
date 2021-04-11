@@ -18,23 +18,27 @@ module.exports = {
 							babelrc: false,
 							...babel,
 							sourceMaps: false,
-							sourceType: 'module',
+							sourceType: "module",
 							highlightCode: true,
 							shouldPrintComment: (val) => /license/.test(val),
-      						compact: true,
-      						inputSourceMap: false,
+							compact: true,
+							inputSourceMap: false,
 						},
 					},
 				],
 			},
-		    {
-		       test: /\.(txt|json)$/,
-		       type: 'asset/source',
-		    },
-		    {
-		       test: /\.svg/,
-		       type: 'asset/inline',
-		    },
+			{
+				test: /\.txt$/,
+				type: "asset/source",
+			},
+			{
+				test: /\.json$/,
+				type: "json",
+			},
+			{
+				test: /\.svg/,
+				type: "asset/inline",
+			},
 		],
 	},
 };

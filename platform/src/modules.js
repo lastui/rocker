@@ -71,6 +71,7 @@ export const createModuleLoader = () => {
   const danglingNamespaces = [];
   const reducers = {};
   const sagas = {};
+  //const messages = {}
 
   const getLoadedModule = (name) => loadedModules[name];
 
@@ -114,6 +115,14 @@ export const createModuleLoader = () => {
     store.dispatch(actions.addShared(name, payload));
   };
 
+  const removeI18nMessages = (name) => {
+    store.dispatch(actions.removeI18nMessages(name));
+  };
+
+  const addI18nMessages = (name, data) => {
+    store.dispatch(actions.addI18nMessages(name, data));
+  };
+
   const connectModule = (name, scope = {}) => {
     if (scope.reducer) {
       console.debug(`module ${name} introducing reducer`);
@@ -133,7 +142,7 @@ export const createModuleLoader = () => {
     }
     if (scope.locale) {
       console.debug(`module ${name} introducing locales`);
-      console.log(scope.locale);
+      addI18nMessages(name, scope.locale)
     }
     loadedModules[name] = {
       name,
@@ -144,6 +153,9 @@ export const createModuleLoader = () => {
         }
         if (scope.saga) {
           removeSaga(name);
+        }
+        if (scope.locale) {
+          removeI18nMessages(name);
         }
       },
     };
@@ -264,6 +276,14 @@ export const createModuleLoader = () => {
         }
         case constants.REMOVE_SHARED: {
           console.debug(`dyn reducer - remove shared (ignore)`);
+          return state;
+        }
+        case constants.ADD_I18N_MESSAGES: {
+          console.debug(`dyn reducer - add i18n messages (ignore)`);
+          return state;
+        }
+        case constants.REMOVE_I18N_MESSAGES: {
+          console.debug(`dyn reducer - remove i18n messages (ignore)`);
           return state;
         }
         case constants.SET_AVAILABLE_MODULES: {
