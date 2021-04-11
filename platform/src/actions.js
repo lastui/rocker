@@ -15,18 +15,17 @@ export const setLanguage = (language) => ({
   },
 });
 
-export const addI18nMessages = (name, data = {}) => ({
+export const addI18nMessages = (data = {}) => ({
   type: constants.ADD_I18N_MESSAGES,
   payload: {
-    name,
     data,
   },
 });
 
-export const removeI18nMessages = (name) => ({
+export const removeI18nMessages = (data = {}) => ({
   type: constants.REMOVE_I18N_MESSAGES,
   payload: {
-    name,
+    data,
   },
 });
 

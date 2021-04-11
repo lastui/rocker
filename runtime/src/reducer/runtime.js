@@ -70,7 +70,6 @@ export default (state = initialState, action) => {
 			for (const id of toDelete) {
 				delete refCount[id];
 			}
-
 			return {
 				language: state.language,
 				entrypoint: state.entrypoint,
