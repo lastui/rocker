@@ -71,7 +71,6 @@ export const createModuleLoader = () => {
   const danglingNamespaces = [];
   const reducers = {};
   const sagas = {};
-  //const messages = {}
 
   const getLoadedModule = (name) => loadedModules[name];
 
