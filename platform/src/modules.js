@@ -114,12 +114,12 @@ export const createModuleLoader = () => {
     store.dispatch(actions.addShared(name, payload));
   };
 
-  const removeI18nMessages = (name) => {
-    store.dispatch(actions.removeI18nMessages(name));
+  const removeI18nMessages = (data) => {
+    store.dispatch(actions.removeI18nMessages(data));
   };
 
-  const addI18nMessages = (name, data) => {
-    store.dispatch(actions.addI18nMessages(name, data));
+  const addI18nMessages = (data) => {
+    store.dispatch(actions.addI18nMessages(data));
   };
 
   const connectModule = (name, scope = {}) => {
@@ -141,7 +141,7 @@ export const createModuleLoader = () => {
     }
     if (scope.locale) {
       console.debug(`module ${name} introducing locales`);
-      addI18nMessages(name, scope.locale)
+      addI18nMessages(scope.locale)
     }
     loadedModules[name] = {
       name,
@@ -154,7 +154,7 @@ export const createModuleLoader = () => {
           removeSaga(name);
         }
         if (scope.locale) {
-          removeI18nMessages(name);
+          removeI18nMessages(scope.locale);
         }
       },
     };
