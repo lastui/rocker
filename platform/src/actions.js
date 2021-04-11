@@ -22,7 +22,7 @@ export const addI18nMessages = (data = {}) => ({
   },
 });
 
-export const removeI18nMessages = (data) => ({
+export const removeI18nMessages = (data = {}) => ({
   type: constants.REMOVE_I18N_MESSAGES,
   payload: {
     data,
