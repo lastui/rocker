@@ -35,7 +35,13 @@ A: Probably not if you have single SPA that compiles into one monolith. But if y
 
 ---
 
-Q: I noticed that dependencies are part of platform code, can I supply mine
+Q: What about "DLL hell" when introducing modularity 
+
+A: Yes thats a valid concern, if you compile your module at one time, make incompatible changes to your runtime or dependencies and try to run the code it will gracefully crash at the level of module. You need to keep this in mind. These updates (of dependencies or runtime) are usually planned and downstream recompilation could be automated. Its similar usecase as you compiling .apk with androind v1 and then trying to run it on android vx. If its incompatible, you need to recompile your module to match the runtime. Recompilation of runtime by itself does not break contract between runtime and modules, es5 exports and behaviour change does.
+
+---
+
+Q: I noticed that some dependencies are part of platform, can I supply mine
 
 A: Yes, but you need to contain them into single chunk (module) that you will compile, and you are locked into versions of react, redux, ... that is provided by platform. Imagine it like Android OS or iOS, your modules have some [features and essentials provided](https://github.com/lastui/dependencies) and both runtime and functionality musi reference these same essential instances. You can control your module compatibility by using appropriate version of `@lastui/rocker` platform. And you can bundle any necessary dependencies if you'll need into your modules. JavaScript does not have SPIs and DLLs are functionaly closes stable thing for that bottom-up compilation usecase.
 
