@@ -43,30 +43,31 @@ module.exports = {
 		minimizer: settings.DEVELOPMENT
 			? []
 			: [
-				new TerserPlugin({
-					extractComments: {
-						condition: /^\**!|license/i,
-						filename: (fileData) => 'LICENSE.txt',
-						banner: (licenseFile) => 'License information can be found in LICENSE.txt',
-					},
-					terserOptions: {
-						parse: {
-							ecma: 8,
+					new TerserPlugin({
+						extractComments: {
+							condition: /^\**!|license/i,
+							filename: (fileData) => "LICENSE.txt",
+							banner: (licenseFile) =>
+								"License information can be found in LICENSE.txt",
 						},
-						compress: {
-							ecma: 5,
-							warnings: false,
-							comparisons: false,
-							inline: 2,
+						terserOptions: {
+							parse: {
+								ecma: 8,
+							},
+							compress: {
+								ecma: 5,
+								warnings: false,
+								comparisons: false,
+								inline: 2,
+							},
+							output: {
+								ecma: 5,
+								comments: false,
+								ascii_only: true,
+							},
 						},
-						output: {
-							ecma: 5,
-							comments: false,
-							ascii_only: true,
-						},
-					},
-					parallel: true,
-				}),
+						parallel: true,
+					}),
 			  ],
 	},
 	plugins: [
@@ -75,8 +76,10 @@ module.exports = {
 			process: ["process"],
 		}),
 		new webpack.DefinePlugin({
-			"process": false,
-			"process.env.NODE_ENV": settings.DEVELOPMENT ? `"development"` : `"production"`,
+			process: false,
+			"process.env.NODE_ENV": settings.DEVELOPMENT
+				? `"development"`
+				: `"production"`,
 			"process.env.NODE_DEBUG": false,
 		}),
 		new webpack.EnvironmentPlugin([

@@ -59,7 +59,7 @@ export default (state = initialState, action) => {
 			const toDelete = [];
 			for (const id in refCount) {
 				if (refCount[id]) {
-					continue
+					continue;
 				}
 				for (const locale in state.messages) {
 					delete nextMessages[locale][id];

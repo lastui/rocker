@@ -23,9 +23,7 @@ config.plugins.push(
 		cleanOnceBeforeBuildPatterns: [
 			path.join(
 				settings.DLL_BUILD_PATH,
-				`[name]-${
-					settings.DEVELOPMENT ? "dev" : "prod"
-				}-manifest.json`
+				`[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`
 			),
 			path.join(
 				settings.DLL_BUILD_PATH,
@@ -42,7 +40,7 @@ config.plugins.push(
 			`[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`
 		),
 		name: "[name]_dll",
-	}),
+	})
 );
 
 module.exports = config;
