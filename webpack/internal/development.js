@@ -35,7 +35,7 @@ module.exports = {
 		}),
 		new webpack.DefinePlugin({
 			"process": false,
-			"process.env.NODE_ENV": settings.DEVELOPMENT ? `"development"` : `"production"`,
+			"process.env.NODE_ENV": `"development"`,
 			"process.env.NODE_DEBUG": true,
 		}),
 		new webpack.EnvironmentPlugin([
