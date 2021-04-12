@@ -4,7 +4,7 @@ var platform_dll;
 
 /***/ "./node_modules/@lastui/rocker/platform/index.js":
 /*!*******************************************************************!*\
-  !*** ./node_modules/@lastui/rocker/platform/index.js + 6 modules ***!
+  !*** ./node_modules/@lastui/rocker/platform/index.js + 5 modules ***!
   \*******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -20,7 +20,6 @@ __webpack_require__.d(__webpack_exports__, {
   "constants": () => (/* reexport */ constants_namespaceObject),
   "createModuleLoader": () => (/* reexport */ createModuleLoader),
   "default": () => (/* binding */ platform),
-  "history": () => (/* reexport */ routing_history),
   "moduleLoaderMiddleware": () => (/* reexport */ moduleLoaderMiddleware),
   "registerModule": () => (/* reexport */ registerModule),
   "useModuleLoader": () => (/* reexport */ useModuleLoader)
@@ -65,10 +64,6 @@ __webpack_require__.d(actions_namespaceObject, {
 var INIT="@@platform/INIT";var SET_LANGUAGE="@@platform/SET_LANGUAGE";var SET_AVAILABLE_MODULES="@@platform/SET_AVAILABLE_MODULES";var SET_ENTRYPOINT_MODULE="@@platform/SET_ENTRYPOINT_MODULE";var LOAD_MODULE="@@platform/LOAD_MODULE";var SHUTDOWN="@@platform/SHUTDOWN";var MODULE_INIT="@@modules/INIT";var MODULE_LOADED="@@modules/LOADED";var MODULE_UNLOADED="@@modules/UNLOADED";var MODULE_NOT_AVAILABLE="@@modules/NOT_AVAILABLE";var ADD_SHARED="@@shared/ADD_SHARED";var REMOVE_SHARED="@@shared/REMOVE_SHARED";var ADD_I18N_MESSAGES="@@shared/ADD_I18N_MESSAGES";var REMOVE_I18N_MESSAGES="@@shared/REMOVE_I18N_MESSAGES";
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/actions.js
 var init=function init(fetchContext,initializeRuntime){return{type:INIT,payload:{fetchContext:fetchContext,initializeRuntime:initializeRuntime}};};var setLanguage=function setLanguage(language){return{type:SET_LANGUAGE,payload:{language:language}};};var actions_addI18nMessages=function addI18nMessages(){var data=arguments.length>0&&arguments[0]!==void 0?arguments[0]:{};return{type:ADD_I18N_MESSAGES,payload:{data:data}};};var actions_removeI18nMessages=function removeI18nMessages(){var data=arguments.length>0&&arguments[0]!==void 0?arguments[0]:{};return{type:REMOVE_I18N_MESSAGES,payload:{data:data}};};var actions_addShared=function addShared(name){var data=arguments.length>1&&arguments[1]!==void 0?arguments[1]:{};return{type:ADD_SHARED,payload:{name:name,data:data}};};var actions_removeShared=function removeShared(name){return{type:REMOVE_SHARED,payload:{name:name}};};var setAvailableModules=function setAvailableModules(){var modules=arguments.length>0&&arguments[0]!==void 0?arguments[0]:[];return{type:SET_AVAILABLE_MODULES,payload:{modules:modules}};};var setEntryPointModule=function setEntryPointModule(entrypoint){return{type:SET_ENTRYPOINT_MODULE,payload:{entrypoint:entrypoint}};};var loadModule=function loadModule(name){return{type:LOAD_MODULE,payload:{name:name}};};
-// EXTERNAL MODULE: delegated ./node_modules/history/index.js from dll-reference dependencies_dll
-var historyfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/history/index.js");
-;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/routing.js
-var routing_history=(0,historyfrom_dll_reference_dependencies_dll.createBrowserHistory)();
 // EXTERNAL MODULE: delegated ./node_modules/react/index.js from dll-reference dependencies_dll
 var reactfrom_dll_reference_dependencies_dll = __webpack_require__("./node_modules/react/index.js");
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/ModuleContext.jsx
@@ -84,17 +79,7 @@ function registerModule(scope){if(scope.MainView){this.MainView=scope.MainView;}
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/Module.jsx
 function _slicedToArray(arr,i){return _arrayWithHoles(arr)||_iterableToArrayLimit(arr,i)||_unsupportedIterableToArray(arr,i)||_nonIterableRest();}function _nonIterableRest(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");}function _unsupportedIterableToArray(o,minLen){if(!o)return;if(typeof o==="string")return _arrayLikeToArray(o,minLen);var n=Object.prototype.toString.call(o).slice(8,-1);if(n==="Object"&&o.constructor)n=o.constructor.name;if(n==="Map"||n==="Set")return Array.from(o);if(n==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))return _arrayLikeToArray(o,minLen);}function _arrayLikeToArray(arr,len){if(len==null||len>arr.length)len=arr.length;for(var i=0,arr2=new Array(len);i<len;i++){arr2[i]=arr[i];}return arr2;}function _iterableToArrayLimit(arr,i){if(typeof Symbol==="undefined"||!(Symbol.iterator in Object(arr)))return;var _arr=[];var _n=true;var _d=false;var _e=void 0;try{for(var _i=arr[Symbol.iterator](),_s;!(_n=(_s=_i.next()).done);_n=true){_arr.push(_s.value);if(i&&_arr.length===i)break;}}catch(err){_d=true;_e=err;}finally{try{if(!_n&&_i["return"]!=null)_i["return"]();}finally{if(_d)throw _e;}}return _arr;}function _arrayWithHoles(arr){if(Array.isArray(arr))return arr;}var Module=function Module(){var props=arguments.length>0&&arguments[0]!==void 0?arguments[0]:{};var moduleLoader=useModuleLoader();var _useState=(0,reactfrom_dll_reference_dependencies_dll.useState)(moduleLoader.getLoadedModule(props.name)),_useState2=_slicedToArray(_useState,2),loadedModule=_useState2[0],setLoadedModule=_useState2[1];(0,reactfrom_dll_reference_dependencies_dll.useEffect)(function(){if(!props.name){return;}var name=props.name;moduleLoader.loadModule(name).then(function(module){moduleLoader.setModuleMountState(name,true);setLoadedModule(module);});return function(){moduleLoader.setModuleMountState(name,false);};},[props.name]);if(!props.name){return reactfrom_dll_reference_dependencies_dll.createElement(reactfrom_dll_reference_dependencies_dll.Fragment,null);}if(!loadedModule){console.debug("module ".concat(props.name," is not loaded"));return reactfrom_dll_reference_dependencies_dll.createElement(reactfrom_dll_reference_dependencies_dll.Fragment,null);}if(!loadedModule.root){console.debug("module ".concat(props.name," does not have view"));return reactfrom_dll_reference_dependencies_dll.createElement(reactfrom_dll_reference_dependencies_dll.Fragment,null);}console.debug("module ".concat(props.name," ready"));var ModuleComponent=loadedModule.root;return reactfrom_dll_reference_dependencies_dll.createElement(ModuleContext.Provider,{value:moduleLoader},reactfrom_dll_reference_dependencies_dll.createElement(ModuleComponent,props.options));};/* harmony default export */ const platform_Module = (reactfrom_dll_reference_dependencies_dll.memo(Module));
 ;// CONCATENATED MODULE: ./node_modules/@lastui/rocker/platform/index.js
-/* harmony default export */ const platform = ({Module:platform_Module,ModuleContext:ModuleContext,useModuleLoader:useModuleLoader,actions:actions_namespaceObject,constants:constants_namespaceObject,history:routing_history,createModuleLoader:createModuleLoader,moduleLoaderMiddleware:moduleLoaderMiddleware,registerModule:registerModule});
-
-/***/ }),
-
-/***/ "./node_modules/history/index.js":
-/*!*************************************************************************************!*\
-  !*** delegated ./node_modules/history/index.js from dll-reference dependencies_dll ***!
-  \*************************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-module.exports = (__webpack_require__(/*! dll-reference dependencies_dll */ "dll-reference dependencies_dll"))("./node_modules/history/index.js");
+/* harmony default export */ const platform = ({Module:platform_Module,ModuleContext:ModuleContext,useModuleLoader:useModuleLoader,actions:actions_namespaceObject,constants:constants_namespaceObject,createModuleLoader:createModuleLoader,moduleLoaderMiddleware:moduleLoaderMiddleware,registerModule:registerModule});
 
 /***/ }),
 

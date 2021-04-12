@@ -1,5 +1,7 @@
 import React from "react";
 import { Provider as ReduxProvider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { Switch } from "react-router";
 import { IntlProvider } from "react-intl";
 import { ModuleContext } from "@lastui/rocker/platform";
 import setupStore from "../store";
@@ -41,7 +43,9 @@ const Provider = (props) => {
 		<ModuleContext.Provider value={state.moduleLoader}>
 			<ReduxProvider store={state.store}>
 				<Localisation>
-					{props.children}
+					<BrowserRouter forceRefresh={false}>
+						<Switch>{props.children}</Switch>
+					</BrowserRouter>
 				</Localisation>
 			</ReduxProvider>
 		</ModuleContext.Provider>

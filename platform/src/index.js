@@ -1,6 +1,5 @@
 import * as actions from "./actions";
 import * as constants from "./constants";
-import { history } from "./routing";
 import { ModuleContext, useModuleLoader } from "./ModuleContext";
 import {
 	registerModule,
@@ -15,7 +14,6 @@ export {
 	useModuleLoader,
 	actions,
 	constants,
-	history,
 	createModuleLoader,
 	moduleLoaderMiddleware,
 	registerModule,
@@ -27,7 +25,6 @@ export default {
 	useModuleLoader,
 	actions,
 	constants,
-	history,
 	createModuleLoader,
 	moduleLoaderMiddleware,
 	registerModule,
