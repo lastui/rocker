@@ -37,21 +37,6 @@ jobs:
       - name: Bump version patch
         if: steps.changes.outputs.files_changed == 'true'
         run: npm version patch --no-git-tag-version
-      - name: Compile package dependencies
-        if: steps.changes.outputs.files_changed == 'true'
-        run: |
-          cd dependencies
-          npm run build
-      - name: Compile package platform
-        if: steps.changes.outputs.files_changed == 'true'
-        run: |
-          cd platform
-          npm run build
-      - name: Compile package runtime
-        if: steps.changes.outputs.files_changed == 'true'
-        run: |
-          cd runtime
-          npm run build
       - name: Create PR
         if: steps.changes.outputs.files_changed == 'true'
         uses: peter-evans/create-pull-request@v3
