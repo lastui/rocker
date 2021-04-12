@@ -1,5 +1,5 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
-import { actions, constants } from '@lastui/rocker/platform';
+import { call, put, takeLatest } from "redux-saga/effects";
+import { actions, constants } from "@lastui/rocker/platform";
 
 function* watchInit() {
 	yield takeLatest(constants.INIT, runInit);
@@ -14,6 +14,4 @@ function* runInit(action) {
 	yield put(actions.setEntryPointModule(context.entrypoint));
 }
 
-export default [
-	watchInit,
-];
+export default [watchInit];

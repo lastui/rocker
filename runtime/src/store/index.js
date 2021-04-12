@@ -13,10 +13,7 @@ export default async () => {
 	const loader = createModuleLoader();
 	const sagaMiddleware = createSagaMiddleware();
 
-	const enhancers = [
-		sagaMiddleware,
-		moduleLoaderMiddleware(loader),
-	];
+	const enhancers = [sagaMiddleware, moduleLoaderMiddleware(loader)];
 
 	if (window.__GROOPIE_EXTENSION__) {
 		enhancers.unshift(window.__GROOPIE_EXTENSION__);

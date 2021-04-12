@@ -141,19 +141,22 @@ export const createModuleLoader = () => {
     }
     if (scope.locale) {
       console.debug(`module ${name} introducing locales`);
-      addI18nMessages(scope.locale)
+      addI18nMessages(scope.locale);
     }
     loadedModules[name] = {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
       cleanup: () => {
         if (scope.style) {
+          console.debug(`module ${name} removing styles`);
           scope.styles.unuse();
         }
         if (scope.saga) {
+          console.debug(`module ${name} removing saga`);
           removeSaga(name);
         }
         if (scope.locale) {
+          console.debug(`module ${name} removing locales`);
           removeI18nMessages(scope.locale);
         }
       },
@@ -189,8 +192,8 @@ export const createModuleLoader = () => {
     if (loading) {
       return loading;
     }
-    const module = availableModules[name];
-    if (!module) {
+    const item = availableModules[name];
+    if (!item) {
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
@@ -199,8 +202,7 @@ export const createModuleLoader = () => {
       });
       return Promise.resolve(null);
     }
-
-    const promise = loadModuleFile(module.url)
+    const promise = loadModuleFile(item.url)
       .then((data) => {
         connectModule(name, data);
         store.dispatch({
@@ -238,21 +240,23 @@ export const createModuleLoader = () => {
   const setAvailableModules = (modules = []) => {
     const promises = [];
     const newModules = {};
-
     for (let i = modules.length; i--; ) {
-      const module = modules[i];
-      newModules[module.name] = module;
-      availableModules[module.name] = module;
+      const item = modules[i];
+      newModules[item.name] = item;
+      availableModules[item.name] = item;
     }
-
-    for (const module in availableModules) {
-      if (newModules[module]) {
+    const obsoleteModules = [];
+    for (const item in availableModules) {
+      if (newModules[item]) {
         continue;
       }
-      if (loadedModules[module]) {
-        promises.push(unloadModule(module));
+      if (loadedModules[item]) {
+        obsoleteModules.push(item);
       }
-      delete availableModules[module];
+    }
+    for (const item in obsoleteModules) {
+      promises.push(unloadModule(item));
+      delete availableModules[item];
     }
     return Promise.all(promises);
   };
@@ -267,43 +271,24 @@ export const createModuleLoader = () => {
         console.debug(`dyn reducer - module's ${name} state evicted`);
         delete state[name];
       }
-
       switch (action.type) {
-        case constants.ADD_SHARED: {
-          console.debug(`dyn reducer - add shared (ignore)`);
-          return state;
-        }
-        case constants.REMOVE_SHARED: {
-          console.debug(`dyn reducer - remove shared (ignore)`);
-          return state;
-        }
-        case constants.ADD_I18N_MESSAGES: {
-          console.debug(`dyn reducer - add i18n messages (ignore)`);
-          return state;
-        }
-        case constants.REMOVE_I18N_MESSAGES: {
-          console.debug(`dyn reducer - remove i18n messages (ignore)`);
-          return state;
-        }
+        case constants.INIT:
+        case constants.ADD_SHARED:
+        case constants.REMOVE_SHARED:
+        case constants.ADD_I18N_MESSAGES:
+        case constants.REMOVE_I18N_MESSAGES:
         case constants.SET_AVAILABLE_MODULES: {
-          console.debug(`dyn reducer - set available modules (ignore)`);
           return state;
         }
         case constants.MODULE_UNLOADED: {
-          console.debug(`dyn reducer - module ${name} unloaded`);
+          console.debug(`module ${name} removing reducer`);
           removeReducer(name);
           return state;
         }
-        case constants.INIT: {
-          console.debug(`dyn reducer - platform init (ignore)`);
-          return state;
-        }
       }
-
       for (const name in reducers) {
         state[name] = reducers[name](state[name], action);
       }
-
       return state;
     };
   };

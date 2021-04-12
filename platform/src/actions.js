@@ -5,7 +5,7 @@ export const init = (fetchContext, initializeRuntime) => ({
   payload: {
     fetchContext,
     initializeRuntime,
-  }
+  },
 });
 
 export const setLanguage = (language) => ({
