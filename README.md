@@ -19,7 +19,7 @@ What it can do?
 
 Q: Wait so this is code splitting?
 
-A: No, code splitting (even React.lazy and React.suspense) are approaches to top-down separation of big SPA into smaller chunks, because its top-down you cannot reuse any chunks generated from this approach in other products.
+A: No, code splitting (and js module federation in general) are approaches to top-down separation of big SPA into smaller chunks, because its top-down you cannot reuse any chunks generated from this approach in other places without those places knowing about those chunks upfront. In code splitting the main motivator is rendering speed (or asset size) not building block of code that you can compose your workflow from.
 
 ---
 
