@@ -1,5 +1,5 @@
 import { Store, applyMiddleware, compose, createStore } from "redux";
-import { connectRouter, routerMiddleware } from "connected-react-router";
+//import { connectRouter, routerMiddleware } from "connected-react-router";
 import createSagaMiddleware from "redux-saga";
 import { all, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
@@ -17,7 +17,7 @@ export default async () => {
 
 	const enhancers = [
 		sagaMiddleware,
-		routerMiddleware(history),
+		//routerMiddleware(history),
 		moduleLoaderMiddleware(loader),
 	];
 
@@ -28,7 +28,7 @@ export default async () => {
 	const reducer = combineReducers({
 		runtime: runtimeReducer,
 		shared: sharedReducer,
-		router: connectRouter(history),
+		//router: connectRouter(history),
 		modules: loader.getReducer(),
 	});
 

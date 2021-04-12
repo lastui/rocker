@@ -313,7 +313,6 @@ export const createModuleLoader = () => {
     getState: () => {
       const state = store.getState();
       const isolatedState = state.modules[name] || {};
-      isolatedState.router = state.router;
       isolatedState.shared = state.shared;
       return isolatedState;
     },
