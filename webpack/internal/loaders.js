@@ -7,7 +7,7 @@ module.exports = {
 		strictExportPresence: true,
 		rules: [
 			{
-				test: /\.[t|j]sx?$/,
+				test: /\.jsx?$/,
 				enforce: "pre",
 				include: [settings.PROJECT_SRC_PATH, /node_modules\/\@lastui*/],
 				exclude: [/node_modules\/(?!(\@lastui*))/],
@@ -36,7 +36,7 @@ module.exports = {
 				type: "json",
 			},
 			{
-				test: /\.svg/,
+				test: /\.svg$/,
 				type: "asset/inline",
 			},
 		],
