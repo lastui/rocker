@@ -8,7 +8,6 @@ const config = require(path.resolve(
 
 config.entry = {
 	dependencies: [
-		"connected-react-router",
 		"history",
 		"react",
 		"react-dom",
