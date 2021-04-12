@@ -62,7 +62,7 @@ export const createModuleLoader = () => {
   };
 
   let sagaRunner = () => {
-    console.error("Sagas runnner not provided!");
+    console.error("Sagas runnner is not provided!");
   };
 
   const loadedModules = {};
