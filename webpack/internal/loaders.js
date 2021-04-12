@@ -35,10 +35,6 @@ module.exports = {
 				test: /\.json$/,
 				type: "json",
 			},
-			{
-				test: /\.svg$/,
-				type: "asset/inline",
-			},
 		],
 	},
 };
