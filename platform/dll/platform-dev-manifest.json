@@ -1,1 +1,0 @@
-{"name":"platform_dll","content":{"./node_modules/@lastui/rocker/platform/index.js":{"id":"./node_modules/@lastui/rocker/platform/index.js","buildMeta":{"exportsType":"namespace"},"exports":["Module","ModuleContext","actions","constants","createModuleLoader","default","moduleLoaderMiddleware","registerModule","useModuleLoader"]}}}

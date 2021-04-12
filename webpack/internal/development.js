@@ -33,6 +33,11 @@ module.exports = {
 			Buffer: ["buffer", "Buffer"],
 			process: ["process"],
 		}),
+		new webpack.DefinePlugin({
+			"process": false,
+			"process.env.NODE_ENV": settings.DEVELOPMENT ? `"development"` : `"production"`,
+			"process.env.NODE_DEBUG": true,
+		}),
 		new webpack.EnvironmentPlugin([
 			...Object.keys(process.env),
 			"NODE_ENV",
