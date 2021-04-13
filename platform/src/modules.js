@@ -121,7 +121,7 @@ export const createModuleLoader = () => {
 
   const connectModule = (name, scope = {}) => {
     const injectedStyles = document.querySelector("style:last-of-type");
-    if (!injectedStyles.hasAttribute("data-module")) {
+    if (injectedStyles && !injectedStyles.hasAttribute("data-module")) {
       console.debug(`module ${name} introducing styles`);
       injectedStyles.setAttribute("data-module", name);
     }
