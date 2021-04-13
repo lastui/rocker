@@ -18,7 +18,8 @@ config.entry = {
 		"redux-saga",
 		"redux-saga/effects",
 		"regenerator-runtime/runtime.js",
-		"styled-components",
+		"@emotion/styled",
+		"@emotion/react",
 	],
 };
 
