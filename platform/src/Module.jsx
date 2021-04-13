@@ -27,17 +27,28 @@ const Module = (props = {}) => {
   }
 
   if (!loadedModule) {
-    console.debug(`module ${props.name} is not loaded`);
+    if (process.env.NODE_ENV === 'development') {
+      return (
+        <div>
+          {`Module ${props.name} not loaded`}
+        </div>
+      )
+    }
     // FIXME does not update need to store loadedModule in state
     return <React.Fragment />;
   }
 
   if (!loadedModule.root) {
-    console.debug(`module ${props.name} does not have view`);
+    if (process.env.NODE_ENV === 'development') {
+      return (
+        <div>
+          {`Module ${props.name} no view`}
+        </div>
+      )
+    }
     return <React.Fragment />;
   }
 
-  console.debug(`module ${props.name} ready`);
   // FIXME if children?
   const ModuleComponent = loadedModule.root;
 
