@@ -16,21 +16,16 @@ jobs:
         with:
           node-version: '14'
       - name: Install dependencies
-        run: |
-          npm ci
+        run: npm ci
       - name: Compile package dependencies
-        run: |
-          cd dependencies
-          npm ci
-          npm run build
+        working-directory: dependencies
+        run: npm run build
       - name: Compile package platform
-        run: |
-          cd platform
-          npm run build
+        working-directory: platform
+        run: npm run build
       - name: Compile package runtime
-        run: |
-          cd runtime
-          npm run build
+        working-directory: runtime
+        run: npm run build
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_AUTH_TOKEN }}
