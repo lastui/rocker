@@ -155,6 +155,10 @@ export const createModuleLoader = () => {
           console.debug(`module ${name} removing saga`);
           removeSaga(name);
         }
+        if (scope.shared) {
+          console.debug(`module ${name} removing shared`);
+          removeShared(name); 
+        }
         if (scope.locale) {
           console.debug(`module ${name} removing locales`);
           removeI18nMessages(scope.locale);
