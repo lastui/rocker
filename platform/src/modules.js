@@ -19,9 +19,6 @@ export function registerModule(scope) {
   if (scope.shared) {
     this.shared = scope.shared;
   }
-  if (scope.styles) {
-    this.styles = scope.styles;
-  }
   if (scope.locale) {
     this.locale = scope.locale;
   }
@@ -123,6 +120,11 @@ export const createModuleLoader = () => {
   };
 
   const connectModule = (name, scope = {}) => {
+    const injectedStyles = document.querySelector("style:last-of-type");
+    if (!injectedStyles.hasAttribute("data-module")) {
+      console.debug(`module ${name} introducing styles`);
+      injectedStyles.setAttribute("data-module", name);
+    }
     if (scope.reducer) {
       console.debug(`module ${name} introducing reducer`);
       addReducer(name, combineReducers(scope.reducer));
@@ -134,11 +136,6 @@ export const createModuleLoader = () => {
     if (scope.shared) {
       console.debug(`module ${name} introducing shared`);
       addShared(name, scope.shared);
-    }
-    const injectedStyles = document.querySelector("style:last-of-type");
-    if (!injectedStyles.hasAttribute("data-module")) {
-      console.debug(`module ${name} introducing styles`);
-      injectedStyles.setAttribute("data-module", name);
     }
     if (scope.locale) {
       console.debug(`module ${name} introducing locales`);
@@ -177,12 +174,12 @@ export const createModuleLoader = () => {
           __SANDBOX_SCOPE__: {},
         };
         try {
-          const r = new Function("with(this) {" + data + ";}").call(sandbox);  
-        } catch(err) {
+          const r = new Function("with(this) {" + data + ";}").call(sandbox);
+          if (r !== undefined) {
+            return {};
+          }
+        } catch (err) {
           console.error(`module ${name} failed to load with`, err);
-          return {};
-        }
-        if (r !== undefined) {
           return {};
         }
         return sandbox.__SANDBOX_SCOPE__;
