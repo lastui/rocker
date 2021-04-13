@@ -19,12 +19,6 @@ config.output.assetModuleFilename = "[name][ext][query]";
 
 config.module.rules.push(
 	{
-      loader: '@linaria/webpack-loader',
-      options: {
-        sourceMap: false,
-      },
-    },
-	{
 		test: /\.css$/i,
 		use: [
 			{
