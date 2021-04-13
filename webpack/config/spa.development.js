@@ -17,12 +17,6 @@ config.output.filename = "[name].js";
 
 config.module.rules.push(
 	{
-      loader: '@linaria/webpack-loader',
-      options: {
-        sourceMap: false,
-      },
-    },
-	{
 		test: /\.css$/i,
 		use: [
 			{
@@ -74,7 +68,7 @@ config.module.rules.push(
 		type: "asset/inline",
 	},
 	{
-		test: /\.(woff|woff2|eot|otf|ttf)(\?.*$|$)/,
+		test: /\.(woff|woff2|svg|eot|otf|ttf)(\?.*$|$)/,
 		type: "asset/resource",
 	}
 );

@@ -135,9 +135,10 @@ export const createModuleLoader = () => {
       console.debug(`module ${name} introducing shared`);
       addShared(name, scope.shared);
     }
-    if (scope.styles) {
+    const injectedStyles = document.querySelector("style:last-of-type");
+    if (!injectedStyles.hasAttribute("data-module")) {
       console.debug(`module ${name} introducing styles`);
-      scope.styles.use();
+      injectedStyles.setAttribute("data-module", name);
     }
     if (scope.locale) {
       console.debug(`module ${name} introducing locales`);
@@ -147,9 +148,10 @@ export const createModuleLoader = () => {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
       cleanup: () => {
-        if (scope.style) {
+        const orphanStyles = document.querySelector(`[data-module=${name}`);
+        if (orphanStyles) {
           console.debug(`module ${name} removing styles`);
-          scope.styles.unuse();
+          orphanStyles.remove();
         }
         if (scope.saga) {
           console.debug(`module ${name} removing saga`);
@@ -157,7 +159,7 @@ export const createModuleLoader = () => {
         }
         if (scope.shared) {
           console.debug(`module ${name} removing shared`);
-          removeShared(name); 
+          removeShared(name);
         }
         if (scope.locale) {
           console.debug(`module ${name} removing locales`);
