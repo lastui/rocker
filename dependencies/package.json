@@ -5,6 +5,6 @@
 		"build:dev": "NODE_ENV=development node ../bin/webpack.js"
 	},
 	"devDependencies": {
-		"@lastui/dependencies": "1.1.5"
+		"@lastui/dependencies": "1.1.6"
 	}
 }
