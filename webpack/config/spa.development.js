@@ -17,6 +17,12 @@ config.output.filename = "[name].js";
 
 config.module.rules.push(
 	{
+      loader: '@linaria/webpack-loader',
+      options: {
+        sourceMap: false,
+      },
+    },
+	{
 		test: /\.css$/i,
 		use: [
 			{
