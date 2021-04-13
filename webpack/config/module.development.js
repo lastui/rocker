@@ -28,7 +28,7 @@ config.module.rules.push(
 			{
 				loader: "style-loader",
 				options: {
-					injectType: "lazyStyleTag",
+					injectType: "singletonStyleTag",
 				},
 			},
 			{
@@ -46,7 +46,7 @@ config.module.rules.push(
 			{
 				loader: "style-loader",
 				options: {
-					injectType: "lazyStyleTag",
+					injectType: "singletonStyleTag",
 				},
 			},
 			{
@@ -74,7 +74,7 @@ config.module.rules.push(
 		type: "asset/inline",
 	},
 	{
-		test: /\.(woff|woff2|eot|otf|ttf)(\?.*$|$)/,
+		test: /\.(woff|woff2|svg|eot|otf|ttf)(\?.*$|$)/,
 		type: "asset/resource",
 	}
 );

@@ -1,3 +1,4 @@
+const path = require("path");
 const babel = require("@lastui/babylon");
 
 const settings = require("../settings");
@@ -23,6 +24,24 @@ module.exports = {
 							shouldPrintComment: (val) => /license/.test(val),
 							compact: true,
 							inputSourceMap: false,
+						},
+					},
+					{
+						loader: "@linaria/webpack-loader",
+						options: {
+							sourceMap: false,
+							preprocessor: "none",
+							cacheDirectory: path.join(
+								settings.WEBPACK_ROOT_PATH,
+								".linaria-cache"
+							),
+							babelOptions: {
+								babelrc: false,
+								...babel,
+								sourceMaps: false,
+								sourceType: "module",
+								inputSourceMap: false,
+							},
 						},
 					},
 				],

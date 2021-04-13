@@ -74,7 +74,7 @@ config.module.rules.push(
 		type: "asset/inline",
 	},
 	{
-		test: /\.(woff|woff2|eot|otf|ttf)(\?.*$|$)/,
+		test: /\.(woff|woff2|svg|eot|otf|ttf)(\?.*$|$)/,
 		type: "asset/resource",
 	}
 );

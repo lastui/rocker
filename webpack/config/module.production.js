@@ -26,7 +26,7 @@ config.module.rules.push(
 			{
 				loader: "style-loader",
 				options: {
-					injectType: "lazyStyleTag",
+					injectType: "singletonStyleTag",
 				},
 			},
 			{
@@ -44,7 +44,7 @@ config.module.rules.push(
 			{
 				loader: "style-loader",
 				options: {
-					injectType: "lazyStyleTag",
+					injectType: "singletonStyleTag",
 				},
 			},
 			{
