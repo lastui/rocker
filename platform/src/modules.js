@@ -174,11 +174,11 @@ export const createModuleLoader = () => {
           __SANDBOX_SCOPE__: {},
         };
         try {
-          const r = new Function("with(this) {" + data + ";}").call(sandbox);  
+          const r = new Function("with(this) {" + data + ";}").call(sandbox);
           if (r !== undefined) {
             return {};
           }
-        } catch(err) {
+        } catch (err) {
           console.error(`module ${name} failed to load with`, err);
           return {};
         }
