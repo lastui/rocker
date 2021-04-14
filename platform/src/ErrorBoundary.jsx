@@ -4,7 +4,6 @@ const initialState = { error: null };
 
 class ErrorBoundary extends React.Component {
 	state = initialState;
-	updatedWithError = false;
 
 	static getDerivedStateFromError(error) {
 		return { error };
@@ -12,23 +11,6 @@ class ErrorBoundary extends React.Component {
 
 	componentDidCatch(error, info) {
 		console.error(error, info);
-	}
-
-	componentDidMount() {
-		const { error } = this.state;
-
-		if (error !== null) {
-			this.updatedWithError = true;
-		}
-	}
-
-	componentDidUpdate(prevProps) {
-		const { error } = this.state;
-
-		if (error !== null && !this.updatedWithError) {
-			this.updatedWithError = true;
-			return;
-		}
 	}
 
 	render() {
