@@ -5,6 +5,9 @@ const path = require("path");
 const { run } = require("webpack-nano/lib/compiler");
 const args = require("webpack-nano/argv");
 
+process.on('warning', (e) => console.warn(e.stack));
+process.setMaxListeners(100);
+
 process.on("SIGINT", () => process.exit(0));
 process.on("SIGTERM", () => process.exit(0));
 
