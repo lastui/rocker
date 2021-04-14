@@ -127,7 +127,11 @@ export const createModuleLoader = () => {
     }
     if (scope.reducer) {
       console.debug(`module ${name} introducing reducer`);
-      addReducer(name, combineReducers(scope.reducer));
+      const composedReducer = {
+        ...scope.reducer,
+        shared: (state = {}, action) => state,
+      }
+      addReducer(name, combineReducers(composedReducer));
     }
     if (scope.saga) {
       console.debug(`module ${name} introducing saga`);
