@@ -179,8 +179,11 @@ export const createModuleLoader = () => {
             return {};
           }
         } catch (err) {
-          console.error(`module ${name} failed to load with`, err);
-          return {};
+          return {
+            MainView: () => {
+              throw err;
+            },
+          };
         }
         return sandbox.__SANDBOX_SCOPE__;
       });

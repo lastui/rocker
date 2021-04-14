@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ModuleContext, useModuleLoader } from "./ModuleContext";
+import ErrorBoundary from './ErrorBoundary';
 
 const Module = (props = {}) => {
   const moduleLoader = useModuleLoader();
@@ -34,28 +35,37 @@ const Module = (props = {}) => {
         </div>
       )
     }
-    // FIXME does not update need to store loadedModule in state
     return <React.Fragment />;
   }
 
   if (!loadedModule.root) {
-    if (process.env.NODE_ENV === 'development') {
-      return (
-        <div>
-          {`Module ${props.name} no view`}
-        </div>
-      )
-    }
     return <React.Fragment />;
   }
 
-  // FIXME if children?
   const ModuleComponent = loadedModule.root;
 
   return (
-    <ModuleContext.Provider value={moduleLoader}>
-      <ModuleComponent {...props.options} />
-    </ModuleContext.Provider>
+    <ErrorBoundary
+      fallback={(error) => {
+        if (process.env.NODE_ENV === 'development') {
+          return (
+            <div>
+              <div>
+              {`Module ${props.name} crashed`}
+              </div>
+              <div>
+                {JSON.stringify(error, Object.getOwnPropertyNames(error))}
+              </div>
+            </div>
+          )
+        }
+        return <React.Fragment />;
+      }}
+    >
+      <ModuleContext.Provider value={moduleLoader}>
+        <ModuleComponent {...props.options} />
+      </ModuleContext.Provider>
+    </ErrorBoundary>
   );
 };
 
