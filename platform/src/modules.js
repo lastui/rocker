@@ -72,11 +72,6 @@ export const createModuleLoader = () => {
 
   const getLoadedModule = (name) => loadedModules[name];
 
-  const setLoadingModule = (name, promise) => {
-    loadingModules[name] = promise;
-    return promise;
-  };
-
   const removeReducer = (name) => {
     delete reducers[name];
   };
@@ -142,7 +137,7 @@ export const createModuleLoader = () => {
       console.debug(`module ${name} introducing locales`);
       addI18nMessages(scope.locale);
     }
-    loadedModules[name] = {
+    return {
       name,
       root: scope.MainView && isolateModule(name, scope.MainView),
       cleanup: () => {
@@ -230,14 +225,14 @@ export const createModuleLoader = () => {
     }
     const promise = loadModuleFile(item.url)
       .then((data) => {
-        connectModule(name, data);
+        loadedModules[name] = connectModule(name, data);
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
             name,
           },
         });
-        return getLoadedModule(name);
+        return loadedModules[name];
       })
       .catch((error) => Promise.resolve(null))
       .then((data) => {
@@ -245,7 +240,8 @@ export const createModuleLoader = () => {
         return data;
       });
 
-    return setLoadingModule(name, promise);
+    loadingModules[name] = promise;
+    return promise;
   };
 
   const unloadModule = (name) => {
