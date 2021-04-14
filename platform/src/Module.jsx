@@ -14,31 +14,31 @@ const Module = (props = {}) => {
       return;
     }
     const name = props.name;
-    moduleLoader.loadModule(name).then((module) => {
-      moduleLoader.setModuleMountState(name, true);
-      setLoadedModule(module);
+    moduleLoader.loadModule(name).then((item) => {
+      if (item) {
+        moduleLoader.setModuleMountState(name, true);
+        setLoadedModule(item);  
+      } else {
+        setLoadedModule({});
+      }
     });
     return () => {
       moduleLoader.setModuleMountState(name, false);
     };
   }, [props.name]);
 
-  if (!props.name) {
-    return <React.Fragment />;
-  }
-
-  if (!loadedModule) {
-    if (process.env.NODE_ENV === 'development') {
-      return (
-        <div>
-          {`Module ${props.name} not loaded`}
-        </div>
-      )
-    }
+  if (!props.name || !loadedModule) {
     return <React.Fragment />;
   }
 
   if (!loadedModule.root) {
+    if (process.env.NODE_ENV === 'development') {
+      return (
+        <div>
+          {props.name}
+        </div>
+      )
+    }
     return <React.Fragment />;
   }
 
@@ -51,7 +51,12 @@ const Module = (props = {}) => {
         if (process.env.NODE_ENV === 'development') {
           return (
             <div>
-              {JSON.stringify(error, Object.getOwnPropertyNames(error))}
+              <div>
+                {props.name}
+              </div>
+              <div>
+                {JSON.stringify(error, Object.getOwnPropertyNames(error))}
+              </div>
             </div>
           )
         }
