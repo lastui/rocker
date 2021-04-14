@@ -46,16 +46,12 @@ const Module = (props = {}) => {
 
   return (
     <ErrorBoundary
+      name={props.name}
       fallback={(error) => {
         if (process.env.NODE_ENV === 'development') {
           return (
             <div>
-              <div>
-              {`Module ${props.name} crashed`}
-              </div>
-              <div>
-                {JSON.stringify(error, Object.getOwnPropertyNames(error))}
-              </div>
+              {JSON.stringify(error, Object.getOwnPropertyNames(error))}
             </div>
           )
         }
