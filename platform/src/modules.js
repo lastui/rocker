@@ -62,6 +62,7 @@ export const createModuleLoader = () => {
     console.error("Sagas runnner is not provided!");
   };
 
+  const mountedModules = {};
   const loadedModules = {};
   const availableModules = {};
   const loadingModules = {};
@@ -189,8 +190,22 @@ export const createModuleLoader = () => {
       });
 
   const setModuleMountState = (name, mounted) => {
-    if (!mounted && !loadedModules[name]) {
-      danglingNamespaces.push(name);
+    switch (mounted) {
+      case true: {
+        if (!mountedModules[name]) {
+          mountedModules[name] = true;
+        }
+        break;
+      }
+      case false: {
+        if (mountedModules[name]) {
+          delete mountedModules[name];
+          if (!loadedModules[name]) {
+            danglingNamespaces.push(name);
+          }
+        }
+        break;
+      }
     }
   };
 
@@ -230,6 +245,7 @@ export const createModuleLoader = () => {
         return data;
       });
 
+    // FIXME inline
     return setLoadingModule(name, promise);
   };
 
