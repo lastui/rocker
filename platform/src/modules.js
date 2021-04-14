@@ -245,7 +245,6 @@ export const createModuleLoader = () => {
         return data;
       });
 
-    // FIXME inline
     return setLoadingModule(name, promise);
   };
 
