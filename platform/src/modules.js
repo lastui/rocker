@@ -333,21 +333,17 @@ export const createModuleLoader = () => {
     },
   });
 
-  const isolateModule = (name, Component) => {
-    const isolatedStore = isolateStore(name);
-    const ModuleWrapper = (props) => {
-      return (
-        <ReactReduxContext.Provider
-          value={{
-            store: isolatedStore,
-          }}
-        >
-          <Component {...props} />
-        </ReactReduxContext.Provider>
-      );
-    };
+  const isolateModule = (name, component) => {
+    const reduxContext = {
+      store: isolateStore(name),
+    }
+    const ModuleWrapper = (props) => (
+      <ReactReduxContext.Provider value={reduxContext}>
+        {React.createElement(component, props, props.children)}
+      </ReactReduxContext.Provider>
+    );
     ModuleWrapper.displayName = `ModuleWrapper-${name}`;
-    Component.displayName = `Module-${name}`;
+    component.displayName = `Module-${name}`;
     return ModuleWrapper;
   };
 
