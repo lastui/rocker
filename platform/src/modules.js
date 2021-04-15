@@ -116,9 +116,10 @@ export const createModuleLoader = () => {
   };
 
   const connectModule = (name, scope = {}) => {
-    const injectedStyles = document.querySelector("style:last-of-type");
-    if (injectedStyles && !injectedStyles.hasAttribute("data-module")) {
+    const injectedStyles = document.querySelector("style#rocker:last-of-type");
+    if (injectedStyles) {
       console.debug(`module ${name} introducing styles`);
+      injectedStyles.removeAttribute("id");
       injectedStyles.setAttribute("data-module", name);
     }
     if (scope.reducer) {
@@ -243,7 +244,6 @@ export const createModuleLoader = () => {
         delete loadingModules[name];
         return data;
       });
-
     loadingModules[name] = promise;
     return promise;
   };

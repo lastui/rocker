@@ -21,6 +21,7 @@ config.module.rules.push(
 				loader: "style-loader",
 				options: {
 					injectType: "singletonStyleTag",
+					attributes: { id: "rocker" },
 				},
 			},
 			{
@@ -39,6 +40,7 @@ config.module.rules.push(
 				loader: "style-loader",
 				options: {
 					injectType: "singletonStyleTag",
+					attributes: { id: "rocker" },
 				},
 			},
 			{
