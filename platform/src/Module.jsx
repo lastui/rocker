@@ -42,8 +42,6 @@ const Module = (props = {}) => {
     return <React.Fragment />;
   }
 
-  const ModuleComponent = loadedModule.root;
-
   return (
     <ErrorBoundary
       name={props.name}
@@ -64,7 +62,7 @@ const Module = (props = {}) => {
       }}
     >
       <ModuleContext.Provider value={moduleLoader}>
-        <ModuleComponent {...props.options} />
+        {React.createElement(loadedModule.root, props.options || {}, props.children || null)}
       </ModuleContext.Provider>
     </ErrorBoundary>
   );
