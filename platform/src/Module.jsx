@@ -29,8 +29,8 @@ const Module = (props = {}) => {
     }
     const name = props.name;
     moduleLoader.loadModule(name).then((item) => {
+      moduleLoader.setModuleMountState(name, true);
       if (item) {
-        moduleLoader.setModuleMountState(name, true);
         setLoadedModule(item);
       } else {
         setLoadedModule({});
@@ -46,6 +46,9 @@ const Module = (props = {}) => {
   }
 
   if (!loadedModule.root) {
+    if (props.children) {
+      return props.children
+    }
     if (process.env.NODE_ENV === "development") {
       return <div>{props.name}</div>;
     }

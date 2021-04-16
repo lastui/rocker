@@ -62,7 +62,6 @@ export const createModuleLoader = () => {
     console.error("Sagas runnner is not provided!");
   };
 
-  const mountedModules = {};
   const loadedModules = {};
   const availableModules = {};
   const loadingModules = {};
@@ -192,17 +191,11 @@ export const createModuleLoader = () => {
   const setModuleMountState = (name, mounted) => {
     switch (mounted) {
       case true: {
-        if (!mountedModules[name]) {
-          mountedModules[name] = true;
-        }
         break;
       }
       case false: {
-        if (mountedModules[name]) {
-          delete mountedModules[name];
-          if (!loadedModules[name]) {
-            danglingNamespaces.push(name);
-          }
+        if (!loadedModules[name] && !loadingModules[name]) {
+          danglingNamespaces.push(name);
         }
         break;
       }
