@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.3.32",
+  "version": "0.3.33",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -47,12 +47,12 @@
     "@linaria/webpack-loader": "3.0.0-beta.2",
     "add-asset-html-webpack-plugin": "3.2.0",
     "clean-webpack-plugin": "3.0.0",
-    "css-loader": "5.2.1",
+    "css-loader": "5.2.2",
     "dotenv": "8.2.0",
     "html-webpack-plugin": "5.3.1",
-    "mini-css-extract-plugin": "1.4.1",
+    "mini-css-extract-plugin": "1.5.0",
     "path-browserify": "1.0.1",
-    "sass": "1.32.8",
+    "sass": "1.32.10",
     "sass-loader": "11.0.1",
     "style-loader": "2.0.0",
     "terser-webpack-plugin": "5.1.1",
