@@ -30,7 +30,7 @@ module.exports = {
 						loader: "@linaria/webpack-loader",
 						options: {
 							sourceMap: false,
-							preprocessor: "none",
+							preprocessor: "stylis",
 							cacheDirectory: path.join(
 								settings.WEBPACK_ROOT_PATH,
 								".linaria-cache"

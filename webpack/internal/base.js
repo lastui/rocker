@@ -6,7 +6,7 @@ module.exports = {
 	resolve: {
 		unsafeCache: false,
 		modules: [settings.PROJECT_SRC_PATH, "node_modules"],
-		extensions: [".js", ".jsx"],
+		extensions: [".js", ".jsx", ".scss", ".css", ".json", ".txt"],
 		mainFields: ["browser", "main"],
 		enforceExtension: false,
 		symlinks: false,
