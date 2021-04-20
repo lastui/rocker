@@ -29,7 +29,8 @@ config.module.rules.push(
 				loader: "css-loader",
 				options: {
 					sourceMap: false,
-					importLoaders: 1,
+					modules: false,
+					importLoaders: 0,
 				},
 			},
 		],
@@ -47,7 +48,8 @@ config.module.rules.push(
 				loader: "css-loader",
 				options: {
 					sourceMap: false,
-					importLoaders: 1,
+					modules: false,
+					importLoaders: 0,
 				},
 			},
 			{

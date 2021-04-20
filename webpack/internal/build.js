@@ -82,9 +82,5 @@ module.exports = {
 				: `"production"`,
 			"process.env.NODE_DEBUG": false,
 		}),
-		new webpack.EnvironmentPlugin([
-			...Object.keys(process.env),
-			"NODE_ENV",
-		]),
 	],
 };
