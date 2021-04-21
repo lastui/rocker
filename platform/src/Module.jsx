@@ -42,12 +42,15 @@ const Module = (props = {}) => {
   }, [props.name]);
 
   if (!props.name || !loadedModule) {
+    if (props.fallback) {
+      return props.fallback();
+    }
     return <React.Fragment />;
   }
 
   if (!loadedModule.root) {
-    if (props.children) {
-      return props.children
+    if (props.fallback) {
+      return props.fallback();
     }
     if (process.env.NODE_ENV === "development") {
       return <div>{props.name}</div>;

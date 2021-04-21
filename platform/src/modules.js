@@ -219,6 +219,7 @@ export const createModuleLoader = () => {
           name,
         },
       });
+      console.warn(`module ${name} not available`);
       return Promise.resolve(null);
     }
     const promise = loadModuleFile(item.url)
@@ -232,7 +233,10 @@ export const createModuleLoader = () => {
         });
         return loadedModules[name];
       })
-      .catch((error) => Promise.resolve(null))
+      .catch((error) => {
+        console.error(`module ${name} failed to load`, error);
+        return Promise.resolve(null)
+      })
       .then((data) => {
         delete loadingModules[name];
         return data;

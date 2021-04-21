@@ -43,7 +43,7 @@
     "runtime/dll/LICENSE.txt"
   ],
   "dependencies": {
-    "@lastui/babylon": "1.1.5",
+    "@lastui/babylon": "1.1.6",
     "@linaria/webpack-loader": "3.0.0-beta.3",
     "add-asset-html-webpack-plugin": "3.2.0",
     "clean-webpack-plugin": "3.0.0",
