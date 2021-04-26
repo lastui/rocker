@@ -146,8 +146,9 @@ config.plugins.push(
 											return {
 												available: [
 													{
-														name: "hot",
+														id: "hot",
 														url: "/module.js",
+														meta: {},
 													},
 												],
 												entrypoint: "hot",

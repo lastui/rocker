@@ -2,7 +2,7 @@ import React from "react";
 import { ModuleContext, useModuleLoader } from "./ModuleContext";
 import ErrorBoundary from "./ErrorBoundary";
 
-const Module = (props = {}) => {
+const Module = (props) => {
   const moduleLoader = useModuleLoader();
 
   let [loadedModule, setLoadedModule] = React.useState(
@@ -64,7 +64,7 @@ const Module = (props = {}) => {
       fallback={errorFallback}
     >
       <ModuleContext.Provider value={moduleLoader}>
-        {React.createElement(loadedModule.root, props.options, props.children)}
+        {React.createElement(loadedModule.root, props, props.children)}
       </ModuleContext.Provider>
     </ErrorBoundary>
   );

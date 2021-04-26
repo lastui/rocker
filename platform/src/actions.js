@@ -29,18 +29,18 @@ export const removeI18nMessages = (data = {}) => ({
   },
 });
 
-export const addShared = (name, data = {}) => ({
+export const addShared = (id, data = {}) => ({
   type: constants.ADD_SHARED,
   payload: {
-    name,
+    id,
     data,
   },
 });
 
-export const removeShared = (name) => ({
+export const removeShared = (id) => ({
   type: constants.REMOVE_SHARED,
   payload: {
-    name,
+    id,
   },
 });
 
@@ -58,9 +58,9 @@ export const setEntryPointModule = (entrypoint) => ({
   },
 });
 
-export const loadModule = (name) => ({
+export const loadModule = (id) => ({
   type: constants.LOAD_MODULE,
   payload: {
-    name,
+    id,
   },
 });
