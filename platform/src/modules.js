@@ -69,41 +69,41 @@ export const createModuleLoader = () => {
   const reducers = {};
   const sagas = {};
 
-  const getLoadedModule = (name) => loadedModules[name];
+  const getLoadedModule = (id) => loadedModules[id];
 
-  const removeReducer = (name) => {
-    delete reducers[name];
+  const removeReducer = (id) => {
+    delete reducers[id];
   };
 
-  const addReducer = (name, reducer) => {
-    removeReducer(name);
+  const addReducer = (id, reducer) => {
+    removeReducer(id);
     reducer({}, { type: constants.MODULE_INIT });
-    reducers[name] = reducer;
+    reducers[id] = reducer;
   };
 
-  const removeSaga = (name) => {
-    if (!sagas[name]) {
+  const removeSaga = (id) => {
+    if (!sagas[id]) {
       return;
     }
     sagaRunner(function* () {
-      yield cancel(sagas[name]);
+      yield cancel(sagas[id]);
     });
-    delete sagas[name];
+    delete sagas[id];
   };
 
-  const addSaga = (name, saga) => {
-    removeSaga(name);
-    sagas[name] = sagaRunner(function* () {
+  const addSaga = (id, saga) => {
+    removeSaga(id);
+    sagas[id] = sagaRunner(function* () {
       yield fork(saga);
     });
   };
 
-  const removeShared = (name) => {
-    store.dispatch(actions.removeShared(name));
+  const removeShared = (id) => {
+    store.dispatch(actions.removeShared(id));
   };
 
-  const addShared = (name, payload) => {
-    store.dispatch(actions.addShared(name, payload));
+  const addShared = (id, payload) => {
+    store.dispatch(actions.addShared(id, payload));
   };
 
   const removeI18nMessages = (data) => {
@@ -114,52 +114,52 @@ export const createModuleLoader = () => {
     store.dispatch(actions.addI18nMessages(data));
   };
 
-  const connectModule = (name, scope = {}) => {
+  const connectModule = (id, meta = {}, scope = {}) => {
     const injectedStyles = document.querySelector("style#rocker:last-of-type");
     if (injectedStyles) {
-      console.debug(`module ${name} introducing styles`);
+      console.debug(`module ${id} introducing styles`);
       injectedStyles.removeAttribute("id");
-      injectedStyles.setAttribute("data-module", name);
+      injectedStyles.setAttribute("data-module", id);
     }
     if (scope.reducer) {
-      console.debug(`module ${name} introducing reducer`);
+      console.debug(`module ${id} introducing reducer`);
       const composedReducer = {
         ...scope.reducer,
         shared: (state = {}, action) => state,
       }
-      addReducer(name, combineReducers(composedReducer));
+      addReducer(id, combineReducers(composedReducer));
     }
     if (scope.saga) {
-      console.debug(`module ${name} introducing saga`);
-      addSaga(name, scope.saga);
+      console.debug(`module ${id} introducing saga`);
+      addSaga(id, scope.saga);
     }
     if (scope.shared) {
-      console.debug(`module ${name} introducing shared`);
-      addShared(name, scope.shared);
+      console.debug(`module ${id} introducing shared`);
+      addShared(id, scope.shared);
     }
     if (scope.locale) {
-      console.debug(`module ${name} introducing locales`);
+      console.debug(`module ${id} introducing locales`);
       addI18nMessages(scope.locale);
     }
     return {
-      name,
-      root: scope.MainView && isolateModule(name, scope.MainView),
+      id,
+      root: scope.MainView && isolateModule(id, meta, scope.MainView),
       cleanup: () => {
-        const orphanStyles = document.querySelector(`[data-module=${name}`);
+        const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
-          console.debug(`module ${name} removing styles`);
+          console.debug(`module ${id} removing styles`);
           orphanStyles.remove();
         }
         if (scope.saga) {
-          console.debug(`module ${name} removing saga`);
-          removeSaga(name);
+          console.debug(`module ${id} removing saga`);
+          removeSaga(id);
         }
         if (scope.shared) {
-          console.debug(`module ${name} removing shared`);
-          removeShared(name);
+          console.debug(`module ${id} removing shared`);
+          removeShared(id);
         }
         if (scope.locale) {
-          console.debug(`module ${name} removing locales`);
+          console.debug(`module ${id} removing locales`);
           removeI18nMessages(scope.locale);
         }
       },
@@ -202,58 +202,58 @@ export const createModuleLoader = () => {
     }
   };
 
-  const loadModule = (name) => {
-    const loaded = loadedModules[name];
+  const loadModule = (id) => {
+    const loaded = loadedModules[id];
     if (loaded) {
       return Promise.resolve(loaded);
     }
-    const loading = loadingModules[name];
+    const loading = loadingModules[id];
     if (loading) {
       return loading;
     }
-    const item = availableModules[name];
+    const item = availableModules[id];
     if (!item) {
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
-          name,
+          id,
         },
       });
-      console.warn(`module ${name} not available`);
+      console.warn(`module ${id} not available`);
       return Promise.resolve(null);
     }
     const promise = loadModuleFile(item.url)
       .then((data) => {
-        loadedModules[name] = connectModule(name, data);
+        loadedModules[id] = connectModule(id, item.meta, data);
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
-            name,
+            id,
           },
         });
-        return loadedModules[name];
+        return loadedModules[id];
       })
       .catch((error) => {
-        console.error(`module ${name} failed to load`, error);
+        console.error(`module ${id} failed to load`, error);
         return Promise.resolve(null)
       })
       .then((data) => {
-        delete loadingModules[name];
+        delete loadingModules[id];
         return data;
       });
-    loadingModules[name] = promise;
+    loadingModules[id] = promise;
     return promise;
   };
 
-  const unloadModule = (name) => {
-    const loaded = loadedModules[name];
+  const unloadModule = (id) => {
+    const loaded = loadedModules[id];
     if (loaded) {
       loaded.cleanup();
-      delete loadedModules[name];
+      delete loadedModules[id];
       store.dispatch({
         type: constants.MODULE_UNLOADED,
         payload: {
-          name,
+          id,
         },
       });
     }
@@ -265,8 +265,8 @@ export const createModuleLoader = () => {
     const newModules = {};
     for (let i = modules.length; i--; ) {
       const item = modules[i];
-      newModules[item.name] = item;
-      availableModules[item.name] = item;
+      newModules[item.id] = item;
+      availableModules[item.id] = item;
     }
     const obsoleteModules = [];
     for (const item in availableModules) {
@@ -287,12 +287,12 @@ export const createModuleLoader = () => {
   const getReducer = () => {
     return (state = {}, action) => {
       for (
-        let name = danglingNamespaces.pop();
-        name;
-        name = danglingNamespaces.pop()
+        let id = danglingNamespaces.pop();
+        id;
+        id = danglingNamespaces.pop()
       ) {
-        console.debug(`dyn reducer - module's ${name} state evicted`);
-        delete state[name];
+        console.debug(`dyn reducer - module's ${id} state evicted`);
+        delete state[id];
       }
       switch (action.type) {
         case constants.INIT:
@@ -304,43 +304,43 @@ export const createModuleLoader = () => {
           return state;
         }
         case constants.MODULE_UNLOADED: {
-          console.debug(`module ${name} removing reducer`);
-          removeReducer(name);
+          console.debug(`module ${id} removing reducer`);
+          removeReducer(id);
           return state;
         }
       }
-      for (const name in reducers) {
-        state[name] = reducers[name](state[name], action);
+      for (const id in reducers) {
+        state[id] = reducers[id](state[id], action);
       }
       return state;
     };
   };
 
-  const isolateStore = (name) => ({
+  const isolateStore = (id) => ({
     dispatch: store.dispatch,
     getState: () => {
       const state = store.getState();
-      const isolatedState = state.modules[name] || {};
+      const isolatedState = state.modules[id] || {};
       isolatedState.shared = state.shared;
       return isolatedState;
     },
     subscribe: store.subscribe,
     replaceReducer: function (newReducer) {
-      addReducer(name, newReducer);
+      addReducer(id, newReducer);
     },
   });
 
-  const isolateModule = (name, component) => {
+  const isolateModule = (id, meta, component) => {
     const reduxContext = {
-      store: isolateStore(name),
+      store: isolateStore(id),
     }
     const ModuleWrapper = (props) => (
       <ReactReduxContext.Provider value={reduxContext}>
-        {React.createElement(component, props, props.children)}
+        {React.createElement(component, meta, props.children)}
       </ReactReduxContext.Provider>
     );
-    ModuleWrapper.displayName = `ModuleWrapper-${name}`;
-    component.displayName = `Module-${name}`;
+    ModuleWrapper.displayName = `ModuleWrapper-${id}`;
+    component.displayName = `Module-${id}`;
     return ModuleWrapper;
   };
 
