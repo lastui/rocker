@@ -14,16 +14,9 @@ export default async () => {
 
 	const enhancers = [sagaMiddleware, moduleLoaderMiddleware(loader)];
 
-	if (window.__GROOPIE_EXTENSION__) {
-		enhancers.unshift(window.__GROOPIE_EXTENSION__);
-	}
-/*
 	const composer = process.env.NODE_ENV === 'development'
 		? require('redux-devtools-extension').composeWithDevTools
 		: compose;
-*/
-
-	const composer = compose
 
 	const reducer = combineReducers({
 		runtime: runtimeReducer,
