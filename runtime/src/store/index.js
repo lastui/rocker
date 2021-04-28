@@ -1,7 +1,6 @@
-import { Store, applyMiddleware, compose, createStore } from "redux";
+import { Store, applyMiddleware, compose, createStore, combineReducers } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { all, fork } from "redux-saga/effects";
-import { combineReducers } from "redux";
 import { runtimeReducer, sharedReducer } from "../reducer";
 import sagas from "../saga";
 import {
@@ -18,10 +17,13 @@ export default async () => {
 	if (window.__GROOPIE_EXTENSION__) {
 		enhancers.unshift(window.__GROOPIE_EXTENSION__);
 	}
-
+/*
 	const composer = process.env.NODE_ENV === 'development'
 		? require('redux-devtools-extension').composeWithDevTools
 		: compose;
+*/
+
+	const composer = compose
 
 	const reducer = combineReducers({
 		runtime: runtimeReducer,
