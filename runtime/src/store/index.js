@@ -19,6 +19,10 @@ export default async () => {
 		enhancers.unshift(window.__GROOPIE_EXTENSION__);
 	}
 
+	const composer = process.env.NODE_ENV === 'development'
+		? require('redux-devtools-extension').composeWithDevTools
+		: compose;
+
 	const reducer = combineReducers({
 		runtime: runtimeReducer,
 		shared: sharedReducer,
@@ -28,7 +32,7 @@ export default async () => {
 	const store = createStore(
 		reducer,
 		{},
-		compose(...[applyMiddleware(...enhancers)])
+		composer(...[applyMiddleware(...enhancers)])
 	);
 
 	loader.setSagaRunner(sagaMiddleware.run);
