@@ -29,21 +29,6 @@ export const removeI18nMessages = (data = {}) => ({
   },
 });
 
-export const addShared = (id, data = {}) => ({
-  type: constants.ADD_SHARED,
-  payload: {
-    id,
-    data,
-  },
-});
-
-export const removeShared = (id) => ({
-  type: constants.REMOVE_SHARED,
-  payload: {
-    id,
-  },
-});
-
 export const setAvailableModules = (modules = []) => ({
   type: constants.SET_AVAILABLE_MODULES,
   payload: {

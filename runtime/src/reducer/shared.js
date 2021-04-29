@@ -1,18 +1,16 @@
 import { constants } from "@lastui/rocker/platform";
 
-const initialState = {};
+const initialState = {
+	meta: {},
+};
 
 export default (state = initialState, action) => {
 	switch (action.type) {
-		case constants.ADD_SHARED: {
-			const nextState = { ...state };
-			nextState[action.payload.id] = action.payload.data;
-			return nextState;
-		}
-		case constants.REMOVE_SHARED: {
-			const nextState = { ...state };
-			delete nextState[action.payload.id];
-			return nextState;
+		case constants.SET_AVAILABLE_MODULES: {
+			const meta = action.payload.modules.map((item) => item.meta || {})
+			return {
+				meta,
+			}
 		}
 		default: {
 			return state;

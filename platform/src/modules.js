@@ -16,8 +16,8 @@ export function registerModule(scope) {
   if (scope.saga) {
     this.saga = scope.saga;
   }
-  if (scope.shared) {
-    this.shared = scope.shared;
+  if (scope.props) {
+    this.props = scope.props;
   }
   if (scope.locale) {
     this.locale = scope.locale;
@@ -98,14 +98,6 @@ export const createModuleLoader = () => {
     });
   };
 
-  const removeShared = (id) => {
-    store.dispatch(actions.removeShared(id));
-  };
-
-  const addShared = (id, payload) => {
-    store.dispatch(actions.addShared(id, payload));
-  };
-
   const removeI18nMessages = (data) => {
     store.dispatch(actions.removeI18nMessages(data));
   };
@@ -114,7 +106,7 @@ export const createModuleLoader = () => {
     store.dispatch(actions.addI18nMessages(data));
   };
 
-  const connectModule = (id, meta = {}, scope = {}) => {
+  const connectModule = (id, props = {}, scope = {}) => {
     const injectedStyles = document.querySelector("style#rocker:last-of-type");
     if (injectedStyles) {
       console.debug(`module ${id} introducing styles`);
@@ -133,17 +125,13 @@ export const createModuleLoader = () => {
       console.debug(`module ${id} introducing saga`);
       addSaga(id, scope.saga);
     }
-    if (scope.shared) {
-      console.debug(`module ${id} introducing shared`);
-      addShared(id, scope.shared);
-    }
     if (scope.locale) {
       console.debug(`module ${id} introducing locales`);
       addI18nMessages(scope.locale);
     }
     return {
       id,
-      root: scope.MainView && isolateModule(id, meta, scope.MainView),
+      root: scope.MainView && isolateModule(id, props, scope.MainView),
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
@@ -153,10 +141,6 @@ export const createModuleLoader = () => {
         if (scope.saga) {
           console.debug(`module ${id} removing saga`);
           removeSaga(id);
-        }
-        if (scope.shared) {
-          console.debug(`module ${id} removing shared`);
-          removeShared(id);
         }
         if (scope.locale) {
           console.debug(`module ${id} removing locales`);
@@ -224,7 +208,7 @@ export const createModuleLoader = () => {
     }
     const promise = loadModuleFile(item.url)
       .then((data) => {
-        loadedModules[id] = connectModule(id, item.meta, data);
+        loadedModules[id] = connectModule(id, item.props, data);
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
@@ -330,13 +314,13 @@ export const createModuleLoader = () => {
     },
   });
 
-  const isolateModule = (id, meta, component) => {
+  const isolateModule = (id, declaredProps, component) => {
     const reduxContext = {
       store: isolateStore(id),
     }
     const ModuleWrapper = (props) => (
       <ReactReduxContext.Provider value={reduxContext}>
-        {React.createElement(component, meta, props.children)}
+        {React.createElement(component, declaredProps, props.children)}
       </ReactReduxContext.Provider>
     );
     ModuleWrapper.displayName = `ModuleWrapper-${id}`;
