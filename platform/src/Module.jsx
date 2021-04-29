@@ -9,19 +9,22 @@ const Module = (props) => {
     moduleLoader.getLoadedModule(props.name)
   );
 
-  const errorFallback = React.useMemo(() => (error) => {
-    if (process.env.NODE_ENV === "development") {
-      return (
-        <div>
-          <div>{props.name}</div>
+  const errorFallback = React.useMemo(
+    () => (error) => {
+      if (process.env.NODE_ENV === "development") {
+        return (
           <div>
-            {JSON.stringify(error, Object.getOwnPropertyNames(error))}
+            <div>{props.name}</div>
+            <div>
+              {JSON.stringify(error, Object.getOwnPropertyNames(error))}
+            </div>
           </div>
-        </div>
-      );
-    }
-    return <React.Fragment />;
-  }, [props.name]);
+        );
+      }
+      return <React.Fragment />;
+    },
+    [props.name]
+  );
 
   React.useEffect(() => {
     if (!props.name) {
@@ -59,10 +62,7 @@ const Module = (props) => {
   }
 
   return (
-    <ErrorBoundary
-      name={props.name}
-      fallback={errorFallback}
-    >
+    <ErrorBoundary name={props.name} fallback={errorFallback}>
       <ModuleContext.Provider value={moduleLoader}>
         {React.createElement(loadedModule.root, props, props.children)}
       </ModuleContext.Provider>
@@ -70,4 +70,4 @@ const Module = (props) => {
   );
 };
 
-export default React.memo(Module);
+export default Module;
