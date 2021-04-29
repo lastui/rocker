@@ -106,7 +106,7 @@ export const createModuleLoader = () => {
     store.dispatch(actions.addI18nMessages(data));
   };
 
-  const connectModule = (id, props = {}, scope = {}) => {
+  const connectModule = (id, scope = {}) => {
     const injectedStyles = document.querySelector("style#rocker:last-of-type");
     if (injectedStyles) {
       console.debug(`module ${id} introducing styles`);
@@ -118,7 +118,7 @@ export const createModuleLoader = () => {
       const composedReducer = {
         ...scope.reducer,
         shared: (state = {}, action) => state,
-      }
+      };
       addReducer(id, combineReducers(composedReducer));
     }
     if (scope.saga) {
@@ -131,7 +131,7 @@ export const createModuleLoader = () => {
     }
     return {
       id,
-      root: scope.MainView && isolateModule(id, props, scope.MainView),
+      root: scope.MainView && isolateModule(id, scope.props, scope.MainView),
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
@@ -208,7 +208,7 @@ export const createModuleLoader = () => {
     }
     const promise = loadModuleFile(item.url)
       .then((data) => {
-        loadedModules[id] = connectModule(id, item.props, data);
+        loadedModules[id] = connectModule(id, data);
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
@@ -219,7 +219,7 @@ export const createModuleLoader = () => {
       })
       .catch((error) => {
         console.error(`module ${id} failed to load`, error);
-        return Promise.resolve(null)
+        return Promise.resolve(null);
       })
       .then((data) => {
         delete loadingModules[id];
@@ -280,8 +280,6 @@ export const createModuleLoader = () => {
       }
       switch (action.type) {
         case constants.INIT:
-        case constants.ADD_SHARED:
-        case constants.REMOVE_SHARED:
         case constants.ADD_I18N_MESSAGES:
         case constants.REMOVE_I18N_MESSAGES:
         case constants.SET_AVAILABLE_MODULES: {
@@ -317,7 +315,7 @@ export const createModuleLoader = () => {
   const isolateModule = (id, declaredProps, component) => {
     const reduxContext = {
       store: isolateStore(id),
-    }
+    };
     const ModuleWrapper = (props) => (
       <ReactReduxContext.Provider value={reduxContext}>
         {React.createElement(component, declaredProps, props.children)}
