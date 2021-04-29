@@ -70,4 +70,4 @@ const Module = (props) => {
   );
 };
 
-export default React.memo(Module);
+export default Module;
