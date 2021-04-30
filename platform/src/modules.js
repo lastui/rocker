@@ -286,8 +286,8 @@ export const createModuleLoader = () => {
           return state;
         }
         case constants.MODULE_UNLOADED: {
-          console.debug(`module ${id} removing reducer`);
-          removeReducer(id);
+          console.debug(`module ${action.payload.id} removing reducer`);
+          removeReducer(action.payload.id);
           return state;
         }
       }
@@ -316,14 +316,14 @@ export const createModuleLoader = () => {
     const reduxContext = {
       store: isolateStore(id),
     };
-    const ModuleWrapper = (props) => (
+    const wrapper = (props) => (
       <ReactReduxContext.Provider value={reduxContext}>
-        {React.createElement(component, declaredProps, props.children)}
+        {React.createElement(component, { ...props, ...declaredProps }, props.children)}
       </ReactReduxContext.Provider>
     );
-    ModuleWrapper.displayName = `ModuleWrapper-${id}`;
+    wrapper.displayName = `ModuleWrapper-${id}`;
     component.displayName = `Module-${id}`;
-    return ModuleWrapper;
+    return wrapper;
   };
 
   return {
