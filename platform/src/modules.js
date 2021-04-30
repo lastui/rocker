@@ -287,7 +287,7 @@ export const createModuleLoader = () => {
         }
         case constants.MODULE_UNLOADED: {
           console.debug(`module ${action.payload.id} removing reducer`);
-          removeReducer(action.payloadid);
+          removeReducer(action.payload.id);
           return state;
         }
       }
