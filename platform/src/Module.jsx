@@ -61,10 +61,11 @@ const Module = (props) => {
     return <React.Fragment />;
   }
 
+  const { name, fallback, ...rest } = props
   return (
     <ErrorBoundary name={props.name} fallback={errorFallback}>
       <ModuleContext.Provider value={moduleLoader}>
-        {React.createElement(loadedModule.root, props, props.children)}
+        {React.createElement(loadedModule.root, rest, props.children)}
       </ModuleContext.Provider>
     </ErrorBoundary>
   );
