@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.3.50",
+  "version": "0.3.51",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -50,14 +50,14 @@
     "css-loader": "5.2.4",
     "dotenv": "8.2.0",
     "html-webpack-plugin": "5.3.1",
-    "mini-css-extract-plugin": "1.5.1",
+    "mini-css-extract-plugin": "1.6.0",
     "path-browserify": "1.0.1",
     "redux-devtools-extension": "2.13.9",
     "sass": "1.32.12",
     "sass-loader": "11.0.1",
     "style-loader": "2.0.0",
     "terser-webpack-plugin": "5.1.1",
-    "webpack": "5.36.1",
+    "webpack": "5.36.2",
     "webpack-nano": "1.1.1",
     "webpack-plugin-serve": "1.4.1"
   },
