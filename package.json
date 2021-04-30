@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.3.49",
+  "version": "0.3.50",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -43,7 +43,7 @@
     "runtime/dll/LICENSE.txt"
   ],
   "dependencies": {
-    "@lastui/babylon": "1.1.6",
+    "@lastui/babylon": "1.1.7",
     "@linaria/webpack-loader": "3.0.0-beta.3",
     "add-asset-html-webpack-plugin": "3.2.0",
     "clean-webpack-plugin": "3.0.0",
