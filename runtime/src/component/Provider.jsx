@@ -41,13 +41,13 @@ const Provider = (props) => {
 
 	return (
 		<ModuleContext.Provider value={state.moduleLoader}>
-			<Localisation>
-				<ReduxProvider store={state.store}>
+			<ReduxProvider store={state.store}>
+				<Localisation>
 					<BrowserRouter forceRefresh={false}>
 						<Switch>{props.children}</Switch>
 					</BrowserRouter>
-				</ReduxProvider>
-			</Localisation>
+				</Localisation>
+			</ReduxProvider>
 		</ModuleContext.Provider>
 	);
 };
