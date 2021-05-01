@@ -1,5 +1,5 @@
 import React from "react";
-import { ModuleContext, useModuleLoader } from "./ModuleContext";
+import { useModuleLoader } from "./ModuleContext";
 import ErrorBoundary from "./ErrorBoundary";
 
 const Module = (props) => {
@@ -10,20 +10,23 @@ const Module = (props) => {
   );
 
   const errorFallback = React.useMemo(
-    () => (error) => {
-      if (process.env.NODE_ENV === "development") {
-        return (
-          <div>
-            <div>{props.name}</div>
-            <div>
-              {JSON.stringify(error, Object.getOwnPropertyNames(error))}
-            </div>
-          </div>
-        );
-      }
-      return <React.Fragment />;
-    },
-    [props.name]
+    () =>
+      props.fallback
+        ? props.fallback(error)
+        : (error) => {
+            if (process.env.NODE_ENV === "development") {
+              return (
+                <div>
+                  <div>{props.name}</div>
+                  <div>
+                    {JSON.stringify(error, Object.getOwnPropertyNames(error))}
+                  </div>
+                </div>
+              );
+            }
+            return <React.Fragment />;
+          },
+    [props.name, props.fallback]
   );
 
   React.useEffect(() => {
@@ -61,12 +64,10 @@ const Module = (props) => {
     return <React.Fragment />;
   }
 
-  const { name, fallback, ...rest } = props
+  const { name, fallback, ...rest } = props;
   return (
     <ErrorBoundary name={props.name} fallback={errorFallback}>
-      <ModuleContext.Provider value={moduleLoader}>
-        {React.createElement(loadedModule.root, rest, props.children)}
-      </ModuleContext.Provider>
+      {React.createElement(loadedModule.root, rest, props.children)}
     </ErrorBoundary>
   );
 };

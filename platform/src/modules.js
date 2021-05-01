@@ -316,14 +316,11 @@ export const createModuleLoader = () => {
     const reduxContext = {
       store: isolateStore(id),
     };
-    const wrapper = (props) => (
+    return (props) => (
       <ReactReduxContext.Provider value={reduxContext}>
         {React.createElement(component, { ...props, ...declaredProps }, props.children)}
       </ReactReduxContext.Provider>
     );
-    wrapper.displayName = `ModuleWrapper-${id}`;
-    component.displayName = `Module-${id}`;
-    return wrapper;
   };
 
   return {
