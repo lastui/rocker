@@ -135,15 +135,15 @@ config.plugins.push(
 			} catch (_) {
 				manifest = `
 			  	{
-						available: [
-							{
-								id: "${PROJECT_NAME}",
-								url: "/module.js",
-								meta: {},
-							},
-						],
-						entrypoint: "${PROJECT_NAME}",
-					}
+					available: [
+						{
+							id: "${PROJECT_NAME}",
+							url: "/module.js",
+							meta: {},
+						},
+					],
+					entrypoint: "${PROJECT_NAME}",
+				}
 				`;
 			}
 
