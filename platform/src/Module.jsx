@@ -12,7 +12,7 @@ const Module = (props) => {
   const errorFallback = React.useMemo(
     () =>
       props.fallback
-        ? props.fallback(error)
+        ? props.fallback
         : (error) => {
             if (process.env.NODE_ENV === "development") {
               return (
