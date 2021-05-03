@@ -35,6 +35,7 @@ module.exports = {
 								settings.WEBPACK_ROOT_PATH,
 								".linaria-cache"
 							),
+							classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
 							babelOptions: {
 								babelrc: false,
 								...babel,

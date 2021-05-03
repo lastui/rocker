@@ -131,7 +131,8 @@ export const createModuleLoader = () => {
     }
     return {
       id,
-      root: scope.MainView && isolateModule(id, scope.props, scope.MainView),
+      mainView: scope.MainView && isolateModule(id, scope.props, scope.MainView),
+      errorView: scope.ErrorView,
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {

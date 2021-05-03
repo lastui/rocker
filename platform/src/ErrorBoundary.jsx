@@ -19,8 +19,8 @@ class ErrorBoundary extends React.Component {
 		if (error === null) {
 			return this.props.children;
 		}
-		if (typeof fallback === 'function') {
-			return fallback(error);
+		if (fallback) {
+			return React.createElement(fallback, { error });
 		}
 		return <React.Fragment />;
 	}
