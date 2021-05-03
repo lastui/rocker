@@ -137,12 +137,12 @@ config.plugins.push(
 			  	{
 					available: [
 						{
-							id: "${PROJECT_NAME}",
+							id: "${settings.PROJECT_NAME}",
 							url: "/module.js",
 							meta: {},
 						},
 					],
-					entrypoint: "${PROJECT_NAME}",
+					entrypoint: "${settings.PROJECT_NAME}",
 				}
 				`;
 			}
