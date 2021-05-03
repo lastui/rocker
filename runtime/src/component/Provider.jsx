@@ -2,7 +2,6 @@ import React from "react";
 import { Provider as ReduxProvider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { Switch } from "react-router";
-import { IntlProvider } from "react-intl";
 import { ModuleContext } from "@lastui/rocker/platform";
 import setupStore from "../store";
 import Localisation from "./Localisation";
