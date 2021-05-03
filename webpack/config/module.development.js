@@ -128,9 +128,12 @@ config.plugins.push(
 			);
 			let manifest;
 			try {
-			  manifest = fs.readFileSync(path.resolve(process.cwd(), 'manifest.json'), 'utf8')
+				manifest = fs.readFileSync(
+					path.resolve(process.cwd(), "manifest.json"),
+					"utf8"
+				);
 			} catch (_) {
-			  manifest = `
+				manifest = `
 			  	{
 						available: [
 							{
@@ -141,7 +144,7 @@ config.plugins.push(
 						],
 						entrypoint: "${PROJECT_NAME}",
 					}
-				`
+				`;
 			}
 
 			return `
