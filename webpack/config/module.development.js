@@ -135,14 +135,14 @@ config.plugins.push(
 			} catch (_) {
 				manifest = `
 			  	{
+			  		entrypoint: "${settings.PROJECT_NAME}",
 					available: [
 						{
 							id: "${settings.PROJECT_NAME}",
 							url: "/module.js",
-							meta: {},
+							meta: {}
 						},
-					],
-					entrypoint: "${settings.PROJECT_NAME}",
+					]
 				}
 				`;
 			}
@@ -165,7 +165,7 @@ config.plugins.push(
 								window.addEventListener("load", function() {
 									dom.render(react.createElement(runtime.Main, {
 										fetchContext: async function() {
-											return ${manifest};
+											return ${manifest.trim()};
 										}
 									}), document.getElementById("mount"))
 								})
