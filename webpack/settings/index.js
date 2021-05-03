@@ -25,6 +25,9 @@ exports.PROJECT_NAMESPACE = namespace(
 );
 
 exports.PROJECT_ROOT_PATH = path.resolve("./");
+
+exports.PROJECT_NAME = path.resolve(process.cwd()).split(path.sep).pop();
+
 exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 
 exports.DLL_BUILD_PATH = path.join(exports.PROJECT_ROOT_PATH, "dll");

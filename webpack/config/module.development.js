@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const webpack = require("webpack");
 
 const HTMLWebpackPlugin = require("html-webpack-plugin");
@@ -125,6 +126,24 @@ config.plugins.push(
 			const scripts = htmlWebpackPlugin.tags.bodyTags.filter(
 				(item) => item.attributes.src !== "module.js"
 			);
+			let manifest;
+			try {
+			  manifest = fs.readFileSync(path.resolve(process.cwd(), 'manifest.json'), 'utf8')
+			} catch (_) {
+			  manifest = `
+			  	{
+						available: [
+							{
+								id: "${PROJECT_NAME}",
+								url: "/module.js",
+								meta: {},
+							},
+						],
+						entrypoint: "${PROJECT_NAME}",
+					}
+				`
+			}
+
 			return `
 				<html>
 					<head>
@@ -143,16 +162,7 @@ config.plugins.push(
 								window.addEventListener("load", function() {
 									dom.render(react.createElement(runtime.Main, {
 										fetchContext: async function() {
-											return {
-												available: [
-													{
-														id: "hot",
-														url: "/module.js",
-														meta: {},
-													},
-												],
-												entrypoint: "hot",
-											}
+											return ${manifest};
 										}
 									}), document.getElementById("mount"))
 								})
