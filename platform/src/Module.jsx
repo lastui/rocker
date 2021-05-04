@@ -9,26 +9,6 @@ const Module = (props) => {
     moduleLoader.getLoadedModule(props.name)
   );
 
-  const errorFallback = React.useMemo(
-    () =>
-      props.fallback
-        ? props.fallback
-        : (error) => {
-            if (process.env.NODE_ENV === "development") {
-              return (
-                <div>
-                  <div>{props.name}</div>
-                  <div>
-                    {JSON.stringify(error, Object.getOwnPropertyNames(error))}
-                  </div>
-                </div>
-              );
-            }
-            return <React.Fragment />;
-          },
-    [props.name, props.fallback]
-  );
-
   React.useEffect(() => {
     if (!props.name) {
       return;
@@ -54,7 +34,7 @@ const Module = (props) => {
     return <React.Fragment />;
   }
 
-  if (!loadedModule.root) {
+  if (!loadedModule.mainView) {
     if (props.fallback) {
       return props.fallback();
     }
@@ -66,8 +46,8 @@ const Module = (props) => {
 
   const { name, fallback, ...rest } = props;
   return (
-    <ErrorBoundary name={props.name} fallback={errorFallback}>
-      {React.createElement(loadedModule.root, rest, props.children)}
+    <ErrorBoundary name={props.name} fallback={loadedModule.errorView}>
+      {React.createElement(loadedModule.mainView, rest, props.children)}
     </ErrorBoundary>
   );
 };
