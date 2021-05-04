@@ -10,6 +10,9 @@ export function registerModule(scope) {
   if (scope.MainView) {
     this.MainView = scope.MainView;
   }
+  if (scope.ErrorView) {
+    this.ErrorView = scope.ErrorView;
+  }
   if (scope.reducer) {
     this.reducer = scope.reducer;
   }
