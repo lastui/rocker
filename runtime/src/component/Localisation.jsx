@@ -8,7 +8,16 @@ const Localisation = (props) => {
 	const messages = useSelector(getI18nMessages);
 
 	return (
-		<IntlProvider messages={messages} locale={language}>
+		<IntlProvider
+			messages={messages}
+			locale={language}
+			onError={(err) => {
+				if (err.code === "MISSING_TRANSLATION") {
+					return;
+				}
+				throw err;
+			}}
+		>
 			{props.children}
 		</IntlProvider>
 	);
