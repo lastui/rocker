@@ -17,7 +17,14 @@ module.exports = {
 						loader: "babel-loader",
 						options: {
 							babelrc: false,
-							...babel,
+							presets: babel.presets,
+							plugins: babel.plugins.map((plugin) => {
+								if (typeof plugin === 'string') {
+									return [plugin, {}, `babel-${plugin}`]
+								} else {
+									return [plugin[0], plugin[1], `babel-${plugin[2]}`]
+								}
+							}),
 							sourceMaps: false,
 							sourceType: "module",
 							highlightCode: true,
@@ -38,7 +45,14 @@ module.exports = {
 							classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
 							babelOptions: {
 								babelrc: false,
-								...babel,
+								presets: [],
+								plugins: babel.plugins.map((plugin) => {
+									if (typeof plugin === 'string') {
+										return [plugin, {}, `linaria-${plugin}`]
+									} else {
+										return [plugin[0], plugin[1], `linaria-${plugin[2]}`]
+									}
+								}),
 								sourceMaps: false,
 								sourceType: "module",
 								inputSourceMap: false,
