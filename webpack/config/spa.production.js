@@ -29,7 +29,13 @@ config.module.rules.push(
 				loader: "babel-loader",
 				options: {
 					babelrc: false,
-					presets: babel.presets,
+					presets: babel.presets.map((preset) => {
+						if (typeof preset === 'string') {
+							return [preset, {}, `babel-${preset}`]
+						} else {
+							return [preset[0], preset[1], `babel-${preset[2]}`]
+						}
+					}),
 					plugins: babel.plugins.map((plugin) => {
 						if (typeof plugin === 'string') {
 							return [plugin, {}, `babel-${plugin}`]
@@ -57,7 +63,13 @@ config.module.rules.push(
 					classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
 					babelOptions: {
 						babelrc: false,
-						presets: [],
+						presets: babel.presets.map((preset) => {
+							if (typeof preset === 'string') {
+								return [preset, {}, `linaria-${preset}`]
+							} else {
+								return [preset[0], preset[1], `linaria-${preset[2]}`]
+							}
+						}),
 						plugins: babel.plugins.map((plugin) => {
 							if (typeof plugin === 'string') {
 								return [plugin, {}, `linaria-${plugin}`]
