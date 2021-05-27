@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.3.74",
+  "version": "0.3.75",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -19,7 +19,6 @@
     "webpack/config/spa.development.js",
     "webpack/config/spa.production.js",
     "webpack/internal/base.js",
-    "webpack/internal/loaders.js",
     "webpack/internal/build.js",
     "webpack/internal/development.js",
     "webpack/settings/index.js",
