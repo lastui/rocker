@@ -7,6 +7,8 @@ const { WebpackPluginServe } = require("webpack-plugin-serve");
 
 const settings = require("../settings");
 
+const babel = require("@lastui/babylon");
+
 const config = {
 	...require("../internal/base.js"),
 	...require("../internal/development.js"),

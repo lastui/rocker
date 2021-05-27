@@ -8,6 +8,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const settings = require("../settings");
 
+const babel = require("@lastui/babylon");
+
 const config = {
 	...require("../internal/base.js"),
 	...require("../internal/build.js"),

@@ -6,6 +6,8 @@ const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
 
+const babel = require("@lastui/babylon");
+
 const settings = require("../settings");
 
 const config = {
