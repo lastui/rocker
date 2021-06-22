@@ -18,7 +18,7 @@ class ModuleLocalesPlugin {
           name: ModuleLocalesPlugin.name,
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
         },
-        (assets) => {
+        (_assets) => {
           let content;
           try {
             content = fs.readFileSync(this.messagesPath, "utf8");
@@ -26,8 +26,8 @@ class ModuleLocalesPlugin {
             content = JSON.stringify(this.defaultMessages, null, 4)
             fs.writeFileSync(this.messagesPath, content);
           }
-          compilation.fileDependencies.add(this.messagesPath)
           compilation.emitAsset('messages.json', new compiler.webpack.sources.RawSource(JSON.stringify(JSON.parse(content))));
+          compilation.fileDependencies.add(this.messagesPath)
         }
       );
     });
