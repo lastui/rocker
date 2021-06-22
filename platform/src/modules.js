@@ -332,7 +332,7 @@ export const createModuleLoader = () => {
         store = nextStore;
       }
     },
-    //setAvailableModules,
+    setAvailableModules,
     loadModule,
     unloadModule,
     getLoadedModule,
