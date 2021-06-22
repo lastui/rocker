@@ -195,7 +195,7 @@ export const createModuleLoader = () => {
       console.warn(`module ${id} not available`);
       return Promise.resolve(null);
     }
-    const promise = loadModuleFile(item.url)
+    const promise = loadModuleFile(item.program)
       .then((data) => {
         loadedModules[id] = connectModule(id, data);
         store.dispatch({
@@ -240,7 +240,7 @@ export const createModuleLoader = () => {
       const item = modules[i];
       newModules[item.id] = item;
       if (!availableModules[item.id] && item.locale) {
-        promises.push(loadLocaleFile(item.i18n).then((data) => {
+        promises.push(loadLocaleFile(item.locales).then((data) => {
           console.debug(`module ${id} introducing locales`);
           store.dispatch(actions.addI18nMessages(item.id, data));
         }))

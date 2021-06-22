@@ -214,7 +214,8 @@ config.plugins.push(
 					available: [
 						{
 							id: "${settings.PROJECT_NAME}",
-							url: "/module.js",
+							program: "/module.js",
+							locales: "/messages.json",
 							meta: {}
 						},
 					]
