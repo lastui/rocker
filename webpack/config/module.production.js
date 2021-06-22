@@ -2,7 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
 
 const settings = require("../settings");
 
@@ -165,17 +165,7 @@ config.plugins.push(
 		verbose: false,
 		dry: false,
 	}),
-	new CopyWebpackPlugin({
-		patterns: [
-			{
-				from: path.resolve(settings.PROJECT_ROOT_PATH, "messages.json"),
-				to: path.resolve(settings.PROJECT_BUILD_PATH, "messages.json"),
-			},
-		],
-		options: {
-			concurrency: 1,
-		},
-	}),
+	new ModuleLocalesPlugin(),
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
 			__dirname,

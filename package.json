@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.3.93",
+  "version": "0.3.94",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -22,6 +22,7 @@
     "webpack/internal/build.js",
     "webpack/internal/development.js",
     "webpack/settings/index.js",
+    "webpack/plugins/ModuleLocalesPlugin.js",
     "dependencies/index.js",
     "dependencies/dll/dependencies-dev-manifest.json",
     "dependencies/dll/dependencies-prod-manifest.json",
@@ -46,7 +47,6 @@
     "@linaria/webpack-loader": "3.0.0-beta.6",
     "add-asset-html-webpack-plugin": "3.2.0",
     "clean-webpack-plugin": "3.0.0",
-    "copy-webpack-plugin": "9.0.0",
     "css-loader": "5.2.6",
     "dotenv": "10.0.0",
     "html-webpack-plugin": "5.3.1",
