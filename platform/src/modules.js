@@ -72,6 +72,10 @@ export const createModuleLoader = () => {
   const getLoadedModule = (id) => loadedModules[id];
 
   const removeReducer = (id) => {
+    if (!reducers[id]) {
+      return;
+    }
+    console.debug(`module ${id} removing reducer`);
     delete reducers[id];
   };
 
@@ -119,7 +123,8 @@ export const createModuleLoader = () => {
     }
     return {
       id,
-      mainView: scope.MainView && isolateModule(id, scope.props, scope.MainView),
+      mainView:
+        scope.MainView && isolateModule(id, scope.props, scope.MainView),
       errorView: scope.ErrorView,
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
@@ -135,9 +140,7 @@ export const createModuleLoader = () => {
     };
   };
 
-  const loadLocaleFile = (uri) =>
-    fetch(uri)
-      .then((data) => data.json())
+  const loadLocaleFile = (uri) => fetch(uri).then((data) => data.json());
 
   const loadModuleFile = (uri) =>
     fetch(uri)
@@ -218,15 +221,22 @@ export const createModuleLoader = () => {
     return promise;
   };
 
-  const unloadModule = (id) => {
-    const loaded = loadedModules[id];
+  const unloadModule = (item) => {
+    if (!item) {
+      return;
+    }
+    const loaded = loadedModules[item.id];
     if (loaded) {
       loaded.cleanup();
-      delete loadedModules[id];
+      if (item.locales) {
+        console.debug(`module ${item.id} removing locales`);
+        store.dispatch(actions.removeI18nMessages(item.id));
+      }
+      delete loadedModules[item.id];
       store.dispatch({
         type: constants.MODULE_UNLOADED,
         payload: {
-          id,
+          id: item.id,
         },
       });
     }
@@ -240,11 +250,14 @@ export const createModuleLoader = () => {
       const item = modules[i];
       newModules[item.id] = item;
       if (!availableModules[item.id] && item.locales) {
-        promises.push(loadLocaleFile(item.locales)
-          .then((data) => {
-            console.debug(`module ${id} introducing locales`);
-            store.dispatch(actions.addI18nMessages(item.id, data));
-          }).catch((err) => Promise.resolve(null)))
+        promises.push(
+          loadLocaleFile(item.locales)
+            .then((data) => {
+              console.debug(`module ${item.id} introducing locales`);
+              store.dispatch(actions.addI18nMessages(item.id, data));
+            })
+            .catch(() => Promise.resolve(null))
+        );
       }
       availableModules[item.id] = item;
     }
@@ -257,11 +270,8 @@ export const createModuleLoader = () => {
         obsoleteModules.push(item);
       }
     }
-    for (const item in obsoleteModules) {
-      promises.push(unloadModule(item).then(() => {
-        console.debug(`module ${item.id} removing locales`);
-        store.dispatch(actions.removeI18nMessages(item.id));  
-      }).catch((err) => Promise.resolve(null)));
+    for (const item of obsoleteModules) {
+      promises.push(unloadModule(availableModules[item]));
       delete availableModules[item];
     }
     return Promise.all(promises);
@@ -285,7 +295,6 @@ export const createModuleLoader = () => {
           return state;
         }
         case constants.MODULE_UNLOADED: {
-          console.debug(`module ${action.payload.id} removing reducer`);
           removeReducer(action.payload.id);
           return state;
         }
@@ -317,7 +326,11 @@ export const createModuleLoader = () => {
     };
     return (props) => (
       <ReactReduxContext.Provider value={reduxContext}>
-        {React.createElement(component, { ...props, ...declaredProps }, props.children)}
+        {React.createElement(
+          component,
+          { ...props, ...declaredProps },
+          props.children
+        )}
       </ReactReduxContext.Provider>
     );
   };

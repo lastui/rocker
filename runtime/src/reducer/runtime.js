@@ -47,10 +47,10 @@ export default (state = initialState, action) => {
 				...state.messages,
 			};
 
-			const keys = Object.keys(localeMapping[action.payload.module] || {})
+			const keys = localeMapping[action.payload.module] || {}
 
-			for (const locale in state.messages) {
-				for (const id in keys) {
+			for (const id in keys) {
+				for (const locale in state.messages) {
 					delete nextMessages[locale][id];
 				}
 			}
