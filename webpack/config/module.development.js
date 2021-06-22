@@ -5,6 +5,7 @@ const webpack = require("webpack");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const babel = require("@lastui/babylon");
 
@@ -29,17 +30,17 @@ config.module.rules.push(
 				options: {
 					babelrc: false,
 					presets: babel.presets.map((preset) => {
-						if (typeof preset === 'string') {
-							return [preset, {}, `babel-${preset}`]
+						if (typeof preset === "string") {
+							return [preset, {}, `babel-${preset}`];
 						} else {
-							return [preset[0], preset[1], `babel-${preset[2]}`]
+							return [preset[0], preset[1], `babel-${preset[2]}`];
 						}
 					}),
 					plugins: babel.plugins.map((plugin) => {
-						if (typeof plugin === 'string') {
-							return [plugin, {}, `babel-${plugin}`]
+						if (typeof plugin === "string") {
+							return [plugin, {}, `babel-${plugin}`];
 						} else {
-							return [plugin[0], plugin[1], `babel-${plugin[2]}`]
+							return [plugin[0], plugin[1], `babel-${plugin[2]}`];
 						}
 					}),
 					sourceMaps: true,
@@ -59,21 +60,30 @@ config.module.rules.push(
 						settings.WEBPACK_ROOT_PATH,
 						".linaria-cache"
 					),
-					classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
+					classNameSlug: (hash, title) =>
+						`${settings.PROJECT_NAME}__${title}__${hash}`,
 					babelOptions: {
 						babelrc: false,
 						presets: babel.presets.map((preset) => {
-							if (typeof preset === 'string') {
-								return [preset, {}, `linaria-${preset}`]
+							if (typeof preset === "string") {
+								return [preset, {}, `linaria-${preset}`];
 							} else {
-								return [preset[0], preset[1], `linaria-${preset[2]}`]
+								return [
+									preset[0],
+									preset[1],
+									`linaria-${preset[2]}`,
+								];
 							}
 						}),
 						plugins: babel.plugins.map((plugin) => {
-							if (typeof plugin === 'string') {
-								return [plugin, {}, `linaria-${plugin}`]
+							if (typeof plugin === "string") {
+								return [plugin, {}, `linaria-${plugin}`];
 							} else {
-								return [plugin[0], plugin[1], `linaria-${plugin[2]}`]
+								return [
+									plugin[0],
+									plugin[1],
+									`linaria-${plugin[2]}`,
+								];
 							}
 						}),
 						sourceMaps: true,
@@ -191,6 +201,17 @@ config.plugins.push(
 		),
 		context: settings.PROJECT_ROOT_PATH,
 	}),
+	new CopyWebpackPlugin({
+		patterns: [
+			{
+				from: path.resolve(settings.PROJECT_ROOT_PATH, "messages.json"),
+				to: path.resolve(settings.PROJECT_BUILD_PATH, "messages.json"),
+			},
+		],
+		options: {
+			concurrency: 1,
+		},
+	}),
 	new HTMLWebpackPlugin({
 		production: false,
 		publicPath: "",
@@ -214,7 +235,8 @@ config.plugins.push(
 					available: [
 						{
 							id: "${settings.PROJECT_NAME}",
-							url: "/module.js",
+							program: "/module.js",
+							locales: "/messages.json",
 							meta: {}
 						},
 					]
