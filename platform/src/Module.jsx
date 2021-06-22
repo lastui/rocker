@@ -27,6 +27,8 @@ const Module = (props) => {
     };
   }, [props.name]);
 
+  console.log('Module', props.name, 'loaded?', loadedModule)
+
   if (!props.name || !loadedModule) {
     if (props.fallback) {
       return props.fallback();

@@ -2,7 +2,6 @@ import { constants } from "@lastui/rocker/platform";
 
 const initialState = {
 	meta: {},
-	available: [],
 	loaded: {},
 };
 
@@ -17,7 +16,7 @@ export default (state = initialState, action) => {
 			});
 			return {
 				meta,
-				available: action.payload.modules,
+				loaded: {},
 			};
 		}
 		case constants.MODULE_LOADED: {
@@ -25,7 +24,6 @@ export default (state = initialState, action) => {
 			nextLoaded[action.payload.id] = true;
 			return {
 				meta: state.meta,
-				available: state.available,
 				loaded: nextLoaded,
 			};
 		}
@@ -34,7 +32,6 @@ export default (state = initialState, action) => {
 			nextLoaded[action.payload.id] = false;
 			return {
 				meta: state.meta,
-				available: state.available,
 				loaded: nextLoaded,
 			};
 		}

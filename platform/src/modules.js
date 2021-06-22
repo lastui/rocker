@@ -31,7 +31,10 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
     case constants.SET_AVAILABLE_MODULES: {
       return loader
         .setAvailableModules(action.payload.modules)
-        .then(() => next(action));
+        .then((x) => {
+          console.log('promises from setAvailableModules done', x)
+          return next(action)
+        });
     }
     case constants.SET_ENTRYPOINT_MODULE: {
       return loader
@@ -72,7 +75,11 @@ export const createModuleLoader = () => {
   const getLoadedModule = (id) => loadedModules[id];
 
   const removeReducer = (id) => {
-    delete reducers[id];
+    if (!reducers[id]) {
+      return
+    }
+    console.debug(`module ${id} removing reducer`);
+    delete reducers[id];    
   };
 
   const addReducer = (id, reducer) => {
@@ -218,15 +225,22 @@ export const createModuleLoader = () => {
     return promise;
   };
 
-  const unloadModule = (id) => {
-    const loaded = loadedModules[id];
+  const unloadModule = (item) => {
+    if (!item) {
+      return
+    }
+    const loaded = loadedModules[item.id];
     if (loaded) {
       loaded.cleanup();
-      delete loadedModules[id];
+      if (item.locales) {
+        console.debug(`module ${item.id} removing locales`);
+        store.dispatch(actions.removeI18nMessages(item.id));  
+      }
+      delete loadedModules[item.id];
       store.dispatch({
         type: constants.MODULE_UNLOADED,
         payload: {
-          id,
+          id: item.id,
         },
       });
     }
@@ -239,12 +253,13 @@ export const createModuleLoader = () => {
     for (let i = modules.length; i--; ) {
       const item = modules[i];
       newModules[item.id] = item;
+      console.log(item)
       if (!availableModules[item.id] && item.locales) {
         promises.push(loadLocaleFile(item.locales)
           .then((data) => {
-            console.debug(`module ${id} introducing locales`);
+            console.debug(`module ${item.id} introducing locales`);
             store.dispatch(actions.addI18nMessages(item.id, data));
-          }).catch((err) => Promise.resolve(null)))
+          }).catch(() => Promise.resolve(null)));
       }
       availableModules[item.id] = item;
     }
@@ -257,11 +272,8 @@ export const createModuleLoader = () => {
         obsoleteModules.push(item);
       }
     }
-    for (const item in obsoleteModules) {
-      promises.push(unloadModule(item).then(() => {
-        console.debug(`module ${item.id} removing locales`);
-        store.dispatch(actions.removeI18nMessages(item.id));  
-      }).catch((err) => Promise.resolve(null)));
+    for (const item of obsoleteModules) {
+      promises.push(unloadModule(availableModules[item]));
       delete availableModules[item];
     }
     return Promise.all(promises);
@@ -285,7 +297,6 @@ export const createModuleLoader = () => {
           return state;
         }
         case constants.MODULE_UNLOADED: {
-          console.debug(`module ${action.payload.id} removing reducer`);
           removeReducer(action.payload.id);
           return state;
         }
