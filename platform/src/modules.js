@@ -73,10 +73,10 @@ export const createModuleLoader = () => {
 
   const removeReducer = (id) => {
     if (!reducers[id]) {
-      return
+      return;
     }
     console.debug(`module ${id} removing reducer`);
-    delete reducers[id];    
+    delete reducers[id];
   };
 
   const addReducer = (id, reducer) => {
@@ -123,7 +123,8 @@ export const createModuleLoader = () => {
     }
     return {
       id,
-      mainView: scope.MainView && isolateModule(id, scope.props, scope.MainView),
+      mainView:
+        scope.MainView && isolateModule(id, scope.props, scope.MainView),
       errorView: scope.ErrorView,
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
@@ -139,9 +140,7 @@ export const createModuleLoader = () => {
     };
   };
 
-  const loadLocaleFile = (uri) =>
-    fetch(uri)
-      .then((data) => data.json())
+  const loadLocaleFile = (uri) => fetch(uri).then((data) => data.json());
 
   const loadModuleFile = (uri) =>
     fetch(uri)
@@ -224,14 +223,14 @@ export const createModuleLoader = () => {
 
   const unloadModule = (item) => {
     if (!item) {
-      return
+      return;
     }
     const loaded = loadedModules[item.id];
     if (loaded) {
       loaded.cleanup();
       if (item.locales) {
         console.debug(`module ${item.id} removing locales`);
-        store.dispatch(actions.removeI18nMessages(item.id));  
+        store.dispatch(actions.removeI18nMessages(item.id));
       }
       delete loadedModules[item.id];
       store.dispatch({
@@ -250,13 +249,15 @@ export const createModuleLoader = () => {
     for (let i = modules.length; i--; ) {
       const item = modules[i];
       newModules[item.id] = item;
-      console.log(item)
       if (!availableModules[item.id] && item.locales) {
-        promises.push(loadLocaleFile(item.locales)
-          .then((data) => {
-            console.debug(`module ${item.id} introducing locales`);
-            store.dispatch(actions.addI18nMessages(item.id, data));
-          }).catch(() => Promise.resolve(null)));
+        promises.push(
+          loadLocaleFile(item.locales)
+            .then((data) => {
+              console.debug(`module ${item.id} introducing locales`);
+              store.dispatch(actions.addI18nMessages(item.id, data));
+            })
+            .catch(() => Promise.resolve(null))
+        );
       }
       availableModules[item.id] = item;
     }
@@ -325,7 +326,11 @@ export const createModuleLoader = () => {
     };
     return (props) => (
       <ReactReduxContext.Provider value={reduxContext}>
-        {React.createElement(component, { ...props, ...declaredProps }, props.children)}
+        {React.createElement(
+          component,
+          { ...props, ...declaredProps },
+          props.children
+        )}
       </ReactReduxContext.Provider>
     );
   };
