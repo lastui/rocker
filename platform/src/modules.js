@@ -31,10 +31,7 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
     case constants.SET_AVAILABLE_MODULES: {
       return loader
         .setAvailableModules(action.payload.modules)
-        .then((x) => {
-          console.log('promises from setAvailableModules done', x)
-          return next(action)
-        });
+        .then(() => next(action));
     }
     case constants.SET_ENTRYPOINT_MODULE: {
       return loader
