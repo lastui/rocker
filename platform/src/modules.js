@@ -98,14 +98,6 @@ export const createModuleLoader = () => {
     });
   };
 
-  //const removeI18nMessages = (data) => {
-    //store.dispatch(actions.removeI18nMessages(data));
-  //};
-
-  //const addI18nMessages = (data) => {
-    //store.dispatch(actions.addI18nMessages(data));
-  //};
-
   const connectModule = (id, scope = {}) => {
     const injectedStyles = document.querySelector("style#rocker:last-of-type");
     if (injectedStyles) {
@@ -125,10 +117,6 @@ export const createModuleLoader = () => {
       console.debug(`module ${id} introducing saga`);
       addSaga(id, scope.saga);
     }
-    //if (scope.locale) {
-      //console.debug(`module ${id} introducing locales`);
-      //addI18nMessages(scope.locale);
-    //}
     return {
       id,
       mainView: scope.MainView && isolateModule(id, scope.props, scope.MainView),
@@ -143,10 +131,6 @@ export const createModuleLoader = () => {
           console.debug(`module ${id} removing saga`);
           removeSaga(id);
         }
-        //if (scope.locale) {
-          //console.debug(`module ${id} removing locales`);
-          //removeI18nMessages(scope.locale);
-        //}
       },
     };
   };
