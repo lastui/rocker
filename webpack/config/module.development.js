@@ -205,7 +205,7 @@ config.plugins.push(
 		patterns: [
 			{
 				from: path.resolve(settings.PROJECT_ROOT_PATH, "messages.json"),
-				to: path.resolve(settings.PROJECT_BUILD_PATH, "messages.json"),
+				to: path.resolve(settings.PROJECT_DEV_PATH, "messages.json"),
 			},
 		],
 		options: {

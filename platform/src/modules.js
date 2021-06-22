@@ -239,11 +239,12 @@ export const createModuleLoader = () => {
     for (let i = modules.length; i--; ) {
       const item = modules[i];
       newModules[item.id] = item;
-      if (!availableModules[item.id] && item.locale) {
-        promises.push(loadLocaleFile(item.locales).then((data) => {
-          console.debug(`module ${id} introducing locales`);
-          store.dispatch(actions.addI18nMessages(item.id, data));
-        }))
+      if (!availableModules[item.id] && item.locales) {
+        promises.push(loadLocaleFile(item.locales)
+          .then((data) => {
+            console.debug(`module ${id} introducing locales`);
+            store.dispatch(actions.addI18nMessages(item.id, data));
+          }).catch((err) => Promise.resolve(null)))
       }
       availableModules[item.id] = item;
     }
@@ -260,7 +261,7 @@ export const createModuleLoader = () => {
       promises.push(unloadModule(item).then(() => {
         console.debug(`module ${item.id} removing locales`);
         store.dispatch(actions.removeI18nMessages(item.id));  
-      }));
+      }).catch((err) => Promise.resolve(null)));
       delete availableModules[item];
     }
     return Promise.all(promises);
