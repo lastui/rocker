@@ -5,6 +5,7 @@ const webpack = require("webpack");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const { WebpackPluginServe } = require("webpack-plugin-serve");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const babel = require("@lastui/babylon");
 
@@ -191,6 +192,17 @@ config.plugins.push(
 		),
 		context: settings.PROJECT_ROOT_PATH,
 	}),
+	new CopyWebpackPlugin({
+      patterns: [
+        {
+        	from: path.resolve(settings.PROJECT_ROOT_PATH, 'messages.json'),
+        	to: path.resolve(settings.PROJECT_BUILD_PATH, 'messages.json'),
+        },
+      ],
+      options: {
+        concurrency: 1,
+      },
+    }),
 	new HTMLWebpackPlugin({
 		production: false,
 		publicPath: "",

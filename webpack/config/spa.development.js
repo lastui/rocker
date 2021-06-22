@@ -147,6 +147,13 @@ config.module.rules.push(
 	{
 		test: /\.(woff|woff2|svg|eot|otf|ttf)(\?.*$|$)/,
 		type: "asset/resource",
+	},
+	{
+		test: path.resolve(settings.PROJECT_ROOT_PATH, "messages.json"),
+		type: "asset/resource",
+		generator: {
+			filename: 'messages.json'
+        }
 	}
 );
 
