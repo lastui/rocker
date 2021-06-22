@@ -1,6 +1,6 @@
 import { constants } from "@lastui/rocker/platform";
 
-const refCount = {};
+const localeMapping = {};
 
 const initialState = {
 	language: "en-US",
@@ -23,16 +23,15 @@ export default (state = initialState, action) => {
 			const nextMessages = {
 				...state.messages,
 			};
+			if (!localeMapping[action.payload.module]) {
+				localeMapping[action.payload.module] = {}
+			}
 			for (const locale in action.payload.data) {
 				if (!nextMessages[locale]) {
 					nextMessages[locale] = {};
 				}
 				for (const id in action.payload.data[locale]) {
-					if (refCount[id]) {
-						refCount[id]++;
-					} else {
-						refCount[id] = 1;
-					}
+					localeMapping[action.payload.module][id] = true
 					nextMessages[locale][id] = action.payload.data[locale][id];
 				}
 			}
@@ -48,28 +47,16 @@ export default (state = initialState, action) => {
 				...state.messages,
 			};
 
-			for (const locale in action.payload.data) {
-				for (const id in action.payload.data[locale]) {
-					if (refCount[id]) {
-						refCount[id]--;
-					}
-				}
-			}
+			const keys = Object.keys(localeMapping[action.payload.module] || {})
 
-			const toDelete = [];
-			for (const id in refCount) {
-				if (refCount[id]) {
-					continue;
-				}
-				for (const locale in state.messages) {
+			for (const locale in state.messages) {
+				for (const id in keys) {
 					delete nextMessages[locale][id];
 				}
-				toDelete.push(id);
 			}
 
-			for (const id of toDelete) {
-				delete refCount[id];
-			}
+			delete localeMapping[action.payload.module];
+
 			return {
 				language: state.language,
 				entrypoint: state.entrypoint,

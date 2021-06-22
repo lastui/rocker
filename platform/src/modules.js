@@ -22,9 +22,6 @@ export function registerModule(scope) {
   if (scope.props) {
     this.props = scope.props;
   }
-  if (scope.locale) {
-    this.locale = scope.locale;
-  }
 }
 
 export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
@@ -101,14 +98,6 @@ export const createModuleLoader = () => {
     });
   };
 
-  const removeI18nMessages = (data) => {
-    store.dispatch(actions.removeI18nMessages(data));
-  };
-
-  const addI18nMessages = (data) => {
-    store.dispatch(actions.addI18nMessages(data));
-  };
-
   const connectModule = (id, scope = {}) => {
     const injectedStyles = document.querySelector("style#rocker:last-of-type");
     if (injectedStyles) {
@@ -128,10 +117,6 @@ export const createModuleLoader = () => {
       console.debug(`module ${id} introducing saga`);
       addSaga(id, scope.saga);
     }
-    if (scope.locale) {
-      console.debug(`module ${id} introducing locales`);
-      addI18nMessages(scope.locale);
-    }
     return {
       id,
       mainView: scope.MainView && isolateModule(id, scope.props, scope.MainView),
@@ -146,13 +131,13 @@ export const createModuleLoader = () => {
           console.debug(`module ${id} removing saga`);
           removeSaga(id);
         }
-        if (scope.locale) {
-          console.debug(`module ${id} removing locales`);
-          removeI18nMessages(scope.locale);
-        }
       },
     };
   };
+
+  const loadLocaleFile = (uri) =>
+    fetch(uri)
+      .then((data) => data.json())
 
   const loadModuleFile = (uri) =>
     fetch(uri)
@@ -254,6 +239,12 @@ export const createModuleLoader = () => {
     for (let i = modules.length; i--; ) {
       const item = modules[i];
       newModules[item.id] = item;
+      if (!availableModules[item.id] && item.locale) {
+        promises.push(loadLocaleFile(item.i18n).then((data) => {
+          console.debug(`module ${id} introducing locales`);
+          store.dispatch(actions.addI18nMessages(item.id, data));
+        }))
+      }
       availableModules[item.id] = item;
     }
     const obsoleteModules = [];
@@ -266,7 +257,10 @@ export const createModuleLoader = () => {
       }
     }
     for (const item in obsoleteModules) {
-      promises.push(unloadModule(item));
+      promises.push(unloadModule(item).then(() => {
+        console.debug(`module ${item.id} removing locales`);
+        store.dispatch(actions.removeI18nMessages(item.id));  
+      }));
       delete availableModules[item];
     }
     return Promise.all(promises);
@@ -338,7 +332,7 @@ export const createModuleLoader = () => {
         store = nextStore;
       }
     },
-    setAvailableModules,
+    //setAvailableModules,
     loadModule,
     unloadModule,
     getLoadedModule,
