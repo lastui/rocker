@@ -67,6 +67,7 @@ export const createModuleLoader = () => {
   };
 
   const availableLocales = {};
+  const availableModules = {};
   const loadedModules = {};
   const loadingModules = {};
   const danglingNamespaces = [];
