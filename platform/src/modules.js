@@ -24,9 +24,7 @@ export function registerModule(scope) {
   }
 }
 
-export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
-  action
-) => {
+export const moduleLoaderMiddleware = (loader) => (store) => (next) => (action) => {
   switch (action.type) {
     case constants.SET_AVAILABLE_MODULES: {
       return loader
@@ -36,6 +34,12 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
     case constants.SET_ENTRYPOINT_MODULE: {
       return loader
         .loadModule(action.payload.entrypoint)
+        .then(() => next(action));
+    }
+    case constants.SET_LANGUAGE: {
+      console.debug(`Language set to ${action.payload.language}`);
+      return loader
+        .loadLocales(action.payload.language)
         .then(() => next(action));
     }
     default: {
@@ -62,8 +66,8 @@ export const createModuleLoader = () => {
     console.error("Sagas runnner is not provided!");
   };
 
+  const availableLocales = {};
   const loadedModules = {};
-  const availableModules = {};
   const loadingModules = {};
   const danglingNamespaces = [];
   const reducers = {};
@@ -250,16 +254,7 @@ export const createModuleLoader = () => {
       const item = modules[i];
       newModules[item.id] = item;
       if (!availableModules[item.id] && item.locales) {
-        for (const language in item.locales) {
-          promises.push(
-            loadLocaleFile(item.locales[language])
-              .then((data) => {
-                console.debug(`module ${item.id} introducing ${language} locales`);
-                store.dispatch(actions.addI18nMessages(item.id, language, data));
-              })
-              .catch(() => Promise.resolve(null))
-          );
-        }
+        availableLocales[item.id] = item.locales;
       }
       availableModules[item.id] = item;
     }
@@ -275,6 +270,7 @@ export const createModuleLoader = () => {
     for (const item of obsoleteModules) {
       promises.push(unloadModule(availableModules[item]));
       delete availableModules[item];
+      delete availableLocales[item];
     }
     return Promise.all(promises);
   };
@@ -337,6 +333,26 @@ export const createModuleLoader = () => {
     );
   };
 
+  const loadLocales = (language) => {
+    const promises = [];
+    for (const id in availableLocales) {
+      if (!availableLocales[id][language]) {
+        continue;
+      }
+      console.debug(`will load ${availableLocales[id][language]}`)
+      promises.push(
+        loadLocaleFile(availableLocales[id][language])
+          .then((data) => {
+            console.debug(`module ${id} introducing ${language} locales`);
+            delete availableLocales[id][language];
+            store.dispatch(actions.addI18nMessages(id, language, data));
+          })
+          .catch(() => Promise.resolve(null))
+      );
+    }
+    return Promise.all(promises);
+  };
+
   return {
     setSagaRunner(nextSagaRunner) {
       if (nextSagaRunner) {
@@ -349,6 +365,7 @@ export const createModuleLoader = () => {
       }
     },
     setAvailableModules,
+    loadLocales,
     loadModule,
     unloadModule,
     getLoadedModule,

@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeLatest, select } from "redux-saga/effects";
 import { actions, constants } from "@lastui/rocker/platform";
 
 function* watchInit() {
@@ -11,6 +11,8 @@ function* runInit(action) {
 	}
 	const context = yield call(action.payload.fetchContext);
 	yield put(actions.setAvailableModules(context.available));
+	const lang = yield select(state.runtime.language);
+	yield put(actions.setLanguage(lang));
 	yield put(actions.setEntryPointModule(context.entrypoint));
 }
 
