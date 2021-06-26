@@ -250,14 +250,16 @@ export const createModuleLoader = () => {
       const item = modules[i];
       newModules[item.id] = item;
       if (!availableModules[item.id] && item.locales) {
-        promises.push(
-          loadLocaleFile(item.locales)
-            .then((data) => {
-              console.debug(`module ${item.id} introducing locales`);
-              store.dispatch(actions.addI18nMessages(item.id, data));
-            })
-            .catch(() => Promise.resolve(null))
-        );
+        for (const language of item.locales) {
+          promises.push(
+            loadLocaleFile(item.locales[language])
+              .then((data) => {
+                console.debug(`module ${item.id} introducing ${language} locales`);
+                store.dispatch(actions.addI18nMessages(item.id, language, data));
+              })
+              .catch(() => Promise.resolve(null))
+          );
+        }
       }
       availableModules[item.id] = item;
     }

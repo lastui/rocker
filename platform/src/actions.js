@@ -15,10 +15,11 @@ export const setLanguage = (language) => ({
   },
 });
 
-export const addI18nMessages = (module, data = {}) => ({
+export const addI18nMessages = (module, language, data = {}) => ({
   type: constants.ADD_I18N_MESSAGES,
   payload: {
     module,
+    language,
     data,
   },
 });
