@@ -26,14 +26,12 @@ export default (state = initialState, action) => {
 			if (!localeMapping[action.payload.module]) {
 				localeMapping[action.payload.module] = {}
 			}
-			for (const locale in action.payload.data) {
-				if (!nextMessages[locale]) {
-					nextMessages[locale] = {};
-				}
-				for (const id in action.payload.data[locale]) {
-					localeMapping[action.payload.module][id] = true
-					nextMessages[locale][id] = action.payload.data[locale][id];
-				}
+			if (!nextMessages[action.payload.language]) {
+				nextMessages[action.payload.language] = {};
+			}
+			for (const id in action.payload.data) {
+				localeMapping[action.payload.module][id] = true
+				nextMessages[action.payload.language][id] = action.payload.data[action.payload.language][id];
 			}
 			return {
 				language: state.language,
