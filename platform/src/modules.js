@@ -250,7 +250,7 @@ export const createModuleLoader = () => {
       const item = modules[i];
       newModules[item.id] = item;
       if (!availableModules[item.id] && item.locales) {
-        for (const language of item.locales) {
+        for (const language in item.locales) {
           promises.push(
             loadLocaleFile(item.locales[language])
               .then((data) => {
