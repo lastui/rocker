@@ -68,7 +68,9 @@ export const createModuleLoader = () => {
 
   const availableLocales = {};
   const availableModules = {};
+  const loadingLocales = {};
   const loadedModules = {};
+  const loadedLocales = {};
   const loadingModules = {};
   const danglingNamespaces = [];
   const reducers = {};
@@ -145,7 +147,9 @@ export const createModuleLoader = () => {
     };
   };
 
-  const loadLocaleFile = (uri) => fetch(uri).then((data) => data.json());
+  const loadLocaleFile = (uri) =>
+    fetch(uri)
+      .then((data) => data.json());
 
   const loadModuleFile = (uri) =>
     fetch(uri)
@@ -181,6 +185,29 @@ export const createModuleLoader = () => {
         break;
       }
     }
+  };
+
+  const loadLocale = (uri) => {
+    const loading = loadingLocales[uri];
+    if (loading) {
+      return loading;
+    }
+    const promise = loadLocaleFile(availableLocales[id][language])
+      .then((data) => {
+        console.debug(`module ${id} introducing ${language} locales`);
+        if (!loadedLocales[id]) {
+          loadedLocales[id] = {};
+        }
+        loadedLocales[id][language] = true;
+        delete loadingLocales[uri];
+        store.dispatch(actions.addI18nMessages(id, language, data));
+      })
+      .catch(() => {
+        delete loadingLocales[uri];
+        return Promise.resolve(null);
+      });
+    loadingLocales[uri] = promise;
+    return promise;
   };
 
   const loadModule = (id) => {
@@ -235,6 +262,7 @@ export const createModuleLoader = () => {
       loaded.cleanup();
       if (item.locales) {
         console.debug(`module ${item.id} removing locales`);
+        delete loadedLocales[item.id];
         store.dispatch(actions.removeI18nMessages(item.id));
       }
       delete loadedModules[item.id];
@@ -337,19 +365,13 @@ export const createModuleLoader = () => {
   const loadLocales = (language) => {
     const promises = [];
     for (const id in availableLocales) {
-      if (!availableLocales[id][language]) {
+      if (
+        !availableLocales[id][language] ||
+        (loadedLocales[id] && loadedLocales[id][language])
+      ) {
         continue;
       }
-      console.debug(`will load ${availableLocales[id][language]}`)
-      promises.push(
-        loadLocaleFile(availableLocales[id][language])
-          .then((data) => {
-            console.debug(`module ${id} introducing ${language} locales`);
-            delete availableLocales[id][language];
-            store.dispatch(actions.addI18nMessages(id, language, data));
-          })
-          .catch(() => Promise.resolve(null))
-      );
+      promises.push(loadLocale(availableLocales[id][language]));
     }
     return Promise.all(promises);
   };
