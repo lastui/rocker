@@ -225,16 +225,14 @@ config.plugins.push(
 					locales: {},
 					meta: {},
 				};
-				for (const language in settings.SUPPORTED_LOCALES) {
+				for (const language of settings.SUPPORTED_LOCALES) {
 					hotModule.locales[language] = `/messages/${language}.json`;
 				}
 				manifest = JSON.stringify(
 					{
 						entrypoint: settings.PROJECT_NAME,
 						available: [hotModule],
-					},
-					null,
-					4
+					}
 				);
 			}
 
