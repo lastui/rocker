@@ -24,7 +24,9 @@ export function registerModule(scope) {
   }
 }
 
-export const moduleLoaderMiddleware = (loader) => (store) => (next) => (action) => {
+export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
+  action
+) => {
   switch (action.type) {
     case constants.SET_AVAILABLE_MODULES: {
       return loader
@@ -147,9 +149,7 @@ export const createModuleLoader = () => {
     };
   };
 
-  const loadLocaleFile = (uri) =>
-    fetch(uri)
-      .then((data) => data.json());
+  const loadLocaleFile = (uri) => fetch(uri).then((data) => data.json());
 
   const loadModuleFile = (uri) =>
     fetch(uri)
@@ -187,12 +187,19 @@ export const createModuleLoader = () => {
     }
   };
 
-  const loadLocale = (uri) => {
+  const loadLocale = (id, language) => {
+    if (
+      !availableLocales[id][language] ||
+      (loadedLocales[id] && loadedLocales[id][language])
+    ) {
+      return Promise.resolve(null);
+    }
+    const uri = availableLocales[id][language];
     const loading = loadingLocales[uri];
     if (loading) {
       return loading;
     }
-    const promise = loadLocaleFile(availableLocales[id][language])
+    const promise = loadLocaleFile(uri)
       .then((data) => {
         console.debug(`module ${id} introducing ${language} locales`);
         if (!loadedLocales[id]) {
@@ -365,13 +372,7 @@ export const createModuleLoader = () => {
   const loadLocales = (language) => {
     const promises = [];
     for (const id in availableLocales) {
-      if (
-        !availableLocales[id][language] ||
-        (loadedLocales[id] && loadedLocales[id][language])
-      ) {
-        continue;
-      }
-      promises.push(loadLocale(availableLocales[id][language]));
+      promises.push(loadLocale(id, language));
     }
     return Promise.all(promises);
   };
