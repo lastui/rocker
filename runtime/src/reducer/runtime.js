@@ -31,7 +31,7 @@ export default (state = initialState, action) => {
 			}
 			for (const id in action.payload.data) {
 				localeMapping[action.payload.module][id] = true
-				nextMessages[action.payload.language][id] = action.payload.data[action.payload.language][id];
+				nextMessages[action.payload.language][id] = action.payload.data[id];
 			}
 			return {
 				language: state.language,
