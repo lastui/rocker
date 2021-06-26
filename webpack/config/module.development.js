@@ -219,19 +219,23 @@ config.plugins.push(
 					"utf8"
 				);
 			} catch (_) {
-				manifest = `
-			  	{
-			  		entrypoint: "${settings.PROJECT_NAME}",
-					available: [
-						{
-							id: "${settings.PROJECT_NAME}",
-							program: "/module.js",
-							locales: "/messages.json",
-							meta: {}
-						},
-					]
+				const hotModule = {
+					id: settings.PROJECT_NAME,
+					program: "/module.js",
+					locales: {},
+					meta: {},
+				};
+				for (const language in settings.SUPPORTED_LOCALES) {
+					hotModule.locales[language] = `/messages/${language}.json`;
 				}
-				`;
+				manifest = JSON.stringify(
+					{
+						entrypoint: settings.PROJECT_NAME,
+						available: [hotModule],
+					},
+					null,
+					4
+				);
 			}
 
 			return `

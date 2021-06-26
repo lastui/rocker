@@ -24,6 +24,10 @@ exports.PROJECT_NAMESPACE = namespace(
 	exports.DEVELOPMENT ? "" : process.env.PROJECT_NAMESPACE
 );
 
+exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US")
+	.split(",")
+	.map((locale) => locale.trim());
+
 exports.PROJECT_ROOT_PATH = path.resolve("./");
 
 exports.PROJECT_NAME = path.resolve(process.cwd()).split(path.sep).pop();
