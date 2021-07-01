@@ -2,52 +2,11 @@ import React from "react";
 import { ReactReduxContext } from "react-redux";
 import { cancel, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
-
+import { download } from './assets';
 import * as constants from "./constants";
 import * as actions from "./actions";
 
-export function registerModule(scope) {
-  if (scope.MainView) {
-    this.MainView = scope.MainView;
-  }
-  if (scope.ErrorView) {
-    this.ErrorView = scope.ErrorView;
-  }
-  if (scope.reducer) {
-    this.reducer = scope.reducer;
-  }
-  if (scope.saga) {
-    this.saga = scope.saga;
-  }
-  if (scope.props) {
-    this.props = scope.props;
-  }
-}
-
-export const moduleLoaderMiddleware = (loader) => (store) => (next) => (action) => {
-  switch (action.type) {
-    case constants.SET_AVAILABLE_MODULES: {
-      return loader
-        .setAvailableModules(action.payload.modules)
-        .then(() => next(action));
-    }
-    case constants.SET_ENTRYPOINT_MODULE: {
-      return loader
-        .loadModule(action.payload.entrypoint)
-        .then(() => next(action));
-    }
-    case constants.SET_LANGUAGE: {
-      return loader
-        .loadLocales(action.payload.language)
-        .then(() => next(action));
-    }
-    default: {
-      return next(action);
-    }
-  }
-};
-
-export const createModuleLoader = () => {
+export default () => {
   let store = {
     dispatch() {
       console.error("Redux store is not provided!");
@@ -146,10 +105,10 @@ export const createModuleLoader = () => {
     };
   };
 
-  const loadLocaleFile = (uri) => fetch(uri).then((data) => data.json());
+  const loadLocaleFile = (uri) => download(uri).then((data) => data.json());
 
   const loadModuleFile = (uri) =>
-    fetch(uri)
+    download(uri)
       .then((data) => data.text())
       .then((data) => {
         let sandbox = {
@@ -337,23 +296,21 @@ export const createModuleLoader = () => {
     };
   };
 
-  const isolateStore = (id) => ({
-    dispatch: store.dispatch,
-    getState: () => {
-      const state = store.getState();
-      const isolatedState = state.modules[id] || {};
-      isolatedState.shared = state.shared;
-      return isolatedState;
-    },
-    subscribe: store.subscribe,
-    replaceReducer: function (newReducer) {
-      addReducer(id, newReducer);
-    },
-  });
-
   const isolateModule = (id, declaredProps, component) => {
     const reduxContext = {
-      store: isolateStore(id),
+      store: {
+        dispatch: store.dispatch,
+        getState: () => {
+          const state = store.getState();
+          const isolatedState = state.modules[id] || {};
+          isolatedState.shared = state.shared;
+          return isolatedState;
+        },
+        subscribe: store.subscribe,
+        replaceReducer: function (newReducer) {
+          addReducer(id, newReducer);
+        },
+      },
     };
     return (props) => (
       <ReactReduxContext.Provider value={reduxContext}>

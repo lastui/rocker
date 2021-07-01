@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useModuleLoader, actions, Module } from "@lastui/rocker/platform";
+import { actions, Module } from "@lastui/rocker/platform";
 import { getEntrypoint } from "../selector";
 
 const Entrypoint = (props) => {
