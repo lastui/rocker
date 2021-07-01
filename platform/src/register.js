@@ -1,5 +1,4 @@
-
-export default (scope) => {
+export default function (scope) {
   if (scope.Main) {
     this.Main = scope.Main;
   }
