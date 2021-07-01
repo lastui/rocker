@@ -19,7 +19,6 @@ export default (state = initialState, action) => {
 				messages: state.messages,
 			};
 		}
-	
 		case constants.ADD_I18N_MESSAGES: {
 			const nextMessages = {
 				...state.messages,
@@ -41,22 +40,17 @@ export default (state = initialState, action) => {
 				messages: nextMessages,
 			};
 		}
-
 		case constants.REMOVE_I18N_MESSAGES: {
 			const nextMessages = {
 				...state.messages,
 			};
-
 			const keys = localeMapping[action.payload.module] || {}
-
 			for (const id in keys) {
 				for (const locale in state.messages) {
 					delete nextMessages[locale][id];
 				}
 			}
-
 			delete localeMapping[action.payload.module];
-
 			return {
 				language: state.language,
 				entrypoint: state.entrypoint,
@@ -64,7 +58,6 @@ export default (state = initialState, action) => {
 				messages: nextMessages,
 			};
 		}
-
 		case constants.MODULES_READY: {
 			return {
 				language: state.language,
