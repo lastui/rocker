@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"prebuild": "npm i",
+		"prebuild": "npm ci",
 		"build": "npm run build:dev && npm run build:prod",
 		"build:prod": "NODE_ENV=production node ../bin/webpack.js",
 		"build:dev": "NODE_ENV=development node ../bin/webpack.js"
