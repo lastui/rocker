@@ -24,9 +24,7 @@ export function registerModule(scope) {
   }
 }
 
-export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
-  action
-) => {
+export const moduleLoaderMiddleware = (loader) => (store) => (next) => (action) => {
   switch (action.type) {
     case constants.SET_AVAILABLE_MODULES: {
       return loader
@@ -39,7 +37,6 @@ export const moduleLoaderMiddleware = (loader) => (store) => (next) => (
         .then(() => next(action));
     }
     case constants.SET_LANGUAGE: {
-      console.debug(`Language set to ${action.payload.language}`);
       return loader
         .loadLocales(action.payload.language)
         .then(() => next(action));

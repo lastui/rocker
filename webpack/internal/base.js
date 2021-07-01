@@ -18,6 +18,8 @@ module.exports = {
 	cache: settings.DEVELOPMENT,
 	module: {
 		strictExportPresence: true,
-		rules: [],
+		rules: [
+		    { parser: { requireEnsure: false } },
+		],
 	},
 };
