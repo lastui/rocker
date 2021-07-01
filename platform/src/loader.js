@@ -88,9 +88,8 @@ export default () => {
     }
     return {
       id,
-      mainView:
-        scope.MainView && isolateModule(id, scope.props, scope.MainView),
-      errorView: scope.ErrorView,
+      mainView: scope.Main && isolateModule(id, scope.props, scope.Main),
+      errorView: scope.Error,
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
@@ -121,7 +120,7 @@ export default () => {
           }
         } catch (err) {
           return {
-            MainView: () => {
+            Main: () => {
               throw err;
             },
           };
