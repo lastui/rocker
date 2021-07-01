@@ -182,7 +182,7 @@ export default () => {
       return loading;
     }
     const item = availableModules[id];
-    if (!item) {
+    if (!item || !item.program) {
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
