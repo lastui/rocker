@@ -22,7 +22,7 @@ const downloadProgram = (uri) =>
     .then((data) => data.text())
     .then((data) => {
       let sandbox = {
-        window: {},
+        __SANDBOX_SCOPE__: {},
       };
       try {
         const r = new Function("with(this) {" + data + ";}").call(sandbox);
@@ -36,7 +36,7 @@ const downloadProgram = (uri) =>
           },
         };
       }
-      return sandbox.window;
+      return sandbox.__SANDBOX_SCOPE__;
     });
 
 export {
