@@ -2,7 +2,7 @@ import React from "react";
 import { ReactReduxContext } from "react-redux";
 import { cancel, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
-import { download } from './assets';
+import { downloadProgram, downloadJson } from './assets';
 import * as constants from "./constants";
 import * as actions from "./actions";
 
@@ -88,8 +88,8 @@ export default () => {
     }
     return {
       id,
-      mainView: scope.Main && isolateModule(id, scope.props, scope.Main),
-      errorView: scope.Error,
+      mainView: (scope.Main && isolateProgram(id, scope.props, scope.Main)) || null,
+      errorView: scope.Error || null,
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
@@ -104,29 +104,6 @@ export default () => {
     };
   };
 
-  const loadLocaleFile = (uri) => download(uri).then((data) => data.json());
-
-  const loadModuleFile = (uri) =>
-    download(uri)
-      .then((data) => data.text())
-      .then((data) => {
-        let sandbox = {
-          __SANDBOX_SCOPE__: {},
-        };
-        try {
-          const r = new Function("with(this) {" + data + ";}").call(sandbox);
-          if (r !== undefined) {
-            return {};
-          }
-        } catch (err) {
-          return {
-            Main: () => {
-              throw err;
-            },
-          };
-        }
-        return sandbox.__SANDBOX_SCOPE__;
-      });
 
   const setModuleMountState = (name, mounted) => {
     switch (mounted) {
@@ -154,7 +131,7 @@ export default () => {
     if (loading) {
       return loading;
     }
-    const promise = loadLocaleFile(uri)
+    const promise = downloadJson(uri)
       .then((data) => {
         console.debug(`module ${id} introducing ${language} locales`);
         if (!loadedLocales[id]) {
@@ -192,7 +169,7 @@ export default () => {
       console.warn(`module ${id} not available`);
       return Promise.resolve(null);
     }
-    const promise = loadModuleFile(item.program)
+    const promise = downloadProgram(item.program)
       .then((data) => {
         loadedModules[id] = connectModule(id, data);
         store.dispatch({
@@ -295,7 +272,7 @@ export default () => {
     };
   };
 
-  const isolateModule = (id, declaredProps, component) => {
+  const isolateProgram = (id, declaredProps, component) => {
     const reduxContext = {
       store: {
         dispatch: store.dispatch,
