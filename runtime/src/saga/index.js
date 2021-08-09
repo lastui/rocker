@@ -1,6 +1,4 @@
-import { delay } from 'redux-saga';
-
-import { call, put, takeLatest, select } from "redux-saga/effects";
+import { call, put, takeLatest, select, delay } from "redux-saga/effects";
 import { actions, constants } from "@lastui/rocker/platform";
 
 function* watchInit() {
@@ -11,7 +9,6 @@ function* runInit(action) {
 	if (action.payload.initializeRuntime) {
 		yield call(action.payload.initializeRuntime);
 	}
-
 	while (true) {
 		try {
 			const context = yield call(action.payload.fetchContext);
@@ -19,9 +16,7 @@ function* runInit(action) {
 			const lang = yield select((state) => state.runtime.language);
 			yield put(actions.setLanguage(lang));
 			yield put(actions.setEntryPointModule(context.entrypoint));
-		} catch (err) {
-			
-		}
+		} catch (err) {}
 		yield call(delay, 5000);
 	}
 }
