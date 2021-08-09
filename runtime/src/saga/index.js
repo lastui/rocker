@@ -16,8 +16,11 @@ function* runInit(action) {
 			const lang = yield select((state) => state.runtime.language);
 			yield put(actions.setLanguage(lang));
 			yield put(actions.setEntryPointModule(context.entrypoint));
-		} catch (err) {}
-		yield call(delay, 5000);
+		} catch (err) {
+
+		} finally {
+			yield delay(5000);
+		}
 	}
 }
 
