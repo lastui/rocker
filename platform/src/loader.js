@@ -105,20 +105,6 @@ export default () => {
   };
 
 
-  const setModuleMountState = (name, mounted) => {
-    switch (mounted) {
-      case true: {
-        break;
-      }
-      case false: {
-        if (!loadedModules[name] && !loadingModules[name]) {
-          danglingNamespaces.push(name);
-        }
-        break;
-      }
-    }
-  };
-
   const loadLocale = (id, language) => {
     if (
       !availableLocales[id][language] ||
@@ -212,6 +198,7 @@ export default () => {
         },
       });
     }
+    danglingNamespaces.push(item.id);
     return Promise.resolve(null);
   };
 
@@ -323,7 +310,6 @@ export default () => {
     loadModule,
     unloadModule,
     getLoadedModule,
-    setModuleMountState,
     getReducer,
   };
 };

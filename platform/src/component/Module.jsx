@@ -4,28 +4,16 @@ import ErrorBoundary from "./ErrorBoundary";
 
 const Module = (props) => {
   const moduleLoader = useModuleLoader();
-
-  let [loadedModule, setLoadedModule] = React.useState(
-    moduleLoader.getLoadedModule(props.name)
-  );
+  const buster = useSelector((state) => state.shared.buster);
 
   React.useEffect(() => {
     if (!props.name) {
       return;
     }
-    const name = props.name;
-    moduleLoader.loadModule(name).then((item) => {
-      moduleLoader.setModuleMountState(name, true);
-      if (item) {
-        setLoadedModule(item);
-      } else {
-        setLoadedModule({});
-      }
-    });
-    return () => {
-      moduleLoader.setModuleMountState(name, false);
-    };
-  }, [props.name]);
+    moduleLoader.loadModule(props.name);
+  }, [props.name, buster]);
+
+  const loadedModule = moduleLoader.getLoadedModule(props.name);
 
   if (!props.name || !loadedModule) {
     if (props.fallback) {
