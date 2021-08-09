@@ -1,31 +1,23 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useModuleLoader } from "./ModuleContext";
 import ErrorBoundary from "./ErrorBoundary";
 
 const Module = (props) => {
   const moduleLoader = useModuleLoader();
-
-  let [loadedModule, setLoadedModule] = React.useState(
-    moduleLoader.getLoadedModule(props.name)
+  const isLoaded = useSelector((state) =>
+    Boolean(state.shared.loaded[props.name])
   );
+  const buster = useSelector((state) => state.shared.buster);
 
   React.useEffect(() => {
     if (!props.name) {
       return;
     }
-    const name = props.name;
-    moduleLoader.loadModule(name).then((item) => {
-      moduleLoader.setModuleMountState(name, true);
-      if (item) {
-        setLoadedModule(item);
-      } else {
-        setLoadedModule({});
-      }
-    });
-    return () => {
-      moduleLoader.setModuleMountState(name, false);
-    };
-  }, [props.name]);
+    moduleLoader.loadModule(props.name);
+  }, [props.name, buster]);
+
+  const loadedModule = moduleLoader.getLoadedModule(props.name);
 
   if (!props.name || !loadedModule) {
     if (props.fallback) {
@@ -34,7 +26,7 @@ const Module = (props) => {
     return <React.Fragment />;
   }
 
-  if (!loadedModule.mainView) {
+  if (!loadedModule?.mainView) {
     if (props.fallback) {
       return props.fallback();
     }

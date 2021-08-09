@@ -105,20 +105,6 @@ export default () => {
   };
 
 
-  const setModuleMountState = (name, mounted) => {
-    switch (mounted) {
-      case true: {
-        break;
-      }
-      case false: {
-        if (!loadedModules[name] && !loadingModules[name]) {
-          danglingNamespaces.push(name);
-        }
-        break;
-      }
-    }
-  };
-
   const loadLocale = (id, language) => {
     if (
       !availableLocales[id][language] ||
@@ -205,6 +191,7 @@ export default () => {
         store.dispatch(actions.removeI18nMessages(item.id));
       }
       delete loadedModules[item.id];
+      console.log('dispatching module unloaded', item.id)
       store.dispatch({
         type: constants.MODULE_UNLOADED,
         payload: {
@@ -212,6 +199,7 @@ export default () => {
         },
       });
     }
+    danglingNamespaces.push(item.id);
     return Promise.resolve(null);
   };
 
@@ -323,7 +311,6 @@ export default () => {
     loadModule,
     unloadModule,
     getLoadedModule,
-    setModuleMountState,
     getReducer,
   };
 };
