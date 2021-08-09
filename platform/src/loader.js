@@ -191,7 +191,6 @@ export default () => {
         store.dispatch(actions.removeI18nMessages(item.id));
       }
       delete loadedModules[item.id];
-      console.log('dispatching module unloaded', item.id)
       store.dispatch({
         type: constants.MODULE_UNLOADED,
         payload: {

@@ -22,7 +22,7 @@ const Module = (props) => {
     return <React.Fragment />;
   }
 
-  if (!loadedModule?.mainView) {
+  if (!loadedModule.mainView) {
     if (props.fallback) {
       return props.fallback();
     }
