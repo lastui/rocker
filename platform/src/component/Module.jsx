@@ -3,15 +3,23 @@ import { useSelector } from "react-redux";
 import { useModuleLoader } from "./ModuleContext";
 import ErrorBoundary from "./ErrorBoundary";
 
+const useForceUpdate = () => {
+  const set = React.useState(0)[1];
+  return () => set((s) => s + 1);
+};
+
 const Module = (props) => {
   const moduleLoader = useModuleLoader();
   const buster = useSelector((state) => state.shared.buster);
+  const forceUpdate = useForceUpdate();
 
   React.useEffect(() => {
     if (!props.name) {
       return;
     }
-    moduleLoader.loadModule(props.name);
+    moduleLoader.loadModule(props.name).then(() => {
+      forceUpdate();
+    });
   }, [props.name, buster]);
 
   const loadedModule = moduleLoader.getLoadedModule(props.name);
@@ -35,7 +43,7 @@ const Module = (props) => {
 
   const { name, fallback, ...rest } = props;
   return (
-    <ErrorBoundary name={props.name} fallback={loadedModule.errorView}>
+    <ErrorBoundary name={name} fallback={loadedModule.errorView}>
       {React.createElement(loadedModule.mainView, rest, props.children)}
     </ErrorBoundary>
   );
