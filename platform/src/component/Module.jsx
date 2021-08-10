@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useModuleLoader } from "./ModuleContext";
 import ErrorBoundary from "./ErrorBoundary";
 
