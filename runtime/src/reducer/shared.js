@@ -1,7 +1,6 @@
 import { constants } from "@lastui/rocker/platform";
 
 const initialState = {
-	buster: 0,
 	meta: {},
 	available: [],
 	loaded: {},
@@ -21,7 +20,6 @@ export default (state = initialState, action) => {
 				loaded[item.id] = state.loaded[item.id] || false;
 			});
 			return {
-				buster: Date.now(),
 				meta,
 				available,
 				loaded,
@@ -31,7 +29,6 @@ export default (state = initialState, action) => {
 			const nextLoaded = { ...state.loaded };
 			nextLoaded[action.payload.id] = true;
 			return {
-				buster: state.buster,
 				meta: state.meta,
 				available: state.available,
 				loaded: nextLoaded,
@@ -41,7 +38,6 @@ export default (state = initialState, action) => {
 			const nextLoaded = { ...state.loaded };
 			nextLoaded[action.payload.id] = false;
 			return {
-				buster: state.buster,
 				meta: state.meta,
 				available: state.available,
 				loaded: nextLoaded,

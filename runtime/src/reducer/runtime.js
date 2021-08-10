@@ -6,16 +6,16 @@ const initialState = {
 	language: "en-US",
 	messages: {},
 	entrypoint: null,
-	ready: false,
+	updatedAt: 0,
 };
 
 export default (state = initialState, action) => {
 	switch (action.type) {
 		case constants.SET_LANGUAGE: {
 			return {
+				updatedAt: state.updatedAt,
 				language: action.payload.language,
 				entrypoint: state.entrypoint,
-				ready: state.ready,
 				messages: state.messages,
 			};
 		}
@@ -34,9 +34,9 @@ export default (state = initialState, action) => {
 				nextMessages[action.payload.language][id] = action.payload.data[id];
 			}
 			return {
+				updatedAt: state.updatedAt,
 				language: state.language,
 				entrypoint: state.entrypoint,
-				ready: state.ready,
 				messages: nextMessages,
 			};
 		}
@@ -52,25 +52,25 @@ export default (state = initialState, action) => {
 			}
 			delete localeMapping[action.payload.module];
 			return {
+				updatedAt: state.updatedAt,
 				language: state.language,
 				entrypoint: state.entrypoint,
-				ready: state.ready,
 				messages: nextMessages,
 			};
 		}
-		case constants.MODULES_READY: {
+		case constants.SET_AVAILABLE_MODULES: {
 			return {
+				updatedAt: Date.now(),
 				language: state.language,
 				entrypoint: state.entrypoint,
-				ready: action.payload.isReady,
 				messages: state.messages,
 			};
 		}
 		case constants.SET_ENTRYPOINT_MODULE: {
 			return {
+				updatedAt: state.updatedAt,
 				language: state.language,
 				entrypoint: action.payload.entrypoint,
-				ready: state.ready,
 				messages: state.messages,
 			};
 		}
