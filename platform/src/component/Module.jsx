@@ -10,7 +10,7 @@ const useForceUpdate = () => {
 
 const Module = (props) => {
   const moduleLoader = useModuleLoader();
-  const buster = useSelector((state) => state.shared.buster);
+  const updatedAt = useSelector((state) => state.runtime.updatedAt);
   const forceUpdate = useForceUpdate();
 
   React.useEffect(() => {
@@ -20,7 +20,7 @@ const Module = (props) => {
     moduleLoader.loadModule(props.name).then(() => {
       forceUpdate();
     });
-  }, [props.name, buster]);
+  }, [props.name, updatedAt]);
 
   const loadedModule = moduleLoader.getLoadedModule(props.name);
 

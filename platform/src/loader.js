@@ -267,6 +267,9 @@ export default () => {
           const state = store.getState();
           const isolatedState = state.modules[id] || {};
           isolatedState.shared = state.shared;
+          isolatedState.runtime = {
+            updatedAt: state.runtime.updatedAt,
+          };
           return isolatedState;
         },
         subscribe: store.subscribe,
