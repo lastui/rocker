@@ -1,6 +1,5 @@
 import React from "react";
-import { Route as ReactRoute } from "react-router";
-import { useRouteMatch } from "react-router-dom";
+import { Route as ReactRoute, useRouteMatch } from "react-router";
 
 const Route = (props) => {
   const match = useRouteMatch();
