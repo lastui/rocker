@@ -17,8 +17,10 @@ const Module = (props) => {
     if (!props.name) {
       return;
     }
-    moduleLoader.loadModule(props.name).then(() => {
-      forceUpdate();
+    moduleLoader.loadModule(props.name).then((changed) => {
+      if (changed) {
+        forceUpdate();
+      }
     });
   }, [props.name, updatedAt]);
 

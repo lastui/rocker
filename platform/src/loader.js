@@ -79,6 +79,7 @@ export default () => {
       const composedReducer = {
         ...scope.reducer,
         shared: (state = {}, action) => state,
+        runtime: (state = {}, action) => state,
       };
       addReducer(id, combineReducers(composedReducer));
     }
@@ -138,7 +139,7 @@ export default () => {
   const loadModule = (id) => {
     const loaded = loadedModules[id];
     if (loaded) {
-      return Promise.resolve(loaded);
+      return Promise.resolve(false);
     }
     const loading = loadingModules[id];
     if (loading) {
@@ -153,7 +154,7 @@ export default () => {
         },
       });
       console.warn(`module ${id} not available`);
-      return Promise.resolve(null);
+      return Promise.resolve(false);
     }
     const promise = downloadProgram(item.program)
       .then((data) => {
@@ -168,11 +169,11 @@ export default () => {
       })
       .catch((error) => {
         console.error(`module ${id} failed to load`, error);
-        return Promise.resolve(null);
+        return Promise.resolve(false);
       })
       .then((data) => {
         delete loadingModules[id];
-        return data;
+        return Promise.resolve(true);
       });
     loadingModules[id] = promise;
     return promise;
@@ -180,7 +181,7 @@ export default () => {
 
   const unloadModule = (item) => {
     if (!item) {
-      return;
+      return Promise.resolve(true);
     }
     const loaded = loadedModules[item.id];
     if (loaded) {
@@ -199,7 +200,7 @@ export default () => {
       });
     }
     danglingNamespaces.push(item.id);
-    return Promise.resolve(null);
+    return Promise.resolve(true);
   };
 
   const setAvailableModules = (modules = []) => {
