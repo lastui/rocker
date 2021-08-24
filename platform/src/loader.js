@@ -181,7 +181,7 @@ export default () => {
 
   const unloadModule = (item) => {
     if (!item) {
-      return;
+      return Promise.resolve(true);
     }
     const loaded = loadedModules[item.id];
     if (loaded) {
@@ -200,7 +200,7 @@ export default () => {
       });
     }
     danglingNamespaces.push(item.id);
-    return Promise.resolve(null);
+    return Promise.resolve(true);
   };
 
   const setAvailableModules = (modules = []) => {
