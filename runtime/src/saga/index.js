@@ -10,7 +10,7 @@ function* runInit(action) {
 	if (action.payload.initializeRuntime) {
 		yield call(action.payload.initializeRuntime);
 	}
-	while (true) {
+	do {
 		try {
 			const context = yield call(action.payload.fetchContext);
 			const currentEntrypoint = yield select((state) => state.runtime.entrypoint)
@@ -28,7 +28,7 @@ function* runInit(action) {
 		} finally {
 			yield delay(15000);
 		}
-	}
+	} while (process.env.NODE_ENV !== "development")
 }
 
 export default [watchInit];
