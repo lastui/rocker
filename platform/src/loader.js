@@ -165,15 +165,15 @@ export default () => {
             id,
           },
         });
-        return loadedModules[id];
+        return true;
       })
       .catch((error) => {
         console.error(`module ${id} failed to load`, error);
         return Promise.resolve(false);
       })
-      .then((data) => {
+      .then((changed) => {
         delete loadingModules[id];
-        return Promise.resolve(true);
+        return changed;
       });
     loadingModules[id] = promise;
     return promise;
