@@ -17,10 +17,9 @@ const Module = (props) => {
     if (!props.name) {
       return;
     }
-    moduleLoader.loadModule(props.name).then((changed) => {
-      if (changed) {
-        forceUpdate();
-      }
+    moduleLoader.loadModule(props.name).then(() => {
+      console.log('module', props.name, 'force updating')
+      forceUpdate();
     });
   }, [props.name, updatedAt]);
 
@@ -42,6 +41,8 @@ const Module = (props) => {
     }
     return <React.Fragment />;
   }
+
+  console.log('in render of', props.name)
 
   const { name, fallback, ...rest } = props;
   return (
