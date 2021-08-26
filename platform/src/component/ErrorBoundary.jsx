@@ -15,10 +15,10 @@ class ErrorBoundary extends React.Component {
 
 	render() {
 		const { error } = this.state;
-		const { fallback } = this.props;
 		if (error === null) {
 			return this.props.children;
 		}
+		const { fallback } = this.props;
 		if (fallback) {
 			return React.createElement(fallback, { error });
 		}

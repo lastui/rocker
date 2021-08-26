@@ -105,7 +105,6 @@ export default () => {
     };
   };
 
-
   const loadLocale = (id, language) => {
     if (
       !availableLocales[id][language] ||
@@ -156,7 +155,7 @@ export default () => {
       console.warn(`module ${id} not available`);
       return Promise.resolve(false);
     }
-    const promise = downloadProgram(item.program)
+    const promise = downloadProgram(item.program, item.sha256)
       .then((data) => {
         loadedModules[id] = connectModule(id, data);
         store.dispatch({
@@ -212,21 +211,23 @@ export default () => {
       if (!availableModules[item.id] && item.locales) {
         availableLocales[item.id] = item.locales;
       }
-      availableModules[item.id] = item;
     }
     const obsoleteModules = [];
-    for (const item in availableModules) {
-      if (newModules[item]) {
-        continue;
-      }
-      if (loadedModules[item]) {
-        obsoleteModules.push(item);
+    for (const existing in availableModules) {
+      const item = newModules[existing]
+      if (item) {
+        if (item.sha256 !== availableModules[existing].sha256) {
+          availableModules[existing] = item;
+          promises.push(unloadModule(existing));
+        }
+      } else if (loadedModules[existing]) {
+        promises.push(unloadModule(existing));
+        obsoleteModules.push(existing);
       }
     }
-    for (const item of obsoleteModules) {
-      promises.push(unloadModule(availableModules[item]));
-      delete availableModules[item];
-      delete availableLocales[item];
+    for (const obsolete of obsoleteModules) {
+      delete availableModules[obsolete];
+      delete availableLocales[obsolete];
     }
     return Promise.all(promises);
   };
@@ -279,14 +280,33 @@ export default () => {
         },
       },
     };
-    return (props) => (
-      <ReactReduxContext.Provider value={reduxContext}>
-        {React.createElement(
-          component,
-          { ...props, ...declaredProps },
-          props.children
-        )}
-      </ReactReduxContext.Provider>
+  
+    return React.memo(
+      (props) => {
+        const composite = { ...props.owned, ...declaredProps }
+        return (
+          <ReactReduxContext.Provider value={reduxContext}>
+            {props.children
+              ? React.createElement(component, composite, props.children)
+              : React.createElement(component, composite)
+            }
+          </ReactReduxContext.Provider>
+        )
+      },
+      (prevProps, nextProps) => {
+        if (prevProps.lastUpdate !== nextProps.lastUpdate) {
+          return false
+        }
+        if (!prevProps.name && nextProps.name) {
+          return true
+        }
+        for (const key of Object.keys(nextProps.owned)) {
+          if (prevProps.owned[key] !== nextProps.owned[key]) {
+            return false
+          }
+        }
+        return true
+      }
     );
   };
 

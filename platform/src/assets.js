@@ -1,7 +1,6 @@
-
 const CLIENT_TIMEOUT = 30 * 1000;
 
-async function download(resource, options = {}) {
+async function download(resource, options) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), CLIENT_TIMEOUT);
   const response = await fetch(resource, {
@@ -10,15 +9,17 @@ async function download(resource, options = {}) {
   });
   clearTimeout(id);
   if (!response.ok) {
-    throw new Error(String(response.status))
+    throw new Error(String(response.status));
   }
   return response;
 }
 
-const downloadJson = (uri) => download(uri).then((data) => data.json());
+const downloadJson = (uri) => download(uri, {}).then((data) => data.json());
 
-const downloadProgram = (uri) =>
-  download(uri)
+const downloadProgram = (uri, sha256) =>
+  download(uri, {
+    integrity: sha256 ? `sha256-${sha256}` : undefined,
+  })
     .then((data) => data.text())
     .then((data) => {
       let sandbox = {
@@ -39,7 +40,4 @@ const downloadProgram = (uri) =>
       return sandbox.__SANDBOX_SCOPE__;
     });
 
-export {
-	downloadJson,
-  downloadProgram,
-}
+export { downloadJson, downloadProgram };
