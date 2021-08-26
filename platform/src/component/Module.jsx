@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { useModuleLoader } from "./ModuleContext";
 import ErrorBoundary from "./ErrorBoundary";
 
-
 const Module = (props) => {
   const moduleLoader = useModuleLoader();
   const updatedAt = useSelector((state) => state.runtime.updatedAt);

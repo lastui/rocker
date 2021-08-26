@@ -155,9 +155,9 @@ export default () => {
       console.warn(`module ${id} not available`);
       return Promise.resolve(false);
     }
-    const promise = downloadProgram(item.program)
+    const promise = downloadProgram(item.program, item.sha256)
       .then((data) => {
-        loadedModules[id] = connectModule(id, data);
+        loadedModules[id] = connectModule(id, data.program);
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
@@ -211,21 +211,23 @@ export default () => {
       if (!availableModules[item.id] && item.locales) {
         availableLocales[item.id] = item.locales;
       }
-      availableModules[item.id] = item;
     }
     const obsoleteModules = [];
-    for (const item in availableModules) {
-      if (newModules[item]) {
-        continue;
-      }
-      if (loadedModules[item]) {
-        obsoleteModules.push(item);
+    for (const existing in availableModules) {
+      const item = newModules[existing]
+      if (item) {
+        if (item.sha256 !== availableModules[existing].sha256) {
+          availableModules[existing] = item;
+          promises.push(unloadModule(existing));
+        }
+      } else if (loadedModules[existing]) {
+        promises.push(unloadModule(existing));
+        obsoleteModules.push(existing);
       }
     }
-    for (const item of obsoleteModules) {
-      promises.push(unloadModule(availableModules[item]));
-      delete availableModules[item];
-      delete availableLocales[item];
+    for (const obsolete of obsoleteModules) {
+      delete availableModules[obsolete];
+      delete availableLocales[obsolete];
     }
     return Promise.all(promises);
   };
