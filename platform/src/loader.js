@@ -157,7 +157,7 @@ export default () => {
     }
     const promise = downloadProgram(item.program, item.sha256)
       .then((data) => {
-        loadedModules[id] = connectModule(id, data.program);
+        loadedModules[id] = connectModule(id, data);
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
