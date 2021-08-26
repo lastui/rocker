@@ -3,22 +3,20 @@ import { useSelector } from "react-redux";
 import { useModuleLoader } from "./ModuleContext";
 import ErrorBoundary from "./ErrorBoundary";
 
-const useForceUpdate = () => {
-  const set = React.useState(0)[1];
-  return () => set((s) => s + 1);
-};
 
 const Module = (props) => {
   const moduleLoader = useModuleLoader();
   const updatedAt = useSelector((state) => state.runtime.updatedAt);
-  const forceUpdate = useForceUpdate();
+  const [lastUpdate, setLastUpdate] = React.useState(0);
 
   React.useEffect(() => {
     if (!props.name) {
       return;
     }
-    moduleLoader.loadModule(props.name).then(() => {
-      forceUpdate();
+    moduleLoader.loadModule(props.name).then((changed) => {
+      if (changed) {
+        setLastUpdate((tick) => tick + 1)
+      }
     });
   }, [props.name, updatedAt]);
 
@@ -41,10 +39,20 @@ const Module = (props) => {
     return <React.Fragment />;
   }
 
-  const { name, fallback, ...rest } = props;
+  const { name, fallback, ...owned } = props;
+
+  const composite = {
+    owned,
+    name,
+    lastUpdate,
+  }
+
   return (
     <ErrorBoundary name={name} fallback={loadedModule.errorView}>
-      {React.createElement(loadedModule.mainView, rest, props.children)}
+      {props.children
+        ? React.createElement(loadedModule.mainView, composite, props.children)
+        : React.createElement(loadedModule.mainView, composite)
+      }
     </ErrorBoundary>
   );
 };

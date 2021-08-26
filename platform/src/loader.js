@@ -105,7 +105,6 @@ export default () => {
     };
   };
 
-
   const loadLocale = (id, language) => {
     if (
       !availableLocales[id][language] ||
@@ -279,14 +278,33 @@ export default () => {
         },
       },
     };
-    return (props) => (
-      <ReactReduxContext.Provider value={reduxContext}>
-        {React.createElement(
-          component,
-          { ...props, ...declaredProps },
-          props.children
-        )}
-      </ReactReduxContext.Provider>
+  
+    return React.memo(
+      (props) => {
+        const composite = { ...props.owned, ...declaredProps }
+        return (
+          <ReactReduxContext.Provider value={reduxContext}>
+            {props.children
+              ? React.createElement(component, composite, props.children)
+              : React.createElement(component, composite)
+            }
+          </ReactReduxContext.Provider>
+        )
+      },
+      (prevProps, nextProps) => {
+        if (prevProps.lastUpdate !== nextProps.lastUpdate) {
+          return false
+        }
+        if (!prevProps.name && nextProps.name) {
+          return true
+        }
+        for (const key of Object.keys(nextProps.owned)) {
+          if (prevProps.owned[key] !== nextProps.owned[key]) {
+            return false
+          }
+        }
+        return true
+      }
     );
   };
 
