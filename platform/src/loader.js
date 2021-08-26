@@ -211,6 +211,9 @@ export default () => {
       if (!availableModules[item.id] && item.locales) {
         availableLocales[item.id] = item.locales;
       }
+      if (!availableModules[item.id]) {
+        availableModules[item.id] = item;
+      }
     }
     const obsoleteModules = [];
     for (const existing in availableModules) {
