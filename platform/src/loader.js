@@ -155,7 +155,7 @@ export default () => {
       console.warn(`module ${id} not available`);
       return Promise.resolve(false);
     }
-    const promise = downloadProgram(item.program, item.sha256)
+    const promise = downloadProgram(item.program, item.hash)
       .then((data) => {
         loadedModules[id] = connectModule(id, data);
         store.dispatch({
@@ -219,7 +219,7 @@ export default () => {
     for (const existing in availableModules) {
       const item = newModules[existing]
       if (item) {
-        if (item.sha256 !== availableModules[existing].sha256) {
+        if (item.hash !== availableModules[existing].hash) {
           availableModules[existing] = item;
           promises.push(unloadModule(existing));
         }
