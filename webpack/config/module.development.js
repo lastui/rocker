@@ -221,7 +221,9 @@ config.plugins.push(
 			} catch (_) {
 				const hotModule = {
 					id: settings.PROJECT_NAME,
-					program: "/module.js",
+					program: {
+						url: "/module.js",
+					},
 					locales: {},
 					meta: {},
 				};

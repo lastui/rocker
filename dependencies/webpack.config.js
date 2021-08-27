@@ -18,6 +18,7 @@ config.entry = {
 		"redux-saga",
 		"redux-saga/effects",
 		"regenerator-runtime/runtime.js",
+		"node-forge/lib/sha256.js",
 		"@linaria/react",
 	],
 };
