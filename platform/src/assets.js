@@ -22,7 +22,7 @@ const downloadProgram = (program) =>
     .then((data) => data.text())
     .then((data) => {
       if (program.sha256) {
-        const md = forge.md.sha256.create();
+        const md = sha256.create();
         md.update(data);
         const digest = md.digest().toHex();
         if (digest !== program.sha256) {
