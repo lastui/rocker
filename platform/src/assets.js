@@ -1,7 +1,5 @@
 import sha256 from 'node-forge/lib/sha256';
 
-console.log('sha256 is', sha256)
-
 const CLIENT_TIMEOUT = 30 * 1000;
 
 async function download(resource) {
