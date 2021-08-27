@@ -1,3 +1,7 @@
+import sha256 from 'node-forge/lib/sha256';
+
+console.log('sha256 is', sha256)
+
 const CLIENT_TIMEOUT = 30 * 1000;
 
 async function download(resource) {
@@ -15,10 +19,22 @@ async function download(resource) {
 
 const downloadJson = (uri) => download(uri).then((data) => data.json());
 
-const downloadProgram = (uri) =>
-  download(uri)
+const downloadProgram = (program) =>
+  download(program.url)
     .then((data) => data.text())
     .then((data) => {
+      if (program.sha256) {
+        const md = forge.md.sha256.create();
+        md.update(data);
+        const digest = md.digest().toHex();
+        if (digest !== program.sha256) {
+          return {
+            Main: () => {
+              throw new Error('integrity check failed');
+            },
+          };
+        }
+      }
       let sandbox = {
         __SANDBOX_SCOPE__: {},
       };
