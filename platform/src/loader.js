@@ -92,7 +92,6 @@ export default () => {
       mainView: (scope.Main && isolateProgram(id, scope.props, scope.Main)) || null,
       errorView: scope.Error || null,
       cleanup: () => {
-        console.log('cleanup', id, 'called')
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
           console.debug(`module ${id} removing styles`);
@@ -102,7 +101,6 @@ export default () => {
           console.debug(`module ${id} removing saga`);
           removeSaga(id);
         }
-        console.log('cleanup', id, 'done')
       },
     };
   };
