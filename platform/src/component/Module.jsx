@@ -13,7 +13,9 @@ const Module = (props) => {
       return;
     }
     moduleLoader.loadModule(props.name).then((changed) => {
+      console.log('load module', props.name, 'changed?', changed)
       if (changed) {
+        console.log('force update', props.name)
         setLastUpdate((tick) => tick + 1)
       }
     });
@@ -45,6 +47,8 @@ const Module = (props) => {
     name,
     lastUpdate,
   }
+
+  console.log('check update at', updatedAt, 'for', props.name, 'loaded', loadedModule.mainView)
 
   return (
     <ErrorBoundary name={name} fallback={loadedModule.errorView}>

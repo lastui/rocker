@@ -92,6 +92,7 @@ export default () => {
       mainView: (scope.Main && isolateProgram(id, scope.props, scope.Main)) || null,
       errorView: scope.Error || null,
       cleanup: () => {
+        console.log('cleanup', id, 'called')
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
           console.debug(`module ${id} removing styles`);
@@ -101,6 +102,7 @@ export default () => {
           console.debug(`module ${id} removing saga`);
           removeSaga(id);
         }
+        console.log('cleanup', id, 'done')
       },
     };
   };
@@ -136,16 +138,9 @@ export default () => {
   };
 
   const loadModule = (id) => {
+    const available = availableModules[id];
     const loaded = loadedModules[id];
-    if (loaded) {
-      return Promise.resolve(false);
-    }
-    const loading = loadingModules[id];
-    if (loading) {
-      return loading;
-    }
-    const item = availableModules[id];
-    if (!item || !item.program) {
+    if (!available || !available.program) {
       store.dispatch({
         type: constants.MODULE_NOT_AVAILABLE,
         payload: {
@@ -153,9 +148,16 @@ export default () => {
         },
       });
       console.warn(`module ${id} not available`);
+      return Promise.resolve(Boolean(loaded));
+    }
+    if (loaded) {
       return Promise.resolve(false);
     }
-    const promise = downloadProgram(item.program)
+    const loading = loadingModules[id];
+    if (loading) {
+      return loading;
+    }
+    const promise = downloadProgram(available.program)
       .then((data) => {
         loadedModules[id] = connectModule(id, data);
         store.dispatch({
@@ -179,27 +181,29 @@ export default () => {
   };
 
   const unloadModule = (item) => {
-    if (!item) {
-      return Promise.resolve(true);
-    }
-    const loaded = loadedModules[item.id];
-    if (loaded) {
-      loaded.cleanup();
-      if (item.locales) {
-        console.debug(`module ${item.id} removing locales`);
-        delete loadedLocales[item.id];
-        store.dispatch(actions.removeI18nMessages(item.id));
+    return new Promise((resolve, reject) => {
+      if (!item.id) {
+        return resolve(false)
       }
-      delete loadedModules[item.id];
-      store.dispatch({
-        type: constants.MODULE_UNLOADED,
-        payload: {
-          id: item.id,
-        },
-      });
-    }
-    danglingNamespaces.push(item.id);
-    return Promise.resolve(true);
+      const loaded = loadedModules[item.id];
+      if (loaded) {
+        delete loadedModules[item.id];
+        store.dispatch({
+          type: constants.MODULE_UNLOADED,
+          payload: {
+            id: item.id,
+          },
+        });
+        if (item.locales) {
+          console.debug(`module ${item.id} removing locales`);
+          delete loadedLocales[item.id];
+          store.dispatch(actions.removeI18nMessages(item.id));
+        }
+        loaded.cleanup();
+      }
+      danglingNamespaces.push(item.id);
+      return resolve(true);
+    })
   };
 
   const setAvailableModules = (modules = []) => {
@@ -215,18 +219,22 @@ export default () => {
         availableModules[item.id] = item;
       }
     }
+    const scheduledUnload = [];
     const obsoleteModules = [];
     for (const existing in availableModules) {
       const item = newModules[existing]
       if (item) {
         if (item.program?.sha256 !== availableModules[existing].program?.sha256) {
           availableModules[existing] = item;
-          promises.push(unloadModule(existing));
+          scheduledUnload.push(existing);
         }
       } else if (loadedModules[existing]) {
-        promises.push(unloadModule(existing));
+        scheduledUnload.push(existing);
         obsoleteModules.push(existing);
       }
+    }
+    for (const old of scheduledUnload) {
+      promises.push(unloadModule(availableModules[old]));
     }
     for (const obsolete of obsoleteModules) {
       delete availableModules[obsolete];
@@ -335,7 +343,6 @@ export default () => {
     setAvailableModules,
     loadLocales,
     loadModule,
-    unloadModule,
     getLoadedModule,
     getReducer,
   };
