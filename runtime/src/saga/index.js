@@ -11,6 +11,7 @@ function* runInit(action) {
 		yield call(action.payload.initializeRuntime);
 	}
 	do {
+		console.log('refreshing context')
 		try {
 			const context = yield call(action.payload.fetchContext);
 			yield put(actions.setAvailableModules(context.available));
@@ -22,7 +23,7 @@ function* runInit(action) {
 		} finally {
 			yield delay(5000);
 		}
-	} while (process.env.NODE_ENV !== "development")
+	} while (true || process.env.NODE_ENV !== "development")
 }
 
 export default [watchInit];

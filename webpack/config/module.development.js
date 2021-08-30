@@ -18,6 +18,9 @@ const config = {
 
 config.output.filename = "module.js";
 
+config.resolve.alias["react-dom"] = "react-dom/profiling"
+config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling"
+
 config.module.rules.push(
 	{
 		test: /\.jsx?$/,

@@ -14,12 +14,11 @@ module.exports = {
 			process: false,
 			path: require.resolve("path-browserify"),
 		},
+		alias: {},
 	},
 	cache: settings.DEVELOPMENT,
 	module: {
 		strictExportPresence: true,
-		rules: [
-		    { parser: { requireEnsure: false } },
-		],
+		rules: [{ parser: { requireEnsure: false } }],
 	},
 };
