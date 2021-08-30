@@ -18,27 +18,27 @@ config.devServer = {
 	liveReload: false,
 	setupExitSignals: true,
 	static: {
-		publicPath: ['/'],
+		publicPath: ["/"],
 		directory: settings.PROJECT_DEV_PATH,
 	},
 	devMiddleware: {
-		publicPath: '/'
+		publicPath: "/",
 	},
 	https: false,
-	allowedHosts: 'all',
+	allowedHosts: "all",
 	historyApiFallback: true,
 	compress: false,
-	host: '0.0.0.0',
+	host: "0.0.0.0",
 	port: settings.DEV_SERVER_PORT,
 	client: {
 		logging: settings.LOG_LEVEL,
-	    webSocketURL: {
-	        hostname: '0.0.0.0',
-	        pathname: '/ws',
-	        port: settings.DEV_SERVER_PORT,
-	    },
-	    overlay: true,
-    },
+		webSocketURL: {
+			hostname: "0.0.0.0",
+			pathname: "/ws",
+			port: settings.DEV_SERVER_PORT,
+		},
+		overlay: true,
+	},
 };
 
 config.output.filename = "[name].js";
