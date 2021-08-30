@@ -2,46 +2,153 @@
 
 const chalk = require("chalk");
 const path = require("path");
-const { run } = require("webpack-nano/lib/compiler");
-const args = require("webpack-nano/argv");
+const webpack = require('webpack');
+const WebpackDevServer = require('webpack-dev-server');
 
 process.on('warning', (e) => console.warn(e.stack));
 process.setMaxListeners(100);
-
-process.on("SIGINT", () => process.exit(0));
-process.on("SIGTERM", () => process.exit(0));
 
 if (process.env.NODE_ENV !== "production") {
 	process.env.NODE_ENV = "development";
 }
 
-function getConfig() {
-	if (args.config === undefined) {
-		return require(path.resolve("./webpack.config.js"));
-	}
-	return require(path.resolve(args.config));
+const config = require(path.resolve("./webpack.config.js"));
+
+function isLikelyASyntaxError(message) {
+  return message.indexOf('Syntax error:') !== -1;
 }
 
-const logPrefix = {
-	ok: chalk.blue("⬡ webpack:"),
-	whoops: chalk.red("⬢ webpack:"),
-};
+function formatMessage(message) {
+  let lines = [];
 
-const config = getConfig();
+  if (typeof message === 'string') {
+    lines = message.split('\n');
+  } else if ('message' in message) {
+    lines = message['message'].split('\n');
+  } else if (Array.isArray(message)) {
+    message.forEach(message => {
+      if ('message' in message) {
+        lines = message['message'].split('\n');
+      }
+    });
+  }
+  lines = lines.filter(line => !/Module [A-z ]+\(from/.test(line));
+  lines = lines.map(line => {
+    const parsingError = /Line (\d+):(?:(\d+):)?\s*Parsing error: (.+)$/.exec(
+      line
+    );
+    if (!parsingError) {
+      return line;
+    }
+    const [, errorLine, errorColumn, errorMessage] = parsingError;
+    return `Syntax error: ${errorMessage} (${errorLine}:${errorColumn})`;
+  });
+  message = lines.join('\n');
+  message = message.replace(
+    /SyntaxError\s+\((\d+):(\d+)\)\s*(.+?)\n/g,
+    `${friendlySyntaxErrorLabel} $3 ($1:$2)\n`
+  );
+  message = message.replace(
+    /^.*export '(.+?)' was not found in '(.+?)'.*$/gm,
+    `Attempted import error: '$1' is not exported from '$2'.`
+  );
+  message = message.replace(
+    /^.*export 'default' \(imported as '(.+?)'\) was not found in '(.+?)'.*$/gm,
+    `Attempted import error: '$2' does not contain a default export (imported as '$1').`
+  );
+  message = message.replace(
+    /^.*export '(.+?)' \(imported as '(.+?)'\) was not found in '(.+?)'.*$/gm,
+    `Attempted import error: '$1' is not exported from '$3' (imported as '$2').`
+  );
+  lines = message.split('\n');
+  if (lines.length > 2 && lines[1].trim() === '') {
+    lines.splice(1, 1);
+  }
+  lines[0] = lines[0].replace(/^(.*) \d+:\d+-\d+$/, '$1');
+  if (lines[1] && lines[1].indexOf('Module not found: ') === 0) {
+    lines = [
+      lines[0],
+      lines[1]
+        .replace('Error: ', '')
+        .replace('Module not found: Cannot find file:', 'Cannot find file:'),
+    ];
+  }
+  if (lines[1] && lines[1].match(/Cannot find module.+sass/)) {
+    lines[1] = 'To import Sass files, you first need to install sass.\n';
+    lines[1] +=
+      'Run `npm install sass` or `yarn add sass` inside your workspace.';
+  }
 
-run(
-	{
-		config,
-		watchConfig: config.watch ? config : undefined,
-	},
-	{
-		error: (...args) => {
-			args.unshift(logPrefix.whoops);
-			console.error(...args);
-		},
-		info: (...args) => {
-			args.unshift(logPrefix.ok);
-			console.error(...args);
-		},
-	}
-);
+  message = lines.join('\n');
+  message = message.replace(
+    /^\s*at\s((?!webpack:).)*:\d+:\d+[\s)]*(\n|$)/gm,
+    ''
+  );
+  message = message.replace(/^\s*at\s<anonymous>(\n|$)/gm, '');
+  lines = message.split('\n');
+  lines = lines.filter(
+    (line, index, arr) =>
+      index === 0 || line.trim() !== '' || line.trim() !== arr[index - 1].trim()
+  );
+  message = lines.join('\n');
+  return message.trim();
+}
+
+function formatWebpackMessages(json) {
+  const formattedErrors = json.errors.map(formatMessage);
+  const formattedWarnings = json.warnings.map(formatMessage);
+  const result = { errors: formattedErrors, warnings: formattedWarnings };
+  if (result.errors.some(isLikelyASyntaxError)) {
+    result.errors = result.errors.filter(isLikelyASyntaxError);
+  }
+  return result;
+}
+
+const callback = (err, stats) => {
+	const statsData = stats.toJson({
+      all: false,
+      warnings: true,
+      errors: true,
+    });
+    const messages = formatWebpackMessages(statsData);
+    const isSuccessful = !messages.errors.length && !messages.warnings.length;
+    if (isSuccessful) {
+      console.log(chalk.green('Compiled successfully!'));
+    }
+    if (messages.errors.length) {
+      if (messages.errors.length > 1) {
+        messages.errors.length = 1;
+      }
+      console.log(chalk.red('Failed to compile.\n'));
+      console.log(messages.errors.join('\n\n'));
+      return;
+    }
+    if (messages.warnings.length) {
+      console.log(chalk.yellow('Compiled with warnings.\n'));
+      console.log(messages.warnings.join('\n\n'));
+    }
+}
+
+if (config.watch) {
+	const devServerConfig = config.devServer
+	delete config.devServer
+	const compiler = webpack(config, callback)
+	const devServer = new WebpackDevServer(devServerConfig, compiler);	
+	devServer.startCallback(() => {})
+	const signals = ['SIGINT', 'SIGTERM']
+	signals.forEach(function (sig) {
+		process.on(sig, () => {
+			devServer.close();
+			process.exit(0)
+		});
+	})
+} else {
+	const compiler = webpack(config)
+	compiler.run(callback)
+	const signals = ['SIGINT', 'SIGTERM']
+	signals.forEach(function (sig) {
+		process.on(sig, () => {
+			process.exit(0)
+		});
+	})
+}
