@@ -10,8 +10,8 @@ function* runInit(action) {
 	if (action.payload.initializeRuntime) {
 		yield call(action.payload.initializeRuntime);
 	}
+	const interval = 30 * 1000;
 	do {
-		console.log('refreshing context')
 		try {
 			const context = yield call(action.payload.fetchContext);
 			yield put(actions.setAvailableModules(context.available));
@@ -21,9 +21,9 @@ function* runInit(action) {
 		} catch (err) {
 
 		} finally {
-			yield delay(5000);
+			yield delay(interval);
 		}
-	} while (true || process.env.NODE_ENV !== "development")
+	} while (process.env.NODE_ENV !== "development")
 }
 
 export default [watchInit];
