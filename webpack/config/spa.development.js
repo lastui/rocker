@@ -1,6 +1,9 @@
 const path = require("path");
 const webpack = require("webpack");
 
+const { setLogLevel } = require("webpack/hot/log");
+setLogLevel("none");
+
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 
@@ -31,13 +34,16 @@ config.devServer = {
 	host: "0.0.0.0",
 	port: settings.DEV_SERVER_PORT,
 	client: {
+		overlay: {
+			errors: true,
+			warnings: false,
+		},
 		logging: settings.LOG_LEVEL,
 		webSocketURL: {
 			hostname: "0.0.0.0",
 			pathname: "/ws",
 			port: settings.DEV_SERVER_PORT,
 		},
-		overlay: true,
 	},
 };
 
