@@ -37,9 +37,9 @@ config.devServer = {
 	port: settings.DEV_SERVER_PORT,
 	client: {
 		overlay: {
-        	errors: true,
-        	warnings: false,
-      	},
+			errors: true,
+			warnings: false,
+		},
 		logging: settings.LOG_LEVEL,
 		webSocketURL: {
 			hostname: "0.0.0.0",
