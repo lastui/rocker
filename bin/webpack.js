@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const ipaddr = require("ipaddr.js");
 const chalk = require("chalk");
 const path = require("path");
 const webpack = require('webpack');
@@ -9,7 +10,7 @@ process.on('warning', (e) => console.warn(e.stack));
 process.setMaxListeners(100);
 
 if (process.env.NODE_ENV !== "production") {
-	process.env.NODE_ENV = "development";
+  process.env.NODE_ENV = "development";
 }
 
 const config = require(path.resolve("./webpack.config.js"));
@@ -46,7 +47,7 @@ function formatMessage(message) {
   message = lines.join('\n');
   message = message.replace(
     /SyntaxError\s+\((\d+):(\d+)\)\s*(.+?)\n/g,
-    `${friendlySyntaxErrorLabel} $3 ($1:$2)\n`
+    `Syntax error: $3 ($1:$2)\n`
   );
   message = message.replace(
     /^.*export '(.+?)' was not found in '(.+?)'.*$/gm,
@@ -105,7 +106,15 @@ function formatWebpackMessages(json) {
 }
 
 const callback = (err, stats) => {
-	const statsData = stats.toJson({
+  if (err) {
+  	console.log(chalk.red('Failed to compile.\n'));
+    console.log(err);
+    return
+  }
+  if (!stats) {
+  	return
+  }
+  const statsData = stats.toJson({
       all: false,
       warnings: true,
       errors: true,
@@ -129,26 +138,39 @@ const callback = (err, stats) => {
     }
 }
 
+let cleanupHooks = []
+
 if (config.watch) {
-	const devServerConfig = config.devServer
-	delete config.devServer
-	const compiler = webpack(config, callback)
-	const devServer = new WebpackDevServer(devServerConfig, compiler);	
-	devServer.startCallback(() => {})
-	const signals = ['SIGINT', 'SIGTERM']
-	signals.forEach(function (sig) {
-		process.on(sig, () => {
-			devServer.close();
-			process.exit(0)
-		});
-	})
+  config.infrastructureLogging = { level: 'none' }
+  const devServerConfig = config.devServer
+  devServerConfig.client.logging = 'none'
+  delete config.devServer
+  config.stats = 'none';
+  const compiler = webpack(config, callback)
+  compiler.hooks.invalid.tap('invalid', () => {
+    console.log('Compiling...');
+  });
+  const devServer = new WebpackDevServer(devServerConfig, compiler);  
+  devServer.startCallback((err) => {
+  	if (err) {
+  		callback(err)
+  	}
+  	let host = ipaddr.parse(devServer.options.host);
+  	if (host.range() === "unspecified") {
+  		host = 'localhost'
+  	}
+  	console.log(chalk.green(`Project is running at: ${devServer.options.https ? 'https://' : 'http://'}${host}:${devServer.options.port}`));
+  })
+  cleanupHooks.push(() => devServer.close())
 } else {
-	const compiler = webpack(config)
-	compiler.run(callback)
-	const signals = ['SIGINT', 'SIGTERM']
-	signals.forEach(function (sig) {
-		process.on(sig, () => {
-			process.exit(0)
-		});
-	})
+  webpack(config).run(callback)
 }
+
+cleanupHooks.push(() => process.exit(0))
+
+const signals = ['SIGINT', 'SIGTERM']
+signals.forEach(function (sig) {
+  process.on(sig, () => {
+    cleanupHooks.forEach((hook) => hook())
+  });
+})
