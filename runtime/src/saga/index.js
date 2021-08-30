@@ -10,6 +10,7 @@ function* runInit(action) {
 	if (action.payload.initializeRuntime) {
 		yield call(action.payload.initializeRuntime);
 	}
+	const interval = 30 * 1000;
 	do {
 		try {
 			const context = yield call(action.payload.fetchContext);
@@ -20,7 +21,7 @@ function* runInit(action) {
 		} catch (err) {
 
 		} finally {
-			yield delay(5000);
+			yield delay(interval);
 		}
 	} while (process.env.NODE_ENV !== "development")
 }

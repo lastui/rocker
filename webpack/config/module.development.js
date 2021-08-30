@@ -18,6 +18,9 @@ const config = {
 
 config.output.filename = "module.js";
 
+config.resolve.alias["react-dom"] = "react-dom/profiling";
+config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
+
 config.module.rules.push(
 	{
 		test: /\.jsx?$/,
@@ -230,12 +233,10 @@ config.plugins.push(
 				for (const language of settings.SUPPORTED_LOCALES) {
 					hotModule.locales[language] = `/messages/${language}.json`;
 				}
-				manifest = JSON.stringify(
-					{
-						entrypoint: settings.PROJECT_NAME,
-						available: [hotModule],
-					}
-				);
+				manifest = JSON.stringify({
+					entrypoint: settings.PROJECT_NAME,
+					available: [hotModule],
+				});
 			}
 
 			return `
