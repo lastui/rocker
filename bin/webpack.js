@@ -46,7 +46,7 @@ function formatMessage(message) {
   message = lines.join('\n');
   message = message.replace(
     /SyntaxError\s+\((\d+):(\d+)\)\s*(.+?)\n/g,
-    `${friendlySyntaxErrorLabel} $3 ($1:$2)\n`
+    `Syntax error: $3 ($1:$2)\n`
   );
   message = message.replace(
     /^.*export '(.+?)' was not found in '(.+?)'.*$/gm,
