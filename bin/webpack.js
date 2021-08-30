@@ -22,25 +22,12 @@ function getConfig() {
 	return require(path.resolve(args.config));
 }
 
-function patchEntrypoint(config) {
-	if (!config.watch) {
-		return config;
-	}
-	for (const entrypoint in config.entry) {
-		config.entry[entrypoint] = [
-			"webpack-plugin-serve/client",
-			...config.entry[entrypoint],
-		];
-	}
-	return config;
-}
-
 const logPrefix = {
 	ok: chalk.blue("⬡ webpack:"),
 	whoops: chalk.red("⬢ webpack:"),
 };
 
-const config = patchEntrypoint(getConfig());
+const config = getConfig();
 
 run(
 	{
