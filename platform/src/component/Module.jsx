@@ -32,9 +32,6 @@ const Module = (props) => {
     if (props.fallback) {
       return props.fallback();
     }
-    if (process.env.NODE_ENV === "development") {
-      return <div>{props.name}</div>;
-    }
     return <React.Fragment />;
   }
 
