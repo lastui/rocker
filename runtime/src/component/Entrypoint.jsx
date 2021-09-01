@@ -6,12 +6,12 @@ import { IntlProvider } from "react-intl";
 import { Module } from "@lastui/rocker/platform";
 import { getEntrypoint, getLanguage, getI18nMessages } from "../selector";
 
-const EntryPoint = (props) => {
+const Entrypoint = (props) => {
 	const entrypoint = useSelector(getEntrypoint);
 	const language = useSelector(getLanguage);
 	const messages = useSelector(getI18nMessages);
 	if (entrypoint === null) {
-		return null
+		return null;
 	}
 	return (
 		<IntlProvider
@@ -33,4 +33,4 @@ const EntryPoint = (props) => {
 	);
 };
 
-export default EntryPoint
+export default Entrypoint;

@@ -2,7 +2,7 @@ import React from "react";
 import { Provider as ReduxProvider } from "react-redux";
 import { actions, ModuleContext } from "@lastui/rocker/platform";
 import setupStore from "../store";
-import EntryPoint from './EntryPoint'
+import Entrypoint from './Entrypoint'
 
 const Main = (props) => {
 	const [_, setErrorState] = React.useState();
@@ -36,7 +36,7 @@ const Main = (props) => {
 	return (
 		<ModuleContext.Provider value={state.moduleLoader}>
 			<ReduxProvider store={state.store}>
-				<EntryPoint />
+				<Entrypoint />
 			</ReduxProvider>
 		</ModuleContext.Provider>
 	);
