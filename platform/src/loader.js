@@ -3,6 +3,7 @@ import { ReactReduxContext } from "react-redux";
 import { cancel, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
 import { downloadProgram, downloadJson } from './assets';
+import ErrorBoundary from "./component/ErrorBoundary";
 import * as constants from "./constants";
 import * as actions from "./actions";
 
@@ -89,8 +90,7 @@ export default () => {
     }
     return {
       id,
-      mainView: (scope.Main && isolateProgram(id, scope.props, scope.Main)) || null,
-      errorView: scope.Error || null,
+      view: (scope.Main && isolateProgram(id, scope.props, scope.Main, scope.Error)) || null,
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
@@ -139,13 +139,6 @@ export default () => {
     const available = availableModules[id];
     const loaded = loadedModules[id];
     if (!available || !available.program) {
-      store.dispatch({
-        type: constants.MODULE_NOT_AVAILABLE,
-        payload: {
-          id,
-        },
-      });
-      console.warn(`module ${id} not available`);
       return Promise.resolve(Boolean(loaded));
     }
     if (loaded) {
@@ -270,7 +263,7 @@ export default () => {
     };
   };
 
-  const isolateProgram = (id, declaredProps, component) => {
+  const isolateProgram = (id, declaredProps, component, errorFallback) => {
     const reduxContext = {
       store: {
         dispatch: store.dispatch,
@@ -289,34 +282,42 @@ export default () => {
         },
       },
     };
-  
-    return React.memo(
-      (props) => {
-        const composite = { ...props.owned, ...declaredProps }
-        return (
-          <ReactReduxContext.Provider value={reduxContext}>
-            {props.children
-              ? React.createElement(component, composite, props.children)
-              : React.createElement(component, composite)
-            }
-          </ReactReduxContext.Provider>
-        )
-      },
-      (prevProps, nextProps) => {
-        if (prevProps.lastUpdate !== nextProps.lastUpdate) {
-          return false
-        }
-        if (!prevProps.name && nextProps.name) {
+    
+    class HOC extends React.Component {
+
+      static displayName = `Module-${id}`;
+
+      shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.lastUpdate !== nextProps.lastUpdate) {
           return true
         }
-        for (const key of Object.keys(nextProps.owned)) {
-          if (prevProps.owned[key] !== nextProps.owned[key]) {
-            return false
+        if (!this.props.name && nextProps.name) {
+          return false
+        }
+        for (const key in nextProps.owned) {
+          if (this.props.owned[key] !== nextProps.owned[key]) {
+            return true
           }
         }
-        return true
+        return false
       }
-    );
+
+      render() {
+        const composite = { ...this.props.owned, ...declaredProps }
+        return (
+          <ErrorBoundary name={id} fallback={errorFallback}>
+            <ReactReduxContext.Provider value={reduxContext}>
+              {this.props.children
+                ? React.createElement(component, composite, this.props.children)
+                : React.createElement(component, composite)
+              }
+            </ReactReduxContext.Provider>
+          </ErrorBoundary>
+        )
+      }
+    }
+
+    return HOC
   };
 
   const loadLocales = (language) => {

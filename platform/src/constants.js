@@ -10,7 +10,6 @@ export const SHUTDOWN = "@@platform/SHUTDOWN";
 export const MODULE_INIT = "@@modules/INIT";
 export const MODULE_LOADED = "@@modules/LOADED";
 export const MODULE_UNLOADED = "@@modules/UNLOADED";
-export const MODULE_NOT_AVAILABLE = "@@modules/NOT_AVAILABLE";
 
 export const ADD_I18N_MESSAGES = "@@shared/ADD_I18N_MESSAGES";
 export const REMOVE_I18N_MESSAGES = "@@shared/REMOVE_I18N_MESSAGES";
