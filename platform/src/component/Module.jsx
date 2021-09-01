@@ -38,7 +38,6 @@ const Module = (props) => {
 
   const composite = {
     owned,
-    name,
     lastUpdate,
   };
 
