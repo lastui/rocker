@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useModuleLoader } from "./ModuleContext";
-import ErrorBoundary from "./ErrorBoundary";
 
 const Module = (props) => {
   const moduleLoader = useModuleLoader();
@@ -14,7 +13,7 @@ const Module = (props) => {
     }
     moduleLoader.loadModule(props.name).then((changed) => {
       if (changed) {
-        setLastUpdate((tick) => tick + 1)
+        setLastUpdate((tick) => tick + 1);
       }
     });
   }, [props.name, updatedAt]);
@@ -28,7 +27,7 @@ const Module = (props) => {
     return <React.Fragment />;
   }
 
-  if (!loadedModule.mainView) {
+  if (!loadedModule.view) {
     if (props.fallback) {
       return props.fallback();
     }
@@ -41,16 +40,11 @@ const Module = (props) => {
     owned,
     name,
     lastUpdate,
-  }
+  };
 
-  return (
-    <ErrorBoundary name={name} fallback={loadedModule.errorView}>
-      {props.children
-        ? React.createElement(loadedModule.mainView, composite, props.children)
-        : React.createElement(loadedModule.mainView, composite)
-      }
-    </ErrorBoundary>
-  );
+  return props.children
+    ? React.createElement(loadedModule.view, composite, props.children)
+    : React.createElement(loadedModule.view, composite);
 };
 
 export default Module;
