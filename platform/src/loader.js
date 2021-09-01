@@ -2,8 +2,7 @@ import React from "react";
 import { ReactReduxContext } from "react-redux";
 import { cancel, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
-import { downloadProgram, downloadJson } from './assets';
-import ErrorBoundary from "./component/ErrorBoundary";
+import { downloadProgram, downloadJson } from "./assets";
 import * as constants from "./constants";
 import * as actions from "./actions";
 
@@ -90,7 +89,10 @@ export default () => {
     }
     return {
       id,
-      view: (scope.Main && isolateProgram(id, scope.props, scope.Main, scope.Error)) || null,
+      view:
+        (scope.Main &&
+          isolateProgram(id, scope.props, scope.Main, scope.Error)) ||
+        null,
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
@@ -174,7 +176,7 @@ export default () => {
   const unloadModule = (item) => {
     return new Promise((resolve, reject) => {
       if (!item.id) {
-        return resolve(false)
+        return resolve(false);
       }
       const loaded = loadedModules[item.id];
       if (loaded) {
@@ -194,7 +196,7 @@ export default () => {
       }
       danglingNamespaces.push(item.id);
       return resolve(true);
-    })
+    });
   };
 
   const setAvailableModules = (modules = []) => {
@@ -213,9 +215,11 @@ export default () => {
     const scheduledUnload = [];
     const obsoleteModules = [];
     for (const existing in availableModules) {
-      const item = newModules[existing]
+      const item = newModules[existing];
       if (item) {
-        if (item.program?.sha256 !== availableModules[existing].program?.sha256) {
+        if (
+          item.program?.sha256 !== availableModules[existing].program?.sha256
+        ) {
           availableModules[existing] = item;
           scheduledUnload.push(existing);
         }
@@ -263,7 +267,7 @@ export default () => {
     };
   };
 
-  const isolateProgram = (id, declaredProps, component, errorFallback) => {
+  const isolateProgram = (id, declaredProps, mainView, errorView) => {
     const reduxContext = {
       store: {
         dispatch: store.dispatch,
@@ -282,42 +286,56 @@ export default () => {
         },
       },
     };
-    
-    class HOC extends React.Component {
 
-      static displayName = `Module-${id}`;
+    const initialState = { error: null };
+
+    class HOC extends React.Component {
+      state = initialState;
+
+      static displayName = `Module(${id})`;
+
+      static getDerivedStateFromError(error) {
+        return { error };
+      }
+
+      componentDidCatch(error, info) {
+        console.error(`module ${id} errored`, error, info);
+      }
 
       shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.lastUpdate !== nextProps.lastUpdate) {
-          return true
+        if (this.state.error !== nextState.error) {
+          return true;
         }
-        if (!this.props.name && nextProps.name) {
-          return false
+        if (this.props.lastUpdate !== nextProps.lastUpdate) {
+          return true;
         }
         for (const key in nextProps.owned) {
           if (this.props.owned[key] !== nextProps.owned[key]) {
-            return true
+            return true;
           }
         }
-        return false
+        return false;
       }
 
       render() {
-        const composite = { ...this.props.owned, ...declaredProps }
-        return (
-          <ErrorBoundary name={id} fallback={errorFallback}>
+        if (this.state.error === null) {
+          const composite = { ...this.props.owned, ...declaredProps };
+          return (
             <ReactReduxContext.Provider value={reduxContext}>
               {this.props.children
-                ? React.createElement(component, composite, this.props.children)
-                : React.createElement(component, composite)
-              }
+                ? React.createElement(mainView, composite, this.props.children)
+                : React.createElement(mainView, composite)}
             </ReactReduxContext.Provider>
-          </ErrorBoundary>
-        )
+          );
+        }
+        if (errorView) {
+          return React.createElement(errorView, this.state);
+        }
+        return null;
       }
     }
 
-    return HOC
+    return HOC;
   };
 
   const loadLocales = (language) => {

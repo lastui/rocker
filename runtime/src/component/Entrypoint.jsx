@@ -1,15 +1,36 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { actions, Module } from "@lastui/rocker/platform";
-import { getEntrypoint } from "../selector";
+import React from "react";
+import { useSelector } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { Switch } from "react-router";
+import { IntlProvider } from "react-intl";
+import { Module } from "@lastui/rocker/platform";
+import { getEntrypoint, getLanguage, getI18nMessages } from "../selector";
 
-const Entrypoint = (props) => {
-	const dispatch = useDispatch();
-	useEffect(() => {
-		dispatch(actions.init(props.fetchContext, props.initializeRuntime));
-	}, []);
+const EntryPoint = (props) => {
 	const entrypoint = useSelector(getEntrypoint);
-	return <Module name={entrypoint} />;
+	const language = useSelector(getLanguage);
+	const messages = useSelector(getI18nMessages);
+	if (entrypoint === null) {
+		return null
+	}
+	return (
+		<IntlProvider
+			messages={messages}
+			locale={language}
+			onError={(err) => {
+				if (err.code === "MISSING_TRANSLATION") {
+					return;
+				}
+				throw err;
+			}}
+		>
+			<BrowserRouter forceRefresh={false}>
+				<Switch>
+					<Module name={entrypoint} />
+				</Switch>
+			</BrowserRouter>
+		</IntlProvider>
+	);
 };
 
-export default Entrypoint;
+export default EntryPoint
