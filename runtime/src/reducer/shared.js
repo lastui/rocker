@@ -12,13 +12,13 @@ export default (state = initialState, action) => {
 			const meta = {};
 			const available = [];
 			const loaded = {};
-			action.payload.modules.forEach((item) => {
+			for (const item in action.payload.modules) {
 				if (!meta[item.id]) {
 					available.push(item.id)
 				}
 				meta[item.id] = item.meta || {};
 				loaded[item.id] = state.loaded[item.id] || false;
-			});
+			}
 			return {
 				meta,
 				available,

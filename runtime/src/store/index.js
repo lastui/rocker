@@ -4,15 +4,14 @@ import { all, fork } from "redux-saga/effects";
 import { runtimeReducer, sharedReducer } from "../reducer";
 import sagas from "../saga";
 import {
-	createModuleLoader,
+	moduleLoader,
 	moduleLoaderMiddleware,
 } from "@lastui/rocker/platform";
 
 export default async () => {
-	const loader = createModuleLoader();
 	const sagaMiddleware = createSagaMiddleware();
 
-	const enhancers = [sagaMiddleware, moduleLoaderMiddleware(loader)];
+	const enhancers = [sagaMiddleware, moduleLoaderMiddleware(moduleLoader)];
 
 	const composer = process.env.NODE_ENV === 'development'
 		? require('redux-devtools-extension').composeWithDevTools
@@ -21,7 +20,7 @@ export default async () => {
 	const reducer = combineReducers({
 		runtime: runtimeReducer,
 		shared: sharedReducer,
-		modules: loader.getReducer(),
+		modules: moduleLoader.getReducer(),
 	});
 
 	const store = createStore(
@@ -30,12 +29,12 @@ export default async () => {
 		composer(...[applyMiddleware(...enhancers)])
 	);
 
-	loader.setSagaRunner(sagaMiddleware.run);
-	loader.setStore(store);
+	moduleLoader.setSagaRunner(sagaMiddleware.run);
+	moduleLoader.setStore(store);
 
 	sagaMiddleware.run(function* rooSaga() {
 		yield all(sagas.map(fork));
 	});
 
-	return [store, loader];
+	return store;
 };

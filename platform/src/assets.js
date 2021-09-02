@@ -1,6 +1,50 @@
-import sha256 from 'node-forge/lib/sha256';
+import sha256 from "node-forge/lib/sha256";
 
 const CLIENT_TIMEOUT = 30 * 1000;
+
+class SequentialProgramEvaluator {
+  static queue = [];
+  static compiling = false;
+
+  static compile(data) {
+    return new Promise((resolve) => {
+      this.queue.push({
+        data,
+        resolve,
+      });
+      this.tick();
+    });
+  }
+
+  static tick() {
+    if (this.compiling) {
+      return;
+    }
+    this.compiling = true;
+    const item = this.queue.shift();
+    if (!item) {
+      this.compiling = false;
+      return;
+    }
+    let sandbox = {
+      __SANDBOX_SCOPE__: {},
+    };
+    try {
+      window.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
+      new Function("", item.data)();
+    } catch (err) {
+      sandbox.__SANDBOX_SCOPE__.Main = () => {
+        throw err;
+      };
+    } finally {
+      delete window.__SANDBOX_SCOPE__;
+    }
+    item.resolve(sandbox.__SANDBOX_SCOPE__);
+    this.compiling = false;
+    this.tick();
+    return;
+  }
+}
 
 async function download(resource) {
   const controller = new AbortController();
@@ -28,27 +72,12 @@ const downloadProgram = (program) =>
         if (digest !== program.sha256) {
           return {
             Main: () => {
-              throw new Error('integrity check failed');
+              throw new Error("integrity check failed");
             },
           };
         }
       }
-      let sandbox = {
-        __SANDBOX_SCOPE__: {},
-      };
-      try {
-        const r = new Function("with(this) {" + data + ";}").call(sandbox);
-        if (r !== undefined) {
-          return {};
-        }
-      } catch (err) {
-        return {
-          Main: () => {
-            throw err;
-          },
-        };
-      }
-      return sandbox.__SANDBOX_SCOPE__;
+      return SequentialProgramEvaluator.compile(data);
     });
 
 export { downloadJson, downloadProgram };
