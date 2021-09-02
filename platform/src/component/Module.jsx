@@ -1,9 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useModuleLoader } from "./ModuleContext";
+import moduleLoader from "../loader";
 
 const Module = (props) => {
-  const moduleLoader = useModuleLoader();
   const updatedAt = useSelector((state) => state.runtime.updatedAt);
   const [lastUpdate, setLastUpdate] = React.useState(0);
 
@@ -20,18 +19,11 @@ const Module = (props) => {
 
   const loadedModule = moduleLoader.getLoadedModule(props.name);
 
-  if (!props.name || !loadedModule) {
+  if (!props.name || !loadedModule || !loadedModule.view) {
     if (props.fallback) {
       return props.fallback();
     }
-    return <React.Fragment />;
-  }
-
-  if (!loadedModule.view) {
-    if (props.fallback) {
-      return props.fallback();
-    }
-    return <React.Fragment />;
+    return null;
   }
 
   const { name, fallback, ...owned } = props;

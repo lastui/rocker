@@ -6,7 +6,7 @@ import { downloadProgram, downloadJson } from "./assets";
 import * as constants from "./constants";
 import * as actions from "./actions";
 
-export default () => {
+const createModuleLoader = () => {
   let store = {
     dispatch() {
       console.error("Redux store is not provided!");
@@ -89,10 +89,8 @@ export default () => {
     }
     return {
       id,
-      view:
-        (scope.Main &&
-          isolateProgram(id, scope.props, scope.Main, scope.Error)) ||
-        null,
+      view: (scope.Main && isolateProgram(id, scope)) || null,
+      hooks: scope.Hooks,
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {
@@ -245,7 +243,7 @@ export default () => {
         id;
         id = danglingNamespaces.pop()
       ) {
-        console.debug(`dyn reducer - module's ${id} state evicted`);
+        console.debug(`module ${id} evicting redux state`);
         delete state[id];
       }
       switch (action.type) {
@@ -259,15 +257,17 @@ export default () => {
           removeReducer(action.payload.id);
           return state;
         }
+        default: {
+          for (const id in reducers) {
+            state[id] = reducers[id](state[id], action);
+          }
+          return state;
+        }
       }
-      for (const id in reducers) {
-        state[id] = reducers[id](state[id], action);
-      }
-      return state;
     };
   };
 
-  const isolateProgram = (id, declaredProps, mainView, errorView) => {
+  const isolateProgram = (id, scope) => {
     const reduxContext = {
       store: {
         dispatch: store.dispatch,
@@ -319,17 +319,17 @@ export default () => {
 
       render() {
         if (this.state.error === null) {
-          const composite = { ...this.props.owned, ...declaredProps };
+          const composite = { ...this.props.owned, ...scope.props };
           return (
             <ReactReduxContext.Provider value={reduxContext}>
               {this.props.children
-                ? React.createElement(mainView, composite, this.props.children)
-                : React.createElement(mainView, composite)}
+                ? React.createElement(scope.Main, composite, this.props.children)
+                : React.createElement(scope.Main, composite)}
             </ReactReduxContext.Provider>
           );
         }
-        if (errorView) {
-          return React.createElement(errorView, this.state);
+        if (scope.Error) {
+          return React.createElement(scope.Error, this.state);
         }
         return null;
       }
@@ -364,3 +364,5 @@ export default () => {
     getReducer,
   };
 };
+
+export default createModuleLoader();
