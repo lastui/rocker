@@ -54,8 +54,9 @@ const createModuleLoader = () => {
     if (!sagas[id]) {
       return;
     }
+    const dangling = sagas[id];
     sagaRunner(function* () {
-      yield cancel(sagas[id]);
+      yield cancel(dangling);
     });
     delete sagas[id];
   };
@@ -171,8 +172,8 @@ const createModuleLoader = () => {
     return promise;
   };
 
-  const unloadModule = (item) => {
-    return new Promise((resolve, reject) => {
+  const unloadModule = (item) =>
+    new Promise((resolve) => {
       if (!item.id) {
         return resolve(false);
       }
@@ -195,7 +196,6 @@ const createModuleLoader = () => {
       danglingNamespaces.push(item.id);
       return resolve(true);
     });
-  };
 
   const setAvailableModules = (modules = []) => {
     const promises = [];
@@ -236,35 +236,29 @@ const createModuleLoader = () => {
     return Promise.all(promises);
   };
 
-  const getReducer = () => {
-    return (state = {}, action) => {
-      for (
-        let id = danglingNamespaces.pop();
-        id;
-        id = danglingNamespaces.pop()
-      ) {
-        console.debug(`module ${id} evicting redux state`);
-        delete state[id];
+  const getReducer = () => (state = {}, action) => {
+    for (let id = danglingNamespaces.pop(); id; id = danglingNamespaces.pop()) {
+      console.debug(`module ${id} evicting redux state`);
+      delete state[id];
+    }
+    switch (action.type) {
+      case constants.INIT:
+      case constants.ADD_I18N_MESSAGES:
+      case constants.REMOVE_I18N_MESSAGES:
+      case constants.SET_AVAILABLE_MODULES: {
+        return state;
       }
-      switch (action.type) {
-        case constants.INIT:
-        case constants.ADD_I18N_MESSAGES:
-        case constants.REMOVE_I18N_MESSAGES:
-        case constants.SET_AVAILABLE_MODULES: {
-          return state;
-        }
-        case constants.MODULE_UNLOADED: {
-          removeReducer(action.payload.id);
-          return state;
-        }
-        default: {
-          for (const id in reducers) {
-            state[id] = reducers[id](state[id], action);
-          }
-          return state;
-        }
+      case constants.MODULE_UNLOADED: {
+        removeReducer(action.payload.id);
+        return state;
       }
-    };
+      default: {
+        for (const id in reducers) {
+          state[id] = reducers[id](state[id], action);
+        }
+        return state;
+      }
+    }
   };
 
   const isolateProgram = (id, scope) => {
@@ -323,7 +317,11 @@ const createModuleLoader = () => {
           return (
             <ReactReduxContext.Provider value={reduxContext}>
               {this.props.children
-                ? React.createElement(scope.Main, composite, this.props.children)
+                ? React.createElement(
+                    scope.Main,
+                    composite,
+                    this.props.children
+                  )
                 : React.createElement(scope.Main, composite)}
             </ReactReduxContext.Provider>
           );

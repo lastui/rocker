@@ -1,12 +1,11 @@
 import { call, put, takeLatest, select, delay } from "redux-saga/effects";
 import { actions, constants } from "@lastui/rocker/platform";
 
-
-function* watchInit() {
-	yield takeLatest(constants.INIT, runInit);
+function* watchContext() {
+	yield takeLatest(constants.INIT, runContextRefresher);
 }
 
-function* runInit(action) {
+function* runContextRefresher(action) {
 	if (action.payload.initializeRuntime) {
 		yield call(action.payload.initializeRuntime);
 	}
@@ -19,11 +18,11 @@ function* runInit(action) {
 			yield put(actions.setLanguage(lang));
 			yield put(actions.setEntryPointModule(context.entrypoint));
 		} catch (err) {
-
+			console.warn("failed to obtain context", err);
 		} finally {
 			yield delay(interval);
 		}
-	} while (process.env.NODE_ENV !== "development")
+	} while (process.env.NODE_ENV !== "development");
 }
 
-export default [watchInit];
+export default [watchContext];

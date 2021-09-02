@@ -18,10 +18,9 @@ const Entrypoint = (props) => {
 			messages={messages}
 			locale={language}
 			onError={(err) => {
-				if (err.code === "MISSING_TRANSLATION") {
-					return;
+				if (err.code !== "MISSING_TRANSLATION") {
+					throw err;
 				}
-				throw err;
 			}}
 		>
 			<BrowserRouter forceRefresh={false}>

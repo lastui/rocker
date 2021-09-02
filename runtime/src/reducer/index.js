@@ -1,5 +1,7 @@
-import runtime from "./runtime";
-import shared from "./shared";
+import runtimeReducer from "./runtime";
+import sharedReducer from "./shared";
 
-export const runtimeReducer = runtime;
-export const sharedReducer = shared;
+export {
+	runtimeReducer,
+	sharedReducer,
+}

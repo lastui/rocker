@@ -67,7 +67,7 @@ const downloadProgram = (program) =>
     .then((data) => {
       if (program.sha256) {
         const md = sha256.create();
-        md.update(data);
+        md.update(data, 'utf8');
         const digest = md.digest().toHex();
         if (digest !== program.sha256) {
           return {
