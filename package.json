@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -58,8 +58,8 @@
     "sass": "1.39.0",
     "sass-loader": "12.1.0",
     "style-loader": "3.2.1",
-    "terser-webpack-plugin": "5.2.2",
-    "webpack": "5.51.2",
+    "terser-webpack-plugin": "5.2.3",
+    "webpack": "5.52.0",
     "webpack-dev-server": "4.1.0"
   },
   "repository": {
