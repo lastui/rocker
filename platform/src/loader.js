@@ -91,7 +91,6 @@ const createModuleLoader = () => {
     return {
       id,
       view: (scope.Main && isolateProgram(id, scope)) || null,
-      hooks: scope.Hooks,
       cleanup: () => {
         const orphanStyles = document.querySelector(`[data-module=${id}`);
         if (orphanStyles) {

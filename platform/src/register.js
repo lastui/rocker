@@ -15,9 +15,4 @@ export default function(scope) {
   if (scope.props) {
     window.__SANDBOX_SCOPE__.props = scope.props;
   }
-  if (scope.Hooks) {
-    window.__SANDBOX_SCOPE__.Hooks = scope.Hooks;
-  } else {
-    window.__SANDBOX_SCOPE__.Hooks = {};
-  }
 }
