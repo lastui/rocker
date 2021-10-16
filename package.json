@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.5.25",
+  "version": "0.5.26",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -51,7 +51,7 @@
     "core-js": "3.18.3",
     "css-loader": "6.4.0",
     "dotenv": "10.0.0",
-    "html-webpack-plugin": "5.3.2",
+    "html-webpack-plugin": "5.4.0",
     "mini-css-extract-plugin": "2.4.2",
     "path-browserify": "1.0.1",
     "redux-devtools-extension": "2.13.9",
