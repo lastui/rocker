@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.5.42",
+  "version": "0.5.43",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -43,24 +43,24 @@
     "runtime/dll/LICENSE.txt"
   ],
   "dependencies": {
-    "@lastui/babylon": "1.1.27",
+    "@lastui/babylon": "1.1.28",
     "@linaria/webpack-loader": "3.0.0-beta.13",
     "add-asset-html-webpack-plugin": "3.2.0",
-    "chalk": "4.1.2",
+    "chalk": "5.0.0",
     "clean-webpack-plugin": "4.0.0",
     "core-js": "3.19.1",
     "css-loader": "6.5.1",
     "dotenv": "10.0.0",
     "html-webpack-plugin": "5.5.0",
-    "mini-css-extract-plugin": "2.4.4",
+    "mini-css-extract-plugin": "2.4.5",
     "path-browserify": "1.0.1",
     "redux-devtools-extension": "2.13.9",
-    "sass": "1.43.4",
+    "sass": "1.43.5",
     "sass-loader": "12.3.0",
     "style-loader": "3.3.1",
     "terser-webpack-plugin": "5.2.5",
-    "webpack": "5.64.1",
-    "webpack-dev-server": "4.5.0"
+    "webpack": "5.64.4",
+    "webpack-dev-server": "4.6.0"
   },
   "repository": {
     "type": "git",
