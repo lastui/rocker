@@ -1,13 +1,18 @@
 import React from "react";
-import { Route as ReactRoute, useRouteMatch } from "react-router";
+import { Routes, Route as ReactRoute, useLocation } from "react-router";
 
 const Route = (props) => {
-  const match = useRouteMatch();
-  return React.createElement(ReactRoute, {
-    path: `${match.url}/${props.path}`.replace(/\/+/g, '/'),
-    exact: Boolean(props.exact),
-    component: props.component,
-  }, null);
+  const location = useLocation();
+
+  return (
+    <Routes>
+      {React.createElement(ReactRoute, {
+        path: `${location.pathname}/${props.path}`.replace(/\/+/g, '/'),
+        exact: Boolean(props.exact),
+        component: props.component,
+      }, null)}
+    </Routes>
+  );
 };
 
 export default Route;

@@ -25,7 +25,7 @@ const Entrypoint = (props) => {
 		>
 			<BrowserRouter forceRefresh={false}>
 				<Routes>
-					<Route path="/" element={<Module name={entrypoint} />} />
+					<Route path="*" element={<Module name={entrypoint} />} />
 				</Routes>
 			</BrowserRouter>
 		</IntlProvider>
