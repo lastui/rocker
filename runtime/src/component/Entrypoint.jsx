@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { Route, Routes } from "react-router";
+import { Switch } from "react-router";
 import { IntlProvider } from "react-intl";
 import { Module } from "@lastui/rocker/platform";
 import { getEntrypoint, getLanguage, getI18nMessages } from "../selector";
@@ -24,9 +24,9 @@ const Entrypoint = (props) => {
 			}}
 		>
 			<BrowserRouter forceRefresh={false}>
-				<Routes>
-					<Route path="*" element={<Module name={entrypoint} />} />
-				</Routes>
+				<Switch>
+					<Module name={entrypoint} />
+				</Switch>
 			</BrowserRouter>
 		</IntlProvider>
 	);
