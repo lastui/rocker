@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 
-const ipaddr = require("ipaddr.js");
-const chalk = require("chalk");
-const path = require("path");
-const webpack = require("webpack");
-const WebpackDevServer = require("webpack-dev-server");
+let cleanupHooks = [];
 
 process.on("warning", (e) => console.warn(e.stack));
 process.setMaxListeners(100);
@@ -12,8 +8,6 @@ process.setMaxListeners(100);
 if (process.env.NODE_ENV !== "production") {
 	process.env.NODE_ENV = "development";
 }
-
-const config = require(path.resolve("./webpack.config.js"));
 
 function isLikelyASyntaxError(message) {
 	return message.indexOf("Syntax error:") !== -1;
@@ -101,87 +95,98 @@ function formatMessage(message) {
 }
 
 function formatWebpackMessages(json) {
-	const formattedErrors = json.errors.map(formatMessage);
-	const formattedWarnings = json.warnings.map(formatMessage);
-	const result = { errors: formattedErrors, warnings: formattedWarnings };
-	if (result.errors.some(isLikelyASyntaxError)) {
-		result.errors = result.errors.filter(isLikelyASyntaxError);
-	}
-	return result;
+const formattedErrors = json.errors.map(formatMessage);
+const formattedWarnings = json.warnings.map(formatMessage);
+const result = { errors: formattedErrors, warnings: formattedWarnings };
+if (result.errors.some(isLikelyASyntaxError)) {
+	result.errors = result.errors.filter(isLikelyASyntaxError);
+}
+return result;
 }
 
-const callback = (err, stats) => {
-	if (err) {
-		console.log(chalk.red("Failed to compile.\n"));
-		console.log(err);
-		return;
-	}
-	if (!stats) {
-		return;
-	}
-	const statsData = stats.toJson({
-		all: false,
-		warnings: true,
-		errors: true,
-	});
-	const messages = formatWebpackMessages(statsData);
-	const isSuccessful = !messages.errors.length && !messages.warnings.length;
-	if (isSuccessful) {
-		console.log(chalk.green("Compiled successfully!"));
-	}
-	if (messages.errors.length) {
-		if (messages.errors.length > 1) {
-			messages.errors.length = 1;
-		}
-		console.log(chalk.red("Failed to compile.\n"));
-		console.log(messages.errors.join("\n\n"));
-		return;
-	}
-	if (messages.warnings.length) {
-		console.log(chalk.yellow("Compiled with warnings.\n"));
-		console.log(messages.warnings.join("\n\n"));
-	}
-};
+async function main() {
 
-let cleanupHooks = [];
+	const ipaddr = require("ipaddr.js");
+	const chalk = (await import("chalk")).default;
+	const path = require("path");
+	const webpack = require("webpack");
+	const WebpackDevServer = require("webpack-dev-server");
 
-if (config.watch) {
-	config.infrastructureLogging = { level: "none" };
-	const devServerConfig = config.devServer;
-	devServerConfig.client.logging = "none";
-	delete config.devServer;
-	config.stats = "none";
-	const compiler = webpack(config, callback);
-	compiler.hooks.invalid.tap("invalid", () => {
-		console.log("Compiling...");
-	});
-	const devServer = new WebpackDevServer(devServerConfig, compiler);
-	devServer.startCallback((err) => {
+	const config = require(path.resolve("./webpack.config.js"));
+
+	const callback = (err, stats) => {
 		if (err) {
-			callback(err);
+			console.log(chalk.red("Failed to compile.\n"));
+			console.log(err);
+			return;
 		}
-		let host = ipaddr.parse(devServer.options.host);
-		if (host.range() === "unspecified") {
-			host = "localhost";
+		if (!stats) {
+			return;
 		}
-		console.log(
-			chalk.green(
-				`Project is running at: ${
-					devServer.options.https ? "https://" : "http://"
-				}${host}:${devServer.options.port}`
-			)
-		);
-	});
-	cleanupHooks.push(() => devServer.close());
-} else {
-	webpack(config).run(callback);
+		const statsData = stats.toJson({
+			all: false,
+			warnings: true,
+			errors: true,
+		});
+		const messages = formatWebpackMessages(statsData);
+		const isSuccessful = !messages.errors.length && !messages.warnings.length;
+		if (isSuccessful) {
+			console.log(chalk.green("Compiled successfully!"));
+		}
+		if (messages.errors.length) {
+			if (messages.errors.length > 1) {
+				messages.errors.length = 1;
+			}
+			console.log(chalk.red("Failed to compile.\n"));
+			console.log(chalk.red(messages.errors.join("\n\n")));
+			return;
+		}
+		if (messages.warnings.length) {
+			console.log(chalk.yellow("Compiled with warnings.\n"));
+			console.log(chalk.yellow(messages.warnings.join("\n\n")));
+		}
+	};
+
+	if (config.watch) {
+		config.infrastructureLogging = { level: "none" };
+		const devServerConfig = config.devServer;
+		devServerConfig.client.logging = "none";
+		delete config.devServer;
+		config.stats = "none";
+		const compiler = webpack(config, callback);
+		compiler.hooks.invalid.tap("invalid", () => {
+			console.log("Compiling...");
+		});
+		const devServer = new WebpackDevServer(devServerConfig, compiler);
+		devServer.startCallback((err) => {
+			if (err) {
+				callback(err);
+			}
+			let host = ipaddr.parse(devServer.options.host);
+			if (host.range() === "unspecified") {
+				host = "localhost";
+			}
+			console.log(
+				chalk.green(
+					`Project is running at: ${
+						devServer.options.https ? "https://" : "http://"
+					}${host}:${devServer.options.port}`
+				)
+			);
+		});
+		cleanupHooks.push(() => devServer.close());
+	} else {
+		webpack(config).run(callback);
+	}
 }
+
+main();
 
 cleanupHooks.push(() => process.exit(0));
 
 const signals = ["SIGINT", "SIGTERM"];
 signals.forEach(function (sig) {
-	process.on(sig, () => {
+	process.on(sig, async () => {
 		cleanupHooks.forEach((hook) => hook());
 	});
 });
