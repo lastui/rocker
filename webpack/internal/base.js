@@ -13,6 +13,7 @@ module.exports = {
 		fallback: {
 			process: false,
 			path: require.resolve("path-browserify"),
+			util: require.resolve("util/"),
 		},
 		alias: {},
 	},
