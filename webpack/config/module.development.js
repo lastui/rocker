@@ -135,7 +135,8 @@ config.module.rules.push(
 		type: "asset/source",
 	},
 	{
-		test: /\.mp3/,
+		test: /\.(mp3|png|jpe?g|gif)$/i,
+		dependency: { not: ["url"] },
 		type: 'asset/inline'
 	},
 	{

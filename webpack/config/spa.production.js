@@ -145,7 +145,7 @@ config.module.rules.push(
 		],
 	},
 	{
-		test: /\.(woff|woff2|svg|eot|otf|ttf|png|jpg|gif)(\?.*$|$)/,
+		test: /\.(woff|woff2|svg|eot|otf|ttf|png|jpe?g|gif)(\?.*$|$)/,
 		type: "asset/resource",
 	}
 );
