@@ -14,7 +14,7 @@ const Main = (props) => {
 
 	React.useEffect(async () => {
 		try {
-			const store = await setupStore();
+			const store = await setupStore(props.reduxMiddlewared);
 			store.dispatch(actions.init(props.fetchContext, props.initializeRuntime));
 			setState({
 				store,
