@@ -224,16 +224,16 @@ config.plugins.push(
 		scriptLoading: "blocking",
 	}),
 	new CopyPlugin({
-      patterns: [
-        {
-        	from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
-        	to: settings.PROJECT_DEV_PATH,
-        	filter: async (resourcePath) => {
-	            return !resourcePath.endsWith("index.html");
-	        },
-        },
-      ],
-    }),
+		patterns: [
+			{
+				from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
+				to: settings.PROJECT_DEV_PATH,
+				filter: async (resourcePath) => {
+					return !resourcePath.endsWith("index.html");
+				},
+			},
+		],
+	}),
 	new AddAssetHtmlPlugin([
 		{
 			filepath: path.resolve(

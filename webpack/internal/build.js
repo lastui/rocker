@@ -11,7 +11,7 @@ module.exports = {
 		chunkLoading: "jsonp",
 		path: settings.PROJECT_BUILD_PATH,
 		publicPath: settings.PROJECT_NAMESPACE,
-		globalObject: 'this',
+		globalObject: "this",
 	},
 	performance: {
 		hints: "warning",
