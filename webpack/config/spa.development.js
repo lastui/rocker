@@ -6,6 +6,7 @@ setLogLevel("none");
 
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 const settings = require("../settings");
 
@@ -222,6 +223,17 @@ config.plugins.push(
 		inject: "body",
 		scriptLoading: "blocking",
 	}),
+	new CopyPlugin({
+      patterns: [
+        {
+        	from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
+        	to: settings.PROJECT_DEV_PATH,
+        	filter: async (resourcePath) => {
+	            return !resourcePath.endsWith("index.html");
+	        },
+        },
+      ],
+    }),
 	new AddAssetHtmlPlugin([
 		{
 			filepath: path.resolve(

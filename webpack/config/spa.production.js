@@ -196,6 +196,17 @@ config.plugins.push(
 		inject: "body",
 		scriptLoading: "blocking",
 	}),
+	new CopyPlugin({
+      patterns: [
+        {
+        	from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
+        	to: settings.PROJECT_BUILD_PATH,
+        	filter: async (resourcePath) => {
+	            return !resourcePath.endsWith("index.html");
+	        },
+        },
+      ],
+    }),
 	new AddAssetHtmlPlugin([
 		{
 			filepath: path.resolve(
