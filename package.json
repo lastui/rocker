@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -60,7 +60,8 @@
     "style-loader": "3.3.1",
     "terser-webpack-plugin": "5.2.5",
     "webpack": "5.64.4",
-    "webpack-dev-server": "4.6.0"
+    "webpack-dev-server": "4.6.0",
+    "copy-webpack-plugin": "10.0.0"
   },
   "repository": {
     "type": "git",
