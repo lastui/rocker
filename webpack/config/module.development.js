@@ -135,6 +135,10 @@ config.module.rules.push(
 		type: "asset/source",
 	},
 	{
+		test: /\.mp3/,
+		type: 'asset/inline'
+	},
+	{
 		test: /\.json$/,
 		type: "json",
 	},

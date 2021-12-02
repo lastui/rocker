@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -48,6 +48,7 @@
     "add-asset-html-webpack-plugin": "3.2.0",
     "chalk": "5.0.0",
     "clean-webpack-plugin": "4.0.0",
+    "copy-webpack-plugin": "10.0.0",
     "core-js": "3.19.1",
     "css-loader": "6.5.1",
     "dotenv": "10.0.0",
@@ -59,9 +60,9 @@
     "sass-loader": "12.3.0",
     "style-loader": "3.3.1",
     "terser-webpack-plugin": "5.2.5",
+    "util": "0.12.4",
     "webpack": "5.64.4",
-    "webpack-dev-server": "4.6.0",
-    "copy-webpack-plugin": "10.0.0"
+    "webpack-dev-server": "4.6.0"
   },
   "repository": {
     "type": "git",
