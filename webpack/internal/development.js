@@ -37,7 +37,7 @@ module.exports = {
 			process: false,
 			"process.env.NODE_ENV": `"development"`,
 			"process.env.NODE_DEBUG": true,
-			"process.env.VERSION": process.env.VERSION,
+			"process.env.VERSION": `"${process.env.VERSION}"`,
 		}),
 		new webpack.EnvironmentPlugin([
 			...Object.keys(process.env),
