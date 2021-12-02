@@ -12,7 +12,7 @@ export default (state = initialState, action) => {
 			const meta = {};
 			const available = [];
 			const loaded = {};
-			for (const item in action.payload.modules) {
+			for (const item of action.payload.modules) {
 				if (!meta[item.id]) {
 					available.push(item.id)
 				}
