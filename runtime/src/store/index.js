@@ -11,7 +11,7 @@ import {
 export default async (middlewares) => {
 	const sagaMiddleware = createSagaMiddleware();
 
-	const enhancers = [...middlewares, sagaMiddleware, moduleLoaderMiddleware(moduleLoader)];
+	const enhancers = [...(middlewares || []), sagaMiddleware, moduleLoaderMiddleware(moduleLoader)];
 
 	const composer = process.env.NODE_ENV === 'development'
 		? require('redux-devtools-extension').composeWithDevTools
