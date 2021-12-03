@@ -266,7 +266,16 @@ const createModuleLoader = () => {
         dispatch: store.dispatch,
         getState: () => {
           const state = store.getState();
-          const isolatedState = state.modules[id] || {};
+          const isolatedState = {};
+          for (const mid in state.modules) {
+            if (mid === id) {
+              continue
+            }
+            Object.assign(isolatedState, state.modules[mid]);
+          }
+          if (state.modules[id]) {
+            Object.assign(isolatedState, state.modules[id]);
+          }
           isolatedState.shared = state.shared;
           isolatedState.runtime = {
             updatedAt: state.runtime.updatedAt,
