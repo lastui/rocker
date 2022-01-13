@@ -1,15 +1,10 @@
 import React from "react";
 import RouterContext from "./RouterContext.js";
-import { createPath, createLocation } from 'history';
+import { createPath } from 'history';
 
-export const resolveToLocation = (to, currentLocation) =>
-  typeof to === "function" ? to(currentLocation) : to;
-
-export const normalizeToLocation = (to, currentLocation) => {
-  return typeof to === "string"
-    ? createLocation(to, null, null, currentLocation)
-    : to;
-};
+function resolveToLocation(to, currentLocation) {
+  return typeof to === "function" ? to(currentLocation) : to;
+}
 
 function isModifiedEvent(event) {
   return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
@@ -18,7 +13,6 @@ function isModifiedEvent(event) {
 const LinkAnchor = React.forwardRef(
   (
     {
-      innerRef, // TODO: deprecate
       navigate,
       onClick,
       ...rest
@@ -49,24 +43,19 @@ const LinkAnchor = React.forwardRef(
       }
     };
 
-    props.ref = innerRef;
+    props.ref = forwardedRef;
 
-    /* eslint-disable-next-line jsx-a11y/anchor-has-content */
     return <a {...props} />;
   }
 );
 
 
-/**
- * The public API for rendering a history-aware <a>.
- */
 const Link = React.forwardRef(
   (
     {
       component = LinkAnchor,
       replace,
       to,
-      innerRef, // TODO: deprecate
       ...rest
     },
     forwardedRef
@@ -76,10 +65,7 @@ const Link = React.forwardRef(
         {context => {
           const { history } = context;
 
-          const location = normalizeToLocation(
-            resolveToLocation(to, context.location),
-            context.location
-          );
+          const location = resolveToLocation(to, context.location);
 
           const href = location ? history.createHref(location) : "";
           const props = {
@@ -87,14 +73,12 @@ const Link = React.forwardRef(
             href,
             navigate() {
               const location = resolveToLocation(to, context.location);
-              const isDuplicateNavigation = createPath(context.location) === createPath(normalizeToLocation(location));
-              const method = (replace || isDuplicateNavigation) ? history.replace : history.push;
-
+              const method = replace ? history.replace : history.push;
               method(location);
             }
           };
 
-          props.innerRef = innerRef;
+          props.ref = forwardedRef;
 
           return React.createElement(component, props);
         }}

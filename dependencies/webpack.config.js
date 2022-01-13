@@ -8,6 +8,7 @@ const config = require(path.resolve(
 
 config.entry = {
 	dependencies: [
+		"history",
 		"react",
 		"react-dom",
 		"react-intl",

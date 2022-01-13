@@ -1,4 +1,3 @@
-export { default as Redirect } from "./Redirect.js";
 export { default as Route } from "./Route.js";
 export { default as InductiveRoute } from "./InductiveRoute.js";
 export { default as BrowserRouter } from "./BrowserRouter.js";

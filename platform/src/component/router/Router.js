@@ -20,9 +20,9 @@ class Router extends React.Component {
     this._pendingLocation = null;
 
     if (!props.staticContext) {
-      this.unlisten = props.history.listen(location => {
+      this.unlisten = props.history.listen((action) => {
         if (this._isMounted) {
-          this.setState({ location });
+          this.setState({ location: action.location });
         } else {
           this._pendingLocation = location;
         }
