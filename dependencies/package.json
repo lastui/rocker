@@ -1,11 +1,11 @@
 {
 	"scripts": {
-		"prebuild": "npm ci",
+		"prebuild": "npm ci --no-fund --no-audit",
 		"build": "npm run build:dev && npm run build:prod",
 		"build:prod": "NODE_ENV=production node ../bin/webpack.js",
 		"build:dev": "NODE_ENV=development node ../bin/webpack.js"
 	},
 	"devDependencies": {
-		"@lastui/dependencies": "1.1.59"
+		"@lastui/dependencies": "1.1.60"
 	}
 }

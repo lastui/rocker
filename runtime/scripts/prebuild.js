@@ -1,16 +1,23 @@
-const { execSync } = require("child_process");
-const path = require("path");
-const runtime = path.resolve(__dirname, '..');
-const platform = path.resolve(__dirname, '../../platform');
-const reduxDevtoolsExtension = path.resolve(__dirname, '../../node_modules/redux-devtools-extension');
+#!/usr/bin/env node
 
-execSync(`rm -rf ./node_modules`);
-execSync(`ln -s ../dependencies/node_modules ./node_modules`);
+const path = require('path');
+const { clearDirectory, createSymlink, ensureDirectory } = require('../../scripts');
 
-execSync(`rm -rf ./node_modules/@lastui/rocker || :`);
-execSync(`rm -rf ./node_modules/redux-devtools-extension || :`);
-execSync(`mkdir -p ./node_modules/@lastui/rocker`);
-execSync(`mkdir -p ./node_modules/@lastui/redux`);
-execSync(`ln -s ${platform}/src ./node_modules/@lastui/rocker/platform`);
-execSync(`ln -s ${runtime}/src ./node_modules/@lastui/rocker/runtime`);
-execSync(`ln -s ${reduxDevtoolsExtension} ./node_modules/redux-devtools-extension`);
+////////////////////////////////
+
+async function main() {
+	await clearDirectory(path.resolve(__dirname, "../node_modules"));
+	await createSymlink(path.resolve(__dirname, "../../dependencies/node_modules"), path.resolve(__dirname, "../node_modules"));
+	await clearDirectory(path.resolve(__dirname, "../node_modules/@lastui/rocker"));
+	await clearDirectory(path.resolve(__dirname, "../node_modules/redux-devtools-extension"));
+	await ensureDirectory(path.resolve(__dirname, "../node_modules/@lastui/rocker"));
+	await createSymlink(path.resolve(__dirname, "../../platform/src"), path.resolve(__dirname, "../node_modules/@lastui/rocker/platform"));
+	await createSymlink(path.resolve(__dirname, "../src"), path.resolve(__dirname, "../node_modules/@lastui/rocker/runtime"));
+	await createSymlink(path.resolve(__dirname, "../../node_modules/redux-devtools-extension"), path.resolve(__dirname, "../node_modules/redux-devtools-extension"));
+}
+
+////////////////////////////////
+
+(function () {
+	main();
+})();
