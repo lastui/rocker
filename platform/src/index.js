@@ -6,13 +6,20 @@ import moduleLoader from "./loader";
 import registerModule from "./register";
 
 import Module from "./component/Module";
-import Route from "./component/Route";
-import { Link } from 'react-router-dom';
+import { Link, BrowserRouter, Route, InductiveRoute, Switch, Redirect, useHistory, useLocation, useParams, useRouteMatch } from "./component/router";
 
 export {
 	Module,
 	Route,
+	InductiveRoute,
 	Link,
+	Redirect,
+	Switch,
+	BrowserRouter,
+	useHistory,
+	useLocation,
+	useParams,
+	useRouteMatch,
 	actions,
 	constants,
 	moduleLoader,
@@ -23,7 +30,15 @@ export {
 export default {
 	Module,
 	Route,
+	InductiveRoute,
 	Link,
+	Redirect,
+	Switch,
+	BrowserRouter,
+	useHistory,
+	useLocation,
+	useParams,
+	useRouteMatch,
 	actions,
 	constants,
 	moduleLoader,

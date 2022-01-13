@@ -12,8 +12,6 @@ config.entry = {
 		"react-dom",
 		"react-intl",
 		"react-redux",
-		"react-router",
-		"react-router-dom",
 		"redux",
 		"redux-saga",
 		"redux-saga/effects",
