@@ -1,5 +1,16 @@
-const { execSync } = require("child_process");
+#!/usr/bin/env node
 
-execSync(`rm -rf ./node_modules/redux-devtools-extension`);
-execSync(`rm -rf ./node_modules/rocker`);
-execSync(`rm -rf ./node_modules`);
+const path = require('path');
+const { clearDirectory } = require('../../scripts');
+
+////////////////////////////////
+
+async function main() {
+	await clearDirectory(path.resolve(__dirname, "../node_modules"));
+}
+
+////////////////////////////////
+
+(function () {
+	main();
+})();

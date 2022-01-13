@@ -1,10 +1,20 @@
-const { execSync } = require("child_process");
-const path = require("path");
-const platform = path.resolve(process.cwd());
+#!/usr/bin/env node
 
-execSync(`rm -rf ./node_modules`);
-execSync(`ln -s ../dependencies/node_modules ./node_modules`);
+const path = require('path');
+const { clearDirectory, createSymlink, ensureDirectory } = require('../../scripts');
 
-execSync(`rm -rf ./node_modules/@lastui/rocker || :`);
-execSync(`mkdir -p ./node_modules/@lastui/rocker`);
-execSync(`ln -s ${platform}/src ./node_modules/@lastui/rocker/platform`);
+////////////////////////////////
+
+async function main() {
+	await clearDirectory(path.resolve(__dirname, "../node_modules"));
+	await createSymlink(path.resolve(__dirname, "../../dependencies/node_modules"), path.resolve(__dirname, "../node_modules"));
+	await clearDirectory(path.resolve(__dirname, "../node_modules/@lastui/rocker"));
+	await ensureDirectory(path.resolve(__dirname, "../node_modules/@lastui/rocker"));
+	await createSymlink(path.resolve(__dirname, "../src"), path.resolve(__dirname, "../node_modules/@lastui/rocker/platform"));
+}
+
+////////////////////////////////
+
+(function () {
+	main();
+})();
