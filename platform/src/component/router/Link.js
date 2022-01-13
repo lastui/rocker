@@ -45,15 +45,11 @@ const LinkAnchor = React.forwardRef(
 
     props.ref = forwardedRef;
 
-    /* eslint-disable-next-line jsx-a11y/anchor-has-content */
     return <a {...props} />;
   }
 );
 
 
-/**
- * The public API for rendering a history-aware <a>.
- */
 const Link = React.forwardRef(
   (
     {
