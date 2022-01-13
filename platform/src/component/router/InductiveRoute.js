@@ -1,7 +1,8 @@
 import React from "react";
-import { Route as ReactRoute, useRouteMatch } from "react-router";
+import Route from "./Route";
+import { useRouteMatch } from './hooks'
 
-const Route = (props) => {
+const InductiveRoute = (props) => {
   const match = useRouteMatch();
   return React.createElement(ReactRoute, {
     path: `${match.url}/${props.path}`.replace(/\/+/g, '/'),
@@ -10,4 +11,4 @@ const Route = (props) => {
   }, null);
 };
 
-export default Route;
+export default InductiveRoute;
