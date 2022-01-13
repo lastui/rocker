@@ -4,7 +4,7 @@ import { useRouteMatch } from './hooks'
 
 const InductiveRoute = (props) => {
   const match = useRouteMatch();
-  return React.createElement(ReactRoute, {
+  return React.createElement(Route, {
     path: `${match.url}/${props.path}`.replace(/\/+/g, '/'),
     exact: Boolean(props.exact),
     component: props.component,
