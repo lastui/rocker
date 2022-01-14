@@ -6,15 +6,15 @@ import moduleLoader from "./loader";
 import registerModule from "./register";
 
 import Module from "./component/Module";
-import { Link, BrowserRouter, Route, InductiveRoute, Switch, useHistory, useLocation, useParams, useRouteMatch } from "./component/router";
+import Link from "./component/Link";
+import Router, { useHistory, useLocation, useParams, useRouteMatch } from "./component/Router";
+import Route from "./component/Route";
 
 export {
 	Module,
 	Route,
-	InductiveRoute,
 	Link,
-	Switch,
-	BrowserRouter,
+	Router,
 	useHistory,
 	useLocation,
 	useParams,
@@ -29,10 +29,8 @@ export {
 export default {
 	Module,
 	Route,
-	InductiveRoute,
 	Link,
-	Switch,
-	BrowserRouter,
+	Router,
 	useHistory,
 	useLocation,
 	useParams,

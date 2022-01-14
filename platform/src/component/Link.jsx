@@ -1,6 +1,5 @@
 import React from "react";
-import RouterContext from "./RouterContext.js";
-import { createPath } from 'history';
+import { RouterContext } from "./Router";
 
 function resolveToLocation(to, currentLocation) {
   return typeof to === "function" ? to(currentLocation) : to;
@@ -32,10 +31,10 @@ const LinkAnchor = React.forwardRef(
         }
 
         if (
-          !event.defaultPrevented && // onClick prevented default
-          event.button === 0 && // ignore everything but left clicks
-          (!target || target === "_self") && // let browser handle "target=_blank" etc.
-          !isModifiedEvent(event) // ignore clicks with modifier keys
+          !event.defaultPrevented &&
+          event.button === 0 &&
+          (!target || target === "_self") &&
+          !isModifiedEvent(event)
         ) {
           event.preventDefault();
           navigate();
