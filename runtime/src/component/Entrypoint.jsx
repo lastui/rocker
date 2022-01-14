@@ -1,8 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { IntlProvider } from "react-intl";
-import { Module, Switch, BrowserRouter } from "@lastui/rocker/platform";
+import { Module, Router } from "@lastui/rocker/platform";
 import { getEntrypoint, getLanguage, getI18nMessages } from "../selector";
+import { createBrowserHistory } from "history";
+
+const history = createBrowserHistory();
 
 const Entrypoint = (props) => {
 	const entrypoint = useSelector(getEntrypoint);
@@ -21,11 +24,9 @@ const Entrypoint = (props) => {
 				}
 			}}
 		>
-			<BrowserRouter>
-				<Switch>
-					<Module name={entrypoint} />
-				</Switch>
-			</BrowserRouter>
+			<Router history={history}>
+				<Module name={entrypoint} />
+			</Router>
 		</IntlProvider>
 	);
 };
