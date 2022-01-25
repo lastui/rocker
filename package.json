@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.6.22",
+  "version": "0.6.23",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -51,7 +51,7 @@
     "copy-webpack-plugin": "10.2.1",
     "core-js": "3.20.3",
     "css-loader": "6.5.1",
-    "dotenv": "14.3.0",
+    "dotenv": "14.3.2",
     "html-webpack-plugin": "5.5.0",
     "mini-css-extract-plugin": "2.5.3",
     "path-browserify": "1.0.1",
