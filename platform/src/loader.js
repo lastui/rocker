@@ -6,6 +6,8 @@ import { downloadProgram, downloadJson } from "./assets";
 import * as constants from "./constants";
 import * as actions from "./actions";
 
+import { injectMiddleware, ejectMiddleware } from "./middleware";
+
 const createModuleLoader = () => {
   let store = {
     dispatch() {
@@ -32,6 +34,7 @@ const createModuleLoader = () => {
   const loadingModules = {};
   const danglingNamespaces = [];
   const reducers = {};
+  const middlewares = {};
   const sagas = {};
 
   const getLoadedModule = (id) => loadedModules[id];
@@ -44,10 +47,27 @@ const createModuleLoader = () => {
     delete reducers[id];
   };
 
+  const removeMiddleware = (id) => {
+    if (!middlewares[id]) {
+      return;
+    }
+    console.debug(`module ${id} removing middleware`);
+    middlewares[id]();
+    delete middlewares[id];
+  };
+
   const addReducer = (id, reducer) => {
+    console.debug(`module ${id} introducing reducer`);
     removeReducer(id);
     reducer({}, { type: constants.MODULE_INIT });
     reducers[id] = reducer;
+  };
+
+  const addMiddleware = (id, middleware) => {
+    console.debug(`module ${id} introducing middleware`);
+    removeMiddleware(id);
+    injectMiddleware(middleware);
+    middlewares[id] = () => ejectMiddleware(middleware);
   };
 
   const removeSaga = (id) => {
@@ -76,13 +96,15 @@ const createModuleLoader = () => {
       injectedStyles.setAttribute("data-module", id);
     }
     if (scope.reducer) {
-      console.debug(`module ${id} introducing reducer`);
       const composedReducer = {
         ...scope.reducer,
         shared: (state = {}, action) => state,
         runtime: (state = {}, action) => state,
       };
       addReducer(id, combineReducers(composedReducer));
+    }
+    if (scope.middleware) {
+      addMiddleware(id, scope.middleware)
     }
     if (scope.saga) {
       console.debug(`module ${id} introducing saga`);
@@ -235,6 +257,8 @@ const createModuleLoader = () => {
     return Promise.all(promises);
   };
 
+  const getMiddlewares = () => middlewares
+
   const getReducer = () => (state = {}, action) => {
     for (let id = danglingNamespaces.pop(); id; id = danglingNamespaces.pop()) {
       console.debug(`module ${id} evicting redux state`);
@@ -248,6 +272,7 @@ const createModuleLoader = () => {
         return state;
       }
       case constants.MODULE_UNLOADED: {
+        removeMiddleware(action.payload.id);
         removeReducer(action.payload.id);
         return state;
       }
@@ -368,6 +393,7 @@ const createModuleLoader = () => {
     loadModule,
     getLoadedModule,
     getReducer,
+    getMiddlewares,
   };
 };
 

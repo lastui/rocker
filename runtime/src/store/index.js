@@ -6,12 +6,18 @@ import sagas from "../saga";
 import {
 	moduleLoader,
 	moduleLoaderMiddleware,
+	dynamicMiddleware,
 } from "@lastui/rocker/platform";
 
 export default async (middlewares) => {
 	const sagaMiddleware = createSagaMiddleware();
 
-	const enhancers = [...(middlewares || []), sagaMiddleware, moduleLoaderMiddleware(moduleLoader)];
+	const enhancers = [
+		sagaMiddleware,
+		moduleLoaderMiddleware(moduleLoader),
+		...(middlewares || []),
+		dynamicMiddleware,
+	];
 
 	const composer = process.env.NODE_ENV === 'development'
 		? require('redux-devtools-extension').composeWithDevTools

@@ -1,7 +1,7 @@
 import * as actions from "./actions";
 import * as constants from "./constants";
 
-import moduleLoaderMiddleware from "./middleware";
+import { moduleLoaderMiddleware, dynamicMiddleware } from "./middleware";
 import moduleLoader from "./loader";
 import registerModule from "./register";
 
@@ -23,6 +23,7 @@ export {
 	constants,
 	moduleLoader,
 	moduleLoaderMiddleware,
+	dynamicMiddleware,
 	registerModule,
 };
 
@@ -39,5 +40,6 @@ export default {
 	constants,
 	moduleLoader,
 	moduleLoaderMiddleware,
+	dynamicMiddleware,
 	registerModule,
 };
