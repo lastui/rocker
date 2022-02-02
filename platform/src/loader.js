@@ -34,7 +34,6 @@ const createModuleLoader = () => {
   const loadingModules = {};
   const danglingNamespaces = [];
   const reducers = {};
-  const middlewares = {};
   const sagas = {};
 
   const getLoadedModule = (id) => loadedModules[id];
@@ -48,32 +47,35 @@ const createModuleLoader = () => {
   };
 
   const removeMiddleware = (id) => {
-    if (!middlewares[id]) {
+    if (!ejectMiddleware(id)) {
       return;
     }
     console.debug(`module ${id} removing middleware`);
-    middlewares[id]();
-    delete middlewares[id];
   };
 
   const addReducer = (id, reducer) => {
-    console.debug(`module ${id} introducing reducer`);
-    removeReducer(id);
-    reducer({}, { type: constants.MODULE_INIT });
-    reducers[id] = reducer;
+    try {
+      console.debug(`module ${id} introducing reducer`);
+      removeReducer(id);
+      reducer({}, { type: constants.MODULE_INIT });
+      reducers[id] = reducer;
+    } catch (_err) {
+      console.warn(`module ${id} wanted to register invalid reducer`)
+    }
   };
 
   const addMiddleware = (id, middleware) => {
+    if (!injectMiddleware(id, middleware)) {
+      return;
+    }
     console.debug(`module ${id} introducing middleware`);
-    removeMiddleware(id);
-    injectMiddleware(middleware);
-    middlewares[id] = () => ejectMiddleware(middleware);
   };
 
   const removeSaga = (id) => {
     if (!sagas[id]) {
       return;
     }
+    console.debug(`module ${id} removing saga`);
     const dangling = sagas[id];
     sagaRunner(function* () {
       yield cancel(dangling);
@@ -83,6 +85,7 @@ const createModuleLoader = () => {
 
   const addSaga = (id, saga) => {
     removeSaga(id);
+    console.debug(`module ${id} introducing saga`);
     sagas[id] = sagaRunner(function* () {
       yield fork(saga);
     });
@@ -107,7 +110,6 @@ const createModuleLoader = () => {
       addMiddleware(id, scope.middleware)
     }
     if (scope.saga) {
-      console.debug(`module ${id} introducing saga`);
       addSaga(id, scope.saga);
     }
     return {
@@ -120,8 +122,10 @@ const createModuleLoader = () => {
           orphanStyles.remove();
         }
         if (scope.saga) {
-          console.debug(`module ${id} removing saga`);
           removeSaga(id);
+        }
+        if (scope.middleware) {
+          removeMiddleware(id);
         }
       },
     };
@@ -257,8 +261,6 @@ const createModuleLoader = () => {
     return Promise.all(promises);
   };
 
-  const getMiddlewares = () => middlewares
-
   const getReducer = () => (state = {}, action) => {
     for (let id = danglingNamespaces.pop(); id; id = danglingNamespaces.pop()) {
       console.debug(`module ${id} evicting redux state`);
@@ -272,7 +274,6 @@ const createModuleLoader = () => {
         return state;
       }
       case constants.MODULE_UNLOADED: {
-        removeMiddleware(action.payload.id);
         removeReducer(action.payload.id);
         return state;
       }
@@ -393,7 +394,6 @@ const createModuleLoader = () => {
     loadModule,
     getLoadedModule,
     getReducer,
-    getMiddlewares,
   };
 };
 

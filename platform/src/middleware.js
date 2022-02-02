@@ -30,18 +30,24 @@ const createDynamicMiddlewares = () => {
   let applied = []
   let storeRef
 
-  const injectMiddleware = (middleware) => {
+  const injectMiddleware = (id, middleware) => {
+    const index = members.findIndex((item) => item === id)
+    if (index !== -1) {
+      return false
+    }
+    members.push(id)
     applied.push(middleware(storeRef))
-    members.push(middleware)
+    return true
   }
 
-  const ejectMiddleware = (middleware) => {
-    const index = members.findIndex((item) => item === middleware)
+  const ejectMiddleware = (id) => {
+    const index = members.findIndex((item) => item === id)
     if (index === -1) {
-      return
+      return false
     }
     members = members.filter((_, idx) => idx !== index)
     applied = applied.filter((_, idx) => idx !== index)
+    return true
   }
 
   return {
