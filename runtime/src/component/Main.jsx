@@ -21,7 +21,7 @@ const Main = (props) => {
 				isReady: true,
 			});
 		} catch (error) {
-			setErrorState(() => {
+			setErrorState(() => {	// FIXME maybe not needed
 				throw error;
 			});
 		}

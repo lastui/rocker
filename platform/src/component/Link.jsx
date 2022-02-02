@@ -11,6 +11,7 @@ function isModifiedEvent(event) {
 
 const LinkAnchor = React.forwardRef(
   ({ navigate, onClick, ...rest }, forwardedRef) => {
+    // FIXME do not spread props and use memo
     const props = {
       ...rest,
       onClick: (event) => {
@@ -42,7 +43,7 @@ const LinkAnchor = React.forwardRef(
 );
 
 const Link = React.forwardRef(
-  ({ component = LinkAnchor, replace, to, ...rest }, forwardedRef) => (
+  ({ component = LinkAnchor, replace, to, ...rest }, forwardedRef) => ( // FIXME do not spread props and use memo
     <RouterContext.Consumer>
       {(context) => {
         const location = resolveToLocation(to, context.location);

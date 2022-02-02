@@ -17,7 +17,7 @@ export default (state = initialState, action) => {
 					available.push(item.id)
 				}
 				meta[item.id] = item.meta || {};
-				loaded[item.id] = state.loaded[item.id] || false;
+				loaded[item.id] = Boolean(state.loaded[item.id]);
 			}
 			return {
 				meta,
