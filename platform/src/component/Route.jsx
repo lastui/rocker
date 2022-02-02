@@ -3,33 +3,42 @@ import React from "react";
 import { RouterContext } from "./Router";
 import { matchPath } from "../routing";
 
-const Route = (props) => (
-  <RouterContext.Consumer>
-    {(context) => {
-      const location = props.location || context.location;
+const Route = (props) => {
+  if (!props.component) {
+    return null;
+  }
 
-      const ownedMatch = props.computedMatch
-        ? matchPath(location.pathname, props.computedMatch.path, props.computedMatch)
-        : (
-          props.path
-            ? matchPath(location.pathname, `${context.match.url}/${props.path}`.replace(/\/+/g, '/'), props)
-            : context.match
-        )
+  return (
+    <RouterContext.Consumer>
+      {(context) => {
+        const location = props.location || context.location;
 
-      const ownedProps = { ...context, location, match: ownedMatch };
+        const match = props.path
+          ? matchPath(
+              location.pathname,
+              `${context.match.url}/${props.path}`.replace(/\/+/g, "/"),
+              props
+            )
+          : context.match;
 
-      return (
-        <RouterContext.Provider value={ownedProps}>
-          {ownedProps.match
-            ? props.component
-              ? React.createElement(props.component, ownedProps)
-              : null
-            : null
-          }
-        </RouterContext.Provider>
-      );
-    }}
-  </RouterContext.Consumer>
-);
+        if (!match) {
+          return null;
+        }
+
+        return (
+          <RouterContext.Provider
+            value={{
+              ...context,
+              location,
+              match,
+            }}
+          >
+            {React.createElement(props.component)}
+          </RouterContext.Provider>
+        );
+      }}
+    </RouterContext.Consumer>
+  );
+};
 
 export default Route;

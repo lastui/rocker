@@ -12,7 +12,7 @@ const Module = (props) => {
     }
     moduleLoader.loadModule(props.name).then((changed) => {
       if (changed) {
-        setLastUpdate((tick) => tick + 1);
+        setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
       }
     });
   }, [props.name, updatedAt]);

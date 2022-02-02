@@ -10,6 +10,7 @@ function* runContextRefresher(action) {
 		yield call(action.payload.initializeRuntime);
 	}
 	const interval = 30 * 1000;
+	
 	// TODO check if context is different between two calls
 	do {
 		try {

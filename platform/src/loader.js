@@ -223,7 +223,7 @@ const createModuleLoader = () => {
     });
 
   const setAvailableModules = (modules = []) => {
-    const promises = [];
+    const scheduledUnload = [];
     const newModules = {};
     for (let i = modules.length; i--; ) {
       const item = modules[i];
@@ -235,7 +235,6 @@ const createModuleLoader = () => {
         availableModules[item.id] = item;
       }
     }
-    const scheduledUnload = [];
     const obsoleteModules = [];
     for (const existing in availableModules) {
       const item = newModules[existing];
@@ -244,21 +243,21 @@ const createModuleLoader = () => {
           item.program?.sha256 !== availableModules[existing].program?.sha256
         ) {
           availableModules[existing] = item;
-          scheduledUnload.push(existing);
+          scheduledUnload.push(unloadModule(item));
         }
-      } else if (loadedModules[existing]) {
-        scheduledUnload.push(existing);
-        obsoleteModules.push(existing);
+      } else {
+        const loaded = loadedModules[existing]
+        if (loaded) {
+          scheduledUnload.push(unloadModule(loaded));
+          obsoleteModules.push(existing);
+        }
       }
     }
-    for (const old of scheduledUnload) {
-      promises.push(unloadModule(availableModules[old]));
+    for (let i = obsoleteModules.length; i--; ) {
+      delete availableModules[obsoleteModules[i]];
+      delete availableLocales[obsoleteModules[i]];
     }
-    for (const obsolete of obsoleteModules) {
-      delete availableModules[obsolete];
-      delete availableLocales[obsolete];
-    }
-    return Promise.all(promises);
+    return Promise.all(scheduledUnload);
   };
 
   const getReducer = () => (state = {}, action) => {
@@ -279,7 +278,11 @@ const createModuleLoader = () => {
       }
       default: {
         for (const id in reducers) {
-          state[id] = reducers[id](state[id], action);
+          try {
+            state[id] = reducers[id](state[id], action);
+          } catch (_err) {
+            console.warn(`module ${id} reducer failed to reduce`)
+          }
         }
         return state;
       }
@@ -297,10 +300,14 @@ const createModuleLoader = () => {
             if (mid === id) {
               continue
             }
-            Object.assign(isolatedState, state.modules[mid]);
+            for (const prop in state.modules[mid]) {
+              isolatedState[prop] = state.modules[mid][prop]
+            }
           }
           if (state.modules[id]) {
-            Object.assign(isolatedState, state.modules[id]);
+            for (const prop in state.modules[id]) {
+              isolatedState[prop] = state.modules[id][prop]
+            }
           }
           isolatedState.shared = state.shared;
           isolatedState.runtime = {
@@ -309,7 +316,7 @@ const createModuleLoader = () => {
           return isolatedState;
         },
         subscribe: store.subscribe,
-        replaceReducer: function (newReducer) {
+        replaceReducer: function(newReducer) {
           addReducer(id, newReducer);
         },
       },
@@ -375,7 +382,7 @@ const createModuleLoader = () => {
     for (const id in availableLocales) {
       promises.push(loadLocale(id, language));
     }
-    return Promise.all(promises);
+    return Promise.allSettled(promises);
   };
 
   return {

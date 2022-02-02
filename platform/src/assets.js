@@ -20,10 +20,15 @@ class SequentialProgramEvaluator {
     if (this.compiling) {
       return;
     }
+    if (this.queue.length === 0) {
+      this.compiling = false;
+      return;
+    }
     this.compiling = true;
     const item = this.queue.shift();
     if (!item) {
       this.compiling = false;
+      this.tick();
       return;
     }
     let sandbox = {
@@ -49,14 +54,19 @@ class SequentialProgramEvaluator {
 async function download(resource) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), CLIENT_TIMEOUT);
-  const response = await fetch(resource, {
-    signal: controller.signal,
-  });
-  clearTimeout(id);
-  if (!response.ok) {
-    throw new Error(String(response.status));
+  try {
+    const response = await fetch(resource, {
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    if (!response.ok) {
+      throw new Error(String(response.status));
+    }
+    return response;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
   }
-  return response;
 }
 
 const downloadJson = (uri) => download(uri).then((data) => data.json());
@@ -67,7 +77,7 @@ const downloadProgram = (program) =>
     .then((data) => {
       if (program.sha256) {
         const md = sha256.create();
-        md.update(data, 'utf8');
+        md.update(data, "utf8");
         const digest = md.digest().toHex();
         if (digest !== program.sha256) {
           return {
