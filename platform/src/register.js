@@ -12,6 +12,9 @@ export default function(scope) {
   if (scope.reducer) {
     window.__SANDBOX_SCOPE__.reducer = scope.reducer;
   }
+  if (scope.middleware) {
+    window.__SANDBOX_SCOPE__.middleware = scope.middleware;
+  }
   if (scope.saga) {
     window.__SANDBOX_SCOPE__.saga = scope.saga;
   }

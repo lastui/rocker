@@ -1,6 +1,8 @@
+import { compose } from 'redux'
+
 import * as constants from "./constants";
 
-export default (loader) => (store) => (next) => (action) => {
+export const moduleLoaderMiddleware = (loader) => (store) => (next) => (action) => {
   switch (action.type) {
     case constants.SET_AVAILABLE_MODULES: {
       return loader
@@ -22,3 +24,47 @@ export default (loader) => (store) => (next) => (action) => {
     }
   }
 };
+
+const createDynamicMiddlewares = () => {
+  let members = []
+  let applied = []
+  let storeRef
+
+  const injectMiddleware = (id, middleware) => {
+    const index = members.findIndex((item) => item === id)
+    if (index !== -1) {
+      return false
+    }
+    members.push(id)
+    applied.push(middleware(storeRef))
+    return true
+  }
+
+  const ejectMiddleware = (id) => {
+    const index = members.findIndex((item) => item === id)
+    if (index === -1) {
+      return false
+    }
+    members = members.filter((_, idx) => idx !== index)
+    applied = applied.filter((_, idx) => idx !== index)
+    return true
+  }
+
+  return {
+    scope: (store) => {
+      storeRef = store
+      return (next) => (action) => compose(...applied)(next)(action);
+    },
+    injectMiddleware,
+    ejectMiddleware,
+  }
+}
+
+const dynamicMiddlewaresInstance = createDynamicMiddlewares()
+
+export const dynamicMiddleware = dynamicMiddlewaresInstance.scope
+
+export const {
+  injectMiddleware,
+  ejectMiddleware,
+} = dynamicMiddlewaresInstance

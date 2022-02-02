@@ -6,6 +6,8 @@ import { downloadProgram, downloadJson } from "./assets";
 import * as constants from "./constants";
 import * as actions from "./actions";
 
+import { injectMiddleware, ejectMiddleware } from "./middleware";
+
 const createModuleLoader = () => {
   let store = {
     dispatch() {
@@ -44,16 +46,36 @@ const createModuleLoader = () => {
     delete reducers[id];
   };
 
+  const removeMiddleware = (id) => {
+    if (!ejectMiddleware(id)) {
+      return;
+    }
+    console.debug(`module ${id} removing middleware`);
+  };
+
   const addReducer = (id, reducer) => {
-    removeReducer(id);
-    reducer({}, { type: constants.MODULE_INIT });
-    reducers[id] = reducer;
+    try {
+      console.debug(`module ${id} introducing reducer`);
+      removeReducer(id);
+      reducer({}, { type: constants.MODULE_INIT });
+      reducers[id] = reducer;
+    } catch (_err) {
+      console.warn(`module ${id} wanted to register invalid reducer`)
+    }
+  };
+
+  const addMiddleware = (id, middleware) => {
+    if (!injectMiddleware(id, middleware)) {
+      return;
+    }
+    console.debug(`module ${id} introducing middleware`);
   };
 
   const removeSaga = (id) => {
     if (!sagas[id]) {
       return;
     }
+    console.debug(`module ${id} removing saga`);
     const dangling = sagas[id];
     sagaRunner(function* () {
       yield cancel(dangling);
@@ -63,6 +85,7 @@ const createModuleLoader = () => {
 
   const addSaga = (id, saga) => {
     removeSaga(id);
+    console.debug(`module ${id} introducing saga`);
     sagas[id] = sagaRunner(function* () {
       yield fork(saga);
     });
@@ -76,7 +99,6 @@ const createModuleLoader = () => {
       injectedStyles.setAttribute("data-module", id);
     }
     if (scope.reducer) {
-      console.debug(`module ${id} introducing reducer`);
       const composedReducer = {
         ...scope.reducer,
         shared: (state = {}, action) => state,
@@ -84,8 +106,10 @@ const createModuleLoader = () => {
       };
       addReducer(id, combineReducers(composedReducer));
     }
+    if (scope.middleware) {
+      addMiddleware(id, scope.middleware)
+    }
     if (scope.saga) {
-      console.debug(`module ${id} introducing saga`);
       addSaga(id, scope.saga);
     }
     return {
@@ -98,8 +122,10 @@ const createModuleLoader = () => {
           orphanStyles.remove();
         }
         if (scope.saga) {
-          console.debug(`module ${id} removing saga`);
           removeSaga(id);
+        }
+        if (scope.middleware) {
+          removeMiddleware(id);
         }
       },
     };
