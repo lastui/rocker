@@ -1,4 +1,4 @@
-function compilePath(path, sensitive) {
+function compilePath(path) {
   let paramNames = [];
   let regexpSource =
     "^" +
@@ -19,13 +19,13 @@ function compilePath(path, sensitive) {
     regexpSource += "(?:\\b|\\/|$)";
   }
 
-  let matcher = new RegExp(regexpSource, sensitive ? undefined : "i");
+  let matcher = new RegExp(regexpSource, "i");
 
   return [matcher, paramNames];
 }
 
-export function matchPath(pathname, path, options = {}) {
-  let [matcher, paramNames] = compilePath(path, options.sensitive);
+export function matchPath(pathname, path, exact) {
+  let [matcher, paramNames] = compilePath(path);
 
   let match = pathname.match(matcher);
   if (!match) return null;
@@ -34,7 +34,7 @@ export function matchPath(pathname, path, options = {}) {
 
   const isExact = pathname === url;
 
-  if (options.exact && !isExact) {
+  if (exact && !isExact) {
     return null;
   }
 
