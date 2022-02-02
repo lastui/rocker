@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.6.27",
+  "version": "0.6.28",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
     "build:dependencies": "cd dependencies && npm run build",
@@ -50,7 +50,7 @@
     "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "10.2.4",
     "core-js": "3.21.0",
-    "css-loader": "6.5.1",
+    "css-loader": "6.6.0",
     "dotenv": "15.0.0",
     "html-webpack-plugin": "5.5.0",
     "mini-css-extract-plugin": "2.5.3",
@@ -62,7 +62,7 @@
     "terser-webpack-plugin": "5.3.1",
     "util": "0.12.4",
     "webpack": "5.68.0",
-    "webpack-dev-server": "4.7.3"
+    "webpack-dev-server": "4.7.4"
   },
   "repository": {
     "type": "git",
