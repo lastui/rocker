@@ -13,8 +13,8 @@ export default async (middlewares) => {
 	const sagaMiddleware = createSagaMiddleware();
 
 	const enhancers = [
-		sagaMiddleware,
 		moduleLoaderMiddleware(moduleLoader),
+		sagaMiddleware,
 		...(middlewares || []),
 		dynamicMiddleware,
 	];
