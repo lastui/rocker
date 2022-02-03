@@ -5,45 +5,42 @@ function resolveToLocation(to, currentLocation) {
   return typeof to === "function" ? to(currentLocation) : to;
 }
 
-function isModifiedEvent(event) {
-  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
-}
-
-const LinkAnchor = React.forwardRef(
-  ({ navigate, onClick, ...rest }, forwardedRef) => {
-    // FIXME do not spread props and use memo
-    const props = {
+const LinkAnchor = React.forwardRef((props, ref) => {
+  const composite = React.useMemo(() => {
+    const { navigate, onClick, ...rest } = props;
+    return {
       ...rest,
       onClick: (event) => {
         try {
           if (onClick) {
             onClick(event);
           }
-        } catch (ex) {
+        } catch (err) {
           event.preventDefault();
-          throw ex;
+          throw err;
         }
 
         if (
           !event.defaultPrevented &&
           event.button === 0 &&
           (!rest.target || rest.target === "_self") &&
-          !isModifiedEvent(event)
+          !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
         ) {
           event.preventDefault();
           navigate();
         }
       },
+      ref,
     };
+  }, [props, ref]);
 
-    props.ref = forwardedRef;
-
-    return React.createElement("a", props);
-  }
-);
+  return props.children
+    ? React.createElement("a", composite, props.children)
+    : React.createElement("a", composite);
+});
 
 const Link = React.forwardRef(
-  ({ component = LinkAnchor, replace, to, ...rest }, forwardedRef) => ( // FIXME do not spread props and use memo
+  ({ component = LinkAnchor, replace, to, ...rest }, ref) => (
     <RouterContext.Consumer>
       {(context) => {
         const location = resolveToLocation(to, context.location);
@@ -61,7 +58,7 @@ const Link = React.forwardRef(
           },
         };
 
-        props.ref = forwardedRef;
+        props.ref = ref;
 
         return React.createElement(component, props);
       }}

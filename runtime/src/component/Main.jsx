@@ -5,34 +5,27 @@ import setupStore from "../store";
 import Entrypoint from './Entrypoint'
 
 const Main = (props) => {
-	const [_, setErrorState] = React.useState();
-
-	const [state, setState] = React.useState({
-		store: undefined,
-		isReady: false,
-	});
+	const [_, setErrorState] = React.useState(undefined);
+	const [store, setStore] = React.useState(undefined);
 
 	React.useEffect(async () => {
 		try {
-			const store = await setupStore(props.reduxMiddlewares);
-			store.dispatch(actions.init(props.fetchContext, props.initializeRuntime));
-			setState({
-				store,
-				isReady: true,
-			});
+			const nextStore = await setupStore(props.reduxMiddlewares);
+			nextStore.dispatch(actions.init(props.fetchContext, props.initializeRuntime));
+			setStore(nextStore);
 		} catch (error) {
-			setErrorState(() => {	// FIXME maybe not needed
+			setErrorState(() => {
 				throw error;
 			});
 		}
 	}, []);
 
-	if (!state.isReady) {
+	if (!store) {
 		return null;
 	}
 
 	return (
-		<ReduxProvider store={state.store}>
+		<ReduxProvider store={store}>
 			<Entrypoint />
 		</ReduxProvider>
 	);

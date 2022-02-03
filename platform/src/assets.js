@@ -53,7 +53,7 @@ class SequentialProgramEvaluator {
 
 async function download(resource) {
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), CLIENT_TIMEOUT);
+  const id = setTimeout(controller.abort, CLIENT_TIMEOUT);
   try {
     const response = await fetch(resource, {
       signal: controller.signal,
@@ -69,25 +69,28 @@ async function download(resource) {
   }
 }
 
-const downloadJson = (uri) => download(uri).then((data) => data.json());
+async function downloadJson(uri) {
+  const data = await download(uri);
+  const content = await data.json();
+  return content;
+};
 
-const downloadProgram = (program) =>
-  download(program.url)
-    .then((data) => data.text())
-    .then((data) => {
-      if (program.sha256) {
-        const md = sha256.create();
-        md.update(data, "utf8");
-        const digest = md.digest().toHex();
-        if (digest !== program.sha256) {
-          return {
-            Main: () => {
-              throw new Error("integrity check failed");
-            },
-          };
-        }
-      }
-      return SequentialProgramEvaluator.compile(data);
-    });
+async function downloadProgram(program) {
+  const data = await download(program.url);
+  const content = await data.text();
+  if (program.sha256) {
+    const md = sha256.create();
+    md.update(data, "utf8");
+    const digest = md.digest().toHex();
+    if (digest !== program.sha256) {
+      return {
+        Main: () => {
+          throw new Error("integrity check failed");
+        },
+      };
+    }
+  }
+  return SequentialProgramEvaluator.compile(data);
+}
 
 export { downloadJson, downloadProgram };

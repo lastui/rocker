@@ -24,11 +24,7 @@ export function useRouteMatch(path) {
 }
 
 const Router = (props) => {
-  const [location, setLocation] = React.useState({
-    pathname: props.history.location.pathname,
-    hash: props.history.location.hash,
-    search: props.history.location.search,
-  })
+  const [location, setLocation] = React.useState(props.history.location)
 
   const composite = React.useMemo(() => ({
     history: props.history,
@@ -43,11 +39,7 @@ const Router = (props) => {
 
   React.useEffect(() => {
     const unlisten = props.history.listen((action) => {
-      setLocation({
-        pathname: action.location.pathname,
-        hash: action.location.hash,
-        search: action.location.search,
-      })
+      setLocation(action.location)
     });
     return unlisten;
   }, [props.history])

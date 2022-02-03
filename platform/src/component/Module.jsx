@@ -12,16 +12,16 @@ const Module = (props) => {
       owned,
       lastUpdate,
     };
-  }, [props, lastUpdate])
+  }, [props, lastUpdate]);
 
   React.useEffect(async () => {
     if (!props.name) {
       return;
     }
-    const changed = await moduleLoader.loadModule(props.name)
+    const changed = await moduleLoader.loadModule(props.name);
     if (changed) {
       setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
-    };
+    }
   }, [props.name, updatedAt]);
 
   const loadedModule = moduleLoader.getLoadedModule(props.name);
