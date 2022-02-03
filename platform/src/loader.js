@@ -272,8 +272,13 @@ const createModuleLoader = () => {
       case constants.SET_AVAILABLE_MODULES: {
         return state;
       }
+      case constants.MODULE_LOADED: {
+        console.debug(`module ${action.payload.id} loaded`);
+        return state;
+      }
       case constants.MODULE_UNLOADED: {
         removeReducer(action.payload.id);
+        console.debug(`module ${action.payload.id} unloaded`);
         return state;
       }
       default: {
