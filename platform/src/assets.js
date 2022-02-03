@@ -80,17 +80,17 @@ async function downloadProgram(program) {
   const content = await data.text();
   if (program.sha256) {
     const md = sha256.create();
-    md.update(data, "utf8");
+    md.update(content, "utf8");
     const digest = md.digest().toHex();
     if (digest !== program.sha256) {
       return {
         Main: () => {
-          throw new Error("integrity check failed");
+          throw new Error(`integrity check or ${program.url} failed`);
         },
       };
     }
   }
-  return SequentialProgramEvaluator.compile(data);
+  return SequentialProgramEvaluator.compile(content);
 }
 
 export { downloadJson, downloadProgram };
