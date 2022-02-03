@@ -11,6 +11,11 @@ const Entrypoint = (props) => {
 	const entrypoint = useSelector(getEntrypoint);
 	const language = useSelector(getLanguage);
 	const messages = useSelector(getI18nMessages);
+	const onError = React.useCallback((err) => {
+		if (err.code !== "MISSING_TRANSLATION") {
+			throw err;
+		}
+	}, [])
 	if (entrypoint === null) {
 		return null;
 	}
@@ -18,11 +23,7 @@ const Entrypoint = (props) => {
 		<IntlProvider
 			messages={messages}
 			locale={language}
-			onError={(err) => {
-				if (err.code !== "MISSING_TRANSLATION") {
-					throw err;
-				}
-			}}
+			onError={onError}
 		>
 			<Router history={history}>
 				<Module name={entrypoint} />

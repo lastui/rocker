@@ -6,15 +6,22 @@ const Module = (props) => {
   const updatedAt = useSelector((state) => state.runtime.updatedAt);
   const [lastUpdate, setLastUpdate] = React.useState(0);
 
-  React.useEffect(() => {
+  const composite = React.useMemo(() => {
+    const { name, fallback, ...owned } = props;
+    return {
+      owned,
+      lastUpdate,
+    };
+  }, [props, lastUpdate]);
+
+  React.useEffect(async () => {
     if (!props.name) {
       return;
     }
-    moduleLoader.loadModule(props.name).then((changed) => {
-      if (changed) {
-        setLastUpdate((tick) => tick + 1);
-      }
-    });
+    const changed = await moduleLoader.loadModule(props.name);
+    if (changed) {
+      setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
+    }
   }, [props.name, updatedAt]);
 
   const loadedModule = moduleLoader.getLoadedModule(props.name);
@@ -25,13 +32,6 @@ const Module = (props) => {
     }
     return null;
   }
-
-  const { name, fallback, ...owned } = props;
-
-  const composite = {
-    owned,
-    lastUpdate,
-  };
 
   return props.children
     ? React.createElement(loadedModule.view, composite, props.children)

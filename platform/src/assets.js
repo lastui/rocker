@@ -20,10 +20,15 @@ class SequentialProgramEvaluator {
     if (this.compiling) {
       return;
     }
+    if (this.queue.length === 0) {
+      this.compiling = false;
+      return;
+    }
     this.compiling = true;
     const item = this.queue.shift();
     if (!item) {
       this.compiling = false;
+      this.tick();
       return;
     }
     let sandbox = {
@@ -48,36 +53,44 @@ class SequentialProgramEvaluator {
 
 async function download(resource) {
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), CLIENT_TIMEOUT);
-  const response = await fetch(resource, {
-    signal: controller.signal,
-  });
-  clearTimeout(id);
-  if (!response.ok) {
-    throw new Error(String(response.status));
+  const id = setTimeout(controller.abort, CLIENT_TIMEOUT);
+  try {
+    const response = await fetch(resource, {
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    if (!response.ok) {
+      throw new Error(String(response.status));
+    }
+    return response;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
   }
-  return response;
 }
 
-const downloadJson = (uri) => download(uri).then((data) => data.json());
+async function downloadJson(uri) {
+  const data = await download(uri);
+  const content = await data.json();
+  return content;
+};
 
-const downloadProgram = (program) =>
-  download(program.url)
-    .then((data) => data.text())
-    .then((data) => {
-      if (program.sha256) {
-        const md = sha256.create();
-        md.update(data, 'utf8');
-        const digest = md.digest().toHex();
-        if (digest !== program.sha256) {
-          return {
-            Main: () => {
-              throw new Error("integrity check failed");
-            },
-          };
-        }
-      }
-      return SequentialProgramEvaluator.compile(data);
-    });
+async function downloadProgram(program) {
+  const data = await download(program.url);
+  const content = await data.text();
+  if (program.sha256) {
+    const md = sha256.create();
+    md.update(data, "utf8");
+    const digest = md.digest().toHex();
+    if (digest !== program.sha256) {
+      return {
+        Main: () => {
+          throw new Error("integrity check failed");
+        },
+      };
+    }
+  }
+  return SequentialProgramEvaluator.compile(data);
+}
 
 export { downloadJson, downloadProgram };

@@ -5,85 +5,65 @@ function resolveToLocation(to, currentLocation) {
   return typeof to === "function" ? to(currentLocation) : to;
 }
 
-function isModifiedEvent(event) {
-  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
-}
-
-const LinkAnchor = React.forwardRef(
-  (
-    {
-      navigate,
-      onClick,
-      ...rest
-    },
-    forwardedRef
-  ) => {
-    const { target } = rest;
-
-    let props = {
+const LinkAnchor = React.forwardRef((props, ref) => {
+  const composite = React.useMemo(() => {
+    const { navigate, onClick, ...rest } = props;
+    return {
       ...rest,
-      onClick: event => {
+      onClick: (event) => {
         try {
-          if (onClick) onClick(event);
-        } catch (ex) {
+          if (onClick) {
+            onClick(event);
+          }
+        } catch (err) {
           event.preventDefault();
-          throw ex;
+          throw err;
         }
 
         if (
           !event.defaultPrevented &&
           event.button === 0 &&
-          (!target || target === "_self") &&
-          !isModifiedEvent(event)
+          (!rest.target || rest.target === "_self") &&
+          !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
         ) {
           event.preventDefault();
           navigate();
         }
-      }
+      },
+      ref,
     };
+  }, [props, ref]);
 
-    props.ref = forwardedRef;
-
-    return <a {...props} />;
-  }
-);
-
+  return props.children
+    ? React.createElement("a", composite, props.children)
+    : React.createElement("a", composite);
+});
 
 const Link = React.forwardRef(
-  (
-    {
-      component = LinkAnchor,
-      replace,
-      to,
-      ...rest
-    },
-    forwardedRef
-  ) => {
-    return (
-      <RouterContext.Consumer>
-        {context => {
-          const { history } = context;
+  ({ component = LinkAnchor, replace, to, ...rest }, ref) => (
+    <RouterContext.Consumer>
+      {(context) => {
+        const location = resolveToLocation(to, context.location);
 
-          const location = resolveToLocation(to, context.location);
+        const href = location ? context.history.createHref(location) : "";
+        const props = {
+          ...rest,
+          href,
+          navigate() {
+            const location = resolveToLocation(to, context.location);
+            const method = replace
+              ? context.history.replace
+              : context.history.push;
+            method(location);
+          },
+        };
 
-          const href = location ? history.createHref(location) : "";
-          const props = {
-            ...rest,
-            href,
-            navigate() {
-              const location = resolveToLocation(to, context.location);
-              const method = replace ? history.replace : history.push;
-              method(location);
-            }
-          };
+        props.ref = ref;
 
-          props.ref = forwardedRef;
-
-          return React.createElement(component, props);
-        }}
-      </RouterContext.Consumer>
-    );
-  }
+        return React.createElement(component, props);
+      }}
+    </RouterContext.Consumer>
+  )
 );
 
 export default Link;

@@ -2,7 +2,6 @@ export default function(scope) {
   if (scope === null || typeof scope !== 'object') {
     throw new Error(`scope must be object. Was: ${scope}`)
   }
-
   if (scope.Main) {
     window.__SANDBOX_SCOPE__.Main = scope.Main;
   }

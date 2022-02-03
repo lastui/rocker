@@ -23,78 +23,35 @@ export function useRouteMatch(path) {
   return path ? matchPath(ctx.location.pathname, path, {}) : ctx.match;
 }
 
-class Router extends React.Component {
+const Router = (props) => {
+  const [location, setLocation] = React.useState(props.history.location)
 
-  constructor(props) {
-    super(props);
+  const composite = React.useMemo(() => ({
+    history: props.history,
+    location,
+    match: {
+      path: "/",
+      url: "/",
+      params: {},
+      isExact: location.pathname === "/",
+    }
+  }), [props.history, location])
 
-    this.state = {
-      location: {
-        hash: props.history.location.hash,
-        pathname: props.history.location.pathname,
-        search: props.history.location.search,
-      }
-    };
-
-    this._isMounted = false;
-    this._pendingLocation = null;
-
-    this.unlisten = props.history.listen((action) => {
-      if (this._isMounted) {
-        this.setState({
-          location: {
-            hash: action.location.hash,
-            pathname: action.location.pathname,
-            search: action.location.search,
-          }
-        });
-      } else {
-        this._pendingLocation = {
-          hash: action.location.hash,
-          pathname: action.location.pathname,
-          search: action.location.search,
-        };
-      }
+  React.useEffect(() => {
+    const unlisten = props.history.listen((action) => {
+      setLocation(action.location)
     });
-  }
+    return unlisten;
+  }, [props.history])
 
-  componentDidMount() {
-    this._isMounted = true;
-
-    if (this._pendingLocation) {
-      this.setState({ location: this._pendingLocation });
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.unlisten) {
-      this.unlisten();
-      this._isMounted = false;
-      this._pendingLocation = null;
-    }
-  }
-
-  render() {
-    return (
-      <RouterContext.Provider
-        value={{
-          history: this.props.history,
-          location: this.state.location,
-          match: {
-            path: "/",
-            url: "/",
-            params: {},
-            isExact: this.state.location.pathname === "/"
-          }
-        }}
-      >
-        <HistoryContext.Provider
-          children={this.props.children || null}
-          value={this.props.history}
-        />
-      </RouterContext.Provider>
-    );
-  }
+  return (
+    <RouterContext.Provider value={composite}>
+      <HistoryContext.Provider
+        children={props.children || null}
+        value={props.history}
+      />
+    </RouterContext.Provider>
+  );
 }
 
 export default Router;
