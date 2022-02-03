@@ -5,27 +5,30 @@ import { matchPath } from "../routing";
 
 const Branch = (props) => {
   const match = React.useMemo(
-    () => matchPath(
+    () =>
+      matchPath(
+        props.context.location.pathname,
+        `${props.context.match.url}/${props.path}`.replace(/\/+/g, "/"),
+        props.exact
+      ),
+    [
+      props.path,
+      props.exact,
       props.context.location.pathname,
-      `${props.context.match.url}/${props.path}`.replace(/\/+/g, "/"),
-      props.exact
-    ),
-    [props.path, props.exact, props.context.location.pathname, props.context.match.url]
+      props.context.match.url,
+    ]
   );
 
-  const composite = React.useMemo(
-    () => {
-      if (match) {
-        return {
-          ...props.context,
-          match,
-        }
-      } else {
-        return props.context
-      }
-    },
-    [props.context, match]
-  );
+  const composite = React.useMemo(() => {
+    if (match) {
+      return {
+        ...props.context,
+        match,
+      };
+    } else {
+      return props.context;
+    }
+  }, [props.context, match]);
 
   if (!match) {
     return null;
@@ -36,7 +39,7 @@ const Branch = (props) => {
       {React.createElement(props.component)}
     </RouterContext.Provider>
   );
-}
+};
 
 const Route = (props) => {
   if (!props.component || !props.path) {
