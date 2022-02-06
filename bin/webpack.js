@@ -107,7 +107,7 @@ return result;
 async function main() {
 
 	const ipaddr = require("ipaddr.js");
-	const chalk = (await import("chalk")).default;
+	const colors = require('colors/safe');
 	const path = require("path");
 	const webpack = require("webpack");
 	const WebpackDevServer = require("webpack-dev-server");
@@ -116,7 +116,7 @@ async function main() {
 
 	const callback = (err, stats) => {
 		if (err) {
-			console.log(chalk.red("Failed to compile.\n"));
+			console.log(colors.red("Failed to compile.\n"));
 			console.log(err);
 			return;
 		}
@@ -131,19 +131,19 @@ async function main() {
 		const messages = formatWebpackMessages(statsData);
 		const isSuccessful = !messages.errors.length && !messages.warnings.length;
 		if (isSuccessful) {
-			console.log(chalk.green("Compiled successfully!"));
+			console.log(colors.green("Compiled successfully!"));
 		}
 		if (messages.errors.length) {
 			if (messages.errors.length > 1) {
 				messages.errors.length = 1;
 			}
-			console.log(chalk.red("Failed to compile.\n"));
-			console.log(chalk.red(messages.errors.join("\n\n")));
+			console.log(colors.red("Failed to compile.\n"));
+			console.log(colors.red(messages.errors.join("\n\n")));
 			return;
 		}
 		if (messages.warnings.length) {
-			console.log(chalk.yellow("Compiled with warnings.\n"));
-			console.log(chalk.yellow(messages.warnings.join("\n\n")));
+			console.log(colors.yellow("Compiled with warnings.\n"));
+			console.log(colors.yellow(messages.warnings.join("\n\n")));
 		}
 	};
 
@@ -167,7 +167,7 @@ async function main() {
 				host = "localhost";
 			}
 			console.log(
-				chalk.green(
+				colors.green(
 					`Project is running at: ${
 						devServer.options.https ? "https://" : "http://"
 					}${host}:${devServer.options.port}`

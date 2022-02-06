@@ -15,7 +15,7 @@ const config = {
 	...require("../internal/build.js"),
 };
 
-config.output.filename = "[name].js";
+config.output.filename = "[name].min.js";
 config.output.assetModuleFilename = "[name][ext][query]";
 
 config.module.rules.push(
@@ -210,9 +210,7 @@ config.plugins.push(
 			{
 				from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
 				to: settings.PROJECT_BUILD_PATH,
-				filter: async (resourcePath) => {
-					return !resourcePath.endsWith("index.html");
-				},
+				filter: async (resourcePath) => !resourcePath.endsWith("index.html"),
 			},
 		],
 	}),

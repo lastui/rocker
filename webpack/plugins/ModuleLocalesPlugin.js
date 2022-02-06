@@ -50,7 +50,9 @@ class ModuleLocalesPlugin {
                 })
                 .then((content) => {
                   compilation.fileDependencies.add(asset);
-                  compilation.emitAsset(name, new compiler.webpack.sources.RawSource(content));
+                  if (!compilation.getAsset(name)) {
+                    compilation.emitAsset(name, new compiler.webpack.sources.RawSource(content));
+                  }
                 }).catch((err) => {
                   console.error(err)
                 })

@@ -112,6 +112,8 @@ config.plugins.push(
 		dry: false,
 	}),
 	new webpack.DllPlugin({
+		entryOnly: false,
+		format: true,
 		context: settings.PROJECT_ROOT_PATH,
 		path: path.join(
 			settings.DLL_BUILD_PATH,

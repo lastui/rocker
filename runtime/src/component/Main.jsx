@@ -5,8 +5,8 @@ import setupStore from "../store";
 import Entrypoint from './Entrypoint'
 
 const Main = (props) => {
-	const [_, setErrorState] = React.useState(undefined);
-	const [store, setStore] = React.useState(undefined);
+	const [_, setErrorState] = React.useState();
+	const [store, setStore] = React.useState();
 
 	React.useEffect(async () => {
 		try {
