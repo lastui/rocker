@@ -226,9 +226,7 @@ config.plugins.push(
 			{
 				from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
 				to: settings.PROJECT_DEV_PATH,
-				filter: async (resourcePath) => {
-					return !resourcePath.endsWith("index.html");
-				},
+				filter: async (resourcePath) => !resourcePath.endsWith("index.html"),
 			},
 		],
 	}),
