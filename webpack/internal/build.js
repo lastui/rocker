@@ -57,7 +57,7 @@ module.exports = {
 						},
 						terserOptions: {
 							sourceMap: false,
-							toplevel: true,
+							toplevel: false,
 							parse: {
 								ecma: 8,
 								html5_comments: false,
