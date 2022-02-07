@@ -27,7 +27,7 @@ class ModuleLocalesPlugin {
                 .catch(async () => {
                   await new Promise((resolve, reject) => {
                     const parent = path.dirname(asset);
-                    fs.stat(parent, (stat_err, stat) => {
+                    fs.stat(parent, (stat_err, _stat) => {
                       if (stat_err === null) {
                         resolve(true)
                       } else if (stat_err.code === 'ENOENT') {

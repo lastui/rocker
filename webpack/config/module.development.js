@@ -156,7 +156,7 @@ config.module.rules.push(
 			{
 				loader: "css-loader",
 				options: {
-					sourceMap: false,
+					sourceMap: true,
 					importLoaders: 1,
 				},
 			},
@@ -175,7 +175,7 @@ config.module.rules.push(
 			{
 				loader: "css-loader",
 				options: {
-					sourceMap: false,
+					sourceMap: true,
 					modules: false,
 					importLoaders: 0,
 				},
@@ -187,7 +187,7 @@ config.module.rules.push(
 					sassOptions: {
 						fiber: false,
 					},
-					sourceMap: false,
+					sourceMap: true,
 				},
 			},
 		],
