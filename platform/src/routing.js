@@ -1,36 +1,37 @@
 function compilePath(path) {
-  let paramNames = [];
+  const paramNames = [];
   let regexpSource =
-    "^" +
+    '^' +
     path
-      .replace(/\/*\*?$/, "")
-      .replace(/^\/*/, "/")
-      .replace(/[\\.*+^$?{}|()[\]]/g, "\\$&")
+      .replace(/\/*\*?$/, '')
+      .replace(/^\/*/, '/')
+      .replace(/[\\.*+^$?{}|()[\]]/g, '\\$&')
       .replace(/:(\w+)/g, (_, paramName) => {
         paramNames.push(paramName);
-        return "([^\\/]+)";
+        return '([^\\/]+)';
       });
 
-  if (path.endsWith("*")) {
-    paramNames.push("*");
-    regexpSource +=
-      path === "*" || path === "/*" ? "(.*)$" : "(?:\\/(.+)|\\/*)$";
+  if (path.endsWith('*')) {
+    paramNames.push('*');
+    regexpSource += path === '*' || path === '/*' ? '(.*)$' : '(?:\\/(.+)|\\/*)$';
   } else {
-    regexpSource += "(?:\\b|\\/|$)";
+    regexpSource += '(?:\\b|\\/|$)';
   }
 
-  let matcher = new RegExp(regexpSource, "i");
+  const matcher = new RegExp(regexpSource, 'i');
 
   return [matcher, paramNames];
 }
 
 export function matchPath(pathname, path, exact) {
-  let [matcher, paramNames] = compilePath(path);
+  const [matcher, paramNames] = compilePath(path);
 
-  let match = pathname.match(matcher);
-  if (!match) return null;
+  const match = pathname.match(matcher);
+  if (!match) {
+    return null;
+  }
 
-  let url = match[0];
+  const url = match[0];
 
   const isExact = pathname === url;
 
@@ -38,20 +39,12 @@ export function matchPath(pathname, path, exact) {
     return null;
   }
 
-  let pathnameBase = url.replace(/(.)\/+$/, "$1");
-  let captureGroups = match.slice(1);
-  let params = paramNames.reduce((memo, paramName, index) => {
-    if (paramName === "*") {
-      let splatValue = captureGroups[index] || "";
-      pathnameBase = url
-        .slice(0, url.length - splatValue.length)
-        .replace(/(.)\/+$/, "$1");
-    }
-
+  const captureGroups = match.slice(1);
+  const params = paramNames.reduce((memo, paramName, index) => {
     try {
-      memo[paramName] = decodeURIComponent(captureGroups[index] || "");
+      memo[paramName] = decodeURIComponent(captureGroups[index] || '');
     } catch (error) {
-      memo[paramName] = captureGroups[index] || "";
+      memo[paramName] = captureGroups[index] || '';
     }
 
     return memo;
