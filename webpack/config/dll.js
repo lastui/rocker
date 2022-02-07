@@ -89,11 +89,9 @@ config.module.rules.push(
 	},
 )
 
-config.output = {
-	path: settings.DLL_BUILD_PATH,
-	filename: `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`,
-	library: "[name]_dll",
-};
+config.output.path = settings.DLL_BUILD_PATH;
+config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;
+config.output.library = "[name]_dll";
 
 config.plugins.push(
 	new CleanWebpackPlugin({
