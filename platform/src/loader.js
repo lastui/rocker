@@ -101,8 +101,8 @@ const createModuleLoader = () => {
     if (scope.reducer) {
       const composedReducer = {
         ...scope.reducer,
-        shared: (state = {}, action) => state,
-        runtime: (state = {}, action) => state,
+        shared: (state = {}, _action) => state,
+        runtime: (state = {}, _action) => state,
       };
       addReducer(id, combineReducers(composedReducer));
     }
