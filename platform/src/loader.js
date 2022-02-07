@@ -33,7 +33,8 @@ const createModuleLoader = () => {
   const loadedLocales = {};
   const loadingModules = {};
   const danglingNamespaces = [];
-  const reducers = {};
+  const 
+  s = {};
   const sagas = {};
 
   const getLoadedModule = (id) => loadedModules[id];
@@ -55,8 +56,8 @@ const createModuleLoader = () => {
 
   const addReducer = (id, reducer) => {
     try {
-      console.debug(`module ${id} introducing reducer`);
       removeReducer(id);
+      console.debug(`module ${id} introducing reducer`);
       reducer({}, { type: constants.MODULE_INIT });
       reducers[id] = reducer;
     } catch (_err) {
