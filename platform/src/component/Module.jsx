@@ -14,7 +14,7 @@ const Module = (props) => {
     };
   }, [props, lastUpdate]);
 
-  React.useEffect(async () => {
+  const loadModule = React.useCallback(async () => {
     if (!props.name) {
       return;
     }
@@ -23,6 +23,10 @@ const Module = (props) => {
       setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
     }
   }, [props.name, updatedAt]);
+
+  React.useEffect(() => {
+    loadModule();
+  }, [loadedModule]);
 
   const loadedModule = moduleLoader.getLoadedModule(props.name);
 
