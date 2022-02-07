@@ -14,6 +14,7 @@ What it can do?
 - test your golden assets and ship them without the need to rebundle
 - navigate and pivot without loss of state
 - perform routines in the background without the need for user interaction
+- inductive (JIT / declarative) runtime routing 
 
 ### Q&A
 
