@@ -33,8 +33,7 @@ const createModuleLoader = () => {
   const loadedLocales = {};
   const loadingModules = {};
   const danglingNamespaces = [];
-  const 
-  s = {};
+  const reducers = {};
   const sagas = {};
 
   const getLoadedModule = (id) => loadedModules[id];
