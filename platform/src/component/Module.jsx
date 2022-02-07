@@ -26,7 +26,7 @@ const Module = (props) => {
 
   React.useEffect(() => {
     loadModule();
-  }, [loadedModule]);
+  }, [loadModule]);
 
   const loadedModule = moduleLoader.getLoadedModule(props.name);
 
