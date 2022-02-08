@@ -98,5 +98,12 @@ module.exports = {
 			"process.env.NODE_DEBUG": false,
 			"process.env.VERSION": `"${process.env.VERSION}"`,
 		}),
+		new webpack.ProgressPlugin({
+		  activeModules: false,
+		  entries: true,
+		  modules: true,
+		  profile: true,
+		  dependencies: true,
+		}),
 	],
 };
