@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const colors = require('colors/safe');
+
 let cleanupHooks = [];
 
 process.on("warning", (e) => console.warn(e.stack));
@@ -107,9 +109,8 @@ return result;
 }
 
 async function main() {
+	console.log(colors.bold("Compiling..."));
 
-	const ipaddr = require("ipaddr.js");
-	const colors = require('colors/safe');
 	const path = require("path");
 	const webpack = require("webpack");
 	const WebpackDevServer = require("webpack-dev-server");
@@ -133,7 +134,7 @@ async function main() {
 		const messages = formatWebpackMessages(statsData);
 		const isSuccessful = !messages.errors.length && !messages.warnings.length;
 		if (isSuccessful) {
-			console.log(colors.green("Compiled successfully!"));
+			console.log(colors.bold("Compiled successfully!"));
 		}
 		if (messages.errors.length) {
 			if (messages.errors.length > 1) {
@@ -144,37 +145,28 @@ async function main() {
 			return;
 		}
 		if (messages.warnings.length) {
-			console.log(colors.yellow("Compiled with warnings.\n"));
+			console.log(colors.bold(colors.yellow("Compiled with warnings.\n")));
 			console.log(colors.yellow(messages.warnings.join("\n\n")));
 		}
 	};
 
+	if (!config.infrastructureLogging) {
+		config.infrastructureLogging = { level: "info" };
+	}
+	config.infrastructureLogging.stream = process.stdout;
+
 	if (config.watch) {
-		config.infrastructureLogging = { level: "none" };
 		const devServerConfig = config.devServer;
-		devServerConfig.client.logging = "none";
 		delete config.devServer;
-		config.stats = "none";
 		const compiler = webpack(config, callback);
 		compiler.hooks.invalid.tap("invalid", () => {
-			console.log("Compiling...");
+			console.log(colors.blue("Compiling..."));
 		});
 		const devServer = new WebpackDevServer(devServerConfig, compiler);
 		devServer.startCallback((err) => {
 			if (err) {
 				callback(err);
 			}
-			let host = ipaddr.parse(devServer.options.host);
-			if (host.range() === "unspecified") {
-				host = "localhost";
-			}
-			console.log(
-				colors.green(
-					`Project is running at: ${
-						devServer.options.https ? "https://" : "http://"
-					}${host}:${devServer.options.port}`
-				)
-			);
 		});
 		cleanupHooks.push(() => devServer.close());
 	} else {

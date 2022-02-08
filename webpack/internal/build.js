@@ -91,12 +91,19 @@ module.exports = {
 			process: ["process"],
 		}),
 		new webpack.DefinePlugin({
-			process: false,
+			process: {},
+			'process.env': {},
 			"process.env.NODE_ENV": settings.DEVELOPMENT
 				? `"development"`
 				: `"production"`,
 			"process.env.NODE_DEBUG": false,
-			"process.env.VERSION": `"${process.env.VERSION}"`,
+		}),
+		new webpack.ProgressPlugin({
+		  activeModules: false,
+		  entries: true,
+		  modules: true,
+		  profile: true,
+		  dependencies: true,
 		}),
 	],
 };
