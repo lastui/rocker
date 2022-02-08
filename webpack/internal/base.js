@@ -5,7 +5,7 @@ module.exports = {
 	mode: settings.DEVELOPMENT ? "development" : "production",
 	resolve: {
 		unsafeCache: false,
-		modules: [settings.PROJECT_SRC_PATH, "node_modules"],
+		modules: [settings.PROJECT_SRC_PATH, settings.NODE_MODULES_PATH],
 		extensions: [".js", ".jsx", ".scss", ".css", ".json", ".txt"],
 		mainFields: ["browser", "main"],
 		enforceExtension: false,
@@ -17,9 +17,14 @@ module.exports = {
 		},
 		alias: {},
 	},
-	cache: settings.DEVELOPMENT,
 	module: {
 		strictExportPresence: true,
 		rules: [{ parser: { requireEnsure: false } }],
+	},
+	cache: {
+		type: "memory",
+	},
+	snapshot: {
+		managedPaths: [settings.NODE_MODULES_PATH],
 	},
 };

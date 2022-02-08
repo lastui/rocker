@@ -34,6 +34,7 @@ exports.PROJECT_NAME = path.resolve(process.cwd()).split(path.sep).pop();
 
 exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 
+exports.NODE_MODULES_PATH = path.join(exports.PROJECT_ROOT_PATH, "node_modules");
 exports.DLL_BUILD_PATH = path.join(exports.PROJECT_ROOT_PATH, "dll");
 exports.PROJECT_BUILD_PATH = path.join(exports.PROJECT_ROOT_PATH, "build");
 exports.PROJECT_DEV_PATH = path.join(exports.PROJECT_ROOT_PATH, "dev");
