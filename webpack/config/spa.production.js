@@ -8,7 +8,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const settings = require("../settings");
 
-const babel = require("@lastui/babylon");
+const babel = require("@lastui/babylon").env.production;
 
 const config = {
 	...require("../internal/base.js"),

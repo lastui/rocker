@@ -6,7 +6,7 @@ const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
 
 const settings = require("../settings");
 
-const babel = require("@lastui/babylon");
+const babel = require("@lastui/babylon").env.production;
 
 const config = {
 	...require("../internal/base.js"),

@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const settings = require("../settings");
 
-const babel = require("@lastui/babylon");
+const babel = require("@lastui/babylon").env[settings.DEVELOPMENT ? 'development' : 'production'];
 
 const config = {
 	...require("../internal/base.js"),
