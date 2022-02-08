@@ -9,7 +9,7 @@ const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
 
-const babel = require("@lastui/babylon");
+const babel = require("@lastui/babylon").env.development;
 
 const settings = require("../settings");
 
