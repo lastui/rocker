@@ -42,7 +42,7 @@ const Branch = (props) => {
 };
 
 const Route = (props) => {
-  if (!props.component || !props.path) {
+  if (!props.component || !(props.index || props.path)) {
     return null;
   }
 
@@ -50,8 +50,8 @@ const Route = (props) => {
     <RouterContext.Consumer>
       {(context) => (
         <Branch
-          path={props.path}
-          exact={props.exact}
+          path={props.index ? "/" : props.path}
+          exact={props.index || props.exact}
           context={context}
           component={props.component}
         />
