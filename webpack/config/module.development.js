@@ -2,8 +2,8 @@ const path = require("path");
 const fs = require("fs");
 const webpack = require("webpack");
 
-const { setLogLevel } = require('webpack/hot/log');
-setLogLevel('none');
+const { setLogLevel } = require("webpack/hot/log");
+setLogLevel("none");
 
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
@@ -58,7 +58,6 @@ config.module.rules.push(
 	{
 		test: /\.jsx?$/,
 		enforce: "pre",
-		include: [settings.PROJECT_SRC_PATH, /node_modules\/\@lastui*/],
 		exclude: [/node_modules\/(?!(\@lastui*))/],
 		use: [
 			{
@@ -137,7 +136,7 @@ config.module.rules.push(
 	{
 		test: /\.(mp3|png|jpe?g|gif)$/i,
 		dependency: { not: ["url"] },
-		type: 'asset/inline'
+		type: "asset/inline",
 	},
 	{
 		test: /\.json$/,
@@ -209,7 +208,7 @@ config.plugins.push(
 			__dirname,
 			"../../dependencies/dll/dependencies-dev-manifest.json"
 		),
-		sourceType: 'var',
+		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -217,7 +216,7 @@ config.plugins.push(
 			__dirname,
 			"../../platform/dll/platform-dev-manifest.json"
 		),
-		sourceType: 'var',
+		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -225,7 +224,7 @@ config.plugins.push(
 			__dirname,
 			"../../runtime/dll/runtime-dev-manifest.json"
 		),
-		sourceType: 'var',
+		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new ModuleLocalesPlugin(),
@@ -236,9 +235,15 @@ config.plugins.push(
 		inject: false,
 		scriptLoading: "blocking",
 		templateContent: (props) => {
-			const entrypoints = props.compilation.chunkGroups.map((chunk) => `${chunk._entrypointChunk.id}.js`)
+			const entrypoints = props.compilation.chunkGroups.map(
+				(chunk) => {
+					const isPrimaryEntrypoint = chunk.origins.some((origin) => path.dirname(path.resolve(origin.request)) === settings.PROJECT_SRC_PATH)
+					return [chunk.options.name, isPrimaryEntrypoint]
+				}
+			);
+
 			const scripts = props.htmlWebpackPlugin.tags.bodyTags.filter(
-				(item) => !entrypoints.includes(item.attributes.src)
+				(item) => !entrypoints.map((i) => `${i[0]}.js`).includes(item.attributes.src)
 			);
 
 			let manifest;
@@ -248,20 +253,22 @@ config.plugins.push(
 					"utf8"
 				);
 			} catch (_) {
-				const hotModules = entrypoints.map((entrypoint) => {
+				const hotModules = entrypoints.map(([name, isPrimary]) => {
 					const hotModule = {
-						id: settings.PROJECT_NAME,
+						id: isPrimary ? settings.PROJECT_NAME : name,
 						program: {
-							url: `${props.compilation.outputOptions.publicPath}${entrypoint}`,
+							url: `${props.compilation.outputOptions.publicPath}${name}.js`,
 						},
 						locales: {},
 						meta: {},
 					};
 					for (const language of settings.SUPPORTED_LOCALES) {
-						hotModule.locales[language] = `${props.compilation.outputOptions.publicPath}messages/${language}.json`;
+						hotModule.locales[
+							language
+						] = `${props.compilation.outputOptions.publicPath}messages/${language}.json`;
 					}
-					return hotModule
-				})
+					return hotModule;
+				});
 				manifest = JSON.stringify({
 					entrypoint: settings.PROJECT_NAME,
 					available: hotModules,
@@ -286,7 +293,9 @@ config.plugins.push(
 								window.addEventListener("load", function() {
 									dom.render(react.createElement(runtime.Main, {
 										fetchContext: async function() {
-											return ${manifest.trim()};
+											const manifest = ${manifest.trim()};
+											console.debug('development manifest', manifest);
+											return manifest;
 										}
 									}), document.getElementById("mount"))
 								})
