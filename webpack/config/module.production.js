@@ -176,6 +176,7 @@ config.plugins.push(
 			__dirname,
 			"../../dependencies/dll/dependencies-prod-manifest.json"
 		),
+		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -183,6 +184,7 @@ config.plugins.push(
 			__dirname,
 			"../../platform/dll/platform-prod-manifest.json"
 		),
+		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -190,6 +192,7 @@ config.plugins.push(
 			__dirname,
 			"../../runtime/dll/runtime-prod-manifest.json"
 		),
+		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
 	})
 );

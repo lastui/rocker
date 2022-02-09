@@ -49,7 +49,7 @@ config.devServer = {
 	},
 };
 
-config.output.filename = "module.js";
+config.output.filename = "[name].js";
 
 config.resolve.alias["react-dom"] = "react-dom/profiling";
 config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
@@ -209,6 +209,7 @@ config.plugins.push(
 			__dirname,
 			"../../dependencies/dll/dependencies-dev-manifest.json"
 		),
+		sourceType: 'amd',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -216,6 +217,7 @@ config.plugins.push(
 			__dirname,
 			"../../platform/dll/platform-dev-manifest.json"
 		),
+		sourceType: 'amd',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -223,6 +225,7 @@ config.plugins.push(
 			__dirname,
 			"../../runtime/dll/runtime-dev-manifest.json"
 		),
+		sourceType: 'amd',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new ModuleLocalesPlugin(),
@@ -232,10 +235,12 @@ config.plugins.push(
 		minify: false,
 		inject: false,
 		scriptLoading: "blocking",
-		templateContent: ({ htmlWebpackPlugin }) => {
-			const scripts = htmlWebpackPlugin.tags.bodyTags.filter(
-				(item) => item.attributes.src !== "module.js"
+		templateContent: (props) => {
+			const entrypoints = props.compilation.chunkGroups.map((chunk) => `${chunk._entrypointChunk.id}.js`)
+			const scripts = props.htmlWebpackPlugin.tags.bodyTags.filter(
+				(item) => !entrypoints.includes(item.attributes.src)
 			);
+
 			let manifest;
 			try {
 				manifest = fs.readFileSync(
@@ -243,27 +248,30 @@ config.plugins.push(
 					"utf8"
 				);
 			} catch (_) {
-				const hotModule = {
-					id: settings.PROJECT_NAME,
-					program: {
-						url: "/module.js",
-					},
-					locales: {},
-					meta: {},
-				};
-				for (const language of settings.SUPPORTED_LOCALES) {
-					hotModule.locales[language] = `/messages/${language}.json`;
-				}
+				const hotModules = entrypoints.map((entrypoint) => {
+					const hotModule = {
+						id: settings.PROJECT_NAME,
+						program: {
+							url: `${props.compilation.outputOptions.publicPath}${entrypoint}`,
+						},
+						locales: {},
+						meta: {},
+					};
+					for (const language of settings.SUPPORTED_LOCALES) {
+						hotModule.locales[language] = `${props.compilation.outputOptions.publicPath}messages/${language}.json`;
+					}
+					return hotModule
+				})
 				manifest = JSON.stringify({
 					entrypoint: settings.PROJECT_NAME,
-					available: [hotModule],
+					available: hotModules,
 				});
 			}
 
 			return `
 				<html>
 					<head>
-						${htmlWebpackPlugin.tags.headTags}
+						${props.htmlWebpackPlugin.tags.headTags}
 					</head>
 					<body>
 						${scripts}

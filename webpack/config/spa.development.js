@@ -48,6 +48,9 @@ config.devServer = {
 
 config.output.filename = "[name].js";
 
+config.resolve.alias["react-dom"] = "react-dom/profiling";
+config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
+
 config.module.rules.push(
 	{
 		test: /\.jsx?$/,
@@ -197,6 +200,7 @@ config.plugins.push(
 			__dirname,
 			"../../dependencies/dll/dependencies-dev-manifest.json"
 		),
+		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -204,6 +208,7 @@ config.plugins.push(
 			__dirname,
 			"../../platform/dll/platform-dev-manifest.json"
 		),
+		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -211,6 +216,7 @@ config.plugins.push(
 			__dirname,
 			"../../runtime/dll/runtime-dev-manifest.json"
 		),
+		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new HTMLWebpackPlugin({
