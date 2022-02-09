@@ -14,9 +14,9 @@ module.exports = {
 		path: settings.PROJECT_BUILD_PATH,
 		publicPath: settings.PROJECT_NAMESPACE,
 		globalObject: "this",
-	    environment: {
-	    	arrowFunction: settings.DEVELOPMENT,
-	    }
+		environment: {
+	    		arrowFunction: settings.DEVELOPMENT,
+		}
 	},
 	performance: {
 		hints: settings.DEVELOPMENT ? false : "warning"
