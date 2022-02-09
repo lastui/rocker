@@ -294,7 +294,7 @@ config.plugins.push(
 									dom.render(react.createElement(runtime.Main, {
 										fetchContext: async function() {
 											const manifest = ${manifest.trim()};
-											console.debug('development manifest', manifest);
+											console.debug('using context', manifest);
 											return manifest;
 										}
 									}), document.getElementById("mount"))
