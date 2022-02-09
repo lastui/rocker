@@ -9,10 +9,12 @@ import Module from "./component/Module";
 import Link from "./component/Link";
 import Router, { useHistory, useLocation, useParams, useRouteMatch } from "./component/Router";
 import Route from "./component/Route";
+import Redirect from "./component/Redirect";
 
 export {
 	Module,
 	Route,
+	Redirect,
 	Link,
 	Router,
 	useHistory,
@@ -30,6 +32,7 @@ export {
 export default {
 	Module,
 	Route,
+	Redirect,
 	Link,
 	Router,
 	useHistory,
