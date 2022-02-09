@@ -91,7 +91,10 @@ config.module.rules.push(
 
 config.output.path = settings.DLL_BUILD_PATH;
 config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;
-config.output.library = "[name]_dll";
+config.output.library = {
+	name: "[name]_dll",
+	type: "var"
+};
 
 config.plugins.push(
 	new CleanWebpackPlugin({

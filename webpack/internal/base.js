@@ -2,12 +2,14 @@ const settings = require("../settings");
 
 module.exports = {
 	target: "web",
+	externalsType: "var",
 	mode: settings.DEVELOPMENT ? "development" : "production",
 	resolve: {
 		unsafeCache: false,
+		preferRelative: false,
 		modules: [settings.PROJECT_SRC_PATH, settings.NODE_MODULES_PATH],
 		extensions: [".js", ".jsx", ".scss", ".css", ".json", ".txt"],
-		mainFields: ["browser", "main"],
+		mainFields: ["browser", "module", "main"],
 		enforceExtension: false,
 		symlinks: false,
 		fallback: {
