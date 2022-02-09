@@ -209,7 +209,7 @@ config.plugins.push(
 			__dirname,
 			"../../dependencies/dll/dependencies-dev-manifest.json"
 		),
-		sourceType: 'amd',
+		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -217,7 +217,7 @@ config.plugins.push(
 			__dirname,
 			"../../platform/dll/platform-dev-manifest.json"
 		),
-		sourceType: 'amd',
+		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -225,7 +225,7 @@ config.plugins.push(
 			__dirname,
 			"../../runtime/dll/runtime-dev-manifest.json"
 		),
-		sourceType: 'amd',
+		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new ModuleLocalesPlugin(),
