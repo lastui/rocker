@@ -160,7 +160,7 @@ async function main() {
 		delete config.devServer;
 		const compiler = webpack(config, callback);
 		compiler.hooks.invalid.tap("invalid", () => {
-			console.log(colors.blue("Compiling..."));
+			console.log(colors.bold("Compiling..."));
 		});
 		const devServer = new WebpackDevServer(devServerConfig, compiler);
 		devServer.startCallback((err) => {
