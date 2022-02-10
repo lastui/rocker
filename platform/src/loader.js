@@ -64,8 +64,9 @@ const createModuleLoader = () => {
     }
   };
 
-  const addMiddleware = (id, middleware) => {
-    if (!injectMiddleware(id, middleware)) {
+  const addMiddleware = async (id, middleware) => {
+    const ok = await injectMiddleware(id, middleware);
+    if (!ok) {
       return;
     }
     console.debug(`module ${id} introducing middleware`);
