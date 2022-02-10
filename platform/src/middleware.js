@@ -31,7 +31,7 @@ const createDynamicMiddlewares = () => {
   let applied = [];
   let storeRef;
 
-  const injectMiddleware = (id, middleware) => {
+  const injectMiddleware = async (id, middleware) => {
     const index = members.findIndex((item) => item === id);
     if (index !== -1) {
       return false;
