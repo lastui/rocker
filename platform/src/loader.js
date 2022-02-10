@@ -91,7 +91,7 @@ const createModuleLoader = () => {
     });
   };
 
-  const connectModule = (id, scope = {}) => {
+  const connectModule = async (id, scope = {}) => {
     const injectedStyles = document.querySelector("style#rocker:last-of-type");
     if (injectedStyles) {
       console.debug(`module ${id} introducing styles`);
@@ -107,7 +107,7 @@ const createModuleLoader = () => {
       addReducer(id, combineReducers(composedReducer));
     }
     if (scope.middleware) {
-      addMiddleware(id, scope.middleware)
+      await addMiddleware(id, scope.middleware)
     }
     if (scope.saga) {
       addSaga(id, scope.saga);
@@ -175,8 +175,9 @@ const createModuleLoader = () => {
       return loading;
     }
     const promise = downloadProgram(available.program)
+      .then((data) => connectModule(id, data))
       .then((data) => {
-        loadedModules[id] = connectModule(id, data);
+        loadedModules[id] = data;
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
