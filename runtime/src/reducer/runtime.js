@@ -24,15 +24,27 @@ export default (state = initialState, action) => {
 				...state.messages,
 			};
 			if (!localeMapping[action.payload.module]) {
-				localeMapping[action.payload.module] = {}
+				localeMapping[action.payload.module] = {};
 			}
 			if (!nextMessages[action.payload.language]) {
 				nextMessages[action.payload.language] = {};
 			}
-			for (const id in action.payload.data) {
-				localeMapping[action.payload.module][id] = true
-				nextMessages[action.payload.language][id] = action.payload.data[id];
-			}
+			const addItem = (key, message) => {
+				const id = key.substring(1);
+				localeMapping[action.payload.module][id] = true;
+				nextMessages[action.payload.language][id] = message;
+			};
+			const walk = (path, table) => {
+				for (const property in table) {
+					const item = table[property];
+					if (typeof item !== "object") {
+						addItem(`${path}.${property}`, item);
+					} else {
+						walk(`${path}.${property}`, item);
+					}
+				}
+			};
+			walk("", action.payload.data);
 			return {
 				updatedAt: state.updatedAt,
 				language: state.language,
@@ -44,7 +56,7 @@ export default (state = initialState, action) => {
 			const nextMessages = {
 				...state.messages,
 			};
-			const keys = localeMapping[action.payload.module] || {}
+			const keys = localeMapping[action.payload.module] || {};
 			for (const id in keys) {
 				for (const locale in state.messages) {
 					delete nextMessages[locale][id];
