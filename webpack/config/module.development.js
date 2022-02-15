@@ -222,7 +222,7 @@ config.plugins.push(
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
 			__dirname,
-			"../../runtime/dll/runtime-dev-manifest.json"
+			"../../bootstrap/dll/bootstrap-dev-manifest.json"
 		),
 		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
@@ -288,10 +288,10 @@ config.plugins.push(
 
 								const react = dependencies_dll("./node_modules/react/index.js");
 								const dom = dependencies_dll("./node_modules/react-dom/index.js");
-								const runtime = runtime_dll("./node_modules/@lastui/rocker/runtime/index.js");
+								const bootstrap = bootstrap_dll("./node_modules/@lastui/rocker/bootstrap/index.js");
 
 								window.addEventListener("load", function() {
-									dom.render(react.createElement(runtime.Main, {
+									dom.render(react.createElement(bootstrap.Main, {
 										fetchContext: async function() {
 											const manifest = ${manifest.trim()};
 											console.debug('using context', manifest);
@@ -325,7 +325,7 @@ config.plugins.push(
 		{
 			filepath: path.resolve(
 				__dirname,
-				"../../runtime/dll/runtime.dll.js"
+				"../../bootstrap/dll/bootstrap.dll.js"
 			),
 			typeOfAsset: "js",
 		},

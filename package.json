@@ -1,11 +1,11 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.7.21",
+  "version": "0.8.0",
   "scripts": {
-    "build": "npm run build:dependencies && npm run build:platform && npm run build:runtime",
+    "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "build:dependencies": "cd dependencies && npm run build",
     "build:platform": "cd platform && npm run build",
-    "build:runtime": "cd runtime && npm run build"
+    "build:bootstrap": "cd bootstrap && npm run build"
   },
   "files": [
     "package-lock.json",
@@ -35,12 +35,12 @@
     "platform/dll/platform.dll.js",
     "platform/dll/platform.dll.min.js",
     "platform/dll/LICENSE.txt",
-    "runtime/index.js",
-    "runtime/dll/runtime-dev-manifest.json",
-    "runtime/dll/runtime-prod-manifest.json",
-    "runtime/dll/runtime.dll.js",
-    "runtime/dll/runtime.dll.min.js",
-    "runtime/dll/LICENSE.txt"
+    "bootstrap/index.js",
+    "bootstrap/dll/bootstrap-dev-manifest.json",
+    "bootstrap/dll/bootstrap-prod-manifest.json",
+    "bootstrap/dll/bootstrap.dll.js",
+    "bootstrap/dll/bootstrap.dll.min.js",
+    "bootstrap/dll/LICENSE.txt"
   ],
   "dependencies": {
     "@lastui/babylon": "1.1.34",
