@@ -23,8 +23,8 @@ jobs:
       - name: Compile package platform
         working-directory: platform
         run: npm run build
-      - name: Compile package runtime
-        working-directory: runtime
+      - name: Compile package bootstrap
+        working-directory: bootstrap
         run: npm run build
       - uses: JS-DevTools/npm-publish@v1
         with:
