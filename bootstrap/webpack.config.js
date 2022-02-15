@@ -10,7 +10,7 @@ const config = require(path.resolve(
 ));
 
 config.entry = {
-	runtime: ["@lastui/rocker/runtime"],
+	bootstrap: ["@lastui/rocker/bootstrap"],
 };
 
 config.plugins.push(

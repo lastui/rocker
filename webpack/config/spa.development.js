@@ -214,7 +214,7 @@ config.plugins.push(
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
 			__dirname,
-			"../../runtime/dll/runtime-dev-manifest.json"
+			"../../bootstrap/dll/bootstrap-dev-manifest.json"
 		),
 		sourceType: 'var',
 		context: settings.PROJECT_ROOT_PATH,
@@ -254,7 +254,7 @@ config.plugins.push(
 		{
 			filepath: path.resolve(
 				__dirname,
-				"../../runtime/dll/runtime.dll.js"
+				"../../bootstrap/dll/bootstrap.dll.js"
 			),
 			typeOfAsset: "js",
 		},

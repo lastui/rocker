@@ -22,6 +22,9 @@ Q: Wait. So this is code splitting?
 
 A: No, code splitting (and JS module federation in general) are approaches to top-down separation of big SPA into smaller chunks because it's top-down you cannot reuse any chunks generated from this approach in other places without those places knowing about those chunks upfront. In code splitting, the main motivator is rendering speed (or asset size), not a building block of code that you can compose your workflow from.
 
+Update 2021:
+> webpack-module-federation (previously called webpack-external-import), single-spa and remix.js projects took a inspiration without giving credit from this project (specificaly its predecessor built at 2014). They are good alternatives if your project is centered around SSR or SSG. Be aware that those projects do not eliminate coupling of features because they rely on aliases and imports being present at compile time. Thus affecting resulting UMD hashes and possibly breaking consumers asynchronous imports. In rocker adapting and bridging happens at runtime and direct imports are not present, instead indirect referencing via Module component is how you import features. With rocker's approach because only feature resulting in single asset are present in compile time, coupling between those assets cannot technically happen.
+
 ---
 
 Q: What does this have to do with Docker?

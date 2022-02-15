@@ -12,7 +12,7 @@ async function main() {
 	await clearDirectory(path.resolve(__dirname, "../node_modules/redux-devtools-extension"));
 	await ensureDirectory(path.resolve(__dirname, "../node_modules/@lastui/rocker"));
 	await createSymlink(path.resolve(__dirname, "../../platform/src"), path.resolve(__dirname, "../node_modules/@lastui/rocker/platform"));
-	await createSymlink(path.resolve(__dirname, "../src"), path.resolve(__dirname, "../node_modules/@lastui/rocker/runtime"));
+	await createSymlink(path.resolve(__dirname, "../src"), path.resolve(__dirname, "../node_modules/@lastui/rocker/bootstrap"));
 	await createSymlink(path.resolve(__dirname, "../../node_modules/redux-devtools-extension"), path.resolve(__dirname, "../node_modules/redux-devtools-extension"));
 }
 
