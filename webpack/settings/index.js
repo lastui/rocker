@@ -30,14 +30,14 @@ exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US")
 
 exports.PROJECT_ROOT_PATH = path.resolve("./");
 
-exports.PROJECT_NAME = path.resolve(process.cwd()).split(path.sep).pop();
+exports.PROJECT_NAME = process.env.PROJECT_NAME || path.resolve(process.cwd()).split(path.sep).pop();
 
 exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 
-exports.NODE_MODULES_PATH = path.join(exports.PROJECT_ROOT_PATH, "node_modules");
-exports.DLL_BUILD_PATH = path.join(exports.PROJECT_ROOT_PATH, "dll");
-exports.PROJECT_BUILD_PATH = path.join(exports.PROJECT_ROOT_PATH, "build");
-exports.PROJECT_DEV_PATH = path.join(exports.PROJECT_ROOT_PATH, "dev");
-exports.PROJECT_SRC_PATH = path.join(exports.PROJECT_ROOT_PATH, "src");
+exports.NODE_MODULES_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "node_modules");
+exports.DLL_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dll");
+exports.PROJECT_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "build");
+exports.PROJECT_DEV_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dev");
+exports.PROJECT_SRC_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "src");
 
 exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT || 9000);
