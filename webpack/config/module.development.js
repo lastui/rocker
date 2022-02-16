@@ -297,11 +297,11 @@ config.plugins.push(
 											console.debug('using context', manifest);
 											return manifest;
 										}
-									}), document.getElementById("mount"))
+									}), document.getElementById("${settings.PROJECT_NAME}"));
 								})
 							}())
 						</script>
-						<div id="mount" />
+						<div id="${settings.PROJECT_NAME}" />
 					</body>
 				</html>
 			`;

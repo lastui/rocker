@@ -57,7 +57,7 @@ const createModuleLoader = () => {
     try {
       removeReducer(id);
       console.debug(`module ${id} introducing reducer`);
-      reducer({}, { type: constants.MODULE_INIT });
+      reducer(undefined, { type: constants.MODULE_INIT });
       reducers[id] = reducer;
     } catch (_err) {
       console.warn(`module ${id} wanted to register invalid reducer`)
