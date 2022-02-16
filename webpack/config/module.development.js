@@ -150,11 +150,6 @@ config.module.rules.push(
 				options: {
 					injectType: "singletonStyleTag",
 					attributes: { id: "rocker" },
-					insert: function insertIntoTarget(element, options) {
-		                var parent = options.target || document.head;
-		                console.log('inserting styles', parent, element, options);
-		                parent.appendChild(element);
-		            },
 				},
 			},
 			{
