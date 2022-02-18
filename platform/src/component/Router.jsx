@@ -23,26 +23,39 @@ export function useRouteMatch(path) {
   return path ? matchPath(ctx.location.pathname, path, {}) : ctx.match;
 }
 
-const Router = (props) => {
-  const [location, setLocation] = React.useState(props.history.location)
-
-  const composite = React.useMemo(() => ({
-    history: props.history,
-    location,
-    match: {
-      path: "/",
-      url: "/",
-      params: {},
-      isExact: location.pathname === "/",
+const useInitEffect = (effect, observables) => {
+  const cleanup = React.useRef();
+  const _ = React.useMemo(() => {
+    if (cleanup.current) {
+      cleanup.current();
     }
-  }), [props.history, location])
+    cleanup.current = effect();
+  }, observables);
+};
 
-  React.useEffect(() => {
-    const unlisten = props.history.listen((action) => {
-      setLocation(action.location)
-    });
-    return unlisten;
-  }, [props.history])
+const Router = (props) => {
+  const [location, setLocation] = React.useState(props.history.location);
+
+  useInitEffect(
+    () =>
+      props.history.listen((action) => {
+        setLocation(action.location);
+      }),
+    [props.history.listen, setLocation]
+  );
+
+  const composite = React.useMemo(
+    () => ({
+      location,
+      match: {
+        path: "/",
+        url: "/",
+        params: {},
+        isExact: location.pathname === "/",
+      },
+    }),
+    [location]
+  );
 
   return (
     <RouterContext.Provider value={composite}>
@@ -52,6 +65,6 @@ const Router = (props) => {
       />
     </RouterContext.Provider>
   );
-}
+};
 
 export default Router;
