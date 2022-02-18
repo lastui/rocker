@@ -17,7 +17,7 @@ const Redirect = (props) => {
   );
 
   React.useEffect(() => {
-    if (location.pathname === from) {
+    if (ctx.location.pathname === from) {
       history.replace(to);
     }
   }, [ctx.location.pathname, from, to, history]);
