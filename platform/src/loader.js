@@ -276,6 +276,14 @@ const createModuleLoader = () => {
       }
       case constants.MODULE_LOADED: {
         console.debug(`module ${action.payload.id} loaded`);
+        const id = action.payload.id;
+        if (reducers[id]) {
+          try {
+            state[id] = reducers[id](state[id], action);
+          } catch (_err) {
+            console.warn(`module ${id} reducer failed to reduce`)
+          }
+        }
         return state;
       }
       case constants.MODULE_UNLOADED: {
@@ -360,6 +368,7 @@ const createModuleLoader = () => {
       }
 
       render() {
+        console.log(`module ${id} render`);
         if (this.state.error === null) {
           const composite = { ...this.props.owned, ...scope.props };
           return (
