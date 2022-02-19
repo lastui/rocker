@@ -368,7 +368,6 @@ const createModuleLoader = () => {
       }
 
       render() {
-        console.log(`module ${id} render`);
         if (this.state.error === null) {
           const composite = { ...this.props.owned, ...scope.props };
           return (
