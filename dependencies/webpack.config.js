@@ -19,6 +19,7 @@ config.entry = {
 		"redux-saga",
 		"redux-saga/effects",
 		"@linaria/react",
+		"@linaria/core",
 	],
 };
 
