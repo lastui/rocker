@@ -97,6 +97,7 @@ module.exports = {
 				? `"development"`
 				: `"production"`,
 			"process.env.NODE_DEBUG": false,
+			"process.env.VERSION": process.env.VERSION !== undefined ? `"${process.env.VERSION}"` : `""`,
 		}),
 		new webpack.ProgressPlugin({
 		  activeModules: false,
