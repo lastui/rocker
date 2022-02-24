@@ -34,10 +34,11 @@ module.exports = {
 			process: ["process"],
 		}),
 		new webpack.DefinePlugin({
-			process: false,
+			process: {},
+			'process.env': {},
 			"process.env.NODE_ENV": `"development"`,
 			"process.env.NODE_DEBUG": false,
-			"process.env.VERSION": `"${process.env.VERSION}"`,
+			"process.env.VERSION": process.env.VERSION !== undefined ? `"${process.env.VERSION}"` : `""`,
 		}),
 		new webpack.EnvironmentPlugin([
 			...Object.keys(process.env),
