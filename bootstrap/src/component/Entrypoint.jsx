@@ -33,7 +33,7 @@ const Entrypoint = (props) => {
 		return null;
 	}
 	return (
-		<RawIntlProvider intl={intl}>
+		<RawIntlProvider value={intl}>
 			<Router history={history}>
 				<Module name={entrypoint} />
 			</Router>
