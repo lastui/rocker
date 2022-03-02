@@ -1,31 +1,31 @@
-import React from "react";
+import { createContext, useContext, useRef, useMemo, useState } from "react";
 
 import { matchPath } from "../routing";
 
-export const HistoryContext = React.createContext();
-export const RouterContext = React.createContext();
+export const HistoryContext = createContext();
+export const RouterContext = createContext();
 
 export function useHistory() {
-  return React.useContext(HistoryContext);
+  return useContext(HistoryContext);
 }
 
 export function useLocation() {
-  return React.useContext(RouterContext).location;
+  return useContext(RouterContext).location;
 }
 
 export function useParams() {
-  const match = React.useContext(RouterContext).match;
+  const match = useContext(RouterContext).match;
   return match ? match.params : {};
 }
 
 export function useRouteMatch(path) {
-  const ctx = React.useContext(RouterContext);
+  const ctx = useContext(RouterContext);
   return path ? matchPath(ctx.location.pathname, path, {}) : ctx.match;
 }
 
 const useInitEffect = (effect, observables) => {
-  const cleanup = React.useRef();
-  const _ = React.useMemo(() => {
+  const cleanup = useRef();
+  const _ = useMemo(() => {
     if (cleanup.current) {
       cleanup.current();
     }
@@ -34,7 +34,7 @@ const useInitEffect = (effect, observables) => {
 };
 
 const Router = (props) => {
-  const [location, setLocation] = React.useState(props.history.location);
+  const [location, setLocation] = useState(props.history.location);
 
   useInitEffect(
     () =>
@@ -44,7 +44,7 @@ const Router = (props) => {
     [props.history.listen, setLocation]
   );
 
-  const composite = React.useMemo(
+  const composite = useMemo(
     () => ({
       location,
       match: {

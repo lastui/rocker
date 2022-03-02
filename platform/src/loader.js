@@ -60,7 +60,7 @@ const createModuleLoader = () => {
       reducer(undefined, { type: constants.MODULE_INIT });
       reducers[id] = reducer;
     } catch (_err) {
-      console.warn(`module ${id} wanted to register invalid reducer`)
+      console.warn(`module ${id} wanted to register invalid reducer`);
     }
   };
 
@@ -108,7 +108,7 @@ const createModuleLoader = () => {
       addReducer(id, combineReducers(composedReducer));
     }
     if (scope.middleware) {
-      await addMiddleware(id, scope.middleware)
+      await addMiddleware(id, scope.middleware);
     }
     if (scope.saga) {
       addSaga(id, scope.saga);
@@ -248,7 +248,7 @@ const createModuleLoader = () => {
           scheduledUnload.push(unloadModule(item));
         }
       } else {
-        const loaded = loadedModules[existing]
+        const loaded = loadedModules[existing];
         if (loaded) {
           scheduledUnload.push(unloadModule(loaded));
           obsoleteModules.push(existing);
@@ -262,47 +262,53 @@ const createModuleLoader = () => {
     return Promise.all(scheduledUnload);
   };
 
-  const getReducer = () => (state = {}, action) => {
-    for (let id = danglingNamespaces.pop(); id; id = danglingNamespaces.pop()) {
-      console.debug(`module ${id} evicting redux state`);
-      delete state[id];
-    }
-    switch (action.type) {
-      case constants.INIT:
-      case constants.ADD_I18N_MESSAGES:
-      case constants.REMOVE_I18N_MESSAGES:
-      case constants.SET_AVAILABLE_MODULES: {
-        return state;
+  const getReducer =
+    () =>
+    (state = {}, action) => {
+      for (
+        let id = danglingNamespaces.pop();
+        id;
+        id = danglingNamespaces.pop()
+      ) {
+        console.debug(`module ${id} evicting redux state`);
+        delete state[id];
       }
-      case constants.MODULE_LOADED: {
-        console.debug(`module ${action.payload.id} loaded`);
-        const id = action.payload.id;
-        if (reducers[id]) {
-          try {
-            state[id] = reducers[id](state[id], action);
-          } catch (_err) {
-            console.warn(`module ${id} reducer failed to reduce`)
-          }
+      switch (action.type) {
+        case constants.INIT:
+        case constants.ADD_I18N_MESSAGES:
+        case constants.REMOVE_I18N_MESSAGES:
+        case constants.SET_AVAILABLE_MODULES: {
+          return state;
         }
-        return state;
-      }
-      case constants.MODULE_UNLOADED: {
-        removeReducer(action.payload.id);
-        console.debug(`module ${action.payload.id} unloaded`);
-        return state;
-      }
-      default: {
-        for (const id in reducers) {
-          try {
-            state[id] = reducers[id](state[id], action);
-          } catch (_err) {
-            console.warn(`module ${id} reducer failed to reduce`)
+        case constants.MODULE_LOADED: {
+          console.debug(`module ${action.payload.id} loaded`);
+          const id = action.payload.id;
+          if (reducers[id]) {
+            try {
+              state[id] = reducers[id](state[id], action);
+            } catch (_err) {
+              console.warn(`module ${id} reducer failed to reduce`);
+            }
           }
+          return state;
         }
-        return state;
+        case constants.MODULE_UNLOADED: {
+          removeReducer(action.payload.id);
+          console.debug(`module ${action.payload.id} unloaded`);
+          return state;
+        }
+        default: {
+          for (const id in reducers) {
+            try {
+              state[id] = reducers[id](state[id], action);
+            } catch (_err) {
+              console.warn(`module ${id} reducer failed to reduce`);
+            }
+          }
+          return state;
+        }
       }
-    }
-  };
+    };
 
   const isolateProgram = (id, scope) => {
     const reduxContext = {
@@ -313,15 +319,15 @@ const createModuleLoader = () => {
           const isolatedState = {};
           for (const mid in state.modules) {
             if (mid === id) {
-              continue
+              continue;
             }
             for (const prop in state.modules[mid]) {
-              isolatedState[prop] = state.modules[mid][prop]
+              isolatedState[prop] = state.modules[mid][prop];
             }
           }
           if (state.modules[id]) {
             for (const prop in state.modules[id]) {
-              isolatedState[prop] = state.modules[id][prop]
+              isolatedState[prop] = state.modules[id][prop];
             }
           }
           isolatedState.shared = state.shared;
@@ -331,7 +337,7 @@ const createModuleLoader = () => {
           return isolatedState;
         },
         subscribe: store.subscribe,
-        replaceReducer: function(newReducer) {
+        replaceReducer: function (newReducer) {
           addReducer(id, newReducer);
         },
       },

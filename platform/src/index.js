@@ -7,7 +7,12 @@ import registerModule from "./register";
 
 import Module from "./component/Module";
 import Link from "./component/Link";
-import Router, { useHistory, useLocation, useParams, useRouteMatch } from "./component/Router";
+import Router, {
+	useHistory,
+	useLocation,
+	useParams,
+	useRouteMatch,
+} from "./component/Router";
 import Route from "./component/Route";
 import Redirect from "./component/Redirect";
 

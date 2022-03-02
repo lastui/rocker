@@ -1,14 +1,14 @@
-import React from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
 import { actions } from "@lastui/rocker/platform";
 import setupStore from "../store";
 import Entrypoint from "./Entrypoint";
 
 const Main = (props) => {
-	const [_, setErrorState] = React.useState();
-	const [store, setStore] = React.useState();
+	const [_, setErrorState] = useState();
+	const [store, setStore] = useState();
 
-	const bootstrap = React.useCallback(async () => {
+	const bootstrap = useCallback(async () => {
 		console.debug("bootstraping runtime");
 		try {
 			const nextStore = await setupStore(props.reduxMiddlewares);
@@ -23,7 +23,7 @@ const Main = (props) => {
 		}
 	}, [props.reduxMiddlewares, props.fetchContext, props.initializeRuntime]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		bootstrap();
 	}, [bootstrap]);
 

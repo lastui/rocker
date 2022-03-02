@@ -1,22 +1,22 @@
-import React from "react";
+import { useMemo, useContext, useEffect } from "react";
 
 import { RouterContext, HistoryContext } from "./Router";
 
 const Redirect = (props) => {
-  const ctx = React.useContext(RouterContext);
-  const history = React.useContext(HistoryContext);
+  const ctx = useContext(RouterContext);
+  const history = useContext(HistoryContext);
 
-  const from = React.useMemo(
+  const from = useMemo(
     () => `${ctx.match.url}/${props.from}`.replace(/\/+/g, "/"),
     [ctx.match.url, props.from]
   );
 
-  const to = React.useMemo(
+  const to = useMemo(
     () => `${ctx.match.url}/${props.to}`.replace(/\/+/g, "/"),
     [ctx.match.url, props.to]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (ctx.location.pathname === from) {
       history.replace(to);
     }

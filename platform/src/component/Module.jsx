@@ -1,12 +1,12 @@
-import React from "react";
+import { useState, useMemo, useEffect, createElement, useCallback } from "react";
 import { useSelector } from "react-redux";
 import moduleLoader from "../loader";
 
 const Module = (props) => {
   const updatedAt = useSelector((state) => state.runtime.updatedAt);
-  const [lastUpdate, setLastUpdate] = React.useState(0);
+  const [lastUpdate, setLastUpdate] = useState(0);
 
-  const composite = React.useMemo(() => {
+  const composite = useMemo(() => {
     const { name, fallback, ...owned } = props;
     return {
       owned,
@@ -14,7 +14,7 @@ const Module = (props) => {
     };
   }, [props, lastUpdate]);
 
-  const loadModule = React.useCallback(async () => {
+  const loadModule = useCallback(async () => {
     if (!props.name) {
       return;
     }
@@ -24,7 +24,7 @@ const Module = (props) => {
     }
   }, [props.name, updatedAt]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadModule();
   }, [loadModule]);
 
@@ -38,8 +38,8 @@ const Module = (props) => {
   }
 
   return props.children
-    ? React.createElement(loadedModule.view, composite, props.children)
-    : React.createElement(loadedModule.view, composite);
+    ? createElement(loadedModule.view, composite, props.children)
+    : createElement(loadedModule.view, composite);
 };
 
 export default Module;
