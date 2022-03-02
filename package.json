@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.8.10",
+  "version": "0.8.11",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "build:dependencies": "cd dependencies && npm run build",
@@ -56,7 +56,7 @@
     "mini-css-extract-plugin": "2.5.3",
     "path-browserify": "1.0.1",
     "redux-devtools-extension": "2.13.9",
-    "sass": "1.49.8",
+    "sass": "1.49.9",
     "sass-loader": "12.6.0",
     "style-loader": "3.3.1",
     "terser-webpack-plugin": "5.3.1",
