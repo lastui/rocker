@@ -1,10 +1,10 @@
-import React from "react";
+import { useMemo, createElement } from "react";
 
 import { RouterContext } from "./Router";
 import { matchPath } from "../routing";
 
 const Branch = (props) => {
-  const match = React.useMemo(
+  const match = useMemo(
     () =>
       matchPath(
         props.context.location.pathname,
@@ -19,7 +19,7 @@ const Branch = (props) => {
     ]
   );
 
-  const composite = React.useMemo(() => {
+  const composite = useMemo(() => {
     if (match) {
       return {
         ...props.context,
@@ -36,7 +36,7 @@ const Branch = (props) => {
 
   return (
     <RouterContext.Provider value={composite}>
-      {React.createElement(props.component)}
+      {createElement(props.component)}
     </RouterContext.Provider>
   );
 };
