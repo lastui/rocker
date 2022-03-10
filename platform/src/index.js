@@ -11,7 +11,7 @@ import Router, {
 	useLocation,
 	useParams,
 	useRouteMatch,
-	useLink,
+	useHistory,
 } from "./component/Router";
 import Route from "./component/Route";
 import Redirect from "./component/Redirect";
@@ -23,7 +23,7 @@ export {
 	Link,
 	Router,
 	useLocation,
-	useLink,
+	useHistory,
 	useParams,
 	useRouteMatch,
 	actions,
@@ -41,7 +41,7 @@ export default {
 	Link,
 	Router,
 	useLocation,
-	useLink,
+	useHistory,
 	useParams,
 	useRouteMatch,
 	actions,

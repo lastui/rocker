@@ -1,13 +1,16 @@
-import { createContext, useContext, useRef, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useMemo,
+  useState,
+} from "react";
 
 import { matchPath } from "../routing";
 
 export const HistoryContext = createContext();
 export const RouterContext = createContext();
-
-export function useHistory() {
-  return useContext(HistoryContext);
-}
 
 export function useLocation() {
   return useContext(RouterContext).location;
@@ -20,18 +23,41 @@ export function useParams() {
 
 export function useRouteMatch(path) {
   const ctx = useContext(RouterContext);
-  return path ? matchPath(ctx.location.pathname, path, {}) : ctx.match;
+  const result = useMemo(
+    () => (path ? matchPath(ctx.location.pathname, path, {}) : ctx.match),
+    [path, ctx.location.pathname, ctx.match]
+  );
+  return result;
 }
 
-export function useLink() {
+export function useHistory() {
   const ctx = useContext(RouterContext);
   const history = useContext(HistoryContext);
-  return (to) => {
-    const location = to.startsWith("/")
-      ? to
-      : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
-    history.push(location);
-  }
+
+  const replace = useCallback(
+    (to) => {
+      const location = to.startsWith("/")
+        ? to
+        : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
+      history.replace(location);
+    },
+    [history.replace, ctx.match.url]
+  );
+
+  const push = useCallback(
+    (to) => {
+      const location = to.startsWith("/")
+        ? to
+        : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
+      history.push(location);
+    },
+    [history.push, ctx.match.url]
+  );
+
+  return {
+    push,
+    replace,
+  };
 }
 
 const useInitEffect = (effect, observables) => {
