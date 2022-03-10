@@ -23,6 +23,17 @@ export function useRouteMatch(path) {
   return path ? matchPath(ctx.location.pathname, path, {}) : ctx.match;
 }
 
+export function useLink() {
+  const ctx = useContext(RouterContext);
+  const history = useContext(HistoryContext);
+  return (to) => {
+    const location = to.startsWith("/")
+      ? to
+      : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
+    history.push(location);
+  }
+}
+
 const useInitEffect = (effect, observables) => {
   const cleanup = useRef();
   const _ = useMemo(() => {

@@ -8,10 +8,10 @@ import registerModule from "./register";
 import Module from "./component/Module";
 import Link from "./component/Link";
 import Router, {
-	useHistory,
 	useLocation,
 	useParams,
 	useRouteMatch,
+	useLink,
 } from "./component/Router";
 import Route from "./component/Route";
 import Redirect from "./component/Redirect";
@@ -22,8 +22,8 @@ export {
 	Redirect,
 	Link,
 	Router,
-	useHistory,
 	useLocation,
+	useLink,
 	useParams,
 	useRouteMatch,
 	actions,
@@ -40,8 +40,8 @@ export default {
 	Redirect,
 	Link,
 	Router,
-	useHistory,
 	useLocation,
+	useLink,
 	useParams,
 	useRouteMatch,
 	actions,
