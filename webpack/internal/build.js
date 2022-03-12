@@ -15,11 +15,11 @@ module.exports = {
 		publicPath: settings.PROJECT_NAMESPACE,
 		globalObject: "this",
 		environment: {
-	    		arrowFunction: settings.DEVELOPMENT,
-		}
+			arrowFunction: settings.DEVELOPMENT,
+		},
 	},
 	performance: {
-		hints: settings.DEVELOPMENT ? false : "warning"
+		hints: settings.DEVELOPMENT ? false : "warning",
 	},
 	stats: {
 		colors: true,
@@ -53,7 +53,8 @@ module.exports = {
 						extractComments: {
 							condition: /^\**!|license/i,
 							filename: (fileData) => "LICENSE.txt",
-							banner: (licenseFile) => "License information can be found in LICENSE.txt",
+							banner: (licenseFile) =>
+								"License information can be found in LICENSE.txt",
 						},
 						terserOptions: {
 							sourceMap: false,
@@ -92,19 +93,26 @@ module.exports = {
 		}),
 		new webpack.DefinePlugin({
 			process: {},
-			'process.env': {},
+			"process.env": {},
 			"process.env.NODE_ENV": settings.DEVELOPMENT
 				? `"development"`
 				: `"production"`,
 			"process.env.NODE_DEBUG": false,
-			"process.env.VERSION": process.env.VERSION !== undefined ? `"${process.env.VERSION}"` : `""`,
+			"process.env.VERSION":
+				process.env.VERSION !== undefined
+					? `"${process.env.VERSION}"`
+					: `""`,
 		}),
-		new webpack.ProgressPlugin({
-		  activeModules: false,
-		  entries: true,
-		  modules: true,
-		  profile: true,
-		  dependencies: true,
-		}),
+		...(settings.PROGRESS
+			? [
+					new webpack.ProgressPlugin({
+						activeModules: false,
+						entries: true,
+						modules: true,
+						profile: true,
+						dependencies: true,
+					}),
+			  ]
+			: []),
 	],
 };
