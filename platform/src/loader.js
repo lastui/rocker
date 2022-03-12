@@ -88,7 +88,6 @@ const createModuleLoader = () => {
     removeSaga(id);
     console.debug(`module ${id} introducing saga`);
     sagas[id] = sagaRunner(function* () {
-      // FIXME make something in saga runner fail locally
       yield fork(saga);
     });
   };
