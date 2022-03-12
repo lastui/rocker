@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const colors = require('colors/safe');
+const colors = require("colors/safe");
 
 let cleanupHooks = [];
 
@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== "production") {
 	process.env.NODE_ENV = "development";
 }
 
-process.env.BABEL_ENV = process.env.NODE_ENV
+process.env.BABEL_ENV = process.env.NODE_ENV;
 
 function isLikelyASyntaxError(message) {
 	return message.indexOf("Syntax error:") !== -1;
@@ -33,9 +33,8 @@ function formatMessage(message) {
 	}
 	lines = lines.filter((line) => !/Module [A-z ]+\(from/.test(line));
 	lines = lines.map((line) => {
-		const parsingError = /Line (\d+):(?:(\d+):)?\s*Parsing error: (.+)$/.exec(
-			line
-		);
+		const parsingError =
+			/Line (\d+):(?:(\d+):)?\s*Parsing error: (.+)$/.exec(line);
 		if (!parsingError) {
 			return line;
 		}
@@ -99,16 +98,49 @@ function formatMessage(message) {
 }
 
 function formatWebpackMessages(json) {
-const formattedErrors = json.errors.map(formatMessage);
-const formattedWarnings = json.warnings.map(formatMessage);
-const result = { errors: formattedErrors, warnings: formattedWarnings };
-if (result.errors.some(isLikelyASyntaxError)) {
-	result.errors = result.errors.filter(isLikelyASyntaxError);
+	const formattedErrors = json.errors.map(formatMessage);
+	const formattedWarnings = json.warnings.map(formatMessage);
+	const result = { errors: formattedErrors, warnings: formattedWarnings };
+	if (result.errors.some(isLikelyASyntaxError)) {
+		result.errors = result.errors.filter(isLikelyASyntaxError);
+	}
+	return result;
 }
-return result;
+
+async function execShellCommand(cmd) {
+	  const exec = require("child_process").exec;
+	  return new Promise((resolve, reject) => {
+	    exec(cmd, { maxBuffer: 1024 * 500 }, (error, stdout, stderr) => {
+	      if (error) {
+	      	return reject(error);
+	      } else {
+	      	return resolve(stdout.trim());
+	      }
+	    });
+	  });
+	};
+
+async function propagateProgressOption() {
+	try {
+		const progress = await execShellCommand('npm config get progress');
+		if (progress === 'false') {
+			process.env.PROGRESS = "false";
+			return
+		}
+	} catch (err) {}
+
+	try {
+		const progress = await execShellCommand('yarn config get progress');
+		if (progress === 'false') {
+			process.env.PROGRESS = "false";
+			return
+		}
+	} catch (err) {}
 }
 
 async function main() {
+	await propagateProgressOption();
+
 	console.log(colors.bold("Compiling..."));
 
 	const path = require("path");
@@ -132,7 +164,8 @@ async function main() {
 			errors: true,
 		});
 		const messages = formatWebpackMessages(statsData);
-		const isSuccessful = !messages.errors.length && !messages.warnings.length;
+		const isSuccessful =
+			!messages.errors.length && !messages.warnings.length;
 		if (isSuccessful) {
 			console.log(colors.bold("Compiled successfully!"));
 		}
@@ -145,7 +178,9 @@ async function main() {
 			return;
 		}
 		if (messages.warnings.length) {
-			console.log(colors.bold(colors.yellow("Compiled with warnings.\n")));
+			console.log(
+				colors.bold(colors.yellow("Compiled with warnings.\n"))
+			);
 			console.log(colors.yellow(messages.warnings.join("\n\n")));
 		}
 	};
