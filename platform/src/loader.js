@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactReduxContext } from "react-redux";
-import { cancel, fork } from "redux-saga/effects";
+import { cancel, spawn } from "redux-saga/effects";
 import { combineReducers } from "redux";
 import { downloadProgram, downloadJson } from "./assets";
 import * as constants from "./constants";
@@ -88,7 +88,11 @@ const createModuleLoader = () => {
     removeSaga(id);
     console.debug(`module ${id} introducing saga`);
     sagas[id] = sagaRunner(function* () {
-      yield fork(saga);
+      try {
+        yield spawn(saga);
+      } catch(err) {
+        console.error(`module ${id} saga crashed`, error);
+      }
     });
   };
 
