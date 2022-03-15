@@ -50,12 +50,7 @@ module.exports = {
 			? []
 			: [
 					new TerserPlugin({
-						extractComments: {
-							condition: /^\**!|license/i,
-							filename: (fileData) => "LICENSE.txt",
-							banner: (licenseFile) =>
-								"License information can be found in LICENSE.txt",
-						},
+						extractComments: false,
 						terserOptions: {
 							sourceMap: false,
 							toplevel: false,

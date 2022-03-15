@@ -51,7 +51,7 @@ const Route = (props) => {
       {(context) => (
         <Branch
           path={props.index ? "/" : props.path}
-          exact={props.index || props.exact}
+          exact={Boolean(props.index || props.exact)}
           context={context}
           component={props.component}
         />

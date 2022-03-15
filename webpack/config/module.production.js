@@ -156,7 +156,6 @@ config.module.rules.push(
 	},
 	{
 		test: /\.(png|jpg|gif)$/i,
-		dependency: { not: ["url"] },
 		type: "asset/inline",
 	}
 );

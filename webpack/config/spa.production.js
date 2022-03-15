@@ -15,8 +15,8 @@ const config = {
 	...require("../internal/build.js"),
 };
 
-config.output.filename = "[name].min.js";
-config.output.assetModuleFilename = "[name][ext][query]";
+config.output.filename = "spa/[name].min.js";
+config.output.assetModuleFilename = "spa/[name][ext][query]";
 
 config.module.rules.push(
 	{
@@ -152,14 +152,14 @@ config.module.rules.push(
 
 config.plugins.push(
 	new MiniCssExtractPlugin({
-		filename: "[name].css",
-		chunkFilename: "[id].css",
+		filename: "spa/[name].css",
+		chunkFilename: "spa/[id].css",
 		linkType: "text/css",
 		ignoreOrder: false,
 	}),
 	new CleanWebpackPlugin({
 		root: settings.PROJECT_BUILD_PATH,
-		cleanOnceBeforeBuildPatterns: ["**/*"],
+		cleanOnceBeforeBuildPatterns: ["spa/**/*"],
 		cleanStaleWebpackAssets: true,
 		dangerouslyAllowCleanPatternsOutsideProject: false,
 		verbose: false,
@@ -170,7 +170,7 @@ config.plugins.push(
 			__dirname,
 			"../../dependencies/dll/dependencies-prod-manifest.json"
 		),
-		sourceType: 'var',
+		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -178,7 +178,7 @@ config.plugins.push(
 			__dirname,
 			"../../platform/dll/platform-prod-manifest.json"
 		),
-		sourceType: 'var',
+		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -186,11 +186,12 @@ config.plugins.push(
 			__dirname,
 			"../../bootstrap/dll/bootstrap-prod-manifest.json"
 		),
-		sourceType: 'var',
+		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new HTMLWebpackPlugin({
 		template: path.resolve(settings.PROJECT_ROOT_PATH, "static/index.html"),
+		filename: "spa/index.html",
 		production: true,
 		publicPath: settings.PROJECT_NAMESPACE,
 		minify: {
@@ -212,8 +213,9 @@ config.plugins.push(
 		patterns: [
 			{
 				from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
-				to: settings.PROJECT_BUILD_PATH,
-				filter: async (resourcePath) => !resourcePath.endsWith("index.html"),
+				to: settings.PROJECT_BUILD_PATH + "/spa",
+				filter: async (resourcePath) =>
+					!resourcePath.endsWith("index.html"),
 			},
 		],
 	}),
@@ -223,6 +225,8 @@ config.plugins.push(
 				__dirname,
 				"../../dependencies/dll/dependencies.dll.min.js"
 			),
+			outputPath: "spa",
+			publicPath: settings.PROJECT_NAMESPACE + "/spa",
 			typeOfAsset: "js",
 		},
 		{
@@ -230,6 +234,8 @@ config.plugins.push(
 				__dirname,
 				"../../platform/dll/platform.dll.min.js"
 			),
+			outputPath: "spa",
+			publicPath: settings.PROJECT_NAMESPACE + "/spa",
 			typeOfAsset: "js",
 		},
 		{
@@ -237,6 +243,8 @@ config.plugins.push(
 				__dirname,
 				"../../bootstrap/dll/bootstrap.dll.min.js"
 			),
+			outputPath: "spa",
+			publicPath: settings.PROJECT_NAMESPACE + "/spa",
 			typeOfAsset: "js",
 		},
 	])
