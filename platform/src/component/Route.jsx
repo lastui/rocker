@@ -4,20 +4,25 @@ import { RouterContext } from "./Router";
 import { matchPath } from "../routing";
 
 const Branch = (props) => {
-  const match = useMemo(
-    () =>
-      matchPath(
-        props.context.location.pathname,
-        `${props.context.match.url}/${props.path}`.replace(/\/+/g, "/"),
-        props.exact
-      ),
-    [
-      props.path,
-      props.exact,
+  const match = useMemo(() => {
+    const nextMatch = matchPath(
       props.context.location.pathname,
-      props.context.match.url,
-    ]
-  );
+      `${props.context.match.url}/${props.path}`.replace(/\/+/g, "/"),
+      props.exact
+    );
+    if (!nextMatch) {
+      return nextMatch;
+    }
+    return {
+      ...nextMatch,
+      parent: props.context.match.url,
+    };
+  }, [
+    props.path,
+    props.exact,
+    props.context.location.pathname,
+    props.context.match.url,
+  ]);
 
   const composite = useMemo(() => {
     if (match) {

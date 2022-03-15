@@ -24,7 +24,10 @@ export function useParams() {
 export function useRouteMatch(path) {
   const ctx = useContext(RouterContext);
   const result = useMemo(
-    () => (path ? matchPath(ctx.location.pathname, path, {}) : ctx.match),
+    () =>
+      path
+        ? matchPath(ctx.location.pathname, ctx.match.parent + path, {})
+        : ctx.match,
     [path, ctx.location.pathname, ctx.match]
   );
   return result;
@@ -87,6 +90,7 @@ const Router = (props) => {
       match: {
         path: "/",
         url: "/",
+        parent: "",
         params: {},
         isExact: location.pathname === "/",
       },
