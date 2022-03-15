@@ -226,7 +226,7 @@ config.plugins.push(
 				"../../dependencies/dll/dependencies.dll.min.js"
 			),
 			outputPath: "spa",
-			publicPath: settings.PROJECT_NAMESPACE + "/spa",
+			publicPath: settings.PROJECT_NAMESPACE === '/' ? '/spa' : `${settings.PROJECT_NAMESPACE}/spa`,
 			typeOfAsset: "js",
 		},
 		{
@@ -235,7 +235,7 @@ config.plugins.push(
 				"../../platform/dll/platform.dll.min.js"
 			),
 			outputPath: "spa",
-			publicPath: settings.PROJECT_NAMESPACE + "/spa",
+			publicPath: settings.PROJECT_NAMESPACE === '/' ? '/spa' : `${settings.PROJECT_NAMESPACE}/spa`,
 			typeOfAsset: "js",
 		},
 		{
@@ -244,7 +244,7 @@ config.plugins.push(
 				"../../bootstrap/dll/bootstrap.dll.min.js"
 			),
 			outputPath: "spa",
-			publicPath: settings.PROJECT_NAMESPACE + "/spa",
+			publicPath: settings.PROJECT_NAMESPACE === '/' ? '/spa' : `${settings.PROJECT_NAMESPACE}/spa`,
 			typeOfAsset: "js",
 		},
 	])
