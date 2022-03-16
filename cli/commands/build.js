@@ -16,7 +16,8 @@ exports.handler = async function (argv) {
     });
   });
 
-  const { webpackCallback } = require("../helpers/webpack.js");
+  const { setup } = require("../helpers/webpack.js");
+  const callback = await setup(argv);
 
   const path = require("path");
   const webpack = require("webpack");
@@ -28,6 +29,5 @@ exports.handler = async function (argv) {
   }
   config.infrastructureLogging.stream = process.stdout;
 
-  const callback = await webpackCallback(argv);
   webpack(config).run(callback);
 };
