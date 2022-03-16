@@ -28,14 +28,12 @@ exports.handler = async function (argv) {
   compiler.hooks.invalid.tap("invalid", () => {
     console.log(colors.bold("Compiling..."));
   });
-  const devServer = new require("webpack-dev-server")(
-    devServerConfig,
-    compiler
-  );
-  devServer.startCallback((err) => {
+  const server = require("webpack-dev-server");
+  const instance = new server(devServerConfig, compiler);
+  instance.startCallback((err) => {
     if (err) {
       callback(err);
     }
   });
-  cleanupHooks.push(() => devServer.close());
+  cleanupHooks.push(() => instance.close());
 };
