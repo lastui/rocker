@@ -16,30 +16,22 @@ exports.handler = async function (argv) {
     });
   });
 
-  const { setup } = require("../helpers/webpack.js");
+  const { setup, getConfig } = require("../helpers/webpack.js");
   const callback = await setup({
     ...argv,
     development: true,
   });
-
-  const path = require("path");
-  const webpack = require("webpack");
-  const WebpackDevServer = require("webpack-dev-server");
-
-  const config = require(path.resolve("./webpack.config.js"));
-
-  if (!config.infrastructureLogging) {
-    config.infrastructureLogging = { level: "info" };
-  }
-  config.infrastructureLogging.stream = process.stdout;
-
+  const config = await getConfig();
   const devServerConfig = config.devServer;
   delete config.devServer;
-  const compiler = webpack(config, callback);
+  const compiler = require("webpack")(config, callback);
   compiler.hooks.invalid.tap("invalid", () => {
     console.log(colors.bold("Compiling..."));
   });
-  const devServer = new WebpackDevServer(devServerConfig, compiler);
+  const devServer = new require("webpack-dev-server")(
+    devServerConfig,
+    compiler
+  );
   devServer.startCallback((err) => {
     if (err) {
       callback(err);

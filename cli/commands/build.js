@@ -16,18 +16,9 @@ exports.handler = async function (argv) {
     });
   });
 
-  const { setup } = require("../helpers/webpack.js");
+  const { setup, getConfig } = require("../helpers/webpack.js");
   const callback = await setup(argv);
+  const config = await getConfig();
 
-  const path = require("path");
-  const webpack = require("webpack");
-
-  const config = require(path.resolve("./webpack.config.js"));
-
-  if (!config.infrastructureLogging) {
-    config.infrastructureLogging = { level: "info" };
-  }
-  config.infrastructureLogging.stream = process.stdout;
-
-  webpack(config).run(callback);
+  require("webpack")(config).run(callback);
 };

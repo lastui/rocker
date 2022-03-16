@@ -1,5 +1,7 @@
+const path = require("path");
 const colors = require("colors/safe");
 const { execShellCommand } = require("./shell.js");
+const { fileExists } = require("./io.js");
 
 function isLikelyASyntaxError(message) {
   return message.indexOf("Syntax error:") !== -1;
@@ -109,8 +111,26 @@ async function propagateProgressOption() {
   } catch (err) {}
 }
 
-exports.setup = async function (options) {
+exports.getConfig = async function () {
+  const projectConfig = path.resolve("./webpack.config.js");
+  const exist = await fileExists(projectConfig);
+  let config = null;
+  if (exist) {
+    config = require(projectConfig);
+  } else {
+    config = require("../../webpack/config/module.js");
+    config.entry = {
+      main: ["./src/index.js"],
+    };
+  }
+  if (!config.infrastructureLogging) {
+    config.infrastructureLogging = { level: "info" };
+  }
+  config.infrastructureLogging.stream = process.stdout;
+  return config;
+};
 
+exports.setup = async function (options) {
   process.env.NODE_ENV = options.development ? "development" : "production";
 
   process.env.BABEL_ENV = process.env.NODE_ENV;
