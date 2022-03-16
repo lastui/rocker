@@ -5,17 +5,14 @@ import { matchPath } from "../routing";
 
 const Branch = (props) => {
   const match = useMemo(() => {
-    const nextMatch = matchPath(
-      props.context.location.pathname,
-      `${props.context.match.url}/${props.path}`.replace(/\/+/g, "/"),
-      props.exact
-    );
+    const fullPath = `${props.context.match.url}/${props.path}`.replace(/\/+/g, "/")
+    const nextMatch = matchPath(props.context.location.pathname, fullPath, props.exact);
     if (!nextMatch) {
       return nextMatch;
     }
     return {
       ...nextMatch,
-      parent: props.context.match.url,
+      parent: fullPath,
     };
   }, [
     props.path,
