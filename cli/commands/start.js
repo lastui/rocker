@@ -17,6 +17,10 @@ exports.handler = async function (argv) {
     });
   });
 
+  if (argv.silent) {
+    process.env.PROGRESS === "true";
+  }
+
   process.env.NODE_ENV = "development";
 
   process.env.BABEL_ENV = process.env.NODE_ENV;

@@ -1,9 +1,9 @@
 const colors = require("colors/safe");
-const { execShellCommand } = require('./shell.js');
+const { execShellCommand } = require("./shell.js");
 
 function isLikelyASyntaxError(message) {
   return message.indexOf("Syntax error:") !== -1;
-};
+}
 
 function formatMessage(message) {
   let lines = [];
@@ -79,7 +79,7 @@ function formatMessage(message) {
   );
   message = lines.join("\n");
   return message.trim();
-};
+}
 
 function formatWebpackMessages(json) {
   const formattedErrors = json.errors.map(formatMessage);
@@ -89,9 +89,12 @@ function formatWebpackMessages(json) {
     result.errors = result.errors.filter(isLikelyASyntaxError);
   }
   return result;
-};
+}
 
 async function propagateProgressOption() {
+  if (process.env.PROGRESS === "true") {
+    return;
+  }
   try {
     const progress = await execShellCommand("npm config get progress");
     if (progress === "false") {
@@ -107,7 +110,7 @@ async function propagateProgressOption() {
       return;
     }
   } catch (err) {}
-};
+}
 
 exports.webpackCallback = async function () {
   await propagateProgressOption();
