@@ -29,10 +29,7 @@ exports.handler = async function (argv) {
     console.log(colors.bold("Compiling..."));
   });
   const server = require("webpack-dev-server");
-  const instance = new server(
-    devServerConfig,
-    compiler
-  );
+  const instance = new server(devServerConfig, compiler);
   instance.startCallback((err) => {
     if (err) {
       callback(err);
