@@ -16,14 +16,6 @@ exports.handler = async function (argv) {
     });
   });
 
-  if (argv.silent) {
-    process.env.PROGRESS === "true";
-  }
-
-  process.env.NODE_ENV = argv.development ? "development" : "production";
-
-  process.env.BABEL_ENV = process.env.NODE_ENV;
-
   const { webpackCallback } = require("../helpers/webpack.js");
 
   const path = require("path");
@@ -36,6 +28,6 @@ exports.handler = async function (argv) {
   }
   config.infrastructureLogging.stream = process.stdout;
 
-  const callback = await webpackCallback();
+  const callback = await webpackCallback(argv);
   webpack(config).run(callback);
 };

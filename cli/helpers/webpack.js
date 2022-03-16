@@ -92,9 +92,6 @@ function formatWebpackMessages(json) {
 }
 
 async function propagateProgressOption() {
-  if (process.env.PROGRESS === "true") {
-    return;
-  }
   try {
     const progress = await execShellCommand("npm config get progress");
     if (progress === "false") {
@@ -112,9 +109,18 @@ async function propagateProgressOption() {
   } catch (err) {}
 }
 
-exports.webpackCallback = async function () {
-  await propagateProgressOption();
-  console.log(colors.bold("Compiling..."));
+exports.webpackCallback = async function (options) {
+
+  process.env.NODE_ENV = options.development ? "development" : "production";
+
+  process.env.BABEL_ENV = process.env.NODE_ENV;
+
+  if (options.silent) {
+    process.env.PROGRESS === "true";
+  } else {
+    await propagateProgressOption();
+    console.log(colors.bold("Compiling..."));
+  }
 
   return function (err, stats) {
     if (err) {
