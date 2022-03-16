@@ -2,8 +2,8 @@
 	"scripts": {
 		"prebuild": "node scripts/prebuild.js",
 		"build": "npm run build:dev && npm run build:prod",
-		"build:prod": "NODE_ENV=production node ../bin/webpack.js",
-		"build:dev": "NODE_ENV=development node ../bin/webpack.js",
+		"build:prod": "node ../cli/index.js build",
+		"build:dev": "node ../cli/index.js build --dev",
 		"postbuild": "node scripts/postbuild.js"
 	}
 }
