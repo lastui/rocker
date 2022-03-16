@@ -109,14 +109,14 @@ async function propagateProgressOption() {
   } catch (err) {}
 }
 
-exports.webpackCallback = async function (options) {
+exports.setup = async function (options) {
 
   process.env.NODE_ENV = options.development ? "development" : "production";
 
   process.env.BABEL_ENV = process.env.NODE_ENV;
 
   if (options.silent) {
-    process.env.PROGRESS === "true";
+    process.env.PROGRESS === "false";
   } else {
     await propagateProgressOption();
     console.log(colors.bold("Compiling..."));

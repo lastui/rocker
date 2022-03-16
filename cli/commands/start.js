@@ -16,7 +16,11 @@ exports.handler = async function (argv) {
     });
   });
 
-  const { webpackCallback } = require("../helpers/webpack.js");
+  const { setup } = require("../helpers/webpack.js");
+  const callback = await setup({
+    ...argv,
+    development: true,
+  });
 
   const path = require("path");
   const webpack = require("webpack");
@@ -31,10 +35,6 @@ exports.handler = async function (argv) {
 
   const devServerConfig = config.devServer;
   delete config.devServer;
-  const callback = await webpackCallback({
-    ...argv,
-    development: true,
-  });
   const compiler = webpack(config, callback);
   compiler.hooks.invalid.tap("invalid", () => {
     console.log(colors.bold("Compiling..."));
