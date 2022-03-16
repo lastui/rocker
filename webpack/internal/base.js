@@ -8,7 +8,7 @@ module.exports = {
 		unsafeCache: false,
 		preferRelative: false,
 		modules: [settings.PROJECT_SRC_PATH, settings.NODE_MODULES_PATH],
-		extensions: [".js", ".jsx", ".scss", ".css", ".json", ".txt"],
+		extensions: [".js", ".jsx", ".ts", ".tsx"],
 		mainFields: ["browser", "module", "main"],
 		enforceExtension: false,
 		symlinks: false,

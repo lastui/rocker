@@ -20,7 +20,7 @@ config.output.assetModuleFilename = "spa/[name][ext][query]";
 
 config.module.rules.push(
 	{
-		test: /\.jsx?$/,
+		test: /\.[j|t]sx?$/,
 		enforce: "pre",
 		include: [settings.PROJECT_SRC_PATH, /node_modules\/\@lastui*/],
 		exclude: [/node_modules\/(?!(\@lastui*))/],

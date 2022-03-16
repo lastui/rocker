@@ -56,7 +56,7 @@ config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
 
 config.module.rules.push(
 	{
-		test: /\.jsx?$/,
+		test: /\.[j|t]sx?$/,
 		enforce: "pre",
 		exclude: [/node_modules\/(?!(\@lastui*))/],
 		use: [
