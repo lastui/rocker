@@ -1,11 +1,10 @@
-exports.command = 'start'
+exports.command = "start";
 
-exports.describe = 'develop package'
+exports.describe = "develop package";
 
-exports.builder = {}
+exports.builder = {};
 
 exports.handler = async function (argv) {
-
   let cleanupHooks = [];
 
   cleanupHooks.push(() => process.exit(0));
@@ -17,11 +16,7 @@ exports.handler = async function (argv) {
     });
   });
 
-  process.env.NODE_ENV = "development";
-
-  process.env.BABEL_ENV = process.env.NODE_ENV;
-
-  const { webpackCallback } = require('../helpers/webpack.js')
+  const { webpackCallback } = require("../helpers/webpack.js");
 
   const path = require("path");
   const webpack = require("webpack");
@@ -36,7 +31,10 @@ exports.handler = async function (argv) {
 
   const devServerConfig = config.devServer;
   delete config.devServer;
-  const callback = await webpackCallback();
+  const callback = await webpackCallback({
+    ...argv,
+    development: true,
+  });
   const compiler = webpack(config, callback);
   compiler.hooks.invalid.tap("invalid", () => {
     console.log(colors.bold("Compiling..."));
@@ -48,5 +46,4 @@ exports.handler = async function (argv) {
     }
   });
   cleanupHooks.push(() => devServer.close());
-
-}
+};

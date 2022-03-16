@@ -9,6 +9,9 @@ require("yargs")
     alias: "development",
     type: "boolean",
   })
+  .option("silent", {
+    type: "boolean",
+  })
   .command(require("./commands/build.js"))
   .command(require("./commands/start.js"))
   .demandCommand()

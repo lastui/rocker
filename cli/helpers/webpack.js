@@ -1,9 +1,9 @@
 const colors = require("colors/safe");
-const { execShellCommand } = require('./shell.js');
+const { execShellCommand } = require("./shell.js");
 
 function isLikelyASyntaxError(message) {
   return message.indexOf("Syntax error:") !== -1;
-};
+}
 
 function formatMessage(message) {
   let lines = [];
@@ -79,7 +79,7 @@ function formatMessage(message) {
   );
   message = lines.join("\n");
   return message.trim();
-};
+}
 
 function formatWebpackMessages(json) {
   const formattedErrors = json.errors.map(formatMessage);
@@ -89,7 +89,7 @@ function formatWebpackMessages(json) {
     result.errors = result.errors.filter(isLikelyASyntaxError);
   }
   return result;
-};
+}
 
 async function propagateProgressOption() {
   try {
@@ -107,11 +107,20 @@ async function propagateProgressOption() {
       return;
     }
   } catch (err) {}
-};
+}
 
-exports.webpackCallback = async function () {
-  await propagateProgressOption();
-  console.log(colors.bold("Compiling..."));
+exports.webpackCallback = async function (options) {
+
+  process.env.NODE_ENV = options.development ? "development" : "production";
+
+  process.env.BABEL_ENV = process.env.NODE_ENV;
+
+  if (options.silent) {
+    process.env.PROGRESS === "true";
+  } else {
+    await propagateProgressOption();
+    console.log(colors.bold("Compiling..."));
+  }
 
   return function (err, stats) {
     if (err) {

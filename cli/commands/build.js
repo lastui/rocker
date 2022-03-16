@@ -1,11 +1,10 @@
-exports.command = 'build'
+exports.command = "build";
 
-exports.describe = 'bundle package'
+exports.describe = "bundle package";
 
-exports.builder = {}
+exports.builder = {};
 
 exports.handler = async function (argv) {
-
   let cleanupHooks = [];
 
   cleanupHooks.push(() => process.exit(0));
@@ -17,24 +16,18 @@ exports.handler = async function (argv) {
     });
   });
 
-  process.env.NODE_ENV = argv.development ? "development" : "production";
+  const { webpackCallback } = require("../helpers/webpack.js");
 
-  process.env.BABEL_ENV = process.env.NODE_ENV;
+  const path = require("path");
+  const webpack = require("webpack");
 
-    const { webpackCallback } = require('../helpers/webpack.js');
+  const config = require(path.resolve("./webpack.config.js"));
 
-    const path = require("path");
-    const webpack = require("webpack");
-    const WebpackDevServer = require("webpack-dev-server");
+  if (!config.infrastructureLogging) {
+    config.infrastructureLogging = { level: "info" };
+  }
+  config.infrastructureLogging.stream = process.stdout;
 
-    const config = require(path.resolve("./webpack.config.js"));
-
-    if (!config.infrastructureLogging) {
-      config.infrastructureLogging = { level: "info" };
-    }
-    config.infrastructureLogging.stream = process.stdout;
-
-    const callback = await webpackCallback();
-    webpack(config).run(callback);
-
-}
+  const callback = await webpackCallback(argv);
+  webpack(config).run(callback);
+};
