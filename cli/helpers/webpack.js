@@ -119,9 +119,11 @@ exports.getConfig = async function () {
     config = require(projectConfig);
   } else {
     config = require("../../webpack/config/module.js");
-    config.entry = {
-      main: ["./src/index.js"],
-    };
+    config.entry = {};
+    const indexExists = await fileExists(path.resolve("./src/index.js"));
+    if (indexExists) {
+      config.entry.main = ["./src/index.js"];
+    }
   }
   if (!config.infrastructureLogging) {
     config.infrastructureLogging = { level: "info" };
