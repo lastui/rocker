@@ -76,6 +76,10 @@ config.module.rules.push(
 							return [plugin[0], plugin[1], `babel-${plugin[2]}`];
 						}
 					}),
+					cacheDirectory: path.join(
+						settings.WEBPACK_ROOT_PATH,
+						".babel-cache"
+					),
 					sourceMaps: false,
 					sourceType: "module",
 					highlightCode: true,

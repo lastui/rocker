@@ -16,6 +16,7 @@ exports.handler = async function (argv) {
     });
   });
 
+  const colors = require("colors/safe");
   const { setup, getConfig } = require("../helpers/webpack.js");
   const callback = await setup({
     ...argv,

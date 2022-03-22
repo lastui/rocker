@@ -19,6 +19,7 @@ exports.handler = async function (argv) {
   const { setup, getConfig } = require("../helpers/webpack.js");
   const callback = await setup(argv);
   const config = await getConfig();
+  const server = require("webpack");
 
-  require("webpack")(config).run(callback);
+  server(config).run(callback);
 };
