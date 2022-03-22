@@ -7,7 +7,7 @@ exports.builder = {};
 exports.handler = async function (argv) {
   let cleanupHooks = [];
 
-  cleanupHooks.push(() => process.exit(0));
+  cleanupHooks.push(() => process.exit(process.exitCode || 0));
 
   const signals = ["SIGINT", "SIGTERM"];
   signals.forEach(function (sig) {
