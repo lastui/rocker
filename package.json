@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "build:dependencies": "cd dependencies && npm run build",
@@ -71,7 +71,7 @@
     "util": "0.12.4",
     "webpack": "5.70.0",
     "webpack-dev-server": "4.7.4",
-    "yargs": "17.3.1"
+    "yargs": "17.4.0"
   },
   "repository": {
     "type": "git",
