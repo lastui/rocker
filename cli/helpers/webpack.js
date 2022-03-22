@@ -141,13 +141,16 @@ exports.setup = async function (options) {
     process.env.PROGRESS === "false";
   } else {
     await propagateProgressOption();
-    console.log(colors.bold("Compiling..."));
   }
 
+  console.log(colors.bold("Compiling..."));
+
   return function (err, stats) {
+    process.exitCode = 0;
     if (err) {
       console.log(colors.red("Failed to compile.\n"));
       console.log(err);
+      process.exitCode = 1;
       return;
     }
     if (!stats) {
@@ -164,6 +167,7 @@ exports.setup = async function (options) {
       console.log(colors.bold("Compiled successfully!"));
     }
     if (messages.errors.length) {
+      process.exitCode = 1;
       if (messages.errors.length > 1) {
         messages.errors.length = 1;
       }
