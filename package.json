@@ -51,7 +51,7 @@
     "bootstrap/dll/LICENSE.txt"
   ],
   "dependencies": {
-    "@lastui/babylon": "1.1.37",
+    "@lastui/babylon": "1.1.38",
     "@linaria/webpack-loader": "3.0.0-beta.17",
     "add-asset-html-webpack-plugin": "5.0.1",
     "clean-webpack-plugin": "4.0.0",
@@ -71,7 +71,7 @@
     "util": "0.12.4",
     "webpack": "5.70.0",
     "webpack-dev-server": "4.7.4",
-    "yargs": "17.3.1"
+    "yargs": "17.4.0"
   },
   "repository": {
     "type": "git",
