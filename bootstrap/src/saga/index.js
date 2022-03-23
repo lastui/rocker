@@ -14,7 +14,6 @@ function* runContextRefresher(action) {
 	do {
 		try {
 			const context = yield call(action.payload.fetchContext);
-			console.log('new context is', context)
 			yield put(actions.setAvailableModules(context.available));
 			yield put(actions.setEntryPointModule(context.entrypoint));
 		} catch (err) {

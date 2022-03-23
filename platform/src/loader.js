@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactReduxContext } from "react-redux";
-import { cancel, spawn } from "redux-saga/effects";
+import { cancel, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
 import { downloadProgram } from "./assets";
 import * as constants from "./constants";
@@ -102,7 +102,10 @@ const createModuleLoader = () => {
     console.debug(`module ${id} removing saga`);
     const dangling = sagas[id];
     sagaRunner(function* () {
+      console.log('saga kill', id, dangling)
+      console.log('before canceling saga', id, dangling.isCancelled())
       yield cancel(dangling);
+      console.log('after canceling saga', id, dangling.isCancelled())
     });
     delete sagas[id];
   };
@@ -112,7 +115,8 @@ const createModuleLoader = () => {
     console.debug(`module ${id} introducing saga`);
     sagas[id] = sagaRunner(function* () {
       try {
-        yield spawn(saga);
+        // FIXME should use spawn but unable to cancel spawn
+        yield fork(saga);
       } catch (error) {
         console.error(`module ${id} saga crashed`, error);
       }
@@ -136,6 +140,7 @@ const createModuleLoader = () => {
       id,
       view: (scope.Main && isolateProgram(id, scope)) || null,
       cleanup: () => {
+        console.debug(`module ${id} cleaning up`)
         removeStyles(id);
         if (scope.saga) {
           removeSaga(id);
@@ -163,8 +168,11 @@ const createModuleLoader = () => {
     const promise = downloadProgram(available.program)
       .then((data) => adaptModule(id, data))
       .then((data) => {
+        if (!availableModules[id]) {
+          data.cleanup();
+          return true;
+        }
         loadedModules[id] = data;
-        console.log('dispatching module loaded');
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
@@ -185,58 +193,62 @@ const createModuleLoader = () => {
     return promise;
   };
 
-  const unloadModule = (item) =>
+  const unloadModule = (id) =>
     new Promise((resolve) => {
-      if (!item.id) {
+      console.log('unloading', id);
+      if (!id) {
         return resolve(false);
       }
-      const loaded = loadedModules[item.id];
+      danglingNamespaces.push(id);
+      const loaded = loadedModules[id];
       if (loaded) {
-        delete loadedModules[item.id];
-        store.dispatch({
-          type: constants.MODULE_UNLOADED,
-          payload: {
-            module: item.id,
-          },
-        });
-        loaded.cleanup();
+        console.log(id, 'is still loaded', loaded.cleanup)
+        loaded.cleanup();  
+      } else {
+        console.log(id, 'is not loaded', loadedModules)
       }
-      danglingNamespaces.push(item.id);
+      console.log('cleaned up after', id);
+      delete loadedModules[id];
+      store.dispatch({
+        type: constants.MODULE_UNLOADED,
+        payload: {
+          module: id,
+        },
+      });
       return resolve(true);
     });
 
-  const setAvailableModules = (modules = []) => {
+  const setAvailableModules = async (modules = []) => {
+    console.log('setting available modules to', modules, 'currently', availableModules, loadedModules, loadingModules);
     const scheduledUnload = [];
     const newModules = {};
     for (let i = modules.length; i--; ) {
       const item = modules[i];
       newModules[item.id] = item;
       if (!availableModules[item.id]) {
+        console.log('+ module', item.id);
         availableModules[item.id] = item;
       }
     }
     const obsoleteModules = [];
     for (const existing in availableModules) {
       const item = newModules[existing];
-      if (item) {
-        if (
-          item.program?.sha256 !== availableModules[existing].program?.sha256
-        ) {
-          availableModules[existing] = item;
-          scheduledUnload.push(unloadModule(item));
-        }
-      } else {
+      if (!item) {
         const loaded = loadedModules[existing];
+        obsoleteModules.push(existing);
         if (loaded) {
-          scheduledUnload.push(unloadModule(loaded));
-          obsoleteModules.push(existing);
+          console.log('will unload', existing, loadedModules);
+          scheduledUnload.push(unloadModule(existing));
+        } else {
+          console.log('will not unload', existing, loadedModules);
         }
       }
     }
     for (let i = obsoleteModules.length; i--; ) {
+      console.log('- module', obsoleteModules[i]);
       delete availableModules[obsoleteModules[i]];
     }
-    return Promise.all(scheduledUnload);
+    await Promise.allSettled(scheduledUnload)
   };
 
   const getSharedReducer = () => {
@@ -255,6 +267,8 @@ const createModuleLoader = () => {
             updatedAt: state.updatedAt,
           };
         }
+        case constants.MODULE_LOADED:
+        case constants.MODULE_UNLOADED:
         case constants.FORCE_UPDATE: {
           return {
             meta: state.meta,
@@ -264,7 +278,7 @@ const createModuleLoader = () => {
           };
         }
         case constants.ADD_I18N_MESSAGES: {
-          console.log('shared ADD_I18N_MESSAGES', action.payload)
+          //console.log('shared ADD_I18N_MESSAGES', action.payload)
           if (!action.payload.batch.length) {
             if (action.payload.language !== state.language) {
               return {
@@ -314,6 +328,7 @@ const createModuleLoader = () => {
           };
         }
         case constants.REMOVE_I18N_MESSAGES: {
+          //console.log('shared REMOVE_I18N_MESSAGES', action.payload)
           const nextMessages = {
             ...state.messages,
           };
