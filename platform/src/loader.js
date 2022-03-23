@@ -54,7 +54,7 @@ const createModuleLoader = () => {
         shared: (state = {}, _action) => state,
         runtime: (state = {}, _action) => state,
       });
-      composedReducer(undefined, { type: constants.MODULE_INIT });
+      composedReducer(undefined, { type: constants.MODULE_INIT, module: id });
       reducers[id] = composedReducer;
     } catch (_err) {
       console.warn(`module ${id} wanted to register invalid reducer`);
@@ -119,28 +119,9 @@ const createModuleLoader = () => {
     });
   };
 
-  const removeLocales = (id) => {
-    console.debug(`module ${id} removing locales`);
-    store.dispatch(actions.removeLocales(id));
-  };
-
-  const addLocales = async (id, locales) => {
-    try {
-      console.debug(`module ${id} introducing locales`);
-      store.dispatch(actions.addLocales(id, locales));
-      return;
-    } catch (error) {
-      console.error(`module ${id} failed to load locales`, error);
-      return;
-    }
-  };
-
-  const connectModule = async (id, context, scope = {}) => {
+  const adaptModule = async (id, scope = {}) => {
     const adaptationWork = [];
     adaptationWork.push(addStyles(id));
-    if (context.locales) {
-      adaptationWork.push(addLocales(id, context.locales));
-    }
     if (scope.reducer) {
       adaptationWork.push(addReducer(id, scope.reducer));
     }
@@ -158,9 +139,6 @@ const createModuleLoader = () => {
         removeStyles(id);
         if (scope.saga) {
           removeSaga(id);
-        }
-        if (context.locales) {
-          removeLocales(id);
         }
         if (scope.middleware) {
           removeMiddleware(id);
@@ -183,13 +161,14 @@ const createModuleLoader = () => {
       return loading;
     }
     const promise = downloadProgram(available.program)
-      .then((data) => connectModule(id, available, data))
+      .then((data) => adaptModule(id, data))
       .then((data) => {
         loadedModules[id] = data;
+        console.log('dispatching module loaded');
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
-            id,
+            module: id,
           },
         });
         return true;
@@ -217,7 +196,7 @@ const createModuleLoader = () => {
         store.dispatch({
           type: constants.MODULE_UNLOADED,
           payload: {
-            id: item.id,
+            module: item.id,
           },
         });
         loaded.cleanup();
@@ -260,7 +239,106 @@ const createModuleLoader = () => {
     return Promise.all(scheduledUnload);
   };
 
-  const getReducer =
+  const getSharedReducer = () => {
+    const localeMapping = {};
+    return (state = { meta: {}, language: "en-US", messages: {}, updatedAt: 0 }, action) => {
+      switch (action.type) {
+        case constants.SET_AVAILABLE_MODULES: {
+          const meta = {};
+          for (const item of action.payload.modules) {
+            meta[item.id] = item.meta || {};
+          }
+          return {
+            meta,
+            language: state.language,
+            messages: state.messages,
+            updatedAt: state.updatedAt,
+          };
+        }
+        case constants.FORCE_UPDATE: {
+          return {
+            meta: state.meta,
+            language: state.language,
+            messages: state.messages,
+            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
+          };
+        }
+        case constants.ADD_I18N_MESSAGES: {
+          console.log('shared ADD_I18N_MESSAGES', action.payload)
+          if (!action.payload.batch.length) {
+            if (action.payload.language !== state.language) {
+              return {
+                meta: state.meta,
+                language: action.payload.language,
+                messages: state.messages,
+                updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
+              };
+            }
+            return state;
+          }
+
+          const nextMessages = {
+            ...state.messages,
+          };
+
+          for (const patch of action.payload.batch) {
+            if (!localeMapping[patch.module]) {
+              localeMapping[patch.module] = {};
+            }
+            if (!nextMessages[action.payload.language]) {
+              nextMessages[action.payload.language] = {};
+            }
+            const addItem = (key, message) => {
+              const hash = key.substring(1);
+              localeMapping[patch.module][hash] = true;
+              nextMessages[action.payload.language][hash] = message;
+            };
+            const walk = (path, table) => {
+              for (const property in table) {
+                const item = table[property];
+                if (typeof item !== "object") {
+                  addItem(`${path}.${property}`, item);
+                } else {
+                  walk(`${path}.${property}`, item);
+                }
+              }
+            };
+            walk("", patch.data);
+          }
+
+          return {
+            meta: state.meta,
+            language: action.payload.language,
+            messages: nextMessages,
+            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
+          };
+        }
+        case constants.REMOVE_I18N_MESSAGES: {
+          const nextMessages = {
+            ...state.messages,
+          };
+          const keys = localeMapping[action.payload.module] || {};
+          for (const id in keys) {
+            for (const locale in state.messages) {
+              delete nextMessages[locale][id];
+            }
+          }
+          delete localeMapping[action.payload.module];
+          return {
+            meta: state.meta,
+            language: state.language,
+            messages: nextMessages,
+            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
+          };
+        }
+        default: {
+          return state;
+        }
+      }
+    }
+  };
+
+  const getModulesReducer =
     () =>
     (state = {}, action) => {
       for (
@@ -279,8 +357,8 @@ const createModuleLoader = () => {
           return state;
         }
         case constants.MODULE_LOADED: {
-          console.debug(`module ${action.payload.id} loaded`);
-          const id = action.payload.id;
+          const id = action.payload.module;
+          console.debug(`module ${id} loaded`);
           if (reducers[id]) {
             try {
               state[id] = reducers[id](state[id], action);
@@ -291,8 +369,9 @@ const createModuleLoader = () => {
           return state;
         }
         case constants.MODULE_UNLOADED: {
-          removeReducer(action.payload.id);
-          console.debug(`module ${action.payload.id} unloaded`);
+          const id = action.payload.module
+          removeReducer(id);
+          console.debug(`module ${id} unloaded`);
           return state;
         }
         default: {
@@ -408,7 +487,8 @@ const createModuleLoader = () => {
     setAvailableModules,
     loadModule,
     getLoadedModule,
-    getReducer,
+    getModulesReducer,
+    getSharedReducer,
   };
 };
 

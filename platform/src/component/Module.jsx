@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import moduleLoader from "../loader";
 
 const Module = (props) => {
-  const updatedAt = useSelector((state) => state.runtime.updatedAt);
+  const updatedAt = useSelector((state) => state.shared.updatedAt);
   const [lastUpdate, setLastUpdate] = useState(0);
 
   const composite = useMemo(() => {

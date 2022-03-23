@@ -9,14 +9,13 @@ function* runContextRefresher(action) {
 	if (action.payload.initializeRuntime) {
 		yield call(action.payload.initializeRuntime);
 	}
-	const interval = 30 * 1000;
+	const interval = 5 * 1000;
 
 	do {
 		try {
 			const context = yield call(action.payload.fetchContext);
+			console.log('new context is', context)
 			yield put(actions.setAvailableModules(context.available));
-			//const lang = yield select((state) => state.runtime.language);
-			//yield put(actions.setLanguage(lang));
 			yield put(actions.setEntryPointModule(context.entrypoint));
 		} catch (err) {
 			console.warn("failed to obtain context", err);

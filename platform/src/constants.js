@@ -1,14 +1,11 @@
 export const INIT = "@@platform/INIT";
 
 export const SET_LANGUAGE = "@@platform/SET_LANGUAGE";
-
+export const FORCE_UPDATE = "@@platform/FORCE_UPDATE";
 export const SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";
 export const SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
 export const LOAD_MODULE = "@@platform/LOAD_MODULE";
 export const SHUTDOWN = "@@platform/SHUTDOWN";
-
-export const ADD_LOCALES = "@@platform/ADD_LOCALES";
-export const REMOVE_LOCALES = "@@platform/REMOVE_LOCALES";
 
 export const MODULE_INIT = "@@modules/INIT";
 export const MODULE_LOADED = "@@modules/LOADED";

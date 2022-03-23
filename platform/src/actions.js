@@ -30,21 +30,6 @@ export const removeI18nMessages = (module) => ({
   },
 });
 
-export const addLocales = (module, locales) => ({
-  type: constants.ADD_LOCALES,
-  payload: {
-    module,
-    locales,
-  },
-});
-
-export const removeLocales = (module) => ({
-  type: constants.REMOVE_LOCALES,
-  payload: {
-    module,
-  },
-});
-
 export const setAvailableModules = (modules = []) => ({
   type: constants.SET_AVAILABLE_MODULES,
   payload: {

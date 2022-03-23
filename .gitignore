@@ -1,5 +1,5 @@
 node_modules
 dll
 .idea
-webpack/.babel_cache
-webpack/.linaria_cache
+webpack/.babel-cache
+webpack/.linaria-cache
