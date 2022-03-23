@@ -33,18 +33,18 @@ export const moduleLoaderMiddleware = (loader) => {
         case constants.MODULE_LOADED: {
           const id = action.payload.module;
           if (!id) {
-            return next(noop);
+            return next(action);
           }
           const language = store.getState().shared.language;
           if (!language) {
-            return next(noop);
+            return next(action);
           }
           if (loadedLocales[id] && loadedLocales[id][language]) {
-            return next(noop);
+            return next(action);
           }
           const uri = availableLocales[id][language];
           if (!uri) {
-            return next(noop);
+            return next(action);
           }
           return downloadJson(uri)
             .then((data) => {
@@ -105,8 +105,7 @@ export const moduleLoaderMiddleware = (loader) => {
             return next(action);
           }
           delete loadedLocales[id];
-          console.debug(`module ${id} removing locales`);
-          return next(actions.removeI18nMessages(id));
+          return next(action);
         }
 
         default: {

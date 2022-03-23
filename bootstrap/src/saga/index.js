@@ -9,7 +9,7 @@ function* runContextRefresher(action) {
 	if (action.payload.initializeRuntime) {
 		yield call(action.payload.initializeRuntime);
 	}
-	const interval = 5 * 1000;
+	const interval = 30 * 1000;
 
 	do {
 		try {

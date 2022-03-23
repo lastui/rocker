@@ -195,19 +195,14 @@ const createModuleLoader = () => {
 
   const unloadModule = (id) =>
     new Promise((resolve) => {
-      console.log('unloading', id);
       if (!id) {
         return resolve(false);
       }
       danglingNamespaces.push(id);
       const loaded = loadedModules[id];
       if (loaded) {
-        console.log(id, 'is still loaded', loaded.cleanup)
         loaded.cleanup();  
-      } else {
-        console.log(id, 'is not loaded', loadedModules)
       }
-      console.log('cleaned up after', id);
       delete loadedModules[id];
       store.dispatch({
         type: constants.MODULE_UNLOADED,
@@ -219,14 +214,12 @@ const createModuleLoader = () => {
     });
 
   const setAvailableModules = async (modules = []) => {
-    console.log('setting available modules to', modules, 'currently', availableModules, loadedModules, loadingModules);
     const scheduledUnload = [];
     const newModules = {};
     for (let i = modules.length; i--; ) {
       const item = modules[i];
       newModules[item.id] = item;
       if (!availableModules[item.id]) {
-        console.log('+ module', item.id);
         availableModules[item.id] = item;
       }
     }
@@ -237,15 +230,11 @@ const createModuleLoader = () => {
         const loaded = loadedModules[existing];
         obsoleteModules.push(existing);
         if (loaded) {
-          console.log('will unload', existing, loadedModules);
           scheduledUnload.push(unloadModule(existing));
-        } else {
-          console.log('will not unload', existing, loadedModules);
         }
       }
     }
     for (let i = obsoleteModules.length; i--; ) {
-      console.log('- module', obsoleteModules[i]);
       delete availableModules[obsoleteModules[i]];
     }
     await Promise.allSettled(scheduledUnload)
@@ -268,7 +257,6 @@ const createModuleLoader = () => {
           };
         }
         case constants.MODULE_LOADED:
-        case constants.MODULE_UNLOADED:
         case constants.FORCE_UPDATE: {
           return {
             meta: state.meta,
@@ -278,8 +266,9 @@ const createModuleLoader = () => {
           };
         }
         case constants.ADD_I18N_MESSAGES: {
-          //console.log('shared ADD_I18N_MESSAGES', action.payload)
-          if (!action.payload.batch.length) {
+          console.log('shared ADD_I18N_MESSAGES', 'start state', JSON.stringify(state.messages))
+
+          if (action.payload.batch.length === 0) {
             if (action.payload.language !== state.language) {
               return {
                 meta: state.meta,
@@ -291,9 +280,7 @@ const createModuleLoader = () => {
             return state;
           }
 
-          const nextMessages = {
-            ...state.messages,
-          };
+          const nextMessages = JSON.parse(JSON.stringify(state.messages));  // FIXME better
 
           for (const patch of action.payload.batch) {
             if (!localeMapping[patch.module]) {
@@ -320,6 +307,8 @@ const createModuleLoader = () => {
             walk("", patch.data);
           }
 
+          console.log('+ messages will update from', JSON.stringify(state.messages), 'to', JSON.stringify(nextMessages));
+
           return {
             meta: state.meta,
             language: action.payload.language,
@@ -327,11 +316,9 @@ const createModuleLoader = () => {
             updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
           };
         }
-        case constants.REMOVE_I18N_MESSAGES: {
-          //console.log('shared REMOVE_I18N_MESSAGES', action.payload)
-          const nextMessages = {
-            ...state.messages,
-          };
+        case constants.MODULE_UNLOADED: {
+          console.log('shared MODULE_UNLOADED (REMOVE_I18N_MESSAGES)', action.payload.module, 'start state', JSON.stringify(state.messages))
+          const nextMessages = JSON.parse(JSON.stringify(state.messages));  // FIXME better
           const keys = localeMapping[action.payload.module] || {};
           for (const id in keys) {
             for (const locale in state.messages) {
@@ -339,6 +326,8 @@ const createModuleLoader = () => {
             }
           }
           delete localeMapping[action.payload.module];
+
+          console.log('- messages will update from', JSON.stringify(state.messages), 'to', JSON.stringify(nextMessages));
           return {
             meta: state.meta,
             language: state.language,
