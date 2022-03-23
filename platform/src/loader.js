@@ -2,7 +2,7 @@ import React from "react";
 import { ReactReduxContext } from "react-redux";
 import { cancel, spawn } from "redux-saga/effects";
 import { combineReducers } from "redux";
-import { downloadProgram, downloadJson } from "./assets";
+import { downloadProgram } from "./assets";
 import * as constants from "./constants";
 import * as actions from "./actions";
 
@@ -26,7 +26,6 @@ const createModuleLoader = () => {
     console.error("Sagas runnner is not provided!");
   };
 
-  const availableLocales = {};
   const availableModules = {};
   const loadingLocales = {};
   const loadedModules = {};
@@ -46,22 +45,27 @@ const createModuleLoader = () => {
     delete reducers[id];
   };
 
+  const addReducer = async (id, reducer) => {
+    try {
+      removeReducer(id);
+      console.debug(`module ${id} introducing reducer`);
+      const composedReducer = combineReducers({
+        ...reducer,
+        shared: (state = {}, _action) => state,
+        runtime: (state = {}, _action) => state,
+      });
+      composedReducer(undefined, { type: constants.MODULE_INIT });
+      reducers[id] = composedReducer;
+    } catch (_err) {
+      console.warn(`module ${id} wanted to register invalid reducer`);
+    }
+  };
+
   const removeMiddleware = (id) => {
     if (!ejectMiddleware(id)) {
       return;
     }
     console.debug(`module ${id} removing middleware`);
-  };
-
-  const addReducer = (id, reducer) => {
-    try {
-      removeReducer(id);
-      console.debug(`module ${id} introducing reducer`);
-      reducer(undefined, { type: constants.MODULE_INIT });
-      reducers[id] = reducer;
-    } catch (_err) {
-      console.warn(`module ${id} wanted to register invalid reducer`);
-    }
   };
 
   const addMiddleware = async (id, middleware) => {
@@ -70,6 +74,25 @@ const createModuleLoader = () => {
       return;
     }
     console.debug(`module ${id} introducing middleware`);
+  };
+
+  const removeStyles = (id) => {
+    const orphanStyles = document.querySelector(`[data-module=${id}`);
+    if (!orphanStyles) {
+      return;
+    }
+    console.debug(`module ${id} removing styles`);
+    orphanStyles.remove();
+  };
+
+  const addStyles = async (id) => {
+    const injectedStyles = document.querySelector("style#rocker:last-of-type");
+    if (!injectedStyles) {
+      return;
+    }
+    console.debug(`module ${id} introducing styles`);
+    injectedStyles.removeAttribute("id");
+    injectedStyles.setAttribute("data-module", id);
   };
 
   const removeSaga = (id) => {
@@ -84,86 +107,66 @@ const createModuleLoader = () => {
     delete sagas[id];
   };
 
-  const addSaga = (id, saga) => {
+  const addSaga = async (id, saga) => {
     removeSaga(id);
     console.debug(`module ${id} introducing saga`);
     sagas[id] = sagaRunner(function* () {
       try {
         yield spawn(saga);
-      } catch(err) {
+      } catch (error) {
         console.error(`module ${id} saga crashed`, error);
       }
     });
   };
 
-  const connectModule = async (id, scope = {}) => {
-    const injectedStyles = document.querySelector("style#rocker:last-of-type");
-    if (injectedStyles) {
-      console.debug(`module ${id} introducing styles`);
-      injectedStyles.removeAttribute("id");
-      injectedStyles.setAttribute("data-module", id);
+  const removeLocales = (id) => {
+    console.debug(`module ${id} removing locales`);
+    store.dispatch(actions.removeLocales(id));
+  };
+
+  const addLocales = async (id, locales) => {
+    try {
+      console.debug(`module ${id} introducing locales`);
+      store.dispatch(actions.addLocales(id, locales));
+      return;
+    } catch (error) {
+      console.error(`module ${id} failed to load locales`, error);
+      return;
+    }
+  };
+
+  const connectModule = async (id, context, scope = {}) => {
+    const adaptationWork = [];
+    adaptationWork.push(addStyles(id));
+    if (context.locales) {
+      adaptationWork.push(addLocales(id, context.locales));
     }
     if (scope.reducer) {
-      const composedReducer = {
-        ...scope.reducer,
-        shared: (state = {}, _action) => state,
-        runtime: (state = {}, _action) => state,
-      };
-      addReducer(id, combineReducers(composedReducer));
+      adaptationWork.push(addReducer(id, scope.reducer));
     }
     if (scope.middleware) {
-      await addMiddleware(id, scope.middleware);
+      adaptationWork.push(addMiddleware(id, scope.middleware));
     }
     if (scope.saga) {
-      addSaga(id, scope.saga);
+      adaptationWork.push(addSaga(id, scope.saga));
     }
+    await Promise.all(adaptationWork);
     return {
       id,
       view: (scope.Main && isolateProgram(id, scope)) || null,
       cleanup: () => {
-        const orphanStyles = document.querySelector(`[data-module=${id}`);
-        if (orphanStyles) {
-          console.debug(`module ${id} removing styles`);
-          orphanStyles.remove();
-        }
+        removeStyles(id);
         if (scope.saga) {
           removeSaga(id);
+        }
+        if (context.locales) {
+          removeLocales(id);
         }
         if (scope.middleware) {
           removeMiddleware(id);
         }
       },
     };
-  };
-
-  const loadLocale = (id, language) => {
-    if (
-      !availableLocales[id][language] ||
-      (loadedLocales[id] && loadedLocales[id][language])
-    ) {
-      return Promise.resolve(null);
-    }
-    const uri = availableLocales[id][language];
-    const loading = loadingLocales[uri];
-    if (loading) {
-      return loading;
-    }
-    const promise = downloadJson(uri)
-      .then((data) => {
-        console.debug(`module ${id} introducing ${language} locales`);
-        if (!loadedLocales[id]) {
-          loadedLocales[id] = {};
-        }
-        loadedLocales[id][language] = true;
-        delete loadingLocales[uri];
-        store.dispatch(actions.addI18nMessages(id, language, data));
-      })
-      .catch(() => {
-        delete loadingLocales[uri];
-        return Promise.resolve(null);
-      });
-    loadingLocales[uri] = promise;
-    return promise;
   };
 
   const loadModule = (id) => {
@@ -180,7 +183,7 @@ const createModuleLoader = () => {
       return loading;
     }
     const promise = downloadProgram(available.program)
-      .then((data) => connectModule(id, data))
+      .then((data) => connectModule(id, available, data))
       .then((data) => {
         loadedModules[id] = data;
         store.dispatch({
@@ -217,11 +220,6 @@ const createModuleLoader = () => {
             id: item.id,
           },
         });
-        if (item.locales) {
-          console.debug(`module ${item.id} removing locales`);
-          delete loadedLocales[item.id];
-          store.dispatch(actions.removeI18nMessages(item.id));
-        }
         loaded.cleanup();
       }
       danglingNamespaces.push(item.id);
@@ -234,9 +232,6 @@ const createModuleLoader = () => {
     for (let i = modules.length; i--; ) {
       const item = modules[i];
       newModules[item.id] = item;
-      if (!availableModules[item.id] && item.locales) {
-        availableLocales[item.id] = item.locales;
-      }
       if (!availableModules[item.id]) {
         availableModules[item.id] = item;
       }
@@ -261,7 +256,6 @@ const createModuleLoader = () => {
     }
     for (let i = obsoleteModules.length; i--; ) {
       delete availableModules[obsoleteModules[i]];
-      delete availableLocales[obsoleteModules[i]];
     }
     return Promise.all(scheduledUnload);
   };
@@ -341,9 +335,7 @@ const createModuleLoader = () => {
           return isolatedState;
         },
         subscribe: store.subscribe,
-        replaceReducer: function (newReducer) {
-          addReducer(id, newReducer);
-        },
+        replaceReducer: function (newReducer) {},
       },
     };
 
@@ -402,14 +394,6 @@ const createModuleLoader = () => {
     return HOC;
   };
 
-  const loadLocales = (language) => {
-    const promises = [];
-    for (const id in availableLocales) {
-      promises.push(loadLocale(id, language));
-    }
-    return Promise.allSettled(promises);
-  };
-
   return {
     setSagaRunner(nextSagaRunner) {
       if (nextSagaRunner) {
@@ -422,7 +406,6 @@ const createModuleLoader = () => {
       }
     },
     setAvailableModules,
-    loadLocales,
     loadModule,
     getLoadedModule,
     getReducer,

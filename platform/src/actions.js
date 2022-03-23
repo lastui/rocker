@@ -15,17 +15,31 @@ export const setLanguage = (language) => ({
   },
 });
 
-export const addI18nMessages = (module, language, data = {}) => ({
+export const addI18nMessages = (language, batch) => ({
   type: constants.ADD_I18N_MESSAGES,
   payload: {
-    module,
     language,
-    data,
+    batch,
   },
 });
 
 export const removeI18nMessages = (module) => ({
   type: constants.REMOVE_I18N_MESSAGES,
+  payload: {
+    module,
+  },
+});
+
+export const addLocales = (module, locales) => ({
+  type: constants.ADD_LOCALES,
+  payload: {
+    module,
+    locales,
+  },
+});
+
+export const removeLocales = (module) => ({
+  type: constants.REMOVE_LOCALES,
   payload: {
     module,
   },

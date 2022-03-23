@@ -7,6 +7,9 @@ export const SET_ENTRYPOINT_MODULE = "@@platform/SET_ENTRYPOINT_MODULE";
 export const LOAD_MODULE = "@@platform/LOAD_MODULE";
 export const SHUTDOWN = "@@platform/SHUTDOWN";
 
+export const ADD_LOCALES = "@@platform/ADD_LOCALES";
+export const REMOVE_LOCALES = "@@platform/REMOVE_LOCALES";
+
 export const MODULE_INIT = "@@modules/INIT";
 export const MODULE_LOADED = "@@modules/LOADED";
 export const MODULE_UNLOADED = "@@modules/UNLOADED";

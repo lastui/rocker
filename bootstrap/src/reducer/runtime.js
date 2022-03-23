@@ -11,43 +11,49 @@ const initialState = {
 
 export default (state = initialState, action) => {
 	switch (action.type) {
-		case constants.SET_LANGUAGE: {
-			return {
-				updatedAt: state.updatedAt,
-				language: action.payload.language,
-				entrypoint: state.entrypoint,
-				messages: state.messages,
-			};
-		}
 		case constants.ADD_I18N_MESSAGES: {
+			if (!action.payload.batch.length) {
+				return {
+					updatedAt: state.updatedAt,
+					language: action.payload.language,
+					entrypoint: state.entrypoint,
+					messages: state.messages,
+				};
+			}
+
 			const nextMessages = {
 				...state.messages,
 			};
-			if (!localeMapping[action.payload.module]) {
-				localeMapping[action.payload.module] = {};
-			}
-			if (!nextMessages[action.payload.language]) {
-				nextMessages[action.payload.language] = {};
-			}
-			const addItem = (key, message) => {
-				const id = key.substring(1);
-				localeMapping[action.payload.module][id] = true;
-				nextMessages[action.payload.language][id] = message;
-			};
-			const walk = (path, table) => {
-				for (const property in table) {
-					const item = table[property];
-					if (typeof item !== "object") {
-						addItem(`${path}.${property}`, item);
-					} else {
-						walk(`${path}.${property}`, item);
-					}
+
+			for (const patch of action.payload.batch) {
+
+				if (!localeMapping[patch.module]) {
+					localeMapping[patch.module] = {};
 				}
-			};
-			walk("", action.payload.data);
+				if (!nextMessages[action.payload.language]) {
+					nextMessages[action.payload.language] = {};
+				}
+				const addItem = (key, message) => {
+					const hash = key.substring(1);
+					localeMapping[patch.module][hash] = true;
+					nextMessages[action.payload.language][hash] = message;
+				};
+				const walk = (path, table) => {
+					for (const property in table) {
+						const item = table[property];
+						if (typeof item !== "object") {
+							addItem(`${path}.${property}`, item);
+						} else {
+							walk(`${path}.${property}`, item);
+						}
+					}
+				};
+				walk("", patch.data);
+			}
+
 			return {
 				updatedAt: state.updatedAt,
-				language: state.language,
+				language: action.payload.language,
 				entrypoint: state.entrypoint,
 				messages: nextMessages,
 			};
