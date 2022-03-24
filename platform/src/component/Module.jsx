@@ -4,15 +4,18 @@ import moduleLoader from "../loader";
 
 const Module = (props) => {
   const updatedAt = useSelector((state) => state.shared.updatedAt);
+  const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
+
   const [lastUpdate, setLastUpdate] = useState(0);
 
   const composite = useMemo(() => {
     const { name, fallback, ...owned } = props;
     return {
       owned,
+      isReady,
       lastUpdate,
     };
-  }, [props, lastUpdate]);
+  }, [props, isReady, lastUpdate]);
 
   const loadModule = useCallback(async () => {
     if (!props.name) {
@@ -28,9 +31,13 @@ const Module = (props) => {
     loadModule();
   }, [loadModule]);
 
+  if (!props.name) {
+    return null;
+  }
+
   const loadedModule = moduleLoader.getLoadedModule(props.name);
 
-  if (!props.name || !loadedModule || !loadedModule.view) {
+  if (!isReady || !loadedModule) {
     if (props.fallback) {
       return props.fallback();
     }

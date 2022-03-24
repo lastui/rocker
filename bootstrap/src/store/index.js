@@ -4,6 +4,7 @@ import { all, fork } from "redux-saga/effects";
 import { runtimeReducer } from "../reducer";
 import sagas from "../saga";
 import {
+	sharedState,
 	moduleLoader,
 	moduleLoaderMiddleware,
 	dynamicMiddleware,
@@ -25,7 +26,7 @@ export default async (middlewares) => {
 
 	const reducer = combineReducers({
 		runtime: runtimeReducer,
-		shared: moduleLoader.getSharedReducer(),
+		shared: sharedState,
 		modules: moduleLoader.getModulesReducer(),
 	});
 

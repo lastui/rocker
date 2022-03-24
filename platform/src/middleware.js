@@ -33,32 +33,68 @@ export const moduleLoaderMiddleware = (loader) => {
         case constants.MODULE_LOADED: {
           const id = action.payload.module;
           if (!id) {
-            return next(action);
+            return next({
+              type: constants.MODULE_READY,
+              payload: {
+                module: id,
+              },
+            });
           }
           const language = store.getState().shared.language;
           if (!language) {
-            return next(action);
+            return next({
+                  type: constants.MODULE_READY,
+                  payload: {
+                    module: id,
+                  },
+                });
           }
           if (loadedLocales[id] && loadedLocales[id][language]) {
-            return next(action);
+            return next({
+                  type: constants.MODULE_READY,
+                  payload: {
+                    module: id,
+                  },
+                });
           }
           const uri = availableLocales[id][language];
           if (!uri) {
-            return next(action);
+            return next({
+                  type: constants.MODULE_READY,
+                  payload: {
+                    module: id,
+                  },
+                });
           }
           return downloadJson(uri)
             .then((data) => {
               if (!availableLocales[id]) {
-                return next(noop);
+                return next({
+                  type: constants.MODULE_READY,
+                  payload: {
+                    module: id,
+                  },
+                });
               }
               if (!loadedLocales[id]) {
                 loadedLocales[id] = {};
               }
               loadedLocales[id][language] = true;
               if (Object.keys(data).length === 0) {
-                return next(actions.addI18nMessages(language, []));
+                return next({
+                  type: constants.MODULE_READY,
+                  payload: {
+                    module: id,
+                  },
+                });
               }
               console.debug(`module ${id} introducing locales for ${language}`);
+              store.dispatch({
+                type: constants.MODULE_READY,
+                payload: {
+                  module: id,
+                },
+              });
               return next(actions.addI18nMessages(language, [{ module: id, data }]));
             });
         }
@@ -101,10 +137,9 @@ export const moduleLoaderMiddleware = (loader) => {
 
         case constants.MODULE_UNLOADED: {
           const id = action.payload.module;
-          if (!id || !loadedLocales[id]) {
-            return next(action);
+          if (id) {
+            delete loadedLocales[id];
           }
-          delete loadedLocales[id];
           return next(action);
         }
 

@@ -30,9 +30,6 @@ const Entrypoint = (props) => {
 			),
 		[locale, messages]
 	);
-
-	console.log('messages are now', messages, 'and language is', locale)
-
 	if (entrypoint === null) {
 		return null;
 	}

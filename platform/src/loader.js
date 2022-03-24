@@ -102,10 +102,10 @@ const createModuleLoader = () => {
     console.debug(`module ${id} removing saga`);
     const dangling = sagas[id];
     sagaRunner(function* () {
-      console.log('saga kill', id, dangling)
-      console.log('before canceling saga', id, dangling.isCancelled())
+      console.log("saga kill", id, dangling);
+      console.log("before canceling saga", id, dangling.isCancelled());
       yield cancel(dangling);
-      console.log('after canceling saga', id, dangling.isCancelled())
+      console.log("after canceling saga", id, dangling.isCancelled());
     });
     delete sagas[id];
   };
@@ -140,7 +140,6 @@ const createModuleLoader = () => {
       id,
       view: (scope.Main && isolateProgram(id, scope)) || null,
       cleanup: () => {
-        console.debug(`module ${id} cleaning up`)
         removeStyles(id);
         if (scope.saga) {
           removeSaga(id);
@@ -201,7 +200,7 @@ const createModuleLoader = () => {
       danglingNamespaces.push(id);
       const loaded = loadedModules[id];
       if (loaded) {
-        loaded.cleanup();  
+        loaded.cleanup();
       }
       delete loadedModules[id];
       store.dispatch({
@@ -237,109 +236,7 @@ const createModuleLoader = () => {
     for (let i = obsoleteModules.length; i--; ) {
       delete availableModules[obsoleteModules[i]];
     }
-    await Promise.allSettled(scheduledUnload)
-  };
-
-  const getSharedReducer = () => {
-    const localeMapping = {};
-    return (state = { meta: {}, language: "en-US", messages: {}, updatedAt: 0 }, action) => {
-      switch (action.type) {
-        case constants.SET_AVAILABLE_MODULES: {
-          const meta = {};
-          for (const item of action.payload.modules) {
-            meta[item.id] = item.meta || {};
-          }
-          return {
-            meta,
-            language: state.language,
-            messages: state.messages,
-            updatedAt: state.updatedAt,
-          };
-        }
-        case constants.MODULE_LOADED:
-        case constants.FORCE_UPDATE: {
-          return {
-            meta: state.meta,
-            language: state.language,
-            messages: state.messages,
-            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
-          };
-        }
-        case constants.ADD_I18N_MESSAGES: {
-          console.log('shared ADD_I18N_MESSAGES', 'start state', JSON.stringify(state.messages))
-
-          if (action.payload.batch.length === 0) {
-            if (action.payload.language !== state.language) {
-              return {
-                meta: state.meta,
-                language: action.payload.language,
-                messages: state.messages,
-                updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
-              };
-            }
-            return state;
-          }
-
-          const nextMessages = JSON.parse(JSON.stringify(state.messages));  // FIXME better
-
-          for (const patch of action.payload.batch) {
-            if (!localeMapping[patch.module]) {
-              localeMapping[patch.module] = {};
-            }
-            if (!nextMessages[action.payload.language]) {
-              nextMessages[action.payload.language] = {};
-            }
-            const addItem = (key, message) => {
-              const hash = key.substring(1);
-              localeMapping[patch.module][hash] = true;
-              nextMessages[action.payload.language][hash] = message;
-            };
-            const walk = (path, table) => {
-              for (const property in table) {
-                const item = table[property];
-                if (typeof item !== "object") {
-                  addItem(`${path}.${property}`, item);
-                } else {
-                  walk(`${path}.${property}`, item);
-                }
-              }
-            };
-            walk("", patch.data);
-          }
-
-          console.log('+ messages will update from', JSON.stringify(state.messages), 'to', JSON.stringify(nextMessages));
-
-          return {
-            meta: state.meta,
-            language: action.payload.language,
-            messages: nextMessages,
-            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
-          };
-        }
-        case constants.MODULE_UNLOADED: {
-          console.log('shared MODULE_UNLOADED (REMOVE_I18N_MESSAGES)', action.payload.module, 'start state', JSON.stringify(state.messages))
-          const nextMessages = JSON.parse(JSON.stringify(state.messages));  // FIXME better
-          const keys = localeMapping[action.payload.module] || {};
-          for (const id in keys) {
-            for (const locale in state.messages) {
-              delete nextMessages[locale][id];
-            }
-          }
-          delete localeMapping[action.payload.module];
-
-          console.log('- messages will update from', JSON.stringify(state.messages), 'to', JSON.stringify(nextMessages));
-          return {
-            meta: state.meta,
-            language: state.language,
-            messages: nextMessages,
-            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
-          };
-        }
-        default: {
-          return state;
-        }
-      }
-    }
+    await Promise.allSettled(scheduledUnload);
   };
 
   const getModulesReducer =
@@ -360,6 +257,11 @@ const createModuleLoader = () => {
         case constants.SET_AVAILABLE_MODULES: {
           return state;
         }
+        case constants.MODULE_READY: {
+          const id = action.payload.module;
+          console.debug(`+ module ${id}`);
+          return state;
+        }
         case constants.MODULE_LOADED: {
           const id = action.payload.module;
           console.debug(`module ${id} loaded`);
@@ -373,9 +275,9 @@ const createModuleLoader = () => {
           return state;
         }
         case constants.MODULE_UNLOADED: {
-          const id = action.payload.module
+          const id = action.payload.module;
           removeReducer(id);
-          console.debug(`module ${id} unloaded`);
+          console.debug(`- module ${id}`);
           return state;
         }
         default: {
@@ -412,9 +314,6 @@ const createModuleLoader = () => {
             }
           }
           isolatedState.shared = state.shared;
-          isolatedState.runtime = {
-            updatedAt: state.runtime.updatedAt,
-          };
           return isolatedState;
         },
         subscribe: store.subscribe,
@@ -492,7 +391,6 @@ const createModuleLoader = () => {
     loadModule,
     getLoadedModule,
     getModulesReducer,
-    getSharedReducer,
   };
 };
 
