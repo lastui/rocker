@@ -189,7 +189,7 @@ const createDynamicMiddlewares = () => {
         try {
           return compose(...applied)(next)(action)
         } catch(error) {
-          console.log('dynamic middleware crashed', error);
+          console.error('dynamic middleware crashed', error);
           return next(action);
         }
       };
