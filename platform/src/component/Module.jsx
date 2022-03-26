@@ -44,6 +44,10 @@ const Module = (props) => {
     return null;
   }
 
+  if (!loadedModule.view) {
+    return null;
+  }
+
   return props.children
     ? createElement(loadedModule.view, composite, props.children)
     : createElement(loadedModule.view, composite);

@@ -21,7 +21,7 @@ const sharedReducer = () => {
           meta,
           language: state.language,
           messages: state.messages,
-          updatedAt: state.updatedAt,
+          updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: state.readyModules,
         };
       }
@@ -48,10 +48,22 @@ const sharedReducer = () => {
       case constants.MODULE_UNLOADED: {
         const nextReadyModules = { ...state.readyModules };
         delete nextReadyModules[action.payload.module];
+        const nextMessages = {};
+        for (const locale in state.messages) {
+          nextMessages[locale] = { ...state.messages[locale] };
+        }
+        const keys = localeMapping[action.payload.module] || {};
+        for (const id in keys) {
+          for (const locale in state.messages) {
+            delete nextMessages[locale][id];
+          }
+        }
+        delete localeMapping[action.payload.module];
+
         return {
           meta: state.meta,
           language: state.language,
-          messages: state.messages,
+          messages: nextMessages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: nextReadyModules,
         };
@@ -103,27 +115,6 @@ const sharedReducer = () => {
         return {
           meta: state.meta,
           language: action.payload.language,
-          messages: nextMessages,
-          updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
-          readyModules: state.readyModules,
-        };
-      }
-      case constants.MODULE_UNLOADED: {
-        const nextMessages = {};
-        for (const locale in state.messages) {
-          nextMessages[locale] = { ...state.messages[locale] };
-        }
-        const keys = localeMapping[action.payload.module] || {};
-        for (const id in keys) {
-          for (const locale in state.messages) {
-            delete nextMessages[locale][id];
-          }
-        }
-        delete localeMapping[action.payload.module];
-
-        return {
-          meta: state.meta,
-          language: state.language,
           messages: nextMessages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: state.readyModules,

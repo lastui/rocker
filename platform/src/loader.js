@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactReduxContext } from "react-redux";
-import { cancel, fork } from "redux-saga/effects";
+import { cancel, spawn } from "redux-saga/effects";
 import { combineReducers } from "redux";
 import { downloadProgram } from "./assets";
 import * as constants from "./constants";
@@ -102,10 +102,7 @@ const createModuleLoader = () => {
     console.debug(`module ${id} removing saga`);
     const dangling = sagas[id];
     sagaRunner(function* () {
-      console.log("saga kill", id, dangling);
-      console.log("before canceling saga", id, dangling.isCancelled());
       yield cancel(dangling);
-      console.log("after canceling saga", id, dangling.isCancelled());
     });
     delete sagas[id];
   };
@@ -113,10 +110,9 @@ const createModuleLoader = () => {
   const addSaga = async (id, saga) => {
     removeSaga(id);
     console.debug(`module ${id} introducing saga`);
-    sagas[id] = sagaRunner(function* () {
+    sagaRunner(function* () {
       try {
-        // FIXME should use spawn but unable to cancel spawn
-        yield fork(saga);
+        sagas[id] = yield spawn(saga);
       } catch (error) {
         console.error(`module ${id} saga crashed`, error);
       }
@@ -259,7 +255,8 @@ const createModuleLoader = () => {
         }
         case constants.MODULE_READY: {
           const id = action.payload.module;
-          console.debug(`+ module ${id}`);
+          console.debug(`module ${id} ready`);
+          console.log(`+ module ${id}`);
           return state;
         }
         case constants.MODULE_LOADED: {
@@ -277,7 +274,8 @@ const createModuleLoader = () => {
         case constants.MODULE_UNLOADED: {
           const id = action.payload.module;
           removeReducer(id);
-          console.debug(`- module ${id}`);
+          console.debug(`module ${id} unloaded`);
+          console.log(`- module ${id}`);
           return state;
         }
         default: {
@@ -330,10 +328,6 @@ const createModuleLoader = () => {
 
       static getDerivedStateFromError(error) {
         return { error };
-      }
-
-      componentDidCatch(error, info) {
-        console.error(`module ${id} errored`, error, info);
       }
 
       shouldComponentUpdate(nextProps, nextState) {
