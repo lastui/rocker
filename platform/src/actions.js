@@ -15,12 +15,11 @@ export const setLanguage = (language) => ({
   },
 });
 
-export const addI18nMessages = (module, language, data = {}) => ({
+export const addI18nMessages = (language, batch) => ({
   type: constants.ADD_I18N_MESSAGES,
   payload: {
-    module,
     language,
-    data,
+    batch,
   },
 });
 

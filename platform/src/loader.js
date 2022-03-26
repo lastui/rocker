@@ -2,7 +2,7 @@ import React from "react";
 import { ReactReduxContext } from "react-redux";
 import { cancel, spawn } from "redux-saga/effects";
 import { combineReducers } from "redux";
-import { downloadProgram, downloadJson } from "./assets";
+import { downloadProgram } from "./assets";
 import * as constants from "./constants";
 import * as actions from "./actions";
 
@@ -26,7 +26,6 @@ const createModuleLoader = () => {
     console.error("Sagas runnner is not provided!");
   };
 
-  const availableLocales = {};
   const availableModules = {};
   const loadingLocales = {};
   const loadedModules = {};
@@ -46,22 +45,27 @@ const createModuleLoader = () => {
     delete reducers[id];
   };
 
+  const addReducer = async (id, reducer) => {
+    try {
+      removeReducer(id);
+      console.debug(`module ${id} introducing reducer`);
+      const composedReducer = combineReducers({
+        ...reducer,
+        shared: (state = {}, _action) => state,
+        runtime: (state = {}, _action) => state,
+      });
+      composedReducer(undefined, { type: constants.MODULE_INIT, module: id });
+      reducers[id] = composedReducer;
+    } catch (_err) {
+      console.warn(`module ${id} wanted to register invalid reducer`);
+    }
+  };
+
   const removeMiddleware = (id) => {
     if (!ejectMiddleware(id)) {
       return;
     }
     console.debug(`module ${id} removing middleware`);
-  };
-
-  const addReducer = (id, reducer) => {
-    try {
-      removeReducer(id);
-      console.debug(`module ${id} introducing reducer`);
-      reducer(undefined, { type: constants.MODULE_INIT });
-      reducers[id] = reducer;
-    } catch (_err) {
-      console.warn(`module ${id} wanted to register invalid reducer`);
-    }
   };
 
   const addMiddleware = async (id, middleware) => {
@@ -70,6 +74,25 @@ const createModuleLoader = () => {
       return;
     }
     console.debug(`module ${id} introducing middleware`);
+  };
+
+  const removeStyles = (id) => {
+    const orphanStyles = document.querySelector(`[data-module=${id}`);
+    if (!orphanStyles) {
+      return;
+    }
+    console.debug(`module ${id} removing styles`);
+    orphanStyles.remove();
+  };
+
+  const addStyles = async (id) => {
+    const injectedStyles = document.querySelector("style#rocker:last-of-type");
+    if (!injectedStyles) {
+      return;
+    }
+    console.debug(`module ${id} introducing styles`);
+    injectedStyles.removeAttribute("id");
+    injectedStyles.setAttribute("data-module", id);
   };
 
   const removeSaga = (id) => {
@@ -84,48 +107,36 @@ const createModuleLoader = () => {
     delete sagas[id];
   };
 
-  const addSaga = (id, saga) => {
+  const addSaga = async (id, saga) => {
     removeSaga(id);
     console.debug(`module ${id} introducing saga`);
-    sagas[id] = sagaRunner(function* () {
+    sagaRunner(function* () {
       try {
-        yield spawn(saga);
-      } catch(err) {
+        sagas[id] = yield spawn(saga);
+      } catch (error) {
         console.error(`module ${id} saga crashed`, error);
       }
     });
   };
 
-  const connectModule = async (id, scope = {}) => {
-    const injectedStyles = document.querySelector("style#rocker:last-of-type");
-    if (injectedStyles) {
-      console.debug(`module ${id} introducing styles`);
-      injectedStyles.removeAttribute("id");
-      injectedStyles.setAttribute("data-module", id);
-    }
+  const adaptModule = async (id, scope = {}) => {
+    const adaptationWork = [];
+    adaptationWork.push(addStyles(id));
     if (scope.reducer) {
-      const composedReducer = {
-        ...scope.reducer,
-        shared: (state = {}, _action) => state,
-        runtime: (state = {}, _action) => state,
-      };
-      addReducer(id, combineReducers(composedReducer));
+      adaptationWork.push(addReducer(id, scope.reducer));
     }
     if (scope.middleware) {
-      await addMiddleware(id, scope.middleware);
+      adaptationWork.push(addMiddleware(id, scope.middleware));
     }
     if (scope.saga) {
-      addSaga(id, scope.saga);
+      adaptationWork.push(addSaga(id, scope.saga));
     }
+    await Promise.all(adaptationWork);
     return {
       id,
       view: (scope.Main && isolateProgram(id, scope)) || null,
       cleanup: () => {
-        const orphanStyles = document.querySelector(`[data-module=${id}`);
-        if (orphanStyles) {
-          console.debug(`module ${id} removing styles`);
-          orphanStyles.remove();
-        }
+        removeStyles(id);
         if (scope.saga) {
           removeSaga(id);
         }
@@ -134,36 +145,6 @@ const createModuleLoader = () => {
         }
       },
     };
-  };
-
-  const loadLocale = (id, language) => {
-    if (
-      !availableLocales[id][language] ||
-      (loadedLocales[id] && loadedLocales[id][language])
-    ) {
-      return Promise.resolve(null);
-    }
-    const uri = availableLocales[id][language];
-    const loading = loadingLocales[uri];
-    if (loading) {
-      return loading;
-    }
-    const promise = downloadJson(uri)
-      .then((data) => {
-        console.debug(`module ${id} introducing ${language} locales`);
-        if (!loadedLocales[id]) {
-          loadedLocales[id] = {};
-        }
-        loadedLocales[id][language] = true;
-        delete loadingLocales[uri];
-        store.dispatch(actions.addI18nMessages(id, language, data));
-      })
-      .catch(() => {
-        delete loadingLocales[uri];
-        return Promise.resolve(null);
-      });
-    loadingLocales[uri] = promise;
-    return promise;
   };
 
   const loadModule = (id) => {
@@ -180,13 +161,17 @@ const createModuleLoader = () => {
       return loading;
     }
     const promise = downloadProgram(available.program)
-      .then((data) => connectModule(id, data))
+      .then((data) => adaptModule(id, data))
       .then((data) => {
+        if (!availableModules[id]) {
+          data.cleanup();
+          return true;
+        }
         loadedModules[id] = data;
         store.dispatch({
           type: constants.MODULE_LOADED,
           payload: {
-            id,
+            module: id,
           },
         });
         return true;
@@ -203,40 +188,32 @@ const createModuleLoader = () => {
     return promise;
   };
 
-  const unloadModule = (item) =>
+  const unloadModule = (id) =>
     new Promise((resolve) => {
-      if (!item.id) {
+      if (!id) {
         return resolve(false);
       }
-      const loaded = loadedModules[item.id];
+      danglingNamespaces.push(id);
+      const loaded = loadedModules[id];
       if (loaded) {
-        delete loadedModules[item.id];
-        store.dispatch({
-          type: constants.MODULE_UNLOADED,
-          payload: {
-            id: item.id,
-          },
-        });
-        if (item.locales) {
-          console.debug(`module ${item.id} removing locales`);
-          delete loadedLocales[item.id];
-          store.dispatch(actions.removeI18nMessages(item.id));
-        }
         loaded.cleanup();
       }
-      danglingNamespaces.push(item.id);
+      delete loadedModules[id];
+      store.dispatch({
+        type: constants.MODULE_UNLOADED,
+        payload: {
+          module: id,
+        },
+      });
       return resolve(true);
     });
 
-  const setAvailableModules = (modules = []) => {
+  const setAvailableModules = async (modules = []) => {
     const scheduledUnload = [];
     const newModules = {};
     for (let i = modules.length; i--; ) {
       const item = modules[i];
       newModules[item.id] = item;
-      if (!availableModules[item.id] && item.locales) {
-        availableLocales[item.id] = item.locales;
-      }
       if (!availableModules[item.id]) {
         availableModules[item.id] = item;
       }
@@ -244,29 +221,21 @@ const createModuleLoader = () => {
     const obsoleteModules = [];
     for (const existing in availableModules) {
       const item = newModules[existing];
-      if (item) {
-        if (
-          item.program?.sha256 !== availableModules[existing].program?.sha256
-        ) {
-          availableModules[existing] = item;
-          scheduledUnload.push(unloadModule(item));
-        }
-      } else {
+      if (!item) {
         const loaded = loadedModules[existing];
+        obsoleteModules.push(existing);
         if (loaded) {
-          scheduledUnload.push(unloadModule(loaded));
-          obsoleteModules.push(existing);
+          scheduledUnload.push(unloadModule(existing));
         }
       }
     }
     for (let i = obsoleteModules.length; i--; ) {
       delete availableModules[obsoleteModules[i]];
-      delete availableLocales[obsoleteModules[i]];
     }
-    return Promise.all(scheduledUnload);
+    await Promise.allSettled(scheduledUnload);
   };
 
-  const getReducer =
+  const getModulesReducer =
     () =>
     (state = {}, action) => {
       for (
@@ -284,9 +253,15 @@ const createModuleLoader = () => {
         case constants.SET_AVAILABLE_MODULES: {
           return state;
         }
+        case constants.MODULE_READY: {
+          const id = action.payload.module;
+          console.debug(`module ${id} ready`);
+          console.log(`+ module ${id}`);
+          return state;
+        }
         case constants.MODULE_LOADED: {
-          console.debug(`module ${action.payload.id} loaded`);
-          const id = action.payload.id;
+          const id = action.payload.module;
+          console.debug(`module ${id} loaded`);
           if (reducers[id]) {
             try {
               state[id] = reducers[id](state[id], action);
@@ -297,8 +272,10 @@ const createModuleLoader = () => {
           return state;
         }
         case constants.MODULE_UNLOADED: {
-          removeReducer(action.payload.id);
-          console.debug(`module ${action.payload.id} unloaded`);
+          const id = action.payload.module;
+          removeReducer(id);
+          console.debug(`module ${id} unloaded`);
+          console.log(`- module ${id}`);
           return state;
         }
         default: {
@@ -335,15 +312,10 @@ const createModuleLoader = () => {
             }
           }
           isolatedState.shared = state.shared;
-          isolatedState.runtime = {
-            updatedAt: state.runtime.updatedAt,
-          };
           return isolatedState;
         },
         subscribe: store.subscribe,
-        replaceReducer: function (newReducer) {
-          addReducer(id, newReducer);
-        },
+        replaceReducer: function (newReducer) {},
       },
     };
 
@@ -356,10 +328,6 @@ const createModuleLoader = () => {
 
       static getDerivedStateFromError(error) {
         return { error };
-      }
-
-      componentDidCatch(error, info) {
-        console.error(`module ${id} errored`, error, info);
       }
 
       shouldComponentUpdate(nextProps, nextState) {
@@ -402,14 +370,6 @@ const createModuleLoader = () => {
     return HOC;
   };
 
-  const loadLocales = (language) => {
-    const promises = [];
-    for (const id in availableLocales) {
-      promises.push(loadLocale(id, language));
-    }
-    return Promise.allSettled(promises);
-  };
-
   return {
     setSagaRunner(nextSagaRunner) {
       if (nextSagaRunner) {
@@ -422,10 +382,9 @@ const createModuleLoader = () => {
       }
     },
     setAvailableModules,
-    loadLocales,
     loadModule,
     getLoadedModule,
-    getReducer,
+    getModulesReducer,
   };
 };
 

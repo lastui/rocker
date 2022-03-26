@@ -53,8 +53,8 @@ class ModuleLocalesPlugin {
                   if (!compilation.getAsset(name)) {
                     compilation.emitAsset(name, new compiler.webpack.sources.RawSource(content));
                   }
-                }).catch((err) => {
-                  console.error(err)
+                }).catch((error) => {
+                  console.error(error)
                 })
             }
           }

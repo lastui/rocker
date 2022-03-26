@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { Module, Router } from "@lastui/rocker/platform";
@@ -13,11 +13,12 @@ const Entrypoint = (props) => {
 	const entrypoint = useSelector(getEntrypoint);
 	const locale = useSelector(getLanguage);
 	const messages = useSelector(getI18nMessages);
-	const intl = useMemo(
+	const intl = React.useMemo(
 		() =>
 			createIntl(
 				{
 					locale,
+					textComponent: React.Fragment,
 					messages,
 					onError: (err) => {
 						if (err.code !== "MISSING_TRANSLATION") {

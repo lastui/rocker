@@ -4,6 +4,7 @@ import * as constants from "./constants";
 import { moduleLoaderMiddleware, dynamicMiddleware } from "./middleware";
 import moduleLoader from "./loader";
 import registerModule from "./register";
+import sharedState from "./shared";
 
 import Module from "./component/Module";
 import Link from "./component/Link";
@@ -30,6 +31,7 @@ export {
 	constants,
 	moduleLoader,
 	moduleLoaderMiddleware,
+	sharedState,
 	dynamicMiddleware,
 	registerModule,
 };
@@ -48,6 +50,7 @@ export default {
 	constants,
 	moduleLoader,
 	moduleLoaderMiddleware,
+	sharedState,
 	dynamicMiddleware,
 	registerModule,
 };

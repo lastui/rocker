@@ -1,9 +1,10 @@
 import { Store, applyMiddleware, compose, createStore, combineReducers } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { all, fork } from "redux-saga/effects";
-import { runtimeReducer, sharedReducer } from "../reducer";
+import { runtimeReducer } from "../reducer";
 import sagas from "../saga";
 import {
+	sharedState,
 	moduleLoader,
 	moduleLoaderMiddleware,
 	dynamicMiddleware,
@@ -25,8 +26,8 @@ export default async (middlewares) => {
 
 	const reducer = combineReducers({
 		runtime: runtimeReducer,
-		shared: sharedReducer,
-		modules: moduleLoader.getReducer(),
+		shared: sharedState,
+		modules: moduleLoader.getModulesReducer(),
 	});
 
 	const store = createStore(
