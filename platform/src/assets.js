@@ -4,10 +4,11 @@ class SequentialProgramEvaluator {
   static queue = [];
   static compiling = false;
 
-  static compile(data) {
+  static compile(id, data) {
     return new Promise((resolve) => {
       this.queue.push({
         data,
+        id,
         resolve,
       });
       this.tick();
@@ -35,7 +36,8 @@ class SequentialProgramEvaluator {
     try {
       window.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
       new Function("", item.data)();
-    } catch (err) {
+    } catch (error) {
+      console.error(`module ${item.id} failed to adapt with error`, error);
       sandbox.__SANDBOX_SCOPE__.Main = () => {
         throw err;
       };
@@ -89,7 +91,10 @@ async function checkDigest(payload, digest) {
   }
 };
 
-async function downloadProgram(program) {
+async function downloadProgram(id, program) {
+  if (!program) {
+    return {};
+  }
   const data = await download(program.url);
   const content = await data.text();
   if (!checkDigest(content, program.sha256)) {
@@ -99,7 +104,7 @@ async function downloadProgram(program) {
       },
     };
   }
-  return SequentialProgramEvaluator.compile(content);
+  return SequentialProgramEvaluator.compile(id, content);
 }
 
 export { downloadJson, downloadProgram };

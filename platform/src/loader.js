@@ -160,7 +160,7 @@ const createModuleLoader = () => {
     if (loading) {
       return loading;
     }
-    const promise = downloadProgram(available.program)
+    const promise = downloadProgram(id, available.program)
       .then((data) => adaptModule(id, data))
       .then((data) => {
         if (!availableModules[id]) {
@@ -250,18 +250,13 @@ const createModuleLoader = () => {
         case constants.INIT:
         case constants.ADD_I18N_MESSAGES:
         case constants.REMOVE_I18N_MESSAGES:
+        case constants.MODULE_LOADED:
         case constants.SET_AVAILABLE_MODULES: {
           return state;
         }
         case constants.MODULE_READY: {
           const id = action.payload.module;
           console.debug(`module ${id} ready`);
-          console.log(`+ module ${id}`);
-          return state;
-        }
-        case constants.MODULE_LOADED: {
-          const id = action.payload.module;
-          console.debug(`module ${id} loaded`);
           if (reducers[id]) {
             try {
               state[id] = reducers[id](state[id], action);
@@ -269,6 +264,7 @@ const createModuleLoader = () => {
               console.warn(`module ${id} reducer failed to reduce`);
             }
           }
+          console.log(`+ module ${id}`);
           return state;
         }
         case constants.MODULE_UNLOADED: {
