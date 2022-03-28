@@ -1,7 +1,5 @@
 import { constants } from "@lastui/rocker/platform";
 
-const localeMapping = {};
-
 const initialState = {
 	entrypoint: null,
 };

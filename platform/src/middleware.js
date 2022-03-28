@@ -32,6 +32,7 @@ export const moduleLoaderMiddleware = (loader) => {
 
         case constants.MODULE_LOADED: {
           const id = action.payload.module;
+          console.debug(`module ${id} loaded`);
           if (!id) {
             return next({
               type: constants.MODULE_READY,
@@ -43,28 +44,28 @@ export const moduleLoaderMiddleware = (loader) => {
           const language = store.getState().shared.language;
           if (!language) {
             return next({
-                  type: constants.MODULE_READY,
-                  payload: {
-                    module: id,
-                  },
-                });
+              type: constants.MODULE_READY,
+              payload: {
+                module: id,
+              },
+            });
           }
           if (loadedLocales[id] && loadedLocales[id][language]) {
             return next({
-                  type: constants.MODULE_READY,
-                  payload: {
-                    module: id,
-                  },
-                });
+              type: constants.MODULE_READY,
+              payload: {
+                module: id,
+              },
+            });
           }
           const uri = availableLocales[id][language];
           if (!uri) {
             return next({
-                  type: constants.MODULE_READY,
-                  payload: {
-                    module: id,
-                  },
-                });
+              type: constants.MODULE_READY,
+              payload: {
+                module: id,
+              },
+            });
           }
           return downloadJson(uri)
             .then((data) => {
@@ -148,6 +149,7 @@ export const moduleLoaderMiddleware = (loader) => {
         }
       }
     } catch (error) {
+      console.error('dynamic middleware errored', error);
       return next(action);
     }
   };
@@ -188,8 +190,8 @@ const createDynamicMiddlewares = () => {
       return (next) => (action) => {
         try {
           return compose(...applied)(next)(action)
-        } catch(error) {
-          console.error('dynamic middleware crashed', error);
+        } catch (error) {
+          console.error('dynamic middleware errored', error);
           return next(action);
         }
       };
