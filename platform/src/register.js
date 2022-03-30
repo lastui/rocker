@@ -1,23 +1,50 @@
+import React from 'react';
+import { warning } from './utils';
+
 export default function(scope) {
-  if (scope === null || typeof scope !== 'object') {
-    throw new Error(`scope must be object. Was: ${scope}`)
+  if (scope === null || scope.constructor !== Object) {
+    throw new Error(`registerModule argument be object. Was: ${scope}`)
   }
   if (scope.Main) {
-    window.__SANDBOX_SCOPE__.Main = scope.Main;
+    if (!React.isValidElement(scope.Main)) {
+      warning('attribute Main provided in registerModule is not React element');
+    } else {
+      window.__SANDBOX_SCOPE__.Main = scope.Main;
+    }
   }
   if (scope.Error) {
-    window.__SANDBOX_SCOPE__.Error = scope.Error;
+    if (!React.isValidElement(scope.Error)) {
+      warning('attribute Error provided in registerModule is not React element');
+    } else {
+      window.__SANDBOX_SCOPE__.Error = scope.Error;
+    }
   }
   if (scope.reducer) {
-    window.__SANDBOX_SCOPE__.reducer = scope.reducer;
+    if (scope.reducer.constructor !== Object) {
+      warning('attribute reducer provided in registerModule is not plain object');
+    } else {
+      window.__SANDBOX_SCOPE__.reducer = scope.reducer;
+    }
   }
   if (scope.middleware) {
-    window.__SANDBOX_SCOPE__.middleware = scope.middleware;
+    if (!(middleware.constructor.name === 'Function' || middleware.constructor.name === 'AsyncFunction')) {
+      warning('attribute middleware provided in registerModule is not function');
+    } else {
+      window.__SANDBOX_SCOPE__.middleware = scope.middleware;
+    }
   }
   if (scope.saga) {
-    window.__SANDBOX_SCOPE__.saga = scope.saga;
+    if (!(saga.constructor.name === 'GeneratorFunction' || saga.constructor.name === 'AsyncGeneratorFunction')) {
+      warning('attribute saga provided in registerModule is not generator function');
+    } else {
+      window.__SANDBOX_SCOPE__.saga = scope.saga;
+    }
   }
   if (scope.props) {
-    window.__SANDBOX_SCOPE__.props = scope.props;
+    if (scope.props.constructor !== Object) {
+      warning('attribute props provided in registerModule is not object');
+    } else {
+      window.__SANDBOX_SCOPE__.props = scope.props;
+    }
   }
 }

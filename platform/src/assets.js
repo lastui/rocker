@@ -1,3 +1,5 @@
+import { warning } from './utils';
+
 const CLIENT_TIMEOUT = 30 * 1000;
 
 class SequentialProgramEvaluator {
@@ -37,7 +39,7 @@ class SequentialProgramEvaluator {
       window.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
       new Function("", item.data)();
     } catch (error) {
-      console.error(`module ${item.id} failed to adapt with error`, error);
+      warning(`module ${item.id} failed to adapt with error`, error);
       sandbox.__SANDBOX_SCOPE__.Main = () => {
         throw err;
       };

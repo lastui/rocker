@@ -5,25 +5,26 @@ import { combineReducers } from "redux";
 import { downloadProgram } from "./assets";
 import * as constants from "./constants";
 import * as actions from "./actions";
+import { warning } from './utils';
 
 import { injectMiddleware, ejectMiddleware } from "./middleware";
 
 const createModuleLoader = () => {
   let store = {
     dispatch() {
-      console.error("Redux store is not provided!");
+      warning("Redux store is not provided!");
     },
     getState() {
-      console.error("Redux store is not provided!");
+      warning("Redux store is not provided!");
       return {};
     },
     subscribe() {
-      console.error("Redux store is not provided!");
+      warning("Redux store is not provided!");
     },
   };
 
   let sagaRunner = () => {
-    console.error("Sagas runnner is not provided!");
+    warning("Sagas runnner is not provided!");
   };
 
   const availableModules = {};
@@ -56,8 +57,8 @@ const createModuleLoader = () => {
       });
       composedReducer(undefined, { type: constants.MODULE_INIT, module: id });
       reducers[id] = composedReducer;
-    } catch (_err) {
-      console.warn(`module ${id} wanted to register invalid reducer`);
+    } catch (error) {
+      warning(`module ${id} wanted to register invalid reducer`, error);
     }
   };
 
@@ -114,7 +115,7 @@ const createModuleLoader = () => {
       try {
         sagas[id] = yield spawn(saga);
       } catch (error) {
-        console.error(`module ${id} saga crashed`, error);
+        warning(`module ${id} saga crashed`, error);
       }
     });
   };
@@ -177,7 +178,7 @@ const createModuleLoader = () => {
         return true;
       })
       .catch((error) => {
-        console.error(`module ${id} failed to load`, error);
+        warning(`module ${id} failed to load`, error);
         return Promise.resolve(false);
       })
       .then((changed) => {
@@ -260,8 +261,8 @@ const createModuleLoader = () => {
           if (reducers[id]) {
             try {
               state[id] = reducers[id](state[id], action);
-            } catch (_err) {
-              console.warn(`module ${id} reducer failed to reduce`);
+            } catch (error) {
+              warning(`module ${id} reducer failed to reduce`, error);
             }
           }
           console.log(`+ module ${id}`);
@@ -278,8 +279,8 @@ const createModuleLoader = () => {
           for (const id in reducers) {
             try {
               state[id] = reducers[id](state[id], action);
-            } catch (_err) {
-              console.warn(`module ${id} reducer failed to reduce`);
+            } catch (error) {
+              warning(`module ${id} reducer failed to reduce`, error);
             }
           }
           return state;
