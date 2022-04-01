@@ -13,7 +13,7 @@ const Main = (props) => {
 		try {
 			const nextStore = await setupStore(props.reduxMiddlewares);
 			nextStore.dispatch(
-				actions.init(props.fetchContext, props.initializeRuntime)
+				actions.init(props.fetchContext, props.initializeRuntime, props.poolingInterval)
 			);
 			setStore(nextStore);
 		} catch (error) {
@@ -21,7 +21,7 @@ const Main = (props) => {
 				throw error;
 			});
 		}
-	}, [props.reduxMiddlewares, props.fetchContext, props.initializeRuntime]);
+	}, [props.reduxMiddlewares, props.fetchContext, props.initializeRuntime, props.poolingInterval]);
 
 	useEffect(() => {
 		bootstrap();

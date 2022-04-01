@@ -1,10 +1,11 @@
 import * as constants from "./constants";
 
-export const init = (fetchContext, initializeRuntime) => ({
+export const init = (fetchContext, initializeRuntime, poolingInterval) => ({
   type: constants.INIT,
   payload: {
     fetchContext,
     initializeRuntime,
+    poolingInterval,
   },
 });
 

@@ -1,26 +1,19 @@
 const fs = require("fs");
 const path = require("path");
 
-function flatten(ary) {
-	return ary.reduce(
-		(a, b) => (Array.isArray(b) ? a.concat(flatten(b)) : a.concat(b)),
-		[]
-	);
-}
-
-async function createSymlink(source, target) {
+exports.createSymlink = async function (source, target) {
 	return new Promise((resolve, reject) => {
 		fs.lstat(source, function (err, stats) {
 			if (err == null) {
 				if (stats.isDirectory() && !stats.isSymbolicLink()) {
-					fs.symlink(source, target, 'dir', function (err) {
+					fs.symlink(source, target, "dir", function (err) {
 						if (err) {
 							return reject(err);
 						}
 						return resolve(target);
 					});
 				} else {
-					fs.symlink(source, target, 'file', function (err) {
+					fs.symlink(source, target, "file", function (err) {
 						if (err) {
 							return reject(err);
 						}
@@ -32,9 +25,9 @@ async function createSymlink(source, target) {
 			}
 		});
 	});
-}
+};
 
-async function ensureDirectory(nodePath) {
+exports.ensureDirectory = async function (nodePath) {
 	return new Promise((resolve, reject) => {
 		fs.stat(nodePath, function (err, stats) {
 			if (err == null) {
@@ -52,27 +45,67 @@ async function ensureDirectory(nodePath) {
 			}
 		});
 	});
-}
+};
 
-async function clearDirectory(nodePath) {
+exports.clearDirectory = async function (nodePath) {
 	const unlink = (item) =>
 		new Promise((resolve, reject) => {
-			fs[item.action](item.path, (err) =>
-				err ? reject(err) : resolve()
-			);
+			switch (item.action) {
+				case "unlink": {
+					fs.unlink(item.path, (err) =>
+						err ? reject(err) : resolve()
+					);
+					break;
+				}
+				case "rm": {
+					fs.rm(item.path, { force: true }, (err) =>
+						err ? reject(err) : resolve()
+					);
+					break;
+				}
+				case "rmdir": {
+					fs.rmdir(
+						item.path,
+						{ recursive: true, force: true },
+						(err) => (err ? reject(err) : resolve())
+					);
+					break;
+				}
+			}
 		});
 
 	const nodes = await walkRecursive(nodePath);
-	nodes.sort((a, b) => b.path.localeCompare(b.path));
+	nodes.sort((a, b) => {
+		const nameDiff = a.path.localeCompare(b.path);
+		if (nameDiff !== 0) {
+			return nameDiff;
+		}
+		if (a.action === b.action) {
+			return 0;
+		}
+		if (a.action === "unlink" && b.action !== "unlink") {
+			return -1;
+		}
+		if (b.action === "unlink" && a.action !== "unlink") {
+			return 1;
+		}
+		return 0;
+	});
 	const work = nodes.map((item) => unlink(item));
-	await Promise.allSettled(work);
-}
+	await Promise.all(work);
+};
 
 async function walkRecursive(nodePath) {
+	const flatten = (ary) =>
+		ary.reduce(
+			(a, b) => (Array.isArray(b) ? a.concat(flatten(b)) : a.concat(b)),
+			[]
+		);
+
 	const work = await new Promise((resolve, reject) => {
 		fs.lstat(nodePath, function (err, stats) {
 			if (err == null) {
-				if (stats.isDirectory() && !stats.isSymbolicLink()) {
+				if (stats.isDirectory()) {
 					fs.readdir(nodePath, function (err, files) {
 						if (err) {
 							return reject(err);
@@ -80,9 +113,15 @@ async function walkRecursive(nodePath) {
 						let step = files.map((node) =>
 							walkRecursive(path.join(nodePath, node))
 						);
+						if (stats.isSymbolicLink()) {
+							step.push({
+								path: nodePath,
+								action: "unlink",
+							});
+						}
 						step.push({
 							path: nodePath,
-							action: 'rmdir',
+							action: "rmdir",
 						});
 						return resolve(Promise.all(step));
 					});
@@ -90,7 +129,7 @@ async function walkRecursive(nodePath) {
 					return resolve([
 						{
 							path: nodePath,
-							action: 'unlink',
+							action: "unlink",
 						},
 					]);
 				}
@@ -104,10 +143,3 @@ async function walkRecursive(nodePath) {
 	const slice = await Promise.all(flatten(work));
 	return slice;
 }
-
-
-module.exports = {
-	createSymlink,
-	ensureDirectory,
-	clearDirectory,
-};
