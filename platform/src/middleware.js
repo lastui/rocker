@@ -1,5 +1,5 @@
 import { compose } from "redux";
-
+import { warning } from './utils';
 import { downloadJson } from "./assets";
 import * as constants from "./constants";
 import * as actions from "./actions";
@@ -149,7 +149,7 @@ export const moduleLoaderMiddleware = (loader) => {
         }
       }
     } catch (error) {
-      console.error('dynamic middleware errored', error);
+      warning('dynamic middleware errored', error);
       return next(action);
     }
   };
@@ -191,7 +191,7 @@ const createDynamicMiddlewares = () => {
         try {
           return compose(...applied)(next)(action)
         } catch (error) {
-          console.error('dynamic middleware errored', error);
+          warning('dynamic middleware errored', error);
           return next(action);
         }
       };

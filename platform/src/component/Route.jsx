@@ -5,15 +5,12 @@ import { matchPath } from "../routing";
 
 const Branch = (props) => {
   const match = useMemo(() => {
-    const fullPath = `${props.context.match.url}/${props.path}`.replace(/\/+/g, "/")
-    const nextMatch = matchPath(props.context.location.pathname, fullPath, props.exact);
+    const parent = `${props.context.match.url}/${props.path}`.replace(/\/+/g, "/")
+    const nextMatch = matchPath(props.context.location.pathname, parent, props.exact);
     if (!nextMatch) {
       return nextMatch;
     }
-    return {
-      ...nextMatch,
-      parent: fullPath,
-    };
+    return Object.assign({}, nextMatch, { parent });
   }, [
     props.path,
     props.exact,
@@ -23,10 +20,7 @@ const Branch = (props) => {
 
   const composite = useMemo(() => {
     if (match) {
-      return {
-        ...props.context,
-        match,
-      };
+      return Object.assign({}, props.context, { match });
     } else {
       return props.context;
     }

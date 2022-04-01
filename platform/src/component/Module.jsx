@@ -1,8 +1,8 @@
-import { useState, useMemo, useEffect, createElement, useCallback } from "react";
+import { forwardRef, useState, useMemo, useEffect, createElement, useCallback } from "react";
 import { useSelector } from "react-redux";
 import moduleLoader from "../loader";
 
-const Module = (props) => {
+const Module = forwardRef((props, ref) => {
   const updatedAt = useSelector((state) => state.shared.updatedAt);
   const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
 
@@ -12,10 +12,11 @@ const Module = (props) => {
     const { name, fallback, ...owned } = props;
     return {
       owned,
+      ref,
       isReady,
       lastUpdate,
     };
-  }, [props, isReady, lastUpdate]);
+  }, [ref, props, isReady, lastUpdate]);
 
   const loadModule = useCallback(async () => {
     if (!props.name) {
@@ -51,6 +52,6 @@ const Module = (props) => {
   return props.children
     ? createElement(loadedModule.view, composite, props.children)
     : createElement(loadedModule.view, composite);
-};
+});
 
 export default Module;
