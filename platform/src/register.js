@@ -1,4 +1,3 @@
-import React from 'react';
 import { warning } from './utils';
 
 export default function(scope) {
@@ -6,15 +5,15 @@ export default function(scope) {
     throw new Error(`registerModule argument be object. Was: ${scope}`)
   }
   if (scope.Main) {
-    if (!React.isValidElement(scope.Main)) {
-      warning('attribute Main provided in registerModule is not React element');
+    if (scope.Main.constructor.name !== 'Function') {
+      warning('attribute Main provided in registerModule is not function');
     } else {
       window.__SANDBOX_SCOPE__.Main = scope.Main;
     }
   }
   if (scope.Error) {
-    if (!React.isValidElement(scope.Error)) {
-      warning('attribute Error provided in registerModule is not React element');
+    if (scope.Error.constructor.name !== 'Function') {
+      warning('attribute Error provided in registerModule is not function');
     } else {
       window.__SANDBOX_SCOPE__.Error = scope.Error;
     }
