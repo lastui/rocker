@@ -41,7 +41,7 @@ class SequentialProgramEvaluator {
     } catch (error) {
       warning(`module ${item.id} failed to adapt with error`, error);
       sandbox.__SANDBOX_SCOPE__.Main = () => {
-        throw err;
+        throw error;
       };
     } finally {
       delete window.__SANDBOX_SCOPE__;
@@ -65,9 +65,9 @@ async function download(resource) {
       throw new Error(String(response.status));
     }
     return response;
-  } catch (err) {
+  } catch (error) {
     clearTimeout(id);
-    throw err;
+    throw error;
   }
 }
 
@@ -88,7 +88,7 @@ async function checkDigest(payload, digest) {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     return hex === digest;
-  } catch(_err) {
+  } catch(_error) {
     return true;
   }
 };

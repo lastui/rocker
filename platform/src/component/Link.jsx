@@ -12,9 +12,9 @@ const LinkAnchor = forwardRef((props, ref) => {
           if (onClick) {
             onClick(event);
           }
-        } catch (err) {
+        } catch (error) {
           event.preventDefault();
-          throw err;
+          throw error;
         }
 
         if (

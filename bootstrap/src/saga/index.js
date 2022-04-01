@@ -16,8 +16,8 @@ function* runContextRefresher(action) {
 			const context = yield call(action.payload.fetchContext);
 			yield put(actions.setAvailableModules(context.available));
 			yield put(actions.setEntryPointModule(context.entrypoint));
-		} catch (err) {
-			console.warn("failed to obtain context", err);
+		} catch (error) {
+			console.warn("failed to obtain context", error);
 		} finally {
 			yield delay(interval);
 		}
