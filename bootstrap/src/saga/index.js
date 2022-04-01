@@ -9,7 +9,7 @@ function* runContextRefresher(action) {
 	if (action.payload.initializeRuntime) {
 		yield call(action.payload.initializeRuntime);
 	}
-	const interval = Number(action.payload.poolingInterval);
+	const interval = Number(action.payload.contextRefreshInterval);
 
 	do {
 		try {
@@ -21,7 +21,7 @@ function* runContextRefresher(action) {
 		} finally {
 			yield delay(interval);
 		}
-	} while (poolingInterval > 0 && process.env.NODE_ENV !== "development");
+	} while (contextRefreshInterval > 0 && process.env.NODE_ENV !== "development");
 }
 
 export default [watchContext];
