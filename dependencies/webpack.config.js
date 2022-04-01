@@ -8,6 +8,7 @@ const config = require(path.resolve(
 
 config.entry = {
 	dependencies: [
+		// essentials
 		"history",
 		"react",
 		"regenerator-runtime/runtime.js",
@@ -18,6 +19,8 @@ config.entry = {
 		"redux",
 		"redux-saga",
 		"redux-saga/effects",
+		// css-in-js
+		"linaria",
 		"@linaria/react",
 		"@linaria/core",
 	],
