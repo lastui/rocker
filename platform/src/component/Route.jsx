@@ -2,11 +2,19 @@ import { useMemo, createElement } from "react";
 
 import { RouterContext } from "./Router";
 import { matchPath } from "../routing";
+import { warning } from "../utils";
 
 const Branch = (props) => {
   const match = useMemo(() => {
-    const parent = `${props.context.match.url}/${props.path}`.replace(/\/+/g, "/")
-    const nextMatch = matchPath(props.context.location.pathname, parent, props.exact);
+    const parent = `${props.context.match.url}/${props.path}`.replace(
+      /\/+/g,
+      "/"
+    );
+    const nextMatch = matchPath(
+      props.context.location.pathname,
+      parent,
+      props.exact
+    );
     if (!nextMatch) {
       return nextMatch;
     }
@@ -44,14 +52,22 @@ const Route = (props) => {
 
   return (
     <RouterContext.Consumer>
-      {(context) => (
-        <Branch
-          path={props.index ? "/" : props.path}
-          exact={Boolean(props.index || props.exact)}
-          context={context}
-          component={props.component}
-        />
-      )}
+      {(context) => {
+        if (!context) {
+          warning(
+            "Usage Router outside of context, Entrypoint or Main is probably missing in parent tree of this component."
+          );
+          return null;
+        }
+        return (
+          <Branch
+            path={props.index ? "/" : props.path}
+            exact={Boolean(props.index || props.exact)}
+            context={context}
+            component={props.component}
+          />
+        );
+      }}
     </RouterContext.Consumer>
   );
 };
