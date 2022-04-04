@@ -55,7 +55,7 @@ const Route = (props) => {
       {(context) => {
         if (!context) {
           warning(
-            "Usage Router outside of context, Entrypoint or Main is probably missing in parent tree of this component."
+            "Router used outside of context, Entrypoint or Main is probably missing in parent tree of this component."
           );
           return null;
         }
