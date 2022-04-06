@@ -28,9 +28,7 @@ const createModuleLoader = () => {
   };
 
   const availableModules = {};
-  const loadingLocales = {};
   const loadedModules = {};
-  const loadedLocales = {};
   const loadingModules = {};
   const danglingNamespaces = [];
   const reducers = {};
