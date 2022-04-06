@@ -1,3 +1,4 @@
+import React from "react";
 import { warning } from "./utils";
 
 const GeneratorFunction = function* () {}.constructor;
@@ -12,18 +13,18 @@ export default function (scope) {
     );
   }
   if (scope.Main) {
-    if (!(scope.Main instanceof PlainFunction)) {
+    if (!(scope.Main instanceof PlainFunction || scope.Main.constructor instanceof React.Component.constructor)) {
       warning(
-        `attribute "Main" provided in registerModule is not function, it is ${scope.Main.constructor}`
+        `attribute "Main" provided in registerModule is not function or React.Component, it is ${scope.Main.constructor}`
       );
     } else {
       window.__SANDBOX_SCOPE__.Main = scope.Main;
     }
   }
   if (scope.Error) {
-    if (!(scope.Error instanceof PlainFunction)) {
+    if (!(scope.Error instanceof PlainFunction || scope.Error.constructor instanceof React.Component.constructor)) {
       warning(
-        `attribute "Error" provided in registerModule is not function, it is ${scope.Error.constructor}`
+        `attribute "Error" provided in registerModule is not function or React.Component, it is ${scope.Error.constructor}`
       );
     } else {
       window.__SANDBOX_SCOPE__.Error = scope.Error;
