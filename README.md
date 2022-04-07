@@ -48,7 +48,7 @@ A: Yes that's a valid concern, if you compile your module at one time, make inco
 
 Q: I noticed that some dependencies are part of the platform. Can I supply mine?
 
-A: Yes, but you need to contain them into a single chunk (module) that you will compile, and you are locked into versions of react, redux, ... that is provided by the platform. Imagine it like Android OS or iOS. Your modules have some [features and essentials provided](https://github.com/lastui/dependencies) and both runtime and functionality must reference these same essential instances. You can control your module compatibility by using the appropriate version of `@lastui/rocker` platform. And you can bundle any necessary dependencies you'll need into your modules. JavaScript does not have SPIs and DLLs are the functionally closest stable thing for that bottom-up compilation use case.
+A: Yes, but you need to contain them into a single chunk (module) that you will compile, and you are locked into versions of react, redux, ... that is provided by the platform. Imagine it like Android OS or iOS. Your modules have some [features and essentials provided](https://github.com/lastui/dependencies/blob/main/package.json) and both runtime and functionality must reference these same essential instances. You can control your module compatibility by using the appropriate version of `@lastui/rocker` platform. And you can bundle any necessary dependencies you'll need into your modules. JavaScript does not have SPIs and DLLs are the functionally closest stable thing for that bottom-up compilation use case.
 
 ---
 
