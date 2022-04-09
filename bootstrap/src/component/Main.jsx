@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
-import { actions } from "@lastui/rocker/platform";
+import { constants } from "@lastui/rocker/platform";
 import setupStore from "../store";
 import Entrypoint from "./Entrypoint";
 
@@ -12,9 +12,14 @@ const Main = (props) => {
 		console.debug("bootstraping runtime");
 		try {
 			const nextStore = await setupStore(props.reduxMiddlewares);
-			nextStore.dispatch(
-				actions.init(props.fetchContext, props.initializeRuntime, props.contextRefreshInterval)
-			);
+			nextStore.dispatch({
+			  type: constants.INIT,
+			  payload: {
+			    fetchContext: props.fetchContext,
+			    initializeRuntime: props.initializeRuntime,
+			    contextRefreshInterval: props.contextRefreshInterval,
+			  },
+			});
 			setStore(nextStore);
 		} catch (error) {
 			setErrorState(() => {

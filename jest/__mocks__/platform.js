@@ -3,9 +3,12 @@ const React = require("react");
 module.exports = {
 	Module: (props) =>
 		props.children
+			? React.createElement('section', { 'data-testid': props.name }, props.children)
+			: React.createElement('section', { 'data-testid': props.name }),
+	Route: () => null,
+	Router: (props) => props.children
 			? React.createElement(React.Fragment, {}, props.children)
 			: null,
-	Route: () => null,
 	Redirect: () => null,
 	Link: (props) =>
 		props.children

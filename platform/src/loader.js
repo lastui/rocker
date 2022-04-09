@@ -4,7 +4,6 @@ import { cancel, spawn } from "redux-saga/effects";
 import { combineReducers } from "redux";
 import { downloadProgram } from "./assets";
 import * as constants from "./constants";
-import * as actions from "./actions";
 import { warning } from './utils';
 
 import { injectMiddleware, ejectMiddleware } from "./middleware";
