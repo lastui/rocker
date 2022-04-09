@@ -14,6 +14,7 @@ require("yargs")
   })
   .command(require("./commands/build.js"))
   .command(require("./commands/start.js"))
+  .command(require("./commands/test.js"))
   .demandCommand()
   .help(false)
   .argv;

@@ -1,5 +1,7 @@
 node_modules
+coverage
 dll
 .idea
 webpack/.babel-cache
 webpack/.linaria-cache
+jest/.jest-cache
