@@ -1,4 +1,4 @@
-import { watchContext, runContextRefresher } from "../context";
+import { watchBootstrap, runRefresher } from "../bootstrap";
 import { runSaga } from "redux-saga";
 import { constants } from "@lastui/rocker/platform";
 

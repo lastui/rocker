@@ -2,7 +2,7 @@ import { Store, applyMiddleware, compose, createStore, combineReducers } from "r
 import createSagaMiddleware from "redux-saga";
 import { all, fork } from "redux-saga/effects";
 import { runtimeReducer } from "../reducer";
-import { watchContext } from "../saga";
+import { watchRefresh, watchFetchContext, watchBootstrap } from "../saga";
 import {
 	sharedState,
 	moduleLoader,
@@ -10,8 +10,12 @@ import {
 	dynamicMiddleware,
 } from "@lastui/rocker/platform";
 
-export default async (middlewares) => {
-	const sagaMiddleware = createSagaMiddleware();
+export default async (fetchContext, middlewares) => {
+	const sagaMiddleware = createSagaMiddleware({
+		context: {
+			fetchContext,
+		},
+	});
 
 	const enhancers = [
 		moduleLoaderMiddleware(moduleLoader),
@@ -40,7 +44,9 @@ export default async (middlewares) => {
 	moduleLoader.setStore(store);
 
 	const sagas = [
-		watchContext,
+		watchBootstrap,
+		watchFetchContext,
+		watchRefresh,
 	];
 	sagaMiddleware.run(function* rooSaga() {
 		yield all(sagas.map(fork));
