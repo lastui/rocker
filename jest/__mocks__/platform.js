@@ -22,4 +22,9 @@ module.exports = {
 	useLocation: () => null,
 	useParams: () => null,
 	useRouteMatch: () => null,
+	constants: new Proxy({}, {
+		get(_o, prop) {
+			return prop;
+		},
+	})
 };
