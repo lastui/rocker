@@ -1,4 +1,5 @@
 node_modules
+coverage
 dll
 .idea
 webpack/.babel-cache
