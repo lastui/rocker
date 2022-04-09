@@ -1,7 +1,12 @@
+const os = require('os');
 const path = require('path');
 const jest = require('jest');
-const options = require(path.resolve(__dirname, '../../jest/index.js'));
 
 exports.run = async function() {
-	await jest.runCLI(options, [options.rootDir])
+	await jest.run([
+		'--colors',
+		`--maxWorkers=${os.cpus().length}`,
+		'--config',
+		path.resolve(__dirname, '../../jest/index.js'),
+	])
 }
