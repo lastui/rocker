@@ -40,7 +40,7 @@ describe("<Main />", () => {
     );
     await waitFor(() => {
       expect(console.debug).toHaveBeenCalledWith("bootstraping runtime");
-      const entrypointModule = screen.getByTestId("some-entrypoint");
+      const entrypointModule = screen.getByTestId("module/some-entrypoint");
       expect(entrypointModule).toBeDefined();
       const actions = mockStore.getActions();
       expect(actions.length).toEqual(1);

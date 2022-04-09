@@ -29,7 +29,7 @@ describe("<Entrypoint />", () => {
         <Entrypoint />
       </ReduxProvider>
     );
-    const entrypointModule = screen.getByTestId("entrypoint");
+    const entrypointModule = screen.getByTestId("module/entrypoint");
     expect(entrypointModule).toBeDefined();
   });
 
