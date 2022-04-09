@@ -15,21 +15,20 @@ module.exports = {
 	collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
 	moduleFileExtensions: ["js", "ts", "jsx", "tsx"],
 	transform: {
-		"^.+\\.jsx?$": path.resolve(__dirname, "transform/index.js"),
-		"^.+\\.tsx?$": path.resolve(__dirname, "transform/index.js"),
-		"^.+\\.css$": path.resolve(__dirname, "transform/css.js"),
+		"\\.[t|j]sx?$": path.resolve(__dirname, "transform/index.js"),
+		"\\.css$": path.resolve(__dirname, "transform/css.js"),
 		"^(?!.*\\.(ts|js|jsx|tsx|css))": path.resolve(
 			__dirname,
 			"transform/file.js"
 		),
 	},
-	cacheDirectory: "<rootDir>/node_modules/@lastui/jest/.jest-cache",
+	cacheDirectory: "<rootDir>/node_modules/@lastui/rocker/jest/.jest-cache",
 	transformIgnorePatterns: [
 		"<rootDir>/node_modules/",
 		"<rootDir>/build/",
 		"<rootDir>/static/",
 	],
-	transformIgnorePatterns: [
+	testPathIgnorePatterns: [
 		"<rootDir>/node_modules/",
 		"<rootDir>/build/",
 		"<rootDir>/static/",
@@ -42,10 +41,10 @@ module.exports = {
 	],
 	coverageThreshold: {
 		global: {
-			branches: 20,
-			functions: 20,
-			lines: 20,
-			statements: 20,
+			branches: 0,
+			functions: 0,
+			lines: 0,
+			statements: 0,
 		},
 	},
 };
