@@ -58,6 +58,14 @@ export const moduleLoaderMiddleware = (loader) => {
               },
             });
           }
+          if (!availableLocales[id]) {
+            return next({
+              type: constants.MODULE_READY,
+              payload: {
+                module: id,
+              },
+            }); 
+          }
           const uri = availableLocales[id][language];
           if (!uri) {
             return next({
