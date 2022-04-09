@@ -3,10 +3,13 @@ const fs = require("fs");
 
 process.env.TZ = "UTC";
 
-const rootDir = process.cwd();
+const node_modules =
+	path.dirname(process.env.INIT_CWD) === path.resolve(__dirname, "..")
+		? ["<rootDir>/../node_modules", "<rootDir>/node_modules"]
+		: ["<rootDir>/node_modules"];
 
 module.exports = {
-	rootDir,
+	rootDir: process.env.INIT_CWD,
 	automock: false,
 	verbose: true,
 	collectCoverage: true,
@@ -24,18 +27,18 @@ module.exports = {
 	},
 	cacheDirectory: "<rootDir>/node_modules/@lastui/rocker/jest/.jest-cache",
 	transformIgnorePatterns: [
-		"<rootDir>/node_modules/",
+		...node_modules,
 		"<rootDir>/build/",
 		"<rootDir>/static/",
 	],
 	testPathIgnorePatterns: [
-		"<rootDir>/node_modules/",
+		...node_modules,
 		"<rootDir>/build/",
 		"<rootDir>/static/",
 	],
 	setupFilesAfterEnv: [
 		path.resolve(__dirname, "setupTests.js"),
-		...(fs.existsSync(path.resolve(rootDir, "src/setupTests.js"))
+		...(fs.existsSync(path.resolve(process.env.INIT_CWD, "src/setupTests.js"))
 			? ["<rootDir>/src/setupTests.js"]
 			: []),
 	],
@@ -46,5 +49,12 @@ module.exports = {
 			lines: 0,
 			statements: 0,
 		},
+	},
+	moduleDirectories: [...node_modules, "<rootDir>/src"],
+	moduleNameMapper: {
+		"@lastui/rocker/platform": path.resolve(
+			__dirname,
+			"__mocks__/platform.js"
+		),
 	},
 };
