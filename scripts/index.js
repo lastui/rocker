@@ -64,7 +64,7 @@ exports.clearDirectory = async function (nodePath) {
 					break;
 				}
 				case "rmdir": {
-					fs.rmdir(
+					fs.rm(
 						item.path,
 						{ recursive: true, force: true },
 						(err) => (err ? reject(err) : resolve())
