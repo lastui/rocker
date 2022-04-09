@@ -2,7 +2,6 @@ import { compose } from "redux";
 import { warning } from './utils';
 import { downloadJson } from "./assets";
 import * as constants from "./constants";
-import * as actions from "./actions";
 
 export const moduleLoaderMiddleware = (loader) => {
   let availableLocales = {};
@@ -104,7 +103,13 @@ export const moduleLoaderMiddleware = (loader) => {
                   module: id,
                 },
               });
-              return next(actions.addI18nMessages(language, [{ module: id, data }]));
+              return next({
+                type: constants.ADD_I18N_MESSAGES,
+                payload: {
+                  language,
+                  batch: [{ module: id, data }],
+                },
+              });
             });
         }
 
@@ -140,7 +145,13 @@ export const moduleLoaderMiddleware = (loader) => {
                 batch.push(action.value);
               }
             }
-            return next(actions.addI18nMessages(language, batch));
+            return next({
+                type: constants.ADD_I18N_MESSAGES,
+                payload: {
+                  language,
+                  batch,
+                },
+              });
           });
         }
 

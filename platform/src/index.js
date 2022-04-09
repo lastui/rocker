@@ -1,4 +1,3 @@
-import * as actions from "./actions";
 import * as constants from "./constants";
 
 import { moduleLoaderMiddleware, dynamicMiddleware } from "./middleware";
@@ -27,7 +26,6 @@ export {
 	useHistory,
 	useParams,
 	useRouteMatch,
-	actions,
 	constants,
 	moduleLoader,
 	moduleLoaderMiddleware,
@@ -46,7 +44,6 @@ export default {
 	useHistory,
 	useParams,
 	useRouteMatch,
-	actions,
 	constants,
 	moduleLoader,
 	moduleLoaderMiddleware,

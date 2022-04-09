@@ -2,7 +2,7 @@ import { Store, applyMiddleware, compose, createStore, combineReducers } from "r
 import createSagaMiddleware from "redux-saga";
 import { all, fork } from "redux-saga/effects";
 import { runtimeReducer } from "../reducer";
-import sagas from "../saga";
+import { watchContext } from "../saga";
 import {
 	sharedState,
 	moduleLoader,
@@ -39,6 +39,9 @@ export default async (middlewares) => {
 	moduleLoader.setSagaRunner(sagaMiddleware.run);
 	moduleLoader.setStore(store);
 
+	const sagas = [
+		watchContext,
+	];
 	sagaMiddleware.run(function* rooSaga() {
 		yield all(sagas.map(fork));
 	});
