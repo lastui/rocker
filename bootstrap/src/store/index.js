@@ -21,7 +21,7 @@ export default async (middlewares) => {
 	];
 
 	const composer = process.env.NODE_ENV === 'development'
-		? require('redux-devtools-extension').composeWithDevTools
+		? require('@redux-devtools/extension').composeWithDevTools
 		: compose;
 
 	const reducer = combineReducers({
