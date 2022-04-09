@@ -28,7 +28,7 @@ describe("<Main />", () => {
     console.debug = consoleDebug;
   });
 
-  it("should render", async () => {
+  it("should bootstrap", async () => {
     const fetchContext = jest.fn();
     const initializeRuntime = jest.fn();
     render(

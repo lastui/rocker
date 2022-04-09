@@ -2,10 +2,6 @@ import runtimeReducer from "../runtime";
 import { constants } from "@lastui/rocker/platform";
 
 describe("runtimeReducer", () => {
-	it("should be defined", () => {
-		expect(runtimeReducer).toBeDefined();
-	});
-
 	it("initial state", () => {
 		const action = { type: "stub" };
 		const initialState = runtimeReducer(undefined, action);
@@ -14,7 +10,7 @@ describe("runtimeReducer", () => {
 		});
 	});
 
-	it("initial state", () => {
+	it("SET_ENTRYPOINT_MODULE", () => {
 		const action = {
 			type: constants.SET_ENTRYPOINT_MODULE,
 			payload: {

@@ -1,4 +1,4 @@
-import * as SL from "../";
+import * as selectors from "../";
 
 describe("selector", () => {
 	const state = {
@@ -16,29 +16,20 @@ describe("selector", () => {
 	};
 
 	describe(".getEntrypoint", () => {
-		it("should be defined", () => {
-			expect(SL.getEntrypoint).toBeDefined();
-		});
 		it("should return entrypoint", () => {
-			expect(SL.getEntrypoint(state)).toEqual("value");
+			expect(selectors.getEntrypoint(state)).toEqual("value");
 		});
 	});
 
 	describe(".getLanguage", () => {
-		it("should be defined", () => {
-			expect(SL.getLanguage).toBeDefined();
-		});
 		it("should return language", () => {
-			expect(SL.getLanguage(state)).toEqual("en-US");
+			expect(selectors.getLanguage(state)).toEqual("en-US");
 		});
 	});
 
 	describe(".getI18nMessages", () => {
-		it("should be defined", () => {
-			expect(SL.getI18nMessages).toBeDefined();
-		});
 		it("should return i18n messages (exists for currently selected language)", () => {
-			expect(SL.getI18nMessages(state)).toEqual(
+			expect(selectors.getI18nMessages(state)).toEqual(
 				state.shared.messages["en-US"]
 			);
 		});
@@ -50,9 +41,9 @@ describe("selector", () => {
 					language: "cs-CZ",
 				},
 			};
-			const messages = SL.getI18nMessages(nextState);
+			const messages = selectors.getI18nMessages(nextState);
 			expect(messages).toMatchObject({});
-			expect(SL.getI18nMessages(nextState)).toEqual(messages);
+			expect(selectors.getI18nMessages(nextState)).toEqual(messages);
 		});
 	});
 });
