@@ -2,7 +2,7 @@ import runtimeReducer from "../runtime";
 
 describe("runtimeReducer", () => {
 	
-	it("should be a defined", () => {
+	it("should be defined", () => {
 		expect(runtimeReducer).toBeDefined();
 	});
 

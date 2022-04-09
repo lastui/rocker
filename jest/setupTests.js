@@ -4,8 +4,8 @@ jest.mock("@linaria/react", () => {
 	}
 	return {
 		styled: new Proxy(styled, {
-			get(o, prop) {
-				return o(prop);
+			get(ref, prop) {
+				return ref(prop);
 			},
 		}),
 	};
@@ -24,8 +24,8 @@ jest.mock("linaria", () => ({
 		}
 		return {
 			styled: new Proxy(styled, {
-				get(o, prop) {
-					return o(prop);
+				get(ref, prop) {
+					return ref(prop);
 				},
 			}),
 		};
