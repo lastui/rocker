@@ -1,3 +1,4 @@
+
 jest.mock("@linaria/react", () => {
 	function styled(tag) {
 		return jest.fn(() => tag);

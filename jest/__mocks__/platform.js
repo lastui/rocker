@@ -24,4 +24,12 @@ module.exports = {
 			return prop;
 		},
 	}),
+	moduleLoaderMiddleware: (_moduleLoader) => (_store) => (next) => (action) => next(action),
+	dynamicMiddleware: (_store) => (next) => (action) => next(action),
+	moduleLoader: {
+		getModulesReducer: () => (state = {}, action) => state,
+		setSagaRunner: () => {},
+		setStore: () => {},
+	},
+	sharedState: (state = {}, action) => state,
 };
