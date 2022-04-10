@@ -1,5 +1,6 @@
 import { SET_LANGUAGE, REFRESH } from "./constants";
 
+import registerModule from "./register";
 import Module from "./component/Module";
 import Link from "./component/Link";
 import Router, {
@@ -24,6 +25,7 @@ export {
 	useParams,
 	useRouteMatch,
 	constants,
+	registerModule,
 };
 
 export default {
@@ -37,4 +39,5 @@ export default {
 	useParams,
 	useRouteMatch,
 	constants,
+	registerModule,
 };
