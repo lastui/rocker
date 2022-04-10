@@ -8,7 +8,10 @@ const config = require(path.resolve(
 ));
 
 config.entry = {
-	platform: ["@lastui/rocker/platform"],
+	platform: [
+		"@lastui/rocker/platform",
+		"@lastui/rocker/platform/kernel",
+	],
 };
 
 config.plugins.push(

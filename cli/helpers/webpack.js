@@ -132,7 +132,7 @@ exports.getConfig = async function () {
   return config;
 };
 
-exports.setup = async function (options) {
+exports.setup = async function (options, packageName) {
   process.env.NODE_ENV = options.development ? "development" : "production";
 
   process.env.BABEL_ENV = process.env.NODE_ENV;
@@ -143,7 +143,7 @@ exports.setup = async function (options) {
     await propagateProgressOption();
   }
 
-  console.log(colors.bold("Compiling..."));
+  console.log(colors.bold(`Compiling ${packageName}...`));
 
   return function (err, stats) {
     process.exitCode = 0;

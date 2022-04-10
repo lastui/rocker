@@ -18,6 +18,8 @@ const config = {
 config.output.filename = "spa/[name].min.js";
 config.output.assetModuleFilename = "spa/[name][ext][query]";
 
+config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
+
 config.module.rules.push(
 	{
 		test: /\.[j|t]sx?$/,
