@@ -29,11 +29,9 @@ describe("<Main />", () => {
   });
 
   it("should bootstrap", async () => {
-    const fetchContext = jest.fn();
     const initializeRuntime = jest.fn();
     render(
       <Main
-        fetchContext={fetchContext}
         contextRefreshInterval={10}
         initializeRuntime={initializeRuntime}
       />
@@ -45,7 +43,6 @@ describe("<Main />", () => {
       const actions = mockStore.getActions();
       expect(actions.length).toEqual(1);
       expect(actions[0].type).toEqual(constants.INIT);
-      expect(actions[0].payload.fetchContext).toEqual(fetchContext);
       expect(actions[0].payload.initializeRuntime).toEqual(initializeRuntime);
       expect(actions[0].payload.contextRefreshInterval).toEqual(10);
     });

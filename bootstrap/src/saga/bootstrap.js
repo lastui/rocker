@@ -18,20 +18,18 @@ export function* runRefresher(action) {
 	}
 	do {
 		yield put({ type: constants.FETCH_CONTEXT });
-		if (interval > 0) {
-			let waiting = true;
-			while (waiting) {
-				const { refresh, timeout } = yield race({
-					refresh: take(constants.REFRESH),
-					timeout: delay(interval),
-				});
-				if (timeout) {
-					waiting = false;
-				} else {
-					console.debug(
-						`context manually refreshed, will refresh automatically after ${interval} ms.`
-					);
-				}
+		let waiting = interval > 0;
+		while (waiting) {
+			const { refresh, timeout } = yield race({
+				refresh: take(constants.REFRESH),
+				timeout: delay(interval),
+			});
+			if (timeout) {
+				waiting = false;
+			} else {
+				console.debug(
+					`context manually refreshed, will refresh automatically after ${interval} ms.`
+				);
 			}
 		}
 	} while (predicate);
