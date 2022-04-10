@@ -15,6 +15,8 @@ const config = {
 
 config.output.filename = "[name].min.js";
 
+config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
+
 config.module.rules.push(
 	{
 		test: /\.[j|t]sx?$/,

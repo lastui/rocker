@@ -1,9 +1,4 @@
-import * as constants from "./constants";
-
-import { moduleLoaderMiddleware, dynamicMiddleware } from "./middleware";
-import moduleLoader from "./loader";
-import registerModule from "./register";
-import sharedState from "./shared";
+import { SET_LANGUAGE, REFRESH } from "./constants";
 
 import Module from "./component/Module";
 import Link from "./component/Link";
@@ -16,6 +11,8 @@ import Router, {
 import Route from "./component/Route";
 import Redirect from "./component/Redirect";
 
+const constants = { SET_LANGUAGE, REFRESH };
+
 export {
 	Module,
 	Route,
@@ -27,11 +24,6 @@ export {
 	useParams,
 	useRouteMatch,
 	constants,
-	moduleLoader,
-	moduleLoaderMiddleware,
-	sharedState,
-	dynamicMiddleware,
-	registerModule,
 };
 
 export default {
@@ -45,9 +37,4 @@ export default {
 	useParams,
 	useRouteMatch,
 	constants,
-	moduleLoader,
-	moduleLoaderMiddleware,
-	sharedState,
-	dynamicMiddleware,
-	registerModule,
 };

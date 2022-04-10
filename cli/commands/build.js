@@ -16,8 +16,10 @@ exports.handler = async function (argv) {
     });
   });
 
+  const path = require("path");
+  const packageName = path.basename(process.env.INIT_CWD);
   const { setup, getConfig } = require("../helpers/webpack.js");
-  const callback = await setup(argv);
+  const callback = await setup(argv, packageName);
   const config = await getConfig();
   const server = require("webpack");
 

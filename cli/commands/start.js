@@ -17,17 +17,19 @@ exports.handler = async function (argv) {
   });
 
   const colors = require("colors/safe");
+  const path = require("path");
+  const packageName = path.basename(process.env.INIT_CWD);
   const { setup, getConfig } = require("../helpers/webpack.js");
   const callback = await setup({
     ...argv,
     development: true,
-  });
+  }, packageName);
   const config = await getConfig();
   const devServerConfig = config.devServer;
   delete config.devServer;
   const compiler = require("webpack")(config, callback);
   compiler.hooks.invalid.tap("invalid", () => {
-    console.log(colors.bold("Compiling..."));
+    console.log(colors.bold(`Compiling ${packageName}...`));
   });
   const server = require("webpack-dev-server");
   const instance = new server(devServerConfig, compiler);

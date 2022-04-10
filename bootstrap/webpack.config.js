@@ -13,6 +13,8 @@ config.entry = {
 	bootstrap: ["@lastui/rocker/bootstrap"],
 };
 
+config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
+
 config.plugins.push(
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
