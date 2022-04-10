@@ -256,6 +256,4 @@ config.plugins.push(
 	])
 );
 
-console.log(config);
-
 module.exports = config;

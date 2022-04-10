@@ -101,10 +101,6 @@ config.output.library = {
 };
 
 config.plugins.push(
-	new webpack.ProvidePlugin({
-		Buffer: ["buffer", "Buffer"],
-		process: ["process"],
-	}),
 	new CleanWebpackPlugin({
 		root: settings.PROJECT_ROOT_PATH,
 		cleanOnceBeforeBuildPatterns: [

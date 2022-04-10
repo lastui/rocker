@@ -29,6 +29,10 @@ module.exports = {
 	},
 	devtool: "eval-cheap-module-source-map",
 	plugins: [
+		new webpack.ProvidePlugin({
+			Buffer: ["buffer", "Buffer"],
+			process: ["process"],
+		}),
 		new webpack.DefinePlugin({
 			process: {},
 			"process.env": {},
