@@ -1,5 +1,8 @@
-import { watchContext } from "./context";
+import { watchBootstrap } from "./bootstrap";
+import { watchRefresh, watchFetchContext } from "./context";
 
 export {
-	watchContext,
+	watchBootstrap,
+	watchFetchContext,
+	watchRefresh,
 }

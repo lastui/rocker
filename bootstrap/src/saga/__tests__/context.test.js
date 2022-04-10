@@ -1,141 +1,136 @@
-import { watchContext, runContextRefresher } from "../context";
-import { runSaga } from "redux-saga";
+import {
+	watchRefresh,
+	watchFetchContext,
+	refreshContext,
+	fetchContext,
+} from "../context";
 import { constants } from "@lastui/rocker/platform";
 
 describe("context", () => {
-	describe("watchContext", () => {
+	describe("watchRefresh", () => {
 		it("should be defined", () => {
-			expect(watchContext).toBeDefined();
+			expect(watchRefresh).toBeDefined();
 		});
 
-		it("should fork runContextRefresher", () => {
-			const gen = watchContext({ type: constants.INIT });
+		it("should fork refreshContext", () => {
+			const gen = watchRefresh({ type: constants.REFRESH });
 			const step = gen.next();
 
 			expect(step.done).toEqual(false);
 			expect(step.value.type).toEqual("FORK");
-			expect(step.value.payload.args[0]).toEqual(constants.INIT);
-			expect(step.value.payload.args[1]).toEqual(runContextRefresher);
+			expect(step.value.payload.args[0]).toEqual(constants.REFRESH);
+			expect(step.value.payload.args[1]).toEqual(refreshContext);
 		});
 	});
 
-	describe("runContextRefresher", () => {
-		const consoleDebug = console.warn;
+	describe("refreshContext", () => {
+		it("should be defined", () => {
+			expect(refreshContext).toBeDefined();
+		});
+
+		it("should put FETCH_CONTEXT", () => {
+			const gen = refreshContext();
+			const step = gen.next();
+
+			expect(step.done).toEqual(false);
+			expect(step.value.type).toEqual("PUT");
+			expect(step.value.payload.action.type).toEqual(
+				constants.FETCH_CONTEXT
+			);
+
+			expect(gen.next().done).toEqual(true);
+		});
+	});
+
+	describe("watchFetchContext", () => {
+		it("should be defined", () => {
+			expect(watchFetchContext).toBeDefined();
+		});
+
+		it("should fork fetchContext", () => {
+			const gen = watchFetchContext({ type: constants.FETCH_CONTEXT });
+			const step = gen.next();
+
+			expect(step.done).toEqual(false);
+			expect(step.value.type).toEqual("FORK");
+			expect(step.value.payload.args[0]).toEqual(constants.FETCH_CONTEXT);
+			expect(step.value.payload.args[1]).toEqual(fetchContext);
+		});
+	});
+
+	describe("fetchContext", () => {
 		const consoleWarn = console.warn;
 
 		beforeEach(() => {
-			console.debug = jest.fn();
 			console.warn = jest.fn();
 		});
 
 		afterAll(() => {
-			console.debug = consoleDebug;
 			console.warn = consoleWarn;
 		});
 
-		it("happy path, single run", async () => {
+		it("should be defined", () => {
+			expect(fetchContext).toBeDefined();
+		});
+
+		it("happy path", () => {
+			const fetchContextFuture = jest.fn();
 			const ctx = {
 				entrypoint: "my-entrypoint",
 				available: [],
 			};
-			const fetchContext = jest.fn();
-			fetchContext.mockReturnValueOnce(ctx);
-			const action = {
-				type: constants.INIT,
-				payload: {
-					fetchContext,
-				},
-			};
-			const dispatched = [];
-			await runSaga(
-				{
-					dispatch: (action) => dispatched.push(action),
-				},
-				runContextRefresher,
-				action
-			).done;
-			expect(fetchContext).toHaveBeenCalled();
-			expect(dispatched.length).toEqual(2);
-			expect(dispatched[0].type).toEqual(constants.SET_AVAILABLE_MODULES);
-			expect(dispatched[0].payload.modules).toEqual(ctx.available);
-			expect(dispatched[1].type).toEqual(constants.SET_ENTRYPOINT_MODULE);
-			expect(dispatched[1].payload.entrypoint).toEqual(ctx.entrypoint);
+
+			const gen = fetchContext();
+			const stepSagaContext = gen.next();
+
+			expect(stepSagaContext.done).toEqual(false);
+			expect(stepSagaContext.value.payload).toEqual("fetchContext");
+
+			const stepFetchContext = gen.next(fetchContextFuture);
+
+			expect(stepFetchContext.done).toEqual(false);
+			expect(stepFetchContext.value.type).toEqual("CALL");
+			expect(stepFetchContext.value.payload.fn).toEqual(
+				fetchContextFuture
+			);
+
+			const stepAvailableModules = gen.next(ctx);
+
+			expect(stepAvailableModules.done).toEqual(false);
+			expect(stepAvailableModules.value.payload.action.type).toEqual(
+				constants.SET_AVAILABLE_MODULES
+			);
+			expect(
+				stepAvailableModules.value.payload.action.payload.modules
+			).toEqual(ctx.available);
+
+			const stepEntrypointModule = gen.next();
+
+			expect(stepEntrypointModule.done).toEqual(false);
+			expect(stepEntrypointModule.value.payload.action.type).toEqual(
+				constants.SET_ENTRYPOINT_MODULE
+			);
+			expect(
+				stepEntrypointModule.value.payload.action.payload.entrypoint
+			).toEqual(ctx.entrypoint);
 		});
 
-		it("error path, single run", async () => {
-			const error = new Error("Async error");
-			const initializeRuntime = jest.fn();
-			const fetchContext = jest.fn();
-			fetchContext.mockRejectedValueOnce(error);
-			const action = {
-				type: constants.INIT,
-				payload: {
-					fetchContext,
-				},
-			};
-			const dispatched = [];
-			await runSaga(
-				{
-					dispatch: (action) => dispatched.push(action),
-				},
-				runContextRefresher,
-				action
-			).done;
-			expect(fetchContext).toHaveBeenCalled();
-			expect(dispatched.length).toEqual(0);
+		it("error path", () => {
+			const error = new Error("fail");
+
+			const gen = fetchContext();
+			const stepSagaContext = gen.next();
+
+			expect(stepSagaContext.done).toEqual(false);
+			expect(stepSagaContext.value.payload).toEqual("fetchContext");
+
+			const stepFetchContext = gen.throw(error);
+
+			expect(stepFetchContext.done).toEqual(true);
 			expect(console.warn).toHaveBeenCalledWith(
 				"failed to obtain context",
 				error
 			);
-		});
-
-		it("continuous polling", () => {
-			const ctx = {
-				entrypoint: "my-entrypoint",
-				available: [],
-			};
-			const fetchContext = jest.fn();
-			const initializeRuntime = jest.fn();
-			const action = {
-				type: constants.INIT,
-				payload: {
-					fetchContext,
-					initializeRuntime,
-					contextRefreshInterval: 10,
-				},
-			};
-
-			const gen = runContextRefresher(action);
-			const stepInitialize = gen.next();
-
-			expect(stepInitialize.done).toEqual(false);
-			expect(stepInitialize.value.type).toEqual("CALL");
-			expect(stepInitialize.value.payload.fn).toEqual(initializeRuntime);
-
-			const stepFirstCycle = gen.next();
-
-			expect(stepFirstCycle.done).toEqual(false);
-			expect(stepFirstCycle.value.type).toEqual("CALL");
-			expect(stepFirstCycle.value.payload.fn).toEqual(fetchContext);
-
-			expect(console.debug).toHaveBeenCalledWith(
-				"context will refresh automatically each 10 ms."
-			);
-
-			gen.next(ctx); // put available modules
-			gen.next(); // put entrypoint module
-
-			const stepYieldRefreshInterval = gen.next();
-
-			expect(stepYieldRefreshInterval.done).toEqual(false);
-			expect(stepYieldRefreshInterval.value.type).toEqual("CALL");
-			expect(stepYieldRefreshInterval.value.payload.args[0]).toEqual(10);
-
-			const stepNextCycle = gen.next();
-
-			expect(stepNextCycle.done).toEqual(false);
-			expect(stepNextCycle.value.type).toEqual("CALL");
-			expect(stepNextCycle.value.payload.fn).toEqual(fetchContext);
 		});
 	});
 });

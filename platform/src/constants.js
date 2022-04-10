@@ -1,4 +1,6 @@
 export const INIT = "@@platform/INIT";
+export const REFRESH = "@@platform/REFRESH";
+export const FETCH_CONTEXT = "@@platform/FETCH_CONTEXT";
 
 export const SET_LANGUAGE = "@@platform/SET_LANGUAGE";
 export const SET_AVAILABLE_MODULES = "@@platform/SET_AVAILABLE_MODULES";

@@ -11,14 +11,13 @@ const Main = (props) => {
 	const bootstrap = useCallback(async () => {
 		console.debug("bootstraping runtime");
 		try {
-			const nextStore = await setupStore(props.reduxMiddlewares);
+			const nextStore = await setupStore(props.fetchContext, props.reduxMiddlewares);
 			nextStore.dispatch({
-			  type: constants.INIT,
-			  payload: {
-			    fetchContext: props.fetchContext,
-			    initializeRuntime: props.initializeRuntime,
-			    contextRefreshInterval: props.contextRefreshInterval,
-			  },
+				type: constants.INIT,
+				payload: {
+					initializeRuntime: props.initializeRuntime,
+					contextRefreshInterval: props.contextRefreshInterval,
+				},
 			});
 			setStore(nextStore);
 		} catch (error) {
@@ -26,7 +25,12 @@ const Main = (props) => {
 				throw error;
 			});
 		}
-	}, [props.reduxMiddlewares, props.fetchContext, props.initializeRuntime, props.contextRefreshInterval]);
+	}, [
+		props.reduxMiddlewares,
+		props.fetchContext,
+		props.initializeRuntime,
+		props.contextRefreshInterval,
+	]);
 
 	useEffect(() => {
 		bootstrap();

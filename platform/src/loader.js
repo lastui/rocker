@@ -246,6 +246,7 @@ const createModuleLoader = () => {
       }
       switch (action.type) {
         case constants.INIT:
+        case constants.REFRESH:
         case constants.ADD_I18N_MESSAGES:
         case constants.REMOVE_I18N_MESSAGES:
         case constants.MODULE_LOADED:
