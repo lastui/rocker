@@ -12,7 +12,25 @@ import Router, {
 import Route from "./component/Route";
 import Redirect from "./component/Redirect";
 
-const constants = { SET_LANGUAGE, REFRESH };
+function setLanguage(language) {
+	return {
+		type: SET_LANGUAGE,
+		payload: {
+			language,
+		},
+	}
+}
+
+function refresh() {
+	return {
+		type: REFRESH,
+	}
+}
+
+const actions = {
+	setLanguage,
+	refresh,
+}
 
 export {
 	Module,
@@ -24,7 +42,7 @@ export {
 	useHistory,
 	useParams,
 	useRouteMatch,
-	constants,
+	actions,
 	registerModule,
 };
 
@@ -38,6 +56,6 @@ export default {
 	useHistory,
 	useParams,
 	useRouteMatch,
-	constants,
+	actions,
 	registerModule,
 };

@@ -1,4 +1,5 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import React from "react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { constants } from "@lastui/rocker/platform";
 
 import configureStore from "redux-mock-store";
@@ -19,6 +20,25 @@ jest.mock("../../store", () => async (fetchContext) => {
 });
 
 import Main from "../Main";
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = false;
+  }
+
+  static getDerivedStateFromError(error) {
+    return true;
+  }
+
+  render() {
+    if (this.state) {
+      return <span data-testid="MainErrorBoundaries" />;
+    } else {
+      return React.Children.only(this.props.children);
+    }
+  }
+}
 
 describe("<Main />", () => {
   const consoleDebug = console.warn;
@@ -55,22 +75,24 @@ describe("<Main />", () => {
   });
 
   it("should propagate bootstrap failure to error boundaries", async () => {
-    const fetchContext = jest.fn(() => { throw new Error('error') });
-    render(
-      <Main
-        contextRefreshInterval={10}
-        fetchContext={fetchContext}
-      />
-    );
-    try {
-      await waitFor(() => {
-        expect(console.debug).toHaveBeenCalledWith("bootstraping runtime");
-        expect(fetchContext).toHaveBeenCalled();
-      });
-      expect(false).toEqual('error not thrown');
-    } catch (error) {
-      // success
-    }
-  });
+    const spy = jest.spyOn(console, "error");
+    spy.mockImplementation(() => {});
 
+    const fetchContext = jest.fn(async () => {
+      throw new Error("bootstrap error");
+    });
+    render(
+      <ErrorBoundary>
+        <Main contextRefreshInterval={10} fetchContext={fetchContext} />
+      </ErrorBoundary>
+    );
+
+    await waitFor(() => {
+      expect(console.debug).toHaveBeenCalledWith("bootstraping runtime");
+      expect(fetchContext).toHaveBeenCalled();
+      expect(screen.getByTestId("MainErrorBoundaries")).toBeDefined();
+    });
+
+    spy.mockRestore();
+  });
 });

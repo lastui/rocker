@@ -1,9 +1,12 @@
 import * as constants from "../constants";
 
-import { moduleLoaderMiddleware, dynamicMiddleware } from "../middleware";
-import moduleLoader from "../loader";
 import registerModule from "../register";
-import sharedState from "../shared";
+
+import moduleLoaderMiddleware from "./middleware/loader";
+import dynamicMiddleware from "./middleware/dynamic";
+import moduleLoader from "./registry/loader";
+
+import sharedState from "./reducer/shared";
 
 import Module from "../component/Module";
 import Link from "../component/Link";

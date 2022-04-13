@@ -1,9 +1,9 @@
 import { compose } from "redux";
-import { warning } from './utils';
-import { downloadJson } from "./assets";
-import * as constants from "./constants";
+import { warning } from '../../utils';
+import { downloadJson } from "../registry/assets";
+import * as constants from "../../constants";
 
-export const moduleLoaderMiddleware = (loader) => {
+export default (loader) => {
   let availableLocales = {};
   const loadedLocales = {};
   const noop = { type: "" };
@@ -173,55 +173,3 @@ export const moduleLoaderMiddleware = (loader) => {
     }
   };
 };
-
-const createDynamicMiddlewares = () => {
-  let members = [];
-  let applied = [];
-  let storeRef;
-
-  const injectMiddleware = async (id, middleware) => {
-    const index = members.findIndex((item) => item === id);
-    if (index !== -1) {
-      return false;
-    }
-    const instance = await middleware();
-    if (!instance) {
-      return false;
-    }
-    members.push(id);
-    applied.push(instance(storeRef));
-    return true;
-  };
-
-  const ejectMiddleware = (id) => {
-    const index = members.findIndex((item) => item === id);
-    if (index === -1) {
-      return false;
-    }
-    members = members.filter((_, idx) => idx !== index);
-    applied = applied.filter((_, idx) => idx !== index);
-    return true;
-  };
-
-  return {
-    scope: (store) => {
-      storeRef = store;
-      return (next) => (action) => {
-        try {
-          return compose(...applied)(next)(action)
-        } catch (error) {
-          warning('dynamic middleware errored', error);
-          return next(action);
-        }
-      };
-    },
-    injectMiddleware,
-    ejectMiddleware,
-  };
-};
-
-const dynamicMiddlewaresInstance = createDynamicMiddlewares();
-
-export const dynamicMiddleware = dynamicMiddlewaresInstance.scope;
-
-export const { injectMiddleware, ejectMiddleware } = dynamicMiddlewaresInstance;
