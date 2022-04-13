@@ -1,3 +1,4 @@
+import { CANCEL } from 'redux-saga';
 import { warning } from '../../utils';
 
 const CLIENT_TIMEOUT = 30 * 1000;
@@ -37,7 +38,7 @@ class SequentialProgramEvaluator {
     };
     try {
       window.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
-      new Function("", item.data)();
+      new Function("window", item.data)(sandbox.__SANDBOX_SCOPE__);
     } catch (error) {
       warning(`module ${item.id} failed to adapt with error`, error);
       sandbox.__SANDBOX_SCOPE__.Main = () => {
@@ -53,29 +54,29 @@ class SequentialProgramEvaluator {
   }
 }
 
-async function download(resource) {
+async function downloadAsset(resource) {
   const controller = new AbortController();
   const id = setTimeout(controller.abort, CLIENT_TIMEOUT);
-  try {
-    const response = await fetch(resource, {
-      signal: controller.signal,
-    });
+  const request = new Promise((resolve, reject) => {
+    fetch(resource, { signal: controller.signal })
+      .then((response) => {
+        clearTimeout(id);
+        if (!response.ok) {
+          return reject(new Error(String(response.status)));
+        }
+        return resolve(response);
+      })
+      .catch((error) => {
+        clearTimeout(id);
+        return reject(error);
+      });
+  });
+  request[CANCEL] = () => {
     clearTimeout(id);
-    if (!response.ok) {
-      throw new Error(String(response.status));
-    }
-    return response;
-  } catch (error) {
-    clearTimeout(id);
-    throw error;
-  }
+    controller.abort();
+  };
+  return request;
 }
-
-async function downloadJson(uri) {
-  const data = await download(uri);
-  const content = await data.json();
-  return content;
-};
 
 async function checkDigest(payload, digest) {
   if (digest === undefined) {
@@ -97,7 +98,7 @@ async function downloadProgram(id, program) {
   if (!program) {
     return {};
   }
-  const data = await download(program.url);
+  const data = await downloadAsset(program.url);
   const content = await data.text();
   if (!checkDigest(content, program.sha256)) {
     return {
@@ -109,4 +110,4 @@ async function downloadProgram(id, program) {
   return SequentialProgramEvaluator.compile(id, content);
 }
 
-export { downloadJson, downloadProgram };
+export { downloadAsset, downloadProgram };

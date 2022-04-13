@@ -1,6 +1,6 @@
 import { compose } from "redux";
-import { warning } from '../../utils';
-import { downloadJson } from "../registry/assets";
+import { warning } from "../../utils";
+import { downloadAsset } from "../registry/assets";
 import * as constants from "../../constants";
 
 export default (loader) => {
@@ -63,7 +63,7 @@ export default (loader) => {
               payload: {
                 module: id,
               },
-            }); 
+            });
           }
           const uri = availableLocales[id][language];
           if (!uri) {
@@ -74,7 +74,8 @@ export default (loader) => {
               },
             });
           }
-          return downloadJson(uri)
+          return downloadAsset(uri)
+            .then((data) => data.json())
             .then((data) => {
               if (!availableLocales[id]) {
                 return next({
@@ -120,20 +121,24 @@ export default (loader) => {
             if (!loadedLocales[id][language]) {
               const uri = availableLocales[id][language];
               if (uri) {
-                const promise = downloadJson(uri).then((data) => {
-                  if (!availableLocales[id]) {
-                    return null;
-                  }
-                  if (!loadedLocales[id]) {
-                    loadedLocales[id] = {};
-                  }
-                  loadedLocales[id][language] = true;
-                  if (Object.keys(data).length === 0) {
-                    return null;
-                  }
-                  console.debug(`module ${id} introducing locales for ${language}`);
-                  return { module: id, data };
-                });
+                const promise = downloadAsset(uri)
+                  .then((data) => data.json())
+                  .then((data) => {
+                    if (!availableLocales[id]) {
+                      return null;
+                    }
+                    if (!loadedLocales[id]) {
+                      loadedLocales[id] = {};
+                    }
+                    loadedLocales[id][language] = true;
+                    if (Object.keys(data).length === 0) {
+                      return null;
+                    }
+                    console.debug(
+                      `module ${id} introducing locales for ${language}`
+                    );
+                    return { module: id, data };
+                  });
                 scheduledAssets.push(promise);
               }
             }
@@ -146,12 +151,12 @@ export default (loader) => {
               }
             }
             return next({
-                type: constants.ADD_I18N_MESSAGES,
-                payload: {
-                  language,
-                  batch,
-                },
-              });
+              type: constants.ADD_I18N_MESSAGES,
+              payload: {
+                language,
+                batch,
+              },
+            });
           });
         }
 
@@ -168,7 +173,7 @@ export default (loader) => {
         }
       }
     } catch (error) {
-      warning('dynamic middleware errored', error);
+      warning("dynamic middleware errored", error);
       return next(action);
     }
   };
