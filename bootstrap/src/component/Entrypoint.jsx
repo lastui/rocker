@@ -21,7 +21,7 @@ const Entrypoint = (props) => {
 					textComponent: React.Fragment,
 					messages,
 					onError: (err) => {
-						if (err.code !== "MISSING_TRANSLATION") {
+						if (err.code !== "MISSING_TRANSLATION" && err.code !== "MISSING_DATA") {
 							throw err;
 						}
 					},
@@ -36,7 +36,9 @@ const Entrypoint = (props) => {
 	return (
 		<RawIntlProvider value={intl}>
 			<Router history={history}>
-				<Module name={entrypoint} />
+				<Module name={entrypoint}>
+					{props.children}
+				</Module>
 			</Router>
 		</RawIntlProvider>
 	);

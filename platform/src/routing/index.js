@@ -1,4 +1,4 @@
-function compilePath(path) {
+export function compilePath(path) {
   const paramNames = [];
   let regexpSource =
     '^' +

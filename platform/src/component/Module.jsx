@@ -1,6 +1,6 @@
 import { forwardRef, useState, useMemo, useEffect, createElement, useCallback } from "react";
 import { useSelector } from "react-redux";
-import moduleLoader from "../loader";
+import moduleLoader from "../kernel/registry/loader";
 
 const Module = forwardRef((props, ref) => {
   const updatedAt = useSelector((state) => state.shared.updatedAt);

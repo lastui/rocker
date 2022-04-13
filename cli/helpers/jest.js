@@ -3,12 +3,14 @@ const path = require("path");
 const jest = require("jest");
 
 exports.run = async function () {
+	process.on("unhandledRejection", (reason) => {
+		throw reason;
+	});
+
 	await jest.run([
 		"--colors",
 		"--passWithNoTests",
-		"--detectOpenHandles",
 		"--injectGlobals",
-		"--noStackTrace",
 		"--resetMocks",
 		"--restoreMocks",
 		`--maxWorkers=${os.cpus().length}`,

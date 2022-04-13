@@ -3,6 +3,10 @@ const fs = require("fs");
 
 process.env.TZ = "UTC";
 
+if (!process.env.INIT_CWD) {
+	process.env.INIT_CWD = process.cwd();
+}
+
 const node_modules =
 	path.dirname(process.env.INIT_CWD) === path.resolve(__dirname, "..")
 		? [
@@ -11,7 +15,7 @@ const node_modules =
 				"<rootDir>/../platform/node_modules",
 				"<rootDir>/../bootstrap/node_modules",
 		  ]
-		: ["<rootDir>/node_modules"];
+		: ["node_modules"];
 
 module.exports = {
 	rootDir: process.env.INIT_CWD,

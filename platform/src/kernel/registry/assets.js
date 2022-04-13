@@ -1,4 +1,4 @@
-import { warning } from './utils';
+import { warning } from '../../utils';
 
 const CLIENT_TIMEOUT = 30 * 1000;
 

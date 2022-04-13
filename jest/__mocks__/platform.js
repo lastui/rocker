@@ -9,8 +9,8 @@ module.exports = {
 		? React.createElement(React.Fragment, {}, props.children)
 		: null,
 	Redirect: () => null,
-	Link: (props) => props.children
-		? React.createElement(React.Fragment, { navigate: () => {} }, props.children)
+	Link: (props) => props.component
+		? React.createElement(props.component, { navigate: () => {} })
 		: null,
 	useHistory: () => ({
 		push: () => {},

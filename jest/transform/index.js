@@ -3,6 +3,7 @@ const babelJest = require("babel-jest");
 
 const options = {
 	babelrc: false,
+	sourceMaps: 'inline',
 	presets: babelConfig.presets,
 	plugins: babelConfig.plugins,
 };

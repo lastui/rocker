@@ -3,10 +3,9 @@ import { ReactReduxContext } from "react-redux";
 import { cancel, spawn } from "redux-saga/effects";
 import { combineReducers } from "redux";
 import { downloadProgram } from "./assets";
-import * as constants from "./constants";
-import { warning } from './utils';
-
-import { injectMiddleware, ejectMiddleware } from "./middleware";
+import { injectMiddleware, ejectMiddleware } from "../middleware/dynamic";
+import * as constants from "../../constants";
+import { warning } from '../../utils';
 
 const createModuleLoader = () => {
   let store = {
@@ -247,6 +246,7 @@ const createModuleLoader = () => {
       switch (action.type) {
         case constants.INIT:
         case constants.REFRESH:
+        case constants.FETCH_CONTEXT:
         case constants.ADD_I18N_MESSAGES:
         case constants.REMOVE_I18N_MESSAGES:
         case constants.MODULE_LOADED:
