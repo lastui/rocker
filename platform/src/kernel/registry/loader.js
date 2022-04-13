@@ -46,10 +46,11 @@ const createModuleLoader = () => {
     try {
       removeReducer(id);
       console.debug(`module ${id} introducing reducer`);
+      const emptydict = {}
       const composedReducer = combineReducers({
         ...reducer,
-        shared: (state = {}, _action) => state,
-        runtime: (state = {}, _action) => state,
+        shared: (_state, _action) => emptydict,
+        runtime: (_state, _action) => emptydict,
       });
       composedReducer(undefined, { type: constants.MODULE_INIT, module: id });
       reducers[id] = composedReducer;
