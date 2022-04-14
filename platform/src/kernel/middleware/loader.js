@@ -1,9 +1,10 @@
 import { compose } from "redux";
 import { warning } from "../../utils";
 import { downloadAsset } from "../registry/assets";
+import loader from "../registry/loader";
 import * as constants from "../../constants";
 
-export default (loader) => {
+const createLoaderMiddleware = () => {
   let availableLocales = {};
   const loadedLocales = {};
   const noop = { type: "" };
@@ -178,3 +179,5 @@ export default (loader) => {
     }
   };
 };
+
+export default createLoaderMiddleware();

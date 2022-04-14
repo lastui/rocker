@@ -1,13 +1,13 @@
 import { compose } from "redux";
-import { warning } from '../../utils';
+import { warning } from "../../utils";
+import { getStore } from "../registry/store";
 
 const createDynamicMiddlewares = () => {
   let members = [];
   let applied = [];
-  let storeRef;
 
   const injectMiddleware = async (id, middleware) => {
-    const index = members.findIndex((item) => item === id);
+    const index = members.indexOf(id);
     if (index !== -1) {
       return false;
     }
@@ -16,12 +16,12 @@ const createDynamicMiddlewares = () => {
       return false;
     }
     members.push(id);
-    applied.push(instance(storeRef));
+    applied.push(instance(getStore()));
     return true;
   };
 
   const ejectMiddleware = (id) => {
-    const index = members.findIndex((item) => item === id);
+    const index = members.indexOf(id);
     if (index === -1) {
       return false;
     }
@@ -31,16 +31,13 @@ const createDynamicMiddlewares = () => {
   };
 
   return {
-    scope: (store) => {
-      storeRef = store;
-      return (next) => (action) => {
-        try {
-          return compose(...applied)(next)(action)
-        } catch (error) {
-          warning('dynamic middleware errored', error);
-          return next(action);
-        }
-      };
+    underlying: (_store) => (next) => (action) => {
+      try {
+        return compose.apply(null, applied)(next)(action);
+      } catch (error) {
+        warning("dynamic middleware errored", error);
+        return next(action);
+      }
     },
     injectMiddleware,
     ejectMiddleware,
@@ -49,8 +46,6 @@ const createDynamicMiddlewares = () => {
 
 const dynamicMiddlewaresInstance = createDynamicMiddlewares();
 
-const dynamicMiddleware = dynamicMiddlewaresInstance.scope;
-
 export const { injectMiddleware, ejectMiddleware } = dynamicMiddlewaresInstance;
 
-export default dynamicMiddleware;
+export default dynamicMiddlewaresInstance.underlying;
