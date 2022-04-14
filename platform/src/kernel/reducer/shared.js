@@ -8,7 +8,7 @@ const initialState = {
   readyModules: {},
 };
 
-const sharedReducer = () => {
+function createSharedReducer() {
   const localeMapping = {};
   return (state = initialState, action) => {
     switch (action.type) {
@@ -125,6 +125,6 @@ const sharedReducer = () => {
       }
     }
   };
-};
+}
 
-export default sharedReducer();
+export default createSharedReducer();

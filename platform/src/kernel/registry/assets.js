@@ -58,7 +58,12 @@ async function downloadAsset(resource) {
   const controller = new AbortController();
   const id = setTimeout(controller.abort, CLIENT_TIMEOUT);
   const request = new Promise((resolve, reject) => {
-    fetch(resource, { signal: controller.signal })
+    const options = {
+      signal: controller.signal,
+      referrerPolicy: "no-referrer",
+      cache: "no-cache",
+    };
+    fetch(resource, options)
       .then((response) => {
         clearTimeout(id);
         if (!response.ok) {

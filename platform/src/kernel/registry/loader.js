@@ -1,123 +1,36 @@
 import React from "react";
 import { ReactReduxContext } from "react-redux";
-import { cancel, spawn } from "redux-saga/effects";
-import { combineReducers } from "redux";
 import { downloadProgram } from "./assets";
-import { injectMiddleware, ejectMiddleware } from "../middleware/dynamic";
 import * as constants from "../../constants";
-import { warning } from '../../utils';
+import { warning } from "../../utils";
+import { addReducer, removeReducer } from "./reducer";
+import { addSaga, removeSaga } from "./saga";
+import { addMiddleware, removeMiddleware } from "./middleware";
+import { getStore } from "./store";
+import { addStyles, removeStyles } from "./styles";
 
 const createModuleLoader = () => {
-  let store = {
-    dispatch() {
-      warning("Redux store is not provided!");
-    },
-    getState() {
-      warning("Redux store is not provided!");
-      return {};
-    },
-    subscribe() {
-      warning("Redux store is not provided!");
-    },
-  };
-
-  let sagaRunner = () => {
-    warning("Sagas runnner is not provided!");
-  };
+  const store = getStore();
 
   const availableModules = {};
   const loadedModules = {};
   const loadingModules = {};
-  const danglingNamespaces = [];
-  const reducers = {};
-  const sagas = {};
 
   const getLoadedModule = (id) => loadedModules[id];
 
-  const removeReducer = (id) => {
-    if (!reducers[id]) {
-      return;
-    }
-    console.debug(`module ${id} removing reducer`);
-    delete reducers[id];
-  };
-
-  const addReducer = async (id, reducer) => {
-    try {
-      removeReducer(id);
-      console.debug(`module ${id} introducing reducer`);
-      const emptydict = {}
-      const composedReducer = combineReducers({
-        ...reducer,
-        shared: (_state, _action) => emptydict,
-        runtime: (_state, _action) => emptydict,
-      });
-      composedReducer(undefined, { type: constants.MODULE_INIT, module: id });
-      reducers[id] = composedReducer;
-    } catch (error) {
-      warning(`module ${id} wanted to register invalid reducer`, error);
-    }
-  };
-
-  const removeMiddleware = (id) => {
-    if (!ejectMiddleware(id)) {
-      return;
-    }
-    console.debug(`module ${id} removing middleware`);
-  };
-
-  const addMiddleware = async (id, middleware) => {
-    const ok = await injectMiddleware(id, middleware);
-    if (!ok) {
-      return;
-    }
-    console.debug(`module ${id} introducing middleware`);
-  };
-
-  const removeStyles = (id) => {
-    const orphanStyles = document.querySelector(`[data-module=${id}`);
-    if (!orphanStyles) {
-      return;
-    }
-    console.debug(`module ${id} removing styles`);
-    orphanStyles.remove();
-  };
-
-  const addStyles = async (id) => {
-    const injectedStyles = document.querySelector("style#rocker:last-of-type");
-    if (!injectedStyles) {
-      return;
-    }
-    console.debug(`module ${id} introducing styles`);
-    injectedStyles.removeAttribute("id");
-    injectedStyles.setAttribute("data-module", id);
-  };
-
-  const removeSaga = (id) => {
-    if (!sagas[id]) {
-      return;
-    }
-    console.debug(`module ${id} removing saga`);
-    const dangling = sagas[id];
-    sagaRunner(function* () {
-      yield cancel(dangling);
-    });
-    delete sagas[id];
-  };
-
-  const addSaga = async (id, saga) => {
-    removeSaga(id);
-    console.debug(`module ${id} introducing saga`);
-    sagaRunner(function* () {
-      try {
-        sagas[id] = yield spawn(saga);
-      } catch (error) {
-        warning(`module ${id} saga crashed`, error);
-      }
-    });
-  };
-
   const adaptModule = async (id, scope = {}) => {
+    const cleanup = () => {
+      removeStyles(id);
+      if (scope.saga) {
+        removeSaga(id);
+      }
+      if (scope.middleware) {
+        removeMiddleware(id);
+      }
+      if (scope.reducer) {
+        removeReducer(id);
+      }
+    };
     const adaptationWork = [];
     adaptationWork.push(addStyles(id));
     if (scope.reducer) {
@@ -129,19 +42,15 @@ const createModuleLoader = () => {
     if (scope.saga) {
       adaptationWork.push(addSaga(id, scope.saga));
     }
-    await Promise.all(adaptationWork);
+    try {
+      await Promise.all(adaptationWork);
+    } catch (error) {
+      cleanup();
+      throw error;
+    }
     return {
-      id,
-      view: (scope.Main && isolateProgram(id, scope)) || null,
-      cleanup: () => {
-        removeStyles(id);
-        if (scope.saga) {
-          removeSaga(id);
-        }
-        if (scope.middleware) {
-          removeMiddleware(id);
-        }
-      },
+      view: isolateProgram(id, scope),
+      cleanup,
     };
   };
 
@@ -191,7 +100,6 @@ const createModuleLoader = () => {
       if (!id) {
         return resolve(false);
       }
-      danglingNamespaces.push(id);
       const loaded = loadedModules[id];
       if (loaded) {
         loaded.cleanup();
@@ -233,88 +141,11 @@ const createModuleLoader = () => {
     await Promise.allSettled(scheduledUnload);
   };
 
-  const getModulesReducer =
-    () =>
-    (state = {}, action) => {
-      for (
-        let id = danglingNamespaces.pop();
-        id;
-        id = danglingNamespaces.pop()
-      ) {
-        console.debug(`module ${id} evicting redux state`);
-        delete state[id];
-      }
-      switch (action.type) {
-        case constants.INIT:
-        case constants.REFRESH:
-        case constants.FETCH_CONTEXT:
-        case constants.ADD_I18N_MESSAGES:
-        case constants.REMOVE_I18N_MESSAGES:
-        case constants.MODULE_LOADED:
-        case constants.SET_AVAILABLE_MODULES: {
-          return state;
-        }
-        case constants.MODULE_READY: {
-          const id = action.payload.module;
-          console.debug(`module ${id} ready`);
-          if (reducers[id]) {
-            try {
-              state[id] = reducers[id](state[id], action);
-            } catch (error) {
-              warning(`module ${id} reducer failed to reduce`, error);
-            }
-          }
-          console.log(`+ module ${id}`);
-          return state;
-        }
-        case constants.MODULE_UNLOADED: {
-          const id = action.payload.module;
-          removeReducer(id);
-          console.debug(`module ${id} unloaded`);
-          console.log(`- module ${id}`);
-          return state;
-        }
-        default: {
-          for (const id in reducers) {
-            try {
-              state[id] = reducers[id](state[id], action);
-            } catch (error) {
-              warning(`module ${id} reducer failed to reduce`, error);
-            }
-          }
-          return state;
-        }
-      }
-    };
-
   const isolateProgram = (id, scope) => {
-    const reduxContext = {
-      store: {
-        dispatch: store.dispatch,
-        getState: () => {
-          const state = store.getState();
-          const isolatedState = {};
-          for (const mid in state.modules) {
-            if (mid === id) {
-              continue;
-            }
-            for (const prop in state.modules[mid]) {
-              isolatedState[prop] = state.modules[mid][prop];
-            }
-          }
-          if (state.modules[id]) {
-            for (const prop in state.modules[id]) {
-              isolatedState[prop] = state.modules[id][prop];
-            }
-          }
-          isolatedState.shared = state.shared;
-          return isolatedState;
-        },
-        subscribe: store.subscribe,
-        replaceReducer: function (newReducer) {},
-      },
-    };
-
+    if (!scope.Main) {
+      return null
+    }
+    const reduxContext = { store: store.namespace(id) };
     const initialState = { error: null };
 
     class HOC extends React.Component {
@@ -343,16 +174,15 @@ const createModuleLoader = () => {
 
       render() {
         if (this.state.error === null) {
-          const composite = { ...this.props.owned, ...scope.props };
           return (
             <ReactReduxContext.Provider value={reduxContext}>
               {this.props.children
                 ? React.createElement(
                     scope.Main,
-                    composite,
+                    this.props.owned,
                     this.props.children
                   )
-                : React.createElement(scope.Main, composite)}
+                : React.createElement(scope.Main, this.props.owned)}
             </ReactReduxContext.Provider>
           );
         }
@@ -367,20 +197,9 @@ const createModuleLoader = () => {
   };
 
   return {
-    setSagaRunner(nextSagaRunner) {
-      if (nextSagaRunner) {
-        sagaRunner = nextSagaRunner;
-      }
-    },
-    setStore(nextStore) {
-      if (nextStore) {
-        store = nextStore;
-      }
-    },
     setAvailableModules,
     loadModule,
     getLoadedModule,
-    getModulesReducer,
   };
 };
 
