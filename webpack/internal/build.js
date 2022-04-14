@@ -86,18 +86,34 @@ module.exports = {
 			Buffer: ["buffer", "Buffer"],
 			process: ["process"],
 		}),
-		new webpack.DefinePlugin({
-			process: {},
-			"process.env": {},
-			"process.env.NODE_ENV": settings.DEVELOPMENT
-				? `"development"`
-				: `"production"`,
-			"process.env.NODE_DEBUG": false,
-			"process.env.VERSION":
-				process.env.VERSION !== undefined
-					? `"${process.env.VERSION}"`
-					: `""`,
-		}),
+		new webpack.DefinePlugin(
+			Object.entries(process.env).reduce(
+				(acc, [k, v]) => {
+					if (acc[k] === undefined) {
+						switch (typeof v) {
+							case "boolean":
+							case "number": {
+								acc[`process.env.${k}`] = v;
+								break;
+							}
+							default: {
+								acc[`process.env.${k}`] = `"${v}"`;
+								break;
+							}
+						}
+					}
+					return acc;
+				},
+				{
+					process: {},
+					"process.env": {},
+					"process.env.NODE_ENV": settings.DEVELOPMENT
+						? `"development"`
+						: `"production"`,
+					"process.env.NODE_DEBUG": false,
+				}
+			)
+		),
 		...(settings.PROGRESS
 			? [
 					new webpack.ProgressPlugin({
