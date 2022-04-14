@@ -38,7 +38,7 @@ class SequentialProgramEvaluator {
     };
     try {
       window.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
-      new Function("window", item.data)(sandbox.__SANDBOX_SCOPE__);
+      new Function("", item.data)({});
     } catch (error) {
       warning(`module ${item.id} failed to adapt with error`, error);
       sandbox.__SANDBOX_SCOPE__.Main = () => {
