@@ -23,21 +23,16 @@ const handler = {
         dispatch: proxy.dispatch,
         getState: function () {
           const state = proxy.getState();
-          const isolatedState = {};
+          let isolatedState = {};
           for (const mid in state.modules) {
             if (mid === id) {
               continue;
             }
-            const bucket = state.modules[mid];
-            for (const prop in bucket) {
-              isolatedState[prop] = bucket[prop];
-            }
+            isolatedState = Object.assign(isolatedState, state.modules[mid]);
           }
-          const bucket = state.modules[id];
-          if (bucket) {
-            for (const prop in bucket) {
-              isolatedState[prop] = bucket[prop];
-            }
+          const itself = state.modules[id];
+          if (itself) {
+            isolatedState = Object.assign(isolatedState, itself);
           }
           isolatedState.shared = state.shared;
           return isolatedState;
