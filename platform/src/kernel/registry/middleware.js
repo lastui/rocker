@@ -8,11 +8,15 @@ function removeMiddleware(id) {
 }
 
 async function addMiddleware(id, middleware) {
+	if (ejectMiddleware(id)) {
+		console.debug(`module ${id} replacing middleware`);
+	} else {
+		console.debug(`module ${id} introducing middleware`);
+	}
 	const ok = await injectMiddleware(id, middleware);
 	if (!ok) {
 		return;
 	}
-	console.debug(`module ${id} introducing middleware`);
 }
 
 export { addMiddleware, removeMiddleware };

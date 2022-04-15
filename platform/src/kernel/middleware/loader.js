@@ -163,7 +163,7 @@ const createLoaderMiddleware = () => {
 
         case constants.MODULE_UNLOADED: {
           const id = action.payload.module;
-          if (id) {
+          if (loadedLocales[id]) {
             delete loadedLocales[id];
           }
           return next(action);

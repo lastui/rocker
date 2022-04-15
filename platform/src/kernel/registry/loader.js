@@ -102,9 +102,9 @@ const createModuleLoader = () => {
       }
       const loaded = loadedModules[id];
       if (loaded) {
+        delete loadedModules[id];
         loaded.cleanup();
       }
-      delete loadedModules[id];
       store.dispatch({
         type: constants.MODULE_UNLOADED,
         payload: {
@@ -128,8 +128,8 @@ const createModuleLoader = () => {
     for (const existing in availableModules) {
       const item = newModules[existing];
       if (!item) {
-        const loaded = loadedModules[existing];
         obsoleteModules.push(existing);
+        const loaded = loadedModules[existing];
         if (loaded) {
           scheduledUnload.push(unloadModule(existing));
         }

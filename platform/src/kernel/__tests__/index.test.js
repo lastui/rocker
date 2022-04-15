@@ -3,12 +3,18 @@ import * as all from "../";
 describe("kernel module exports", () => {
 
 	it("should expose fixed number of things", () => {
-		expect(Object.keys(all).length).toEqual(16);
+		expect(Object.keys(all).length).toEqual(18);
 	})
 
-	describe("moduleLoader", () => {
+	describe("setStore", () => {
 		it("exposes expected", () => {
-			expect(all.moduleLoader).toBeDefined();
+			expect(all.setStore).toBeDefined();
+		});
+	});
+
+	describe("setSagaRunner", () => {
+		it("exposes expected", () => {
+			expect(all.setSagaRunner).toBeDefined();
 		});
 	});
 
@@ -33,7 +39,8 @@ describe("kernel module exports", () => {
 
 	describe("reducers", () => {
 		it("exposes expected", () => {
-			expect(all.sharedState).toBeDefined();
+			expect(all.sharedReducer).toBeDefined();
+			expect(all.modulesReducer).toBeDefined();
 		});
 	});
 

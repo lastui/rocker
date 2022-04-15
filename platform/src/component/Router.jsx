@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 
-import { matchPath } from "../routing";
+import { matchPath } from "../kernel/routing";
 
 export const HistoryContext = createContext();
 export const RouterContext = createContext();

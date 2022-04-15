@@ -1,7 +1,7 @@
 import { useMemo, createElement } from "react";
 
 import { RouterContext } from "./Router";
-import { matchPath } from "../routing";
+import { matchPath } from "../kernel/routing";
 import { warning } from "../utils";
 
 const Branch = (props) => {
