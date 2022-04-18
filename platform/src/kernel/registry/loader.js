@@ -1,5 +1,6 @@
 import React from "react";
 import { ReactReduxContext } from "react-redux";
+import { useReduxContext } from "react-redux/es/hooks/useReduxContext.js";
 import { downloadProgram } from "./assets";
 import * as constants from "../../constants";
 import { warning } from "../../utils";
@@ -143,13 +144,44 @@ const createModuleLoader = () => {
 
   const isolateProgram = (id, scope) => {
     if (!scope.Main) {
-      return null
+      return null;
     }
-    const reduxContext = { store: store.namespace(id) };
-    const initialState = { error: null };
 
-    class HOC extends React.Component {
-      state = initialState;
+    const preferentialStore = store.namespace(id);
+
+    const Bridge = React.forwardRef((props, ref) => {
+      const parentContext = useReduxContext();
+
+      const reduxContext = React.useMemo(
+        () => ({
+          store: preferentialStore,
+          subscription: parentContext.subscription,
+        }),
+        [parentContext.subscription]
+      );
+
+      const owned = React.memo(() => {
+        if (ref) {
+          return {
+            ...props,
+            ref,
+          }
+        } else {
+          return props
+        }
+      }, [ref, props]);
+
+      return (
+        <ReactReduxContext.Provider value={reduxContext}>
+          {props.children
+            ? React.createElement(scope.Main, owned, props.children)
+            : React.createElement(scope.Main, owned)}
+        </ReactReduxContext.Provider>
+      );
+    });
+
+    class Boundaries extends React.Component {
+      state = { error: null };
 
       static displayName = `Module(${id})`;
 
@@ -174,17 +206,9 @@ const createModuleLoader = () => {
 
       render() {
         if (this.state.error === null) {
-          return (
-            <ReactReduxContext.Provider value={reduxContext}>
-              {this.props.children
-                ? React.createElement(
-                    scope.Main,
-                    this.props.owned,
-                    this.props.children
-                  )
-                : React.createElement(scope.Main, this.props.owned)}
-            </ReactReduxContext.Provider>
-          );
+          return this.props.children
+            ? React.createElement(Bridge, this.props.owned, this.props.children)
+            : React.createElement(Bridge, this.props.owned);
         }
         if (scope.Error) {
           return React.createElement(scope.Error, this.state);
@@ -193,7 +217,7 @@ const createModuleLoader = () => {
       }
     }
 
-    return HOC;
+    return Boundaries;
   };
 
   return {

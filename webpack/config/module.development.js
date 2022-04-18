@@ -51,7 +51,7 @@ config.devServer = {
 
 config.output.filename = "[name].js";
 
-config.resolve.alias["react-dom"] = "react-dom/profiling";
+config.resolve.alias["react-dom$"] = "react-dom/profiling";
 config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
 
 config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
@@ -292,18 +292,20 @@ config.plugins.push(
 							(function(){
 								"use strict";
 
-								const react = dependencies_dll("./node_modules/react/index.js");
-								const dom = dependencies_dll("./node_modules/react-dom/index.js");
-								const bootstrap = bootstrap_dll("./node_modules/@lastui/rocker/bootstrap/index.js");
-
 								window.addEventListener("load", function() {
-									dom.render(react.createElement(bootstrap.Main, {
+									const react = dependencies_dll("./node_modules/react/index.js");
+									const dom = dependencies_dll("./node_modules/react-dom/client.js");
+									const bootstrap = bootstrap_dll("./node_modules/@lastui/rocker/bootstrap/index.js");
+
+									const root = dom.createRoot(document.getElementById("${settings.PROJECT_NAME}"));
+								
+									root.render(react.createElement(bootstrap.Main, {
 										fetchContext: async function() {
 											const manifest = ${manifest.trim()};
 											console.debug('using context', manifest);
 											return manifest;
 										}
-									}), document.getElementById("${settings.PROJECT_NAME}"));
+									}));
 								})
 							}())
 						</script>
