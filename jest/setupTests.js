@@ -1,4 +1,6 @@
 
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
 jest.mock("@linaria/react", () => {
 	function styled(tag) {
 		return jest.fn(() => tag);

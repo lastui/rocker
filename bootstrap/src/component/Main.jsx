@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { StrictMode, useState, useCallback, useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
 import { constants } from "@lastui/rocker/platform";
 import setupStore from "../store";
@@ -41,9 +41,11 @@ const Main = (props) => {
 	}
 
 	return (
-		<ReduxProvider store={store}>
-			<Entrypoint />
-		</ReduxProvider>
+		<StrictMode>
+			<ReduxProvider store={store}>
+				<Entrypoint />
+			</ReduxProvider>
+		</StrictMode>
 	);
 };
 
