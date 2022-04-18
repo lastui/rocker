@@ -294,7 +294,7 @@ config.plugins.push(
 
 								window.addEventListener("load", function() {
 									const react = dependencies_dll("./node_modules/react/index.js");
-									const dom = dependencies_dll("./node_modules/react-dom/index.js");
+									const dom = dependencies_dll("./node_modules/react-dom/client.js");
 									const bootstrap = bootstrap_dll("./node_modules/@lastui/rocker/bootstrap/index.js");
 
 									const root = dom.createRoot(document.getElementById("${settings.PROJECT_NAME}"));
