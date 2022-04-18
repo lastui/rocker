@@ -14,6 +14,7 @@ config.entry = {
 		"regenerator-runtime/runtime.js",
 		"react/jsx-runtime",
 		"react-dom",
+		"react-dom/client",
 		"react-intl",
 		"react-redux",
 		"redux",

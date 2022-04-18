@@ -48,7 +48,7 @@ config.devServer = {
 
 config.output.filename = "[name].js";
 
-config.resolve.alias["react-dom"] = "react-dom/profiling";
+config.resolve.alias["react-dom$"] = "react-dom/profiling";
 config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
 
 config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
