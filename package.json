@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.9.37",
+  "version": "0.10.0",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "build:dependencies": "cd dependencies && npm run build",
@@ -59,12 +59,12 @@
     "@lastui/babylon": "1.1.41",
     "@linaria/webpack-loader": "3.0.0-beta.17",
     "@redux-devtools/extension": "3.2.2",
-    "@testing-library/react": "13.0.0",
+    "@testing-library/react": "13.1.1",
     "add-asset-html-webpack-plugin": "5.0.2",
     "clean-webpack-plugin": "4.0.0",
     "colors": "1.4.0",
     "copy-webpack-plugin": "10.2.4",
-    "core-js": "3.21.1",
+    "core-js": "3.22.0",
     "css-loader": "6.7.1",
     "dotenv": "16.0.0",
     "html-webpack-plugin": "5.5.0",

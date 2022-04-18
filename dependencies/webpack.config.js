@@ -12,7 +12,7 @@ config.entry = {
 		"history",
 		"react",
 		"regenerator-runtime/runtime.js",
-		"react/jsx-runtime.js",
+		"react/jsx-runtime",
 		"react-dom",
 		"react-intl",
 		"react-redux",

@@ -6,6 +6,6 @@
 		"build:dev": "node ../cli/index.js build --dev"
 	},
 	"devDependencies": {
-		"@lastui/dependencies": "1.1.62"
+		"@lastui/dependencies": "1.2.0"
 	}
 }
