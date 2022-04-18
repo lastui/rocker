@@ -40,7 +40,7 @@ const Module = forwardRef((props, ref) => {
 
   if (!isReady || !loadedModule) {
     if (props.fallback) {
-      return props.fallback();
+      return props.fallback(composite.owned);
     }
     return null;
   }

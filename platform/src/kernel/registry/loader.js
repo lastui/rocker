@@ -165,9 +165,9 @@ const createModuleLoader = () => {
           return {
             ...props,
             ref,
-          }
+          };
         } else {
-          return props
+          return props;
         }
       }, [ref, props]);
 
@@ -190,6 +190,9 @@ const createModuleLoader = () => {
       }
 
       shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.isReady ^ nextProps.isReady) {
+          return true;
+        }
         if (this.state.error !== nextState.error) {
           return true;
         }

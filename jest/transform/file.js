@@ -2,8 +2,9 @@ const path = require("path");
 
 module.exports = {
 	process(src, filename) {
-		return filename !== undefined
-			? `module.exports = "${path.basename(filename)}";`
-			: "module.exports = undefined;";
+		if (filename === undefined) {
+			return "module.exports = undefined;";
+		}
+		return `module.exports = "${path.basename(filename)}";`;
 	},
 };
