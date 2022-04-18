@@ -2,6 +2,7 @@ node_modules
 coverage
 dll
 .idea
+dependencies/package-lock.json
 webpack/.babel-cache
 webpack/.linaria-cache
 jest/.jest-cache
