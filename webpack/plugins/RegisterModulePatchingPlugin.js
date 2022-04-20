@@ -39,7 +39,7 @@ class RegisterModulePatchingPlugin {
                   return;
                 }
                 for (const arg of expression.arguments[0].properties) {
-                  if (arg.value.name === "buildId") {
+                  if (arg.value.name === "BUILD_ID") {
                     return false;
                   }
                 }
@@ -47,9 +47,9 @@ class RegisterModulePatchingPlugin {
                 for (const arg of expression.arguments[0].properties) {
                   template += `${arg.key.name}:${arg.value.name},`;
                 }
-                template += `buildId:"${settings.BUILD_ID}"}`;
+                template += `BUILD_ID:"${settings.BUILD_ID}"}`;
                 expression.arguments[0].properties.push({
-                  value: { name: "buildId" },
+                  value: { name: "BUILD_ID" },
                 });
                 const dep = new ConstDependency(
                   `registerModule(${template})`,
