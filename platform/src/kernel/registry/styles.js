@@ -7,8 +7,8 @@ function removeStyles(id) {
   orphanStyles.remove();
 };
 
-async function addStyles(id) {
-  const injectedStyles = document.querySelector("style#rocker:last-of-type");
+async function addStyles(id, buildId) {
+  const injectedStyles = document.querySelector(`style#rocker-${buildId}:last-of-type`);
   if (!injectedStyles) {
     return;
   }

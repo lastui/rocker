@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "build:dependencies": "cd dependencies && npm run build",
@@ -39,6 +39,7 @@
     "webpack/internal/development.js",
     "webpack/settings/index.js",
     "webpack/plugins/ModuleLocalesPlugin.js",
+    "webpack/plugins/RegisterModulePatchingPlugin.js",
     "dependencies/index.js",
     "dependencies/dll/dependencies-dev-manifest.json",
     "dependencies/dll/dependencies-prod-manifest.json",

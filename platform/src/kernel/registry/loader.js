@@ -33,7 +33,9 @@ const createModuleLoader = () => {
       }
     };
     const adaptationWork = [];
-    adaptationWork.push(addStyles(id));
+    if (scope.buildId) {
+      adaptationWork.push(addStyles(id, scope.buildId));
+    } 
     if (scope.reducer) {
       adaptationWork.push(addReducer(id, scope.reducer));
     }

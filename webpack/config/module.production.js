@@ -3,6 +3,7 @@ const webpack = require("webpack");
 
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
+const RegisterModulePatchingPlugin = require('../plugins/RegisterModulePatchingPlugin');
 
 const settings = require("../settings");
 
@@ -117,7 +118,9 @@ config.module.rules.push(
 				loader: "style-loader",
 				options: {
 					injectType: "singletonStyleTag",
-					attributes: { id: "rocker" },
+					attributes: {
+						id: `rocker-${settings.BUILD_ID}`,
+					},
 				},
 			},
 			{
@@ -137,7 +140,9 @@ config.module.rules.push(
 				loader: "style-loader",
 				options: {
 					injectType: "singletonStyleTag",
-					attributes: { id: "rocker" },
+					attributes: {
+						id: `rocker-${settings.BUILD_ID}`,
+					},
 				},
 			},
 			{
@@ -176,6 +181,7 @@ config.plugins.push(
 		dry: false,
 	}),
 	new ModuleLocalesPlugin(),
+	new RegisterModulePatchingPlugin(),
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
 			__dirname,

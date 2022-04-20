@@ -12,6 +12,9 @@ export default function (scope) {
       `registerModule accepts only plain object, was called with ${scope.constructor}`
     );
   }
+  if (scope.buildId) {
+    window.__SANDBOX_SCOPE__.buildId = buildId;
+  }
   if (scope.Main) {
     if (!(scope.Main instanceof PlainFunction || scope.Main.constructor instanceof React.Component.constructor)) {
       warning(

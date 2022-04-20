@@ -1,3 +1,5 @@
+const { randomUUID } = require('crypto');
+
 const path = require("path");
 const envConfig = require("dotenv").config({ debug: process.env.DEBUG });
 
@@ -43,3 +45,5 @@ exports.PROJECT_SRC_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "src");
 exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT || 9000);
 
 exports.PROGRESS = process.env.PROGRESS === 'false' ? false : true;
+
+exports.BUILD_ID = randomUUID();

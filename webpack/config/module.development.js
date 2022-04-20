@@ -8,6 +8,7 @@ setLogLevel("none");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
+const RegisterModulePatchingPlugin = require('../plugins/RegisterModulePatchingPlugin');
 
 const babel = require("@lastui/babylon").env.development;
 
@@ -234,6 +235,7 @@ config.plugins.push(
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new ModuleLocalesPlugin(),
+	new RegisterModulePatchingPlugin(),
 	new HTMLWebpackPlugin({
 		production: false,
 		publicPath: "",
