@@ -56,7 +56,6 @@ module.exports = {
 					"process.env": {},
 					"process.env.NODE_ENV": `"development"`,
 					"process.env.NODE_DEBUG": false,
-					BUILD_ID: `"${settings.BUILD_ID}"`,
 				}
 			)
 		),

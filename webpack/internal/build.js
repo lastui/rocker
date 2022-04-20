@@ -111,7 +111,6 @@ module.exports = {
 						? `"development"`
 						: `"production"`,
 					"process.env.NODE_DEBUG": false,
-					BUILD_ID: `"${settings.BUILD_ID}"`,
 				}
 			)
 		),
