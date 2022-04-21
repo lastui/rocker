@@ -3,7 +3,6 @@ const webpack = require("webpack");
 
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
-const RegisterModulePatchingPlugin = require('../plugins/RegisterModulePatchingPlugin');
 
 const settings = require("../settings");
 
@@ -181,7 +180,6 @@ config.plugins.push(
 		dry: false,
 	}),
 	new ModuleLocalesPlugin(),
-	new RegisterModulePatchingPlugin(),
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
 			__dirname,
