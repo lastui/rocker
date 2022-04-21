@@ -21,7 +21,9 @@ const createModuleLoader = () => {
 
   const adaptModule = async (id, scope = {}) => {
     const cleanup = () => {
-      removeStyles(id);
+      if (scope.BUILD_ID) {
+        removeStyles(id, scope.BUILD_ID);
+      }
       if (scope.saga) {
         removeSaga(id);
       }
@@ -33,7 +35,9 @@ const createModuleLoader = () => {
       }
     };
     const adaptationWork = [];
-    adaptationWork.push(addStyles(id));
+    if (scope.BUILD_ID) {
+      adaptationWork.push(addStyles(id, scope.BUILD_ID));
+    } 
     if (scope.reducer) {
       adaptationWork.push(addReducer(id, scope.reducer));
     }

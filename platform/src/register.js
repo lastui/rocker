@@ -12,6 +12,15 @@ export default function (scope) {
       `registerModule accepts only plain object, was called with ${scope.constructor}`
     );
   }
+  if (scope.BUILD_ID) {
+    if (typeof scope.BUILD_ID !== 'string') {
+      warning(
+        `implicit attribute "BUILD_ID" provided in registerModule is not string, it is ${typeof scope.BUILD_ID}`
+      );
+    } else {
+      window.__SANDBOX_SCOPE__.BUILD_ID = scope.BUILD_ID;
+    }
+  }
   if (scope.Main) {
     if (!(scope.Main instanceof PlainFunction || scope.Main.constructor instanceof React.Component.constructor)) {
       warning(
