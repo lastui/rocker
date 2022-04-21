@@ -155,7 +155,9 @@ config.module.rules.push(
 				loader: "style-loader",
 				options: {
 					injectType: "singletonStyleTag",
-					attributes: { id: "rocker" },
+					attributes: {
+						id: `rocker-${settings.BUILD_ID}`,
+					},
 				},
 			},
 			{
@@ -174,7 +176,9 @@ config.module.rules.push(
 				loader: "style-loader",
 				options: {
 					injectType: "singletonStyleTag",
-					attributes: { id: "rocker" },
+					attributes: {
+						id: `rocker-${settings.BUILD_ID}`,
+					},
 				},
 			},
 			{
