@@ -8,7 +8,6 @@ setLogLevel("none");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
-const RegisterModulePatchingPlugin = require('../plugins/RegisterModulePatchingPlugin');
 
 const babel = require("@lastui/babylon").env.development;
 
@@ -68,14 +67,14 @@ config.module.rules.push(
 				options: {
 					babelrc: false,
 					presets: babel.presets.map((preset) => {
-						if (typeof preset === "string") {
+						if (!Array.isArray(preset)) {
 							return [preset, {}, `babel-${preset}`];
 						} else {
 							return [preset[0], preset[1], `babel-${preset[2]}`];
 						}
 					}),
 					plugins: babel.plugins.map((plugin) => {
-						if (typeof plugin === "string") {
+						if (!Array.isArray(plugin)) {
 							return [plugin, {}, `babel-${plugin}`];
 						} else {
 							return [plugin[0], plugin[1], `babel-${plugin[2]}`];
@@ -107,7 +106,7 @@ config.module.rules.push(
 					babelOptions: {
 						babelrc: false,
 						presets: babel.presets.map((preset) => {
-							if (typeof preset === "string") {
+							if (!Array.isArray(preset)) {
 								return [preset, {}, `linaria-${preset}`];
 							} else {
 								return [
@@ -118,7 +117,7 @@ config.module.rules.push(
 							}
 						}),
 						plugins: babel.plugins.map((plugin) => {
-							if (typeof plugin === "string") {
+							if (!Array.isArray(plugin)) {
 								return [plugin, {}, `linaria-${plugin}`];
 							} else {
 								return [
@@ -235,7 +234,6 @@ config.plugins.push(
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new ModuleLocalesPlugin(),
-	new RegisterModulePatchingPlugin(),
 	new HTMLWebpackPlugin({
 		production: false,
 		publicPath: "",
