@@ -3,6 +3,7 @@ const webpack = require("webpack");
 
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
+const RegisterModuleInjectBuildId = require("../plugins/RegisterModuleInjectBuildId");
 
 const settings = require("../settings");
 
@@ -35,7 +36,10 @@ config.module.rules.push(
 							return [preset[0], preset[1], `babel-${preset[2]}`];
 						}
 					}),
-					plugins: babel.plugins.map((plugin) => {
+					plugins: [
+						RegisterModuleInjectBuildId,
+						...babel.plugins,
+					].map((plugin) => {
 						if (typeof plugin === "string") {
 							return [plugin, {}, `babel-${plugin}`];
 						} else {
@@ -104,7 +108,7 @@ config.module.rules.push(
 	{
 		test: /\.(mp3|png|jpe?g|gif)$/i,
 		dependency: { not: ["url"] },
-		type: 'asset/inline'
+		type: "asset/inline",
 	},
 	{
 		test: /\.json$/,
@@ -185,7 +189,7 @@ config.plugins.push(
 			__dirname,
 			"../../dependencies/dll/dependencies-prod-manifest.json"
 		),
-		sourceType: 'var',
+		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -193,7 +197,7 @@ config.plugins.push(
 			__dirname,
 			"../../platform/dll/platform-prod-manifest.json"
 		),
-		sourceType: 'var',
+		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
 	}),
 	new webpack.DllReferencePlugin({
@@ -201,7 +205,7 @@ config.plugins.push(
 			__dirname,
 			"../../bootstrap/dll/bootstrap-prod-manifest.json"
 		),
-		sourceType: 'var',
+		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
 	})
 );
