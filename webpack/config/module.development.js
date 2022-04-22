@@ -8,6 +8,7 @@ setLogLevel("none");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
+const RegisterModuleInjectBuildId = require("../plugins/RegisterModuleInjectBuildId");
 
 const babel = require("@lastui/babylon").env.development;
 
@@ -66,7 +67,10 @@ config.module.rules.push(
 				loader: "babel-loader",
 				options: {
 					babelrc: false,
-					presets: babel.presets.map((preset) => {
+					plugins: [
+						RegisterModuleInjectBuildId,
+						...babel.plugins,
+					].map((plugin) => {
 						if (!Array.isArray(preset)) {
 							return [preset, {}, `babel-${preset}`];
 						} else {
@@ -245,15 +249,20 @@ config.plugins.push(
 		inject: false,
 		scriptLoading: "blocking",
 		templateContent: (props) => {
-			const entrypoints = props.compilation.chunkGroups.map(
-				(chunk) => {
-					const isPrimaryEntrypoint = chunk.origins.some((origin) => path.dirname(path.resolve(origin.request)) === settings.PROJECT_SRC_PATH)
-					return [chunk.options.name, isPrimaryEntrypoint]
-				}
-			);
+			const entrypoints = props.compilation.chunkGroups.map((chunk) => {
+				const isPrimaryEntrypoint = chunk.origins.some(
+					(origin) =>
+						path.dirname(path.resolve(origin.request)) ===
+						settings.PROJECT_SRC_PATH
+				);
+				return [chunk.options.name, isPrimaryEntrypoint];
+			});
 
 			const scripts = props.htmlWebpackPlugin.tags.bodyTags.filter(
-				(item) => !entrypoints.map((i) => `${i[0]}.js`).includes(item.attributes.src)
+				(item) =>
+					!entrypoints
+						.map((i) => `${i[0]}.js`)
+						.includes(item.attributes.src)
 			);
 
 			let manifest;
@@ -301,7 +310,9 @@ config.plugins.push(
 									const dom = dependencies_dll("./node_modules/react-dom/client.js");
 									const bootstrap = bootstrap_dll("./node_modules/@lastui/rocker/bootstrap/index.js");
 
-									const root = dom.createRoot(document.getElementById("${settings.PROJECT_NAME}"));
+									const root = dom.createRoot(document.getElementById("${
+										settings.PROJECT_NAME
+									}"));
 								
 									root.render(react.createElement(bootstrap.Main, {
 										fetchContext: async function() {
