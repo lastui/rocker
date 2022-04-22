@@ -30,7 +30,7 @@ config.module.rules.push(
 				options: {
 					babelrc: false,
 					presets: babel.presets.map((preset) => {
-						if (typeof preset === "string") {
+						if (!Array.isArray(preset)) {
 							return [preset, {}, `babel-${preset}`];
 						} else {
 							return [preset[0], preset[1], `babel-${preset[2]}`];
@@ -40,7 +40,7 @@ config.module.rules.push(
 						RegisterModuleInjectBuildId,
 						...babel.plugins,
 					].map((plugin) => {
-						if (typeof plugin === "string") {
+						if (!Array.isArray(plugin)) {
 							return [plugin, {}, `babel-${plugin}`];
 						} else {
 							return [plugin[0], plugin[1], `babel-${plugin[2]}`];
@@ -72,7 +72,7 @@ config.module.rules.push(
 					babelOptions: {
 						babelrc: false,
 						presets: babel.presets.map((preset) => {
-							if (typeof preset === "string") {
+							if (!Array.isArray(preset)) {
 								return [preset, {}, `linaria-${preset}`];
 							} else {
 								return [
@@ -83,7 +83,7 @@ config.module.rules.push(
 							}
 						}),
 						plugins: babel.plugins.map((plugin) => {
-							if (typeof plugin === "string") {
+							if (!Array.isArray(plugin)) {
 								return [plugin, {}, `linaria-${plugin}`];
 							} else {
 								return [
