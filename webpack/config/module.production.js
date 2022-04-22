@@ -41,9 +41,17 @@ config.module.rules.push(
 						...babel.plugins,
 					].map((plugin) => {
 						if (!Array.isArray(plugin)) {
-							return [plugin, {}, `babel-${plugin}`];
+							return [
+								plugin,
+								{},
+								`babel-${plugin.name || plugin}`,
+							];
 						} else {
-							return [plugin[0], plugin[1], `babel-${plugin[2]}`];
+							return [
+								plugin[0],
+								plugin[1],
+								`babel-${plugin[2].name || plugin[2]}`,
+							];
 						}
 					}),
 					cacheDirectory: path.join(
@@ -84,12 +92,16 @@ config.module.rules.push(
 						}),
 						plugins: babel.plugins.map((plugin) => {
 							if (!Array.isArray(plugin)) {
-								return [plugin, {}, `linaria-${plugin}`];
+								return [
+									plugin,
+									{},
+									`linaria-${plugin.name || plugin}`,
+								];
 							} else {
 								return [
 									plugin[0],
 									plugin[1],
-									`linaria-${plugin[2]}`,
+									`linaria-${plugin[2].name || plugin[2]}`,
 								];
 							}
 						}),
