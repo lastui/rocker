@@ -74,7 +74,7 @@ config.module.rules.push(
 						if (!Array.isArray(preset)) {
 							return [preset, {}, `babel-${preset}`];
 						} else {
-							return [preset[0], preset[1], `babel-${preset[2]}`];
+							return [preset[0], preset[1], `babel-${preset[0]}`];
 						}
 					}),
 					plugins: babel.plugins.map((plugin) => {
@@ -88,7 +88,7 @@ config.module.rules.push(
 							return [
 								plugin[0],
 								plugin[1],
-								`babel-${plugin[2].name || plugin[2]}`,
+								`babel-${plugin[0].name || plugin[0]}`,
 							];
 						}
 					}),
@@ -124,7 +124,7 @@ config.module.rules.push(
 								return [
 									preset[0],
 									preset[1],
-									`linaria-${preset[2]}`,
+									`linaria-${preset[0]}`,
 								];
 							}
 						}),
@@ -139,7 +139,7 @@ config.module.rules.push(
 								return [
 									plugin[0],
 									plugin[1],
-									`linaria-${plugin[2].name || plugin[2]}`,
+									`linaria-${plugin[0].name || plugin[0]}`,
 								];
 							}
 						}),
