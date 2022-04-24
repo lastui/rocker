@@ -1,6 +1,6 @@
 const prettier = require("prettier/cli");
 
-exports.run = async function (options) {
+exports.run = async function () {
 	process.on("unhandledRejection", (reason) => {
 		throw reason;
 	});
@@ -15,7 +15,7 @@ exports.run = async function (options) {
 		'--end-of-line=lf',
 		'--print-width=120',
 		'--trailing-comma=all',
-		...(options.fix ? ['--write']: ['--check']),
+		'--write',
 		'(*\\.*|(src/**/*\\.*)|(messages/*\\.json))',
 	]);
 };
