@@ -46,7 +46,7 @@ const handler = {
         replaceReducer: function (newReducer) {},
       });
     }
-    return ref.underlying[prop];
+    return Reflect.get(ref.underlying, prop);
   },
   set: function (ref, prop, value) {
     if (prop === "underlying" && value) {
