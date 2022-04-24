@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.10.9",
+  "version": "0.10.10",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "build:dependencies": "cd dependencies && npm run build",
@@ -24,7 +24,6 @@
     "jest/__mocks__/platform.js",
     "jest/transform/css.js",
     "jest/transform/file.js",
-    "jest/transform/index.js",
     "jest/index.js",
     "jest/setupTests.js",
     "webpack/config/dll.js",
