@@ -18,6 +18,6 @@ exports.run = async function (options) {
 		'--print-width=120',
 		'--trailing-comma=all',
 		...(options.fix ? ['--write']: ['--check']),
-		'(*\\.*|(src/**/*\\.*))',
+		'(*\\.*|(src/**/*\\.*)|(messages/*\\.json))',
 	]);
 };
