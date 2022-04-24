@@ -67,29 +67,21 @@ config.module.rules.push(
 				loader: "babel-loader",
 				options: {
 					babelrc: false,
-					plugins: [
-						RegisterModuleInjectBuildId,
-						...babel.plugins,
-					].map((plugin) => {
+					presets: babel.presets.map((preset) => {
 						if (!Array.isArray(preset)) {
 							return [preset, {}, `babel-${preset}`];
 						} else {
 							return [preset[0], preset[1], `babel-${preset[0]}`];
 						}
 					}),
-					plugins: babel.plugins.map((plugin) => {
+					plugins: [
+						RegisterModuleInjectBuildId,
+						...babel.plugins,
+					].map((plugin) => {
 						if (!Array.isArray(plugin)) {
-							return [
-								plugin,
-								{},
-								`babel-${plugin.name || plugin}`,
-							];
+							return [plugin, {}, `babel-${plugin}`];
 						} else {
-							return [
-								plugin[0],
-								plugin[1],
-								`babel-${plugin[0].name || plugin[0]}`,
-							];
+							return [plugin[0], plugin[1], `babel-${plugin[0]}`];
 						}
 					}),
 					cacheDirectory: path.join(
