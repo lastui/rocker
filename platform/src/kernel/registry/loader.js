@@ -153,7 +153,7 @@ const createModuleLoader = () => {
 
     const preferentialStore = store.namespace(id);
 
-    const Bridge = React.forwardRef((props, ref) => {
+    const Bridge = (props) => {
       const parentContext = useReduxContext();
 
       const reduxContext = React.useMemo(
@@ -165,15 +165,15 @@ const createModuleLoader = () => {
       );
 
       const owned = React.memo(() => {
-        if (ref) {
+        if (props.ref) {
           return {
-            ...props,
-            ref,
+            ...props.owned,
+            ref: props.ref,
           };
         } else {
-          return props;
+          return props.owned;
         }
-      }, [ref, props]);
+      }, [props.ref, props.owned]);
 
       return (
         <ReactReduxContext.Provider value={reduxContext}>
@@ -182,7 +182,7 @@ const createModuleLoader = () => {
             : React.createElement(scope.Main, owned)}
         </ReactReduxContext.Provider>
       );
-    });
+    };
 
     class Boundaries extends React.Component {
       state = { error: null };
@@ -214,8 +214,8 @@ const createModuleLoader = () => {
       render() {
         if (this.state.error === null) {
           return this.props.children
-            ? React.createElement(Bridge, this.props.owned, this.props.children)
-            : React.createElement(Bridge, this.props.owned);
+            ? React.createElement(Bridge, this.props, this.props.children)
+            : React.createElement(Bridge, this.props);
         }
         if (scope.Error) {
           return React.createElement(scope.Error, this.state);

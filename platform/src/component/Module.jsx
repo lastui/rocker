@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import moduleLoader from "../kernel/registry/loader";
 
 const Module = forwardRef((props, ref) => {
+
   const updatedAt = useSelector((state) => state.shared.updatedAt);
   const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
 
