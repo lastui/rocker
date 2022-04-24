@@ -16,6 +16,6 @@ exports.run = async function () {
 		'--print-width=120',
 		'--trailing-comma=all',
 		'--write',
-		'(*\\..(js|ts|jsx|tsx)|(src/**/*\\.(js|ts|jsx|tsx)))',
+		'(*\\.(js|ts|jsx|tsx)|(src/**/*\\.(js|ts|jsx|tsx)))',
 	]);
 };
