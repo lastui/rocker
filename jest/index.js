@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const babelConfig = require("@lastui/babylon").env.test;
 
 process.env.TZ = "UTC";
 
@@ -22,13 +23,22 @@ module.exports = {
 	automock: false,
 	verbose: true,
 	collectCoverage: true,
-	testEnvironment: 'jsdom',
+	testEnvironment: "jsdom",
 	coverageDirectory: "<rootDir>/coverage",
 	coverageReporters: ["text", "lcov", "clover"],
 	collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
 	moduleFileExtensions: ["js", "ts", "jsx", "tsx"],
 	transform: {
-		"\\.[t|j]sx?$": path.resolve(__dirname, "transform/index.js"),
+		"\\.[t|j]sx?$": [
+			"babel-jest",
+			{
+				cwd: process.env.INIT_CWD,
+				babelrc: false,
+				sourceMaps: "inline",
+				presets: babelConfig.presets,
+				plugins: babelConfig.plugins,
+			},
+		],
 		"\\.css$": path.resolve(__dirname, "transform/css.js"),
 		"^(?!.*\\.(ts|js|jsx|tsx|css))": path.resolve(
 			__dirname,
