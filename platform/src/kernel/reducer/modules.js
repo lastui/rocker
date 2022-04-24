@@ -60,34 +60,52 @@ function createModulesReducer() {
       case constants.MODULE_READY: {
         const id = action.payload.module;
         console.debug(`module ${id} ready`);
+        let changed = false;
         const reducer = modulesReducers[id];
         if (reducer) {
           try {
             state[id] = reducer(state[id], action);
+            changed = true;
           } catch (error) {
             warning(`module ${id} reducer failed to reduce`, error);
           }
         }
         console.log(`+ module ${id}`);
+        if (changed) {
+          return { ...state };
+        }
         return state;
       }
       case constants.MODULE_UNLOADED: {
         const id = action.payload.module;
+        let changed = false;
         if (state[id]) {
           console.debug(`module ${id} evicting redux state`);
           delete state[id];
+          changed = true;
         }
         console.debug(`module ${id} unloaded`);
         console.log(`- module ${id}`);
+        if (changed) {
+          return { ...state };
+        }
         return state;
       }
       default: {
+        let changed = false;
         for (const [id, reducer] of modulesReducers) {
           try {
-            state[id] = reducer(state[id], action);
+            const nextState = reducer(state[id], action);
+            if (state[id] !== nextState) {
+              state[id] = nextState;
+              changed = true;
+            }
           } catch (error) {
             warning(`module ${id} reducer failed to reduce`, error);
           }
+        }
+        if (changed) {
+          return { ...state };
         }
         return state;
       }
