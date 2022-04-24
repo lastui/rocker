@@ -19,23 +19,29 @@ const handler = {
   get: function (ref, prop) {
     if (prop === "namespace") {
       const proxy = arguments[arguments.length - 1];
+      let prevStateIsolated = {};
+      let prevState = null;
       return (id) => ({
         dispatch: proxy.dispatch,
         getState: function () {
           const state = proxy.getState();
-          let isolatedState = {};
+          if (prevState === state) {
+            return prevStateIsolated;
+          }
+          prevState = state;
+          prevStateIsolated = {};
           for (const mid in state.modules) {
             if (mid === id) {
               continue;
             }
-            isolatedState = Object.assign(isolatedState, state.modules[mid]);
+            prevStateIsolated = Object.assign(prevStateIsolated, state.modules[mid]);
           }
           const itself = state.modules[id];
           if (itself) {
-            isolatedState = Object.assign(isolatedState, itself);
+            prevStateIsolated = Object.assign(prevStateIsolated, itself);
           }
-          isolatedState.shared = state.shared;
-          return isolatedState;
+          prevStateIsolated.shared = state.shared;
+          return prevStateIsolated;
         },
         subscribe: proxy.subscribe,
         replaceReducer: function (newReducer) {},
