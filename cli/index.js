@@ -12,9 +12,14 @@ require("yargs")
   .option("silent", {
     type: "boolean",
   })
+  .option("fix", {
+    type: "boolean",
+  })
   .command(require("./commands/build.js"))
   .command(require("./commands/start.js"))
   .command(require("./commands/test.js"))
+  .command(require("./commands/lint.js"))
   .demandCommand()
   .help(false)
+  .strict()
   .argv;

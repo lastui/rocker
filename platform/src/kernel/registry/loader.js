@@ -37,7 +37,7 @@ const createModuleLoader = () => {
     const adaptationWork = [];
     if (scope.BUILD_ID) {
       adaptationWork.push(addStyles(id, scope.BUILD_ID));
-    } 
+    }
     if (scope.reducer) {
       adaptationWork.push(addReducer(id, scope.reducer));
     }
@@ -161,7 +161,7 @@ const createModuleLoader = () => {
           store: preferentialStore,
           subscription: parentContext.subscription,
         }),
-        [parentContext.subscription]
+        [parentContext.subscription],
       );
 
       const owned = React.memo(() => {

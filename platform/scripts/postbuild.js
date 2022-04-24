@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const path = require('path');
-const { clearDirectory } = require('../../scripts');
+const path = require("path");
+const { clearDirectory } = require("../../scripts");
 
 ////////////////////////////////
 

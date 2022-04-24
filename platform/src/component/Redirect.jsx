@@ -6,15 +6,9 @@ const Redirect = (props) => {
   const ctx = useContext(RouterContext);
   const history = useContext(HistoryContext);
 
-  const from = useMemo(
-    () => `${ctx.match.url}/${props.from}`.replace(/\/+/g, "/"),
-    [ctx.match.url, props.from]
-  );
+  const from = useMemo(() => `${ctx.match.url}/${props.from}`.replace(/\/+/g, "/"), [ctx.match.url, props.from]);
 
-  const to = useMemo(
-    () => `${ctx.match.url}/${props.to}`.replace(/\/+/g, "/"),
-    [ctx.match.url, props.to]
-  );
+  const to = useMemo(() => `${ctx.match.url}/${props.to}`.replace(/\/+/g, "/"), [ctx.match.url, props.to]);
 
   useEffect(() => {
     if (ctx.location.pathname === from) {

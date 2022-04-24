@@ -1,6 +1,6 @@
-exports.command = "test";
+exports.command = "lint";
 
-exports.describe = "run unit tests";
+exports.describe = "lint sources";
 
 exports.builder = {};
 
@@ -16,6 +16,6 @@ exports.handler = async function (argv) {
     });
   });
 
-  const { run } = require("../helpers/jest.js");
-  await run();
+  const { run } = require("../helpers/prettier.js");
+  await run({ ...argv });
 };

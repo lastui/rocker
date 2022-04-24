@@ -1,4 +1,4 @@
-const emptydict = {}
+const emptydict = {};
 
 export const getEntrypoint = (state) => state.runtime.entrypoint;
 

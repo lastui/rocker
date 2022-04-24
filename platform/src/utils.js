@@ -4,7 +4,7 @@ export function warning(message, throwable) {
   } else {
     console.error(message);
   }
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     try {
       throw new Error(message);
     } catch (e) {}

@@ -1,5 +1,5 @@
-import { CANCEL } from 'redux-saga';
-import { warning } from '../../utils';
+import { CANCEL } from "redux-saga";
+import { warning } from "../../utils";
 
 const CLIENT_TIMEOUT = 30 * 1000;
 
@@ -85,19 +85,19 @@ async function downloadAsset(resource) {
 
 async function checkDigest(payload, digest) {
   if (digest === undefined) {
-    return true
+    return true;
   }
   try {
     const encoder = new TextEncoder();
     const data = encoder.encode(payload);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    const hex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
     return hex === digest;
-  } catch(_error) {
+  } catch (_error) {
     return true;
   }
-};
+}
 
 async function downloadProgram(id, program) {
   if (!program) {

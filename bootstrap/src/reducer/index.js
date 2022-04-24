@@ -1,5 +1,3 @@
 import runtimeReducer from "./runtime";
 
-export {
-	runtimeReducer,
-}
+export { runtimeReducer };
