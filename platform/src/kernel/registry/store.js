@@ -18,12 +18,13 @@ const initial = {
 const handler = {
   get: function (ref, prop) {
     if (prop === "namespace") {
+      const proxy = arguments[arguments.length - 1];
       let prevStateIsolated = {};
       let prevState = null;
       return (id) => ({
-        dispatch: ref.underlying.dispatch,
+        dispatch: proxy.dispatch,
         getState: function () {
-          const state = ref.underlying.getState();
+          const state = proxy.getState();
           if (prevState === state) {
             return prevStateIsolated;
           }
@@ -42,7 +43,7 @@ const handler = {
           prevStateIsolated.shared = state.shared;
           return prevStateIsolated;
         },
-        subscribe: ref.underlying.subscribe,
+        subscribe: proxy.subscribe,
         replaceReducer: function (newReducer) {},
       });
     }
