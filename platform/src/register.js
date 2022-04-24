@@ -8,15 +8,11 @@ const PlainFunction = function () {}.constructor;
 
 export default function (scope) {
   if (scope === null || scope.constructor !== Object) {
-    throw new Error(
-      `registerModule accepts only plain object, was called with ${scope.constructor}`
-    );
+    throw new Error(`registerModule accepts only plain object, was called with ${scope.constructor}`);
   }
   if (scope.BUILD_ID) {
-    if (typeof scope.BUILD_ID !== 'string') {
-      warning(
-        `implicit attribute "BUILD_ID" provided in registerModule is not string, it is ${typeof scope.BUILD_ID}`
-      );
+    if (typeof scope.BUILD_ID !== "string") {
+      warning(`implicit attribute "BUILD_ID" provided in registerModule is not string, it is ${typeof scope.BUILD_ID}`);
     } else {
       window.__SANDBOX_SCOPE__.BUILD_ID = scope.BUILD_ID;
     }
@@ -24,7 +20,7 @@ export default function (scope) {
   if (scope.Main) {
     if (!(scope.Main instanceof PlainFunction || scope.Main.constructor instanceof React.Component.constructor)) {
       warning(
-        `attribute "Main" provided in registerModule is not function or React.Component, it is ${scope.Main.constructor}`
+        `attribute "Main" provided in registerModule is not function or React.Component, it is ${scope.Main.constructor}`,
       );
     } else {
       window.__SANDBOX_SCOPE__.Main = scope.Main;
@@ -33,7 +29,7 @@ export default function (scope) {
   if (scope.Error) {
     if (!(scope.Error instanceof PlainFunction || scope.Error.constructor instanceof React.Component.constructor)) {
       warning(
-        `attribute "Error" provided in registerModule is not function or React.Component, it is ${scope.Error.constructor}`
+        `attribute "Error" provided in registerModule is not function or React.Component, it is ${scope.Error.constructor}`,
       );
     } else {
       window.__SANDBOX_SCOPE__.Error = scope.Error;
@@ -41,36 +37,24 @@ export default function (scope) {
   }
   if (scope.reducer) {
     if (scope.reducer.constructor !== Object) {
-      warning(
-        `attribute "reducer" provided in registerModule is not plain object, it is ${scope.reducer.constructor}`
-      );
+      warning(`attribute "reducer" provided in registerModule is not plain object, it is ${scope.reducer.constructor}`);
     } else {
       window.__SANDBOX_SCOPE__.reducer = scope.reducer;
     }
   }
   if (scope.middleware) {
-    if (
-      !(
-        scope.middleware instanceof PlainFunction ||
-        scope.middleware instanceof AsyncFunction
-      )
-    ) {
+    if (!(scope.middleware instanceof PlainFunction || scope.middleware instanceof AsyncFunction)) {
       warning(
-        `attribute "middleware" provided in registerModule is not function or async function, it is ${scope.middleware.constructor}`
+        `attribute "middleware" provided in registerModule is not function or async function, it is ${scope.middleware.constructor}`,
       );
     } else {
       window.__SANDBOX_SCOPE__.middleware = scope.middleware;
     }
   }
   if (scope.saga) {
-    if (
-      !(
-        scope.saga instanceof GeneratorFunction ||
-        scope.saga instanceof AsyncGeneratorFunction
-      )
-    ) {
+    if (!(scope.saga instanceof GeneratorFunction || scope.saga instanceof AsyncGeneratorFunction)) {
       warning(
-        `attribute "saga" provided in registerModule is not generator function or async generator function, it is ${scope.saga.constructor}`
+        `attribute "saga" provided in registerModule is not generator function or async generator function, it is ${scope.saga.constructor}`,
       );
     } else {
       window.__SANDBOX_SCOPE__.saga = scope.saga;
@@ -78,9 +62,7 @@ export default function (scope) {
   }
   if (scope.props) {
     if (scope.props.constructor !== Object) {
-      warning(
-        `attribute "props" provided in registerModule is not object, it is ${scope.props.constructor}`
-      );
+      warning(`attribute "props" provided in registerModule is not object, it is ${scope.props.constructor}`);
     } else {
       window.__SANDBOX_SCOPE__.props = scope.props;
     }

@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import Entrypoint from "../Entrypoint";
 import { Provider as ReduxProvider } from "react-redux";
 import configureStore from "redux-mock-store";
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage } from "react-intl";
 
 const initialState = {
   runtime: {
@@ -29,7 +29,7 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state) {
-      return <span data-testid="EntrypointErrorBoundaries" /> 
+      return <span data-testid="EntrypointErrorBoundaries" />;
     } else {
       return React.Children.only(this.props.children);
     }
@@ -37,7 +37,6 @@ class ErrorBoundary extends React.Component {
 }
 
 describe("<Entrypoint />", () => {
-
   it("entrypoint present", () => {
     const store = mockStore({
       ...initialState,
@@ -48,7 +47,7 @@ describe("<Entrypoint />", () => {
     render(
       <ReduxProvider store={store}>
         <Entrypoint />
-      </ReduxProvider>
+      </ReduxProvider>,
     );
     expect(screen.getByTestId("module/entrypoint")).toBeDefined();
   });
@@ -59,7 +58,7 @@ describe("<Entrypoint />", () => {
     const { container } = render(
       <ReduxProvider store={store}>
         <Entrypoint />
-      </ReduxProvider>
+      </ReduxProvider>,
     );
     expect(container.innerHTML).toBe("");
   });
@@ -73,22 +72,22 @@ describe("<Entrypoint />", () => {
       shared: {
         ...initialState.shared,
         messages: {
-          'en-US': {
-            'existant': 'message with key {key} and value {value}'
-          }
-        }
-      }
+          "en-US": {
+            existant: "message with key {key} and value {value}",
+          },
+        },
+      },
     });
 
     render(
       <ReduxProvider store={store}>
         <Entrypoint>
-          <FormattedMessage id="existant" values={{ key: 'K', 'value': 'V' }}/>
+          <FormattedMessage id="existant" values={{ key: "K", value: "V" }} />
         </Entrypoint>
-      </ReduxProvider>
+      </ReduxProvider>,
     );
 
-    expect(screen.getByText('message with key K and value V')).toBeDefined();
+    expect(screen.getByText("message with key K and value V")).toBeDefined();
   });
 
   it("MISSING_TRANSLATION intl error is silenced", () => {
@@ -103,7 +102,7 @@ describe("<Entrypoint />", () => {
         <Entrypoint>
           <FormattedMessage id="non-existant" />
         </Entrypoint>
-      </ReduxProvider>
+      </ReduxProvider>,
     );
     expect(screen.getByTestId("module/entrypoint")).toBeDefined();
   });
@@ -116,22 +115,22 @@ describe("<Entrypoint />", () => {
       },
       shared: {
         ...initialState.shared,
-        language: 'boo',
-      }
+        language: "boo",
+      },
     });
     render(
       <ReduxProvider store={store}>
         <Entrypoint>
           <FormattedMessage id="non-existant" />
         </Entrypoint>
-      </ReduxProvider>
+      </ReduxProvider>,
     );
     expect(screen.getByTestId("module/entrypoint")).toBeDefined();
   });
 
   it("other intl errors not silenced", async () => {
-    const spy = jest.spyOn(console, 'error')
-    spy.mockImplementation(() => {})
+    const spy = jest.spyOn(console, "error");
+    spy.mockImplementation(() => {});
 
     const store = mockStore({
       ...initialState,
@@ -141,21 +140,21 @@ describe("<Entrypoint />", () => {
       shared: {
         ...initialState.shared,
         messages: {
-          'en-US': {
-            'existant': 'message with key {key and value {value}'
-          }
-        }
-      }
+          "en-US": {
+            existant: "message with key {key and value {value}",
+          },
+        },
+      },
     });
 
     render(
       <ErrorBoundary>
         <ReduxProvider store={store}>
           <Entrypoint>
-            <FormattedMessage id="existant" values={{ key: 'K', 'value': 'V' }}/>
+            <FormattedMessage id="existant" values={{ key: "K", value: "V" }} />
           </Entrypoint>
         </ReduxProvider>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
     await waitFor(() => {
       expect(screen.getByTestId("EntrypointErrorBoundaries")).toBeDefined();

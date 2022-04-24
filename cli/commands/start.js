@@ -11,7 +11,7 @@ exports.handler = async function (argv) {
 
   const signals = ["SIGINT", "SIGTERM"];
   signals.forEach(function (sig) {
-    process.on(sig, async () => {
+    process.on(sig, () => {
       cleanupHooks.forEach((hook) => hook());
     });
   });

@@ -54,13 +54,7 @@ describe("<Main />", () => {
   it("should bootstrap", async () => {
     const initializeRuntime = jest.fn();
     const fetchContext = jest.fn();
-    render(
-      <Main
-        contextRefreshInterval={10}
-        fetchContext={fetchContext}
-        initializeRuntime={initializeRuntime}
-      />
-    );
+    render(<Main contextRefreshInterval={10} fetchContext={fetchContext} initializeRuntime={initializeRuntime} />);
     await waitFor(() => {
       expect(console.debug).toHaveBeenCalledWith("bootstraping runtime");
       const entrypointModule = screen.getByTestId("module/some-entrypoint");
@@ -84,7 +78,7 @@ describe("<Main />", () => {
     render(
       <ErrorBoundary>
         <Main contextRefreshInterval={10} fetchContext={fetchContext} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     await waitFor(() => {

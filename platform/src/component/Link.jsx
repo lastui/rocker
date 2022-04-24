@@ -30,9 +30,7 @@ const LinkAnchor = forwardRef((props, ref) => {
       ref,
     };
   }, [props, ref]);
-  return props.children
-    ? createElement("a", composite, props.children)
-    : createElement("a", composite);
+  return props.children ? createElement("a", composite, props.children) : createElement("a", composite);
 });
 
 const Link = forwardRef((props, ref) => {
@@ -44,9 +42,7 @@ const Link = forwardRef((props, ref) => {
       ...rest,
       to: props.component ? undefined : to,
       navigate() {
-        const location = to.startsWith("/")
-          ? to
-          : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
+        const location = to.startsWith("/") ? to : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
         if (replace) {
           history.replace(location);
         } else {

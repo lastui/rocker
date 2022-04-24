@@ -19,15 +19,11 @@ const createLoaderMiddleware = () => {
               availableLocales[item.id] = item.locales;
             }
           }
-          return loader
-            .setAvailableModules(action.payload.modules)
-            .then(() => next(action));
+          return loader.setAvailableModules(action.payload.modules).then(() => next(action));
         }
 
         case constants.SET_ENTRYPOINT_MODULE: {
-          return loader
-            .loadModule(action.payload.entrypoint)
-            .then(() => next(action));
+          return loader.loadModule(action.payload.entrypoint).then(() => next(action));
         }
 
         case constants.MODULE_LOADED: {
@@ -135,9 +131,7 @@ const createLoaderMiddleware = () => {
                     if (Object.keys(data).length === 0) {
                       return null;
                     }
-                    console.debug(
-                      `module ${id} introducing locales for ${language}`
-                    );
+                    console.debug(`module ${id} introducing locales for ${language}`);
                     return { module: id, data };
                   });
                 scheduledAssets.push(promise);

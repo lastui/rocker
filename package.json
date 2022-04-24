@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.10.10",
+  "version": "0.10.11",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "build:dependencies": "cd dependencies && npm run build",
@@ -17,10 +17,12 @@
     "cli/helpers/webpack.js",
     "cli/helpers/jest.js",
     "cli/helpers/io.js",
+    "cli/helpers/prettier.js",
     "cli/helpers/shell.js",
     "cli/commands/start.js",
     "cli/commands/test.js",
     "cli/commands/build.js",
+    "cli/commands/lint.js",
     "jest/__mocks__/platform.js",
     "jest/transform/css.js",
     "jest/transform/file.js",
@@ -71,6 +73,7 @@
     "jest": "27.5.1",
     "mini-css-extract-plugin": "2.6.0",
     "path-browserify": "1.0.1",
+    "prettier": "^2.6.2",
     "redux-mock-store": "1.5.4",
     "sass": "1.50.0",
     "sass-loader": "12.6.0",

@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useRef,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useCallback, useContext, useRef, useMemo, useState } from "react";
 
 import { matchPath } from "../kernel/routing";
 
@@ -24,11 +17,8 @@ export function useParams() {
 export function useRouteMatch(path) {
   const ctx = useContext(RouterContext);
   const result = useMemo(
-    () =>
-      path
-        ? matchPath(ctx.location.pathname, ctx.match.parent + path, {})
-        : ctx.match,
-    [path, ctx.location.pathname, ctx.match]
+    () => (path ? matchPath(ctx.location.pathname, ctx.match.parent + path, {}) : ctx.match),
+    [path, ctx.location.pathname, ctx.match],
   );
   return result;
 }
@@ -39,22 +29,18 @@ export function useHistory() {
 
   const replace = useCallback(
     (to) => {
-      const location = to.startsWith("/")
-        ? to
-        : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
+      const location = to.startsWith("/") ? to : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
       history.replace(location);
     },
-    [history.replace, ctx.match.url]
+    [history.replace, ctx.match.url],
   );
 
   const push = useCallback(
     (to) => {
-      const location = to.startsWith("/")
-        ? to
-        : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
+      const location = to.startsWith("/") ? to : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
       history.push(location);
     },
-    [history.push, ctx.match.url]
+    [history.push, ctx.match.url],
   );
 
   return {
@@ -81,7 +67,7 @@ const Router = (props) => {
       props.history.listen((action) => {
         setLocation(action.location);
       }),
-    [props.history.listen, setLocation]
+    [props.history.listen, setLocation],
   );
 
   const composite = useMemo(
@@ -95,15 +81,12 @@ const Router = (props) => {
         isExact: location.pathname === "/",
       },
     }),
-    [location]
+    [location],
   );
 
   return (
     <RouterContext.Provider value={composite}>
-      <HistoryContext.Provider
-        children={props.children || null}
-        value={props.history}
-      />
+      <HistoryContext.Provider children={props.children || null} value={props.history} />
     </RouterContext.Provider>
   );
 };

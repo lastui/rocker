@@ -1,24 +1,24 @@
 export function compilePath(path) {
   const paramNames = [];
   let regexpSource =
-    '^' +
+    "^" +
     path
-      .replace(/\/*\*?$/, '')
-      .replace(/^\/*/, '/')
-      .replace(/[\\.*+^$?{}|()[\]]/g, '\\$&')
+      .replace(/\/*\*?$/, "")
+      .replace(/^\/*/, "/")
+      .replace(/[\\.*+^$?{}|()[\]]/g, "\\$&")
       .replace(/:(\w+)/g, (_, paramName) => {
         paramNames.push(paramName);
-        return '([^\\/]+)';
+        return "([^\\/]+)";
       });
 
-  if (path.endsWith('*')) {
-    paramNames.push('*');
-    regexpSource += path === '*' || path === '/*' ? '(.*)$' : '(?:\\/(.+)|\\/*)$';
+  if (path.endsWith("*")) {
+    paramNames.push("*");
+    regexpSource += path === "*" || path === "/*" ? "(.*)$" : "(?:\\/(.+)|\\/*)$";
   } else {
-    regexpSource += '(?:\\b|\\/|$)';
+    regexpSource += "(?:\\b|\\/|$)";
   }
 
-  const matcher = new RegExp(regexpSource, 'i');
+  const matcher = new RegExp(regexpSource, "i");
 
   return [matcher, paramNames];
 }
@@ -42,9 +42,9 @@ export function matchPath(pathname, path, exact) {
   const captureGroups = match.slice(1);
   const params = paramNames.reduce((memo, paramName, index) => {
     try {
-      memo[paramName] = decodeURIComponent(captureGroups[index] || '');
+      memo[paramName] = decodeURIComponent(captureGroups[index] || "");
     } catch (error) {
-      memo[paramName] = captureGroups[index] || '';
+      memo[paramName] = captureGroups[index] || "";
     }
 
     return memo;
