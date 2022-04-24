@@ -19,6 +19,6 @@ exports.handler = async function (argv) {
   const { run: prettierRun } = require("../helpers/prettier.js");
   const { run: eslintRun } = require("../helpers/eslint.js");
 
-  await prettierRun(argv);
-  await eslintRun(argv);
+  await prettierRun();
+  await eslintRun();
 };

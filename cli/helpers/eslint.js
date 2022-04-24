@@ -1,4 +1,4 @@
-exports.run = async function (options) {
+exports.run = async function () {
 	process.on("unhandledRejection", (reason) => {
 		throw reason;
 	});
@@ -9,7 +9,7 @@ exports.run = async function (options) {
 	const engine = new eslint.ESLint({
 		allowInlineConfig: true,
 		useEslintrc: false,
-		fix: options.fix,
+		fix: true,
 		baseConfig: {
 	      "env": {
 	        "es6": true
@@ -27,17 +27,15 @@ exports.run = async function (options) {
 	      "rules": {
 	        "no-debugger": "error",
 	        "eqeqeq": "error",
+	        "eol-last": ["error", "never"],
+ 			"no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
 	      }
 	    }
 	});
 
-	const files = 'src/**/*.{js,jsx,ts,tsx}';
+	const results = await engine.lintFiles('{messages,src}/**/*.{js,jsx,ts,tsx,json}');
 
-	const results = await engine.lintFiles(files);
-
-	if (options.fix) {
-		await eslint.ESLint.outputFixes(results);
-	}
+	await eslint.ESLint.outputFixes(results);
 
 	const formatter = await engine.loadFormatter('stylish');
     const output = await formatter.format(results);
