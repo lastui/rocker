@@ -12,9 +12,9 @@ exports.run = async function () {
 		fix: true,
 		baseConfig: {
 	      "env": {
-	        "es6": true
+	        "es6": true,
 	      },
-	      "parser": "@babel/eslint-parser",
+	      parser: "@babel/eslint-parser",
 	      parserOptions: {
 		    sourceType: "module",
 		    allowImportExportEverywhere: false,
@@ -29,11 +29,11 @@ exports.run = async function () {
 	        "eqeqeq": "error",
 	        "eol-last": ["error", "never"],
  			"no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
-	      }
+	      },
 	    }
 	});
 
-	const results = await engine.lintFiles('{messages,src}/**/*.{js,jsx,ts,tsx,json}');
+	const results = await engine.lintFiles(['src/**/*.{js,ts,jsx,tsx}', '*.{js,ts,jsx,tsx}']);
 
 	await eslint.ESLint.outputFixes(results);
 
