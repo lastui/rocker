@@ -1,5 +1,3 @@
-const os = require("os");
-const path = require("path");
 const prettier = require("prettier/cli");
 
 exports.run = async function (options) {
@@ -8,7 +6,7 @@ exports.run = async function (options) {
 	});
 
 	await prettier.run([
-		'--loglevel=log',
+		'--loglevel=warn',
 		'--ignore-unknown',
 		'--no-config',
 		'--no-editorconfig',

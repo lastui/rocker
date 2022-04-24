@@ -6,6 +6,6 @@
     "build:dev": "node ../cli/index.js build --dev",
     "postbuild": "node scripts/postbuild.js",
     "test": "node ../cli/index.js test",
-    "lint": "node ../cli/index.js lint --fix"
+    "lint": "node ../cli/index.js lint"
   }
 }

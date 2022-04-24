@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.10.12",
+  "version": "0.10.13",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "build:dependencies": "cd dependencies && npm run build",
@@ -18,6 +18,7 @@
     "cli/helpers/jest.js",
     "cli/helpers/io.js",
     "cli/helpers/prettier.js",
+    "cli/helpers/eslint.js",
     "cli/helpers/shell.js",
     "cli/commands/start.js",
     "cli/commands/test.js",
@@ -58,6 +59,7 @@
     "bootstrap/dll/bootstrap.dll.min.js"
   ],
   "dependencies": {
+    "@babel/eslint-parser": "7.17.0",
     "@lastui/babylon": "1.1.41",
     "@linaria/webpack-loader": "3.0.0-beta.17",
     "@redux-devtools/extension": "3.2.2",
@@ -69,11 +71,12 @@
     "core-js": "3.22.0",
     "css-loader": "6.7.1",
     "dotenv": "16.0.0",
+    "eslint": "8.14.0",
     "html-webpack-plugin": "5.5.0",
     "jest": "27.5.1",
     "mini-css-extract-plugin": "2.6.0",
     "path-browserify": "1.0.1",
-    "prettier": "^2.6.2",
+    "prettier": "2.6.2",
     "redux-mock-store": "1.5.4",
     "sass": "1.50.0",
     "sass-loader": "12.6.0",
