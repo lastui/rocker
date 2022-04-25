@@ -21,6 +21,12 @@ jobs:
           npm install
           ncu -u
           npm install
+      - name: Check if there are changes in @lastui/rocker
+        id: changes-rocker
+        run: echo ::set-output name=modified::$([ -z "`git diff --exit-code package.json`" ] && echo "false" || echo "true")
+      - name: Bump version patch @lastui/rocker
+        if: ${{ (steps.changes-dependencies.outputs.modified == 'true') || (steps.changes-rocker.outputs.modified == 'true') }}
+        run: npm version patch --no-git-tag-version
       - name: Update @lastui/dependencies
         working-directory: dependencies
         run: |
@@ -29,25 +35,13 @@ jobs:
           npm install
       - name: Check if there are changes in @lastui/dependencies
         id: changes-dependencies
-        uses: tj-actions/verify-changed-files@v9
-        with:
-          files: |
-            dependencies/package.json
-      - name: Check if there are changes in @lastui/rocker
-        id: changes-rocker
-        uses: tj-actions/verify-changed-files@v9
-        with:
-          files: |
-            package.json
+        run: echo ::set-output name=modified::$([ -z "`git diff --exit-code dependencies/package.json`" ] && echo "false" || echo "true")
       - name: Bump version patch @lastui/dependencies
-        if: ${{ (steps.changes-dependencies.outputs.files_changed == 'true') }}
+        if: ${{ (steps.changes-dependencies.outputs.modified == 'true') }}
         working-directory: dependencies
         run: npm version patch --no-git-tag-version
-      - name: Bump version patch @lastui/rocker
-        if: ${{ (steps.changes-dependencies.outputs.files_changed == 'true') || (steps.changes-rocker.outputs.files_changed == 'true') }}
-        run: npm version patch --no-git-tag-version
       - name: Create PR
-        if: ${{ (steps.changes-dependencies.outputs.files_changed == 'true') || (steps.changes-rocker.outputs.files_changed == 'true') }}
+        if: ${{ (steps.changes-dependencies.outputs.modified == 'true') || (steps.changes-rocker.outputs.modified == 'true') }}
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
