@@ -40,14 +40,14 @@ jobs:
           files: |
             package.json
       - name: Bump version patch @lastui/dependencies
-        if: steps.changes-dependencies.outputs.files_changed == 'true'
+        if: ${{ (steps.changes-dependencies.outputs.files_changed == 'true') }}
         working-directory: dependencies
         run: npm version patch --no-git-tag-version
       - name: Bump version patch @lastui/rocker
-        if: steps.changes-dependencies.outputs.files_changed == 'true' || steps.changes-rocker.outputs.files_changed == 'true'
+        if: ${{ (steps.changes-dependencies.outputs.files_changed == 'true') || (steps.changes-rocker.outputs.files_changed == 'true') }}
         run: npm version patch --no-git-tag-version
       - name: Create PR
-        if: steps.changes-dependencies.outputs.files_changed == 'true' || steps.changes-rocker.outputs.files_changed == 'true'
+        if: ${{ (steps.changes-dependencies.outputs.files_changed == 'true') || (steps.changes-rocker.outputs.files_changed == 'true') }}
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
