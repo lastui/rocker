@@ -29,13 +29,13 @@ jobs:
           npm install
       - name: Check if there are changes in @lastui/dependencies
         id: changes-dependencies
-        uses: tj-actions/verify-changed-files@v5.5
+        uses: tj-actions/verify-changed-files@v9
         with:
           files: |
             dependencies/package.json
       - name: Check if there are changes in @lastui/rocker
         id: changes-rocker
-        uses: tj-actions/verify-changed-files@v5.5
+        uses: tj-actions/verify-changed-files@v9
         with:
           files: |
             package.json
