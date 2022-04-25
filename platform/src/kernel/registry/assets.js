@@ -27,8 +27,8 @@ class SequentialProgramEvaluator {
       return;
     }
     this.compiling = true;
-    const item = this.queue.shift();
-    if (!item) {
+    const work = this.queue.shift();
+    if (!work) {
       this.compiling = false;
       this.tick();
       return;
@@ -38,16 +38,16 @@ class SequentialProgramEvaluator {
     };
     try {
       window.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
-      new Function("", item.data)({});
+      new Function("", work.data)({});
     } catch (error) {
-      warning(`module ${item.id} failed to adapt with error`, error);
+      warning(`module ${work.id} failed to adapt with error`, error);
       sandbox.__SANDBOX_SCOPE__.Main = () => {
         throw error;
       };
     } finally {
       delete window.__SANDBOX_SCOPE__;
     }
-    item.resolve(sandbox.__SANDBOX_SCOPE__);
+    work.resolve(sandbox.__SANDBOX_SCOPE__);
     this.compiling = false;
     this.tick();
     return;
@@ -56,7 +56,9 @@ class SequentialProgramEvaluator {
 
 async function downloadAsset(resource) {
   const controller = new AbortController();
-  const id = setTimeout(controller.abort, CLIENT_TIMEOUT);
+  const id = setTimeout(() => {
+    controller.abort();
+  }, CLIENT_TIMEOUT);
   const request = new Promise((resolve, reject) => {
     const options = {
       signal: controller.signal,

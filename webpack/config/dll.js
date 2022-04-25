@@ -87,10 +87,6 @@ config.module.rules.push(
 		test: /\.txt$/,
 		type: "asset/source",
 	},
-	{
-		test: /\.json$/,
-		type: "json",
-	},
 )
 
 config.output.path = settings.DLL_BUILD_PATH;

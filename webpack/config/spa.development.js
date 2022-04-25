@@ -138,10 +138,6 @@ config.module.rules.push(
 		type: "asset/source",
 	},
 	{
-		test: /\.json$/,
-		type: "json",
-	},
-	{
 		test: /\.css$/i,
 		use: [
 			{

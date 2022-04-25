@@ -153,10 +153,6 @@ config.module.rules.push(
 		type: "asset/inline",
 	},
 	{
-		test: /\.json$/,
-		type: "json",
-	},
-	{
 		test: /\.css$/i,
 		use: [
 			{
