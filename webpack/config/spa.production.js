@@ -20,6 +20,8 @@ config.output.assetModuleFilename = "spa/[name][ext][query]";
 
 config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
 
+//console.log()
+
 config.module.rules.push(
 	{
 		test: /\.[j|t]sx?$/,
@@ -169,8 +171,8 @@ config.plugins.push(
 	}),
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
-			__dirname,
-			"../../dependencies/dll/dependencies-prod-manifest.json"
+			require.resolve('@lastui/dependencies'),
+			"../dll/dependencies-prod-manifest.json"
 		),
 		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
@@ -224,8 +226,8 @@ config.plugins.push(
 	new AddAssetHtmlPlugin([
 		{
 			filepath: path.resolve(
-				__dirname,
-				"../../dependencies/dll/dependencies.dll.min.js"
+				require.resolve('@lastui/dependencies'),
+				"../dll/dependencies.dll.min.js"
 			),
 			outputPath: "spa",
 			publicPath: `${settings.PROJECT_NAMESPACE}spa`,

@@ -194,8 +194,8 @@ config.plugins.push(
 	new ModuleLocalesPlugin(),
 	new webpack.DllReferencePlugin({
 		manifest: path.resolve(
-			__dirname,
-			"../../dependencies/dll/dependencies-prod-manifest.json"
+			require.resolve('@lastui/dependencies'),
+			"../dll/dependencies-prod-manifest.json"
 		),
 		sourceType: "var",
 		context: settings.PROJECT_ROOT_PATH,
