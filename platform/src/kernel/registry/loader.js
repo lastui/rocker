@@ -1,4 +1,4 @@
-import React from "react";
+import { useMemo, createElement, Component } from "react";
 import { ReactReduxContext } from "react-redux";
 import { useReduxContext } from "react-redux/es/hooks/useReduxContext.js";
 import { downloadProgram } from "./assets";
@@ -73,7 +73,18 @@ const createModuleLoader = () => {
       return loading;
     }
     const promise = downloadProgram(id, available.program)
-      .then((data) => adaptModule(id, data))
+      .then((data) => {
+        const scope = data;
+        if (available.props && scope.props) {
+          scope.props = {
+            ...scope.props,
+            ...available.props,
+          };
+        } else if (available.props) {
+          scope.props = { ...available.props };
+        }
+        return adaptModule(id, scope);
+      })
       .then((data) => {
         if (!availableModules[id]) {
           data.cleanup();
@@ -156,7 +167,7 @@ const createModuleLoader = () => {
     const Bridge = (props) => {
       const parentContext = useReduxContext();
 
-      const reduxContext = React.useMemo(
+      const reduxContext = useMemo(
         () => ({
           store: preferentialStore,
           subscription: parentContext.subscription,
@@ -164,27 +175,33 @@ const createModuleLoader = () => {
         [parentContext.subscription],
       );
 
-      const owned = React.memo(() => {
+      const composite = useMemo(() => {
         if (props.ref) {
           return {
-            ...props.owned,
+            ...(scope.props || {}),
+            ...(props.owned || {}),
             ref: props.ref,
           };
-        } else {
+        } else if (scope.props) {
+          return {
+            ...scope.props,
+            ...(props.owned || {}),
+          };
+        } else if (props.owned) {
           return props.owned;
+        } else {
+          return null;
         }
       }, [props.ref, props.owned]);
 
       return (
         <ReactReduxContext.Provider value={reduxContext}>
-          {props.children
-            ? React.createElement(scope.Main, owned, props.children)
-            : React.createElement(scope.Main, owned)}
+          {props.children ? createElement(scope.Main, composite, props.children) : createElement(scope.Main, composite)}
         </ReactReduxContext.Provider>
       );
     };
 
-    class Boundaries extends React.Component {
+    class Boundaries extends Component {
       state = { error: null };
 
       static displayName = `Module(${id})`;
@@ -214,11 +231,11 @@ const createModuleLoader = () => {
       render() {
         if (this.state.error === null) {
           return this.props.children
-            ? React.createElement(Bridge, this.props, this.props.children)
-            : React.createElement(Bridge, this.props);
+            ? createElement(Bridge, this.props, this.props.children)
+            : createElement(Bridge, this.props);
         }
         if (scope.Error) {
-          return React.createElement(scope.Error, this.state);
+          return createElement(scope.Error, this.state);
         }
         return null;
       }

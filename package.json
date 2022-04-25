@@ -74,6 +74,7 @@
     "eslint": "8.14.0",
     "html-webpack-plugin": "5.5.0",
     "jest": "27.5.1",
+    "json5-loader": "4.0.1",
     "mini-css-extract-plugin": "2.6.0",
     "path-browserify": "1.0.1",
     "prettier": "2.6.2",
