@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.10.22",
+  "version": "0.10.23",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "prebuild:dependencies": "cd dependencies && npm ci --no-fund --no-audit",
