@@ -26,11 +26,13 @@ jobs:
       - name: Compile package bootstrap
         run: npm run build:bootstrap
       - name: Publish @lastui/dependencies
+        continue-on-error: true
         working-directory: dependencies
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: Publish @lastui/rocker
+        continue-on-error: true
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
