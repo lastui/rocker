@@ -1,10 +1,7 @@
-const { execSync } = require("child_process");
 const path = require("path");
 const webpack = require("webpack");
 const settings = require("../webpack/settings");
-const cwd = path.resolve(process.cwd());
-
-const config = require(path.resolve(settings.WEBPACK_ROOT_PATH, "config/dll.js"));
+const config = require("../webpack/config/dll.js");
 
 config.entry = {
   bootstrap: ["@lastui/rocker/bootstrap"],

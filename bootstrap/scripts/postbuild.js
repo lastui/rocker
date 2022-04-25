@@ -3,19 +3,21 @@
 const path = require('path');
 const { clearDirectory } = require('../../scripts');
 
-////////////////////////////////
-
-async function main() {
-	await clearDirectory(path.resolve(__dirname, "../node_modules"));
+function resolve(node) {
+	return path.resolve(__dirname, node);
 }
 
-////////////////////////////////
+async function rm(target) {
+	await clearDirectory(resolve(target));
+}
 
-(function () {
-	main()
-		.then(() => process.exit(0))
-		.catch((err) => {
-			console.error(err);
-			process.exit(1);
-		});
-})();
+async function main() {
+	await rm("../node_modules");
+}
+
+main()
+	.then(() => process.exit(0))
+	.catch((err) => {
+		console.error(err);
+		process.exit(1);
+	});
