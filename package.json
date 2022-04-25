@@ -3,8 +3,8 @@
   "version": "0.10.20",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
-    "build:dependencies": "cd dependencies && npm run build",
     "prebuild:dependencies": "cd dependencies && npm ci --no-fund --no-audit",
+    "build:dependencies": "cd dependencies && npm run build",
     "build:dependencies": "npm run build:dependencies:dev && npm run build:dependencies:prod",
     "build:dependencies:prod": "cd dependencies && node ../cli/index.js build",
     "build:dependencies:dev": "cd dependencies && node ../cli/index.js build --dev",

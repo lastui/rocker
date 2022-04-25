@@ -16,29 +16,38 @@ jobs:
           node-version: '14'
       - name: Install npm-check-updates
         run: npm install -g npm-check-updates
-      - name: Update build dependencies
+      - name: Update @lastui/rocker
         run: |
           npm install
           ncu -u
           npm install
-      - name: Update package dependencies
+      - name: Update @lastui/dependencies
+        working-directory: dependencies
         run: |
-          cd dependencies
           npm install
           ncu -u
           npm install
-      - name: Check if there are changes
-        id: changes
+      - name: Check if there are changes in @lastui/dependencies
+        id: changes-dependencies
+        uses: tj-actions/verify-changed-files@v5.5
+        with:
+          files: |
+            dependencies/package.json
+      - name: Check if there are changes in @lastui/rocker
+        id: changes-rocker
         uses: tj-actions/verify-changed-files@v5.5
         with:
           files: |
             package.json
-            dependencies/package.json
-      - name: Bump version patch
-        if: steps.changes.outputs.files_changed == 'true'
+      - name: Bump version patch @lastui/dependencies
+        if: steps.changes-dependencies.outputs.files_changed == 'true'
+        working-directory: dependencies
+        run: npm version patch --no-git-tag-version
+      - name: Bump version patch @lastui/rocker
+        if: steps.changes-dependencies.outputs.files_changed == 'true' || steps.changes-rocker.outputs.files_changed == 'true'
         run: npm version patch --no-git-tag-version
       - name: Create PR
-        if: steps.changes.outputs.files_changed == 'true'
+        if: steps.changes-dependencies.outputs.files_changed == 'true' || steps.changes-rocker.outputs.files_changed == 'true'
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
