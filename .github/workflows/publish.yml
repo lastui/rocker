@@ -18,14 +18,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Compile package dependencies
-        working-directory: dependencies
-        run: npm run build
+        run: npm run build:dependencies
       - name: Compile package platform
-        working-directory: platform
-        run: npm run build
+        run: npm run build:platform
       - name: Compile package bootstrap
-        working-directory: bootstrap
-        run: npm run build
+        run: npm run build:bootstrap
       - name: Publish @lastui/dependencies
         working-directory: dependencies
         run: npm publish
