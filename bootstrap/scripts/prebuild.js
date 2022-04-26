@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
-const path = require('path');
-const { clearDirectory, createSymlink, ensureDirectory } = require('../../scripts');
+const path = require("path");
+const {
+	clearDirectory,
+	createSymlink,
+	ensureDirectory,
+} = require("../../cli/helpers/io");
 
 function resolve(node) {
 	return path.resolve(__dirname, node);
@@ -30,7 +34,10 @@ async function main() {
 	await ln("../../dependencies", "../node_modules/@lastui/dependencies");
 	await ln("../../platform/src", "../node_modules/@lastui/rocker/platform");
 	await ln("../src", "../node_modules/@lastui/rocker/bootstrap");
-	await ln("../../node_modules/@redux-devtools", "../node_modules/@redux-devtools");
+	await ln(
+		"../../node_modules/@redux-devtools",
+		"../node_modules/@redux-devtools"
+	);
 }
 
 main()

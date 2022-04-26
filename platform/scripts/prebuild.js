@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
 const path = require("path");
-const { clearDirectory, createSymlink, ensureDirectory } = require("../../scripts");
+const {
+	clearDirectory,
+	createSymlink,
+	ensureDirectory,
+} = require("../../cli/helpers/io");
 
 function resolve(node) {
 	return path.resolve(__dirname, node);
