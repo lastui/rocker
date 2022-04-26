@@ -7,7 +7,7 @@ const RegisterModuleInjectBuildId = require("../plugins/RegisterModuleInjectBuil
 
 const settings = require("../settings");
 
-const babel = require("@lastui/babylon").env.production;
+const babel = require("../../babel").env.production;
 
 const config = {
 	...require("../internal/base.js"),

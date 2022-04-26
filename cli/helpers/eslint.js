@@ -4,7 +4,7 @@ exports.run = async function () {
 	});
 
 	const eslint = require("eslint");
-	const babelOptions = require("@lastui/babylon").env.production;
+	const babelOptions = require("../../babel").env.production;
 
 	const engine = new eslint.ESLint({
 		allowInlineConfig: true,
