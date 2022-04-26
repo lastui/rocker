@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-const babelConfig = require("@lastui/babylon").env.test;
+const babelConfig = require("../babel").env.test;
 
 process.env.TZ = "UTC";
 

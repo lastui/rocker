@@ -8,7 +8,7 @@ const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const settings = require("../settings");
-const babel = require("@lastui/babylon").env.development;
+const babel = require("../../babel").env.development;
 
 const config = {
 	...require("../internal/base.js"),

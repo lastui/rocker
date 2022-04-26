@@ -10,7 +10,7 @@ const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
 const RegisterModuleInjectBuildId = require("../plugins/RegisterModuleInjectBuildId");
 
-const babel = require("@lastui/babylon").env.development;
+const babel = require("../../babel").env.development;
 
 const settings = require("../settings");
 
