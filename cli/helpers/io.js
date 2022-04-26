@@ -88,7 +88,52 @@ exports.clearDirectory = async function (nodePath) {
       }
     });
 
-  const nodes = await walkRecursive(nodePath);
+  const flatten = (ary) => ary.reduce((a, b) => (Array.isArray(b) ? a.concat(flatten(b)) : a.concat(b)), []);
+
+  const walk = async (nodePath) => {
+    const work = await new Promise((resolve, reject) => {
+      fs.lstat(nodePath, function (err, stats) {
+        if (err == null) {
+          if (stats.isDirectory()) {
+            fs.readdir(nodePath, function (err, files) {
+              if (err) {
+                return reject(err);
+              }
+              let step = files.map((node) =>
+                walk(path.join(nodePath, node))
+              );
+              if (stats.isSymbolicLink()) {
+                step.push({
+                  path: nodePath,
+                  action: "unlink",
+                });
+              }
+              step.push({
+                path: nodePath,
+                action: "rmdir",
+              });
+              return resolve(Promise.all(step));
+            });
+          } else {
+            return resolve([
+              {
+                path: nodePath,
+                action: "unlink",
+              },
+            ]);
+          }
+        } else if (err.code === "ENOENT") {
+          return resolve([]);
+        } else {
+          return reject(err);
+        }
+      });
+    });
+    const slice = await Promise.all(flatten(work));
+    return slice;
+  }
+
+  const nodes = await walk(nodePath);
   nodes.sort((a, b) => {
     const nameDiff = a.path.localeCompare(b.path);
     if (nameDiff !== 0) {
@@ -108,52 +153,3 @@ exports.clearDirectory = async function (nodePath) {
   const work = nodes.map((item) => unlink(item));
   await Promise.all(work);
 };
-
-async function walkRecursive(nodePath) {
-  const flatten = (ary) =>
-    ary.reduce(
-      (a, b) => (Array.isArray(b) ? a.concat(flatten(b)) : a.concat(b)),
-      []
-    );
-
-  const work = await new Promise((resolve, reject) => {
-    fs.lstat(nodePath, function (err, stats) {
-      if (err == null) {
-        if (stats.isDirectory()) {
-          fs.readdir(nodePath, function (err, files) {
-            if (err) {
-              return reject(err);
-            }
-            let step = files.map((node) =>
-              walkRecursive(path.join(nodePath, node))
-            );
-            if (stats.isSymbolicLink()) {
-              step.push({
-                path: nodePath,
-                action: "unlink",
-              });
-            }
-            step.push({
-              path: nodePath,
-              action: "rmdir",
-            });
-            return resolve(Promise.all(step));
-          });
-        } else {
-          return resolve([
-            {
-              path: nodePath,
-              action: "unlink",
-            },
-          ]);
-        }
-      } else if (err.code === "ENOENT") {
-        return resolve([]);
-      } else {
-        return reject(err);
-      }
-    });
-  });
-  const slice = await Promise.all(flatten(work));
-  return slice;
-}
