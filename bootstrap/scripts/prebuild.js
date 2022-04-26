@@ -30,14 +30,10 @@ async function main() {
 	await rm("../node_modules/@redux-devtools");
 	await mkdir("../node_modules/@lastui");
 	await mkdir("../node_modules/@lastui/rocker");
-
 	await ln("../../dependencies", "../node_modules/@lastui/dependencies");
 	await ln("../../platform/src", "../node_modules/@lastui/rocker/platform");
 	await ln("../src", "../node_modules/@lastui/rocker/bootstrap");
-	await ln(
-		"../../node_modules/@redux-devtools",
-		"../node_modules/@redux-devtools"
-	);
+	await ln("../../node_modules/@redux-devtools", "../node_modules/@redux-devtools");
 }
 
 main()

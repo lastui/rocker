@@ -1,5 +1,8 @@
 root = true
 
 [*]
-indent_style = tab
+charset = utf-8
+indent_style = space
 indent_size = 2
+end_of_line = lr
+insert_final_newline = false
