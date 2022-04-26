@@ -8,7 +8,7 @@ setLogLevel("none");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
-const RegisterModuleInjectBuildId = require("../plugins/RegisterModuleInjectBuildId");
+const RegisterModuleInjectBuildId = require("../../babel/plugins/RegisterModuleInjectBuildId");
 
 const babel = require("../../babel").env.development;
 

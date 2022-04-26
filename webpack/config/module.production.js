@@ -3,7 +3,7 @@ const webpack = require("webpack");
 
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
-const RegisterModuleInjectBuildId = require("../plugins/RegisterModuleInjectBuildId");
+const RegisterModuleInjectBuildId = require("../../babel/plugins/RegisterModuleInjectBuildId");
 
 const settings = require("../settings");
 

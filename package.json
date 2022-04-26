@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "prebuild:dependencies": "cd dependencies && npm ci --no-fund --no-audit",
@@ -25,6 +25,7 @@
     "package-lock.json",
     "package.json",
     "babel/index.js",
+    "babel/plugins/RegisterModuleInjectBuildId.js",
     "cli/index.js",
     "cli/helpers/webpack.js",
     "cli/helpers/jest.js",
@@ -53,7 +54,6 @@
     "webpack/internal/development.js",
     "webpack/settings/index.js",
     "webpack/plugins/ModuleLocalesPlugin.js",
-    "webpack/plugins/RegisterModuleInjectBuildId.js",
     "platform/index.js",
     "platform/dll/platform-dev-manifest.json",
     "platform/dll/platform-prod-manifest.json",
