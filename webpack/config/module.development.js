@@ -76,9 +76,9 @@ config.module.rules.push(
           }),
           plugins: [RegisterModuleInjectBuildId, ...babel.plugins].map((plugin) => {
             if (!Array.isArray(plugin)) {
-              return [plugin, {}, `babel-${plugin}`];
+              return [plugin, {}, `babel-${plugin.name || plugin}`];
             } else {
-              return [plugin[0], plugin[1], `babel-${plugin[0]}`];
+              return [plugin[0], plugin[1], `babel-${plugin[0].name || plugin[0]}`];
             }
           }),
           cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".babel-cache"),
