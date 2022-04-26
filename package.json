@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -79,7 +79,7 @@
     "dotenv": "16.0.0",
     "eslint": "8.14.0",
     "html-webpack-plugin": "5.5.0",
-    "jest": "28.0.0",
+    "jest": "28.0.1",
     "json5-loader": "4.0.1",
     "mini-css-extract-plugin": "2.6.0",
     "path-browserify": "1.0.1",
