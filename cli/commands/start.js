@@ -20,10 +20,13 @@ exports.handler = async function (argv) {
   const path = require("path");
   const packageName = path.basename(process.env.INIT_CWD);
   const { setup, getConfig } = require("../helpers/webpack.js");
-  const callback = await setup({
-    ...argv,
-    development: true,
-  }, packageName);
+  const callback = await setup(
+    {
+      ...argv,
+      development: true,
+    },
+    packageName,
+  );
   const config = await getConfig();
   const devServerConfig = config.devServer;
   delete config.devServer;

@@ -23,9 +23,7 @@ function formatMessage(message) {
   }
   lines = lines.filter((line) => !/Module [A-z ]+\(from/.test(line));
   lines = lines.map((line) => {
-    const parsingError = /Line (\d+):(?:(\d+):)?\s*Parsing error: (.+)$/.exec(
-      line
-    );
+    const parsingError = /Line (\d+):(?:(\d+):)?\s*Parsing error: (.+)$/.exec(line);
     if (!parsingError) {
       return line;
     }
@@ -33,21 +31,18 @@ function formatMessage(message) {
     return `Syntax error: ${errorMessage} (${errorLine}:${errorColumn})`;
   });
   message = lines.join("\n");
-  message = message.replace(
-    /SyntaxError\s+\((\d+):(\d+)\)\s*(.+?)\n/g,
-    `Syntax error: $3 ($1:$2)\n`
-  );
+  message = message.replace(/SyntaxError\s+\((\d+):(\d+)\)\s*(.+?)\n/g, `Syntax error: $3 ($1:$2)\n`);
   message = message.replace(
     /^.*export '(.+?)' was not found in '(.+?)'.*$/gm,
-    `Attempted import error: '$1' is not exported from '$2'.`
+    `Attempted import error: '$1' is not exported from '$2'.`,
   );
   message = message.replace(
     /^.*export 'default' \(imported as '(.+?)'\) was not found in '(.+?)'.*$/gm,
-    `Attempted import error: '$2' does not contain a default export (imported as '$1').`
+    `Attempted import error: '$2' does not contain a default export (imported as '$1').`,
   );
   message = message.replace(
     /^.*export '(.+?)' \(imported as '(.+?)'\) was not found in '(.+?)'.*$/gm,
-    `Attempted import error: '$1' is not exported from '$3' (imported as '$2').`
+    `Attempted import error: '$1' is not exported from '$3' (imported as '$2').`,
   );
   lines = message.split("\n");
   if (lines.length > 2 && lines[1].trim() === "") {
@@ -57,27 +52,20 @@ function formatMessage(message) {
   if (lines[1] && lines[1].indexOf("Module not found: ") === 0) {
     lines = [
       lines[0],
-      lines[1]
-        .replace("Error: ", "")
-        .replace("Module not found: Cannot find file:", "Cannot find file:"),
+      lines[1].replace("Error: ", "").replace("Module not found: Cannot find file:", "Cannot find file:"),
     ];
   }
   if (lines[1] && lines[1].match(/Cannot find module.+sass/)) {
     lines[1] = "To import Sass files, you first need to install sass.\n";
-    lines[1] +=
-      "Run `npm install sass` or `yarn add sass` inside your workspace.";
+    lines[1] += "Run `npm install sass` or `yarn add sass` inside your workspace.";
   }
 
   message = lines.join("\n");
-  message = message.replace(
-    /^\s*at\s((?!webpack:).)*:\d+:\d+[\s)]*(\n|$)/gm,
-    ""
-  );
+  message = message.replace(/^\s*at\s((?!webpack:).)*:\d+:\d+[\s)]*(\n|$)/gm, "");
   message = message.replace(/^\s*at\s<anonymous>(\n|$)/gm, "");
   lines = message.split("\n");
   lines = lines.filter(
-    (line, index, arr) =>
-      index === 0 || line.trim() !== "" || line.trim() !== arr[index - 1].trim()
+    (line, index, arr) => index === 0 || line.trim() !== "" || line.trim() !== arr[index - 1].trim(),
   );
   message = lines.join("\n");
   return message.trim();

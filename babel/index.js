@@ -61,10 +61,7 @@ module.exports = {
           },
         ],
       ],
-      plugins: [
-        ...plugins,
-        "@babel/plugin-proposal-json-strings",
-      ],
+      plugins: [...plugins, "@babel/plugin-proposal-json-strings"],
     },
     test: {
       presets,

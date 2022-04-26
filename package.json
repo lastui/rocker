@@ -1,7 +1,8 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.10.24",
+  "version": "0.11.1",
   "scripts": {
+    "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "prebuild:dependencies": "cd dependencies && npm ci --no-fund --no-audit",
     "build:dependencies": "npm run build:dependencies:dev && npm run build:dependencies:prod",
@@ -25,6 +26,7 @@
     "package-lock.json",
     "package.json",
     "babel/index.js",
+    "babel/plugins/RegisterModuleInjectBuildId.js",
     "cli/index.js",
     "cli/helpers/webpack.js",
     "cli/helpers/jest.js",
@@ -53,7 +55,6 @@
     "webpack/internal/development.js",
     "webpack/settings/index.js",
     "webpack/plugins/ModuleLocalesPlugin.js",
-    "webpack/plugins/RegisterModuleInjectBuildId.js",
     "platform/index.js",
     "platform/dll/platform-dev-manifest.json",
     "platform/dll/platform-prod-manifest.json",
@@ -66,7 +67,7 @@
     "bootstrap/dll/bootstrap.dll.min.js"
   ],
   "dependencies": {
-    "@linaria/webpack-loader": "3.0.0-beta.17",
+    "@linaria/webpack-loader": "3.0.0-beta.18",
     "@redux-devtools/extension": "3.2.2",
     "@testing-library/react": "13.1.1",
     "add-asset-html-webpack-plugin": "5.0.2",

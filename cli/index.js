@@ -21,5 +21,4 @@ require("yargs")
   .command(require("./commands/lint.js"))
   .demandCommand()
   .help(false)
-  .strict()
-  .argv;
+  .strict().argv;
