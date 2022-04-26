@@ -22,7 +22,7 @@ const createModuleLoader = () => {
   const adaptModule = async (id, scope = {}) => {
     const cleanup = () => {
       if (scope.BUILD_ID) {
-        removeStyles(id, scope.BUILD_ID);
+        removeStyles(id);
       }
       if (scope.saga) {
         removeSaga(id);

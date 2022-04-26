@@ -65,17 +65,17 @@ config.module.rules.push(
         options: {
           babelrc: false,
           presets: babel.presets.map((preset) => {
-            if (typeof preset === "string") {
+            if (!Array.isArray(preset)) {
               return [preset, {}, `babel-${preset}`];
             } else {
-              return [preset[0], preset[1], `babel-${preset[2]}`];
+              return [preset[0], preset[1], `babel-${preset[0]}`];
             }
           }),
           plugins: babel.plugins.map((plugin) => {
-            if (typeof plugin === "string") {
-              return [plugin, {}, `babel-${plugin}`];
+            if (!Array.isArray(plugin)) {
+              return [plugin, {}, `babel-${plugin.name || plugin}`];
             } else {
-              return [plugin[0], plugin[1], `babel-${plugin[2]}`];
+              return [plugin[0], plugin[1], `babel-${plugin[0].name || plugin[0]}`];
             }
           }),
           cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".babel-cache"),
@@ -97,17 +97,17 @@ config.module.rules.push(
           babelOptions: {
             babelrc: false,
             presets: babel.presets.map((preset) => {
-              if (typeof preset === "string") {
+              if (!Array.isArray(preset)) {
                 return [preset, {}, `linaria-${preset}`];
               } else {
-                return [preset[0], preset[1], `linaria-${preset[2]}`];
+                return [preset[0], preset[1], `linaria-${preset[0]}`];
               }
             }),
             plugins: babel.plugins.map((plugin) => {
-              if (typeof plugin === "string") {
-                return [plugin, {}, `linaria-${plugin}`];
+              if (!Array.isArray(plugin)) {
+                return [plugin, {}, `linaria-${plugin.name || plugin}`];
               } else {
-                return [plugin[0], plugin[1], `linaria-${plugin[2]}`];
+                return [plugin[0], plugin[1], `linaria-${plugin[0].name || plugin[0]}`];
               }
             }),
             sourceMaps: false,
