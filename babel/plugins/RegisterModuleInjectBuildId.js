@@ -1,4 +1,4 @@
-const t = require("@babel/types");
+const types = require("@babel/types");
 
 module.exports = {
 	name: "register-module-inject-build-id",
@@ -16,15 +16,14 @@ module.exports = {
 						return;
 					}
 				}
-
-				path.replaceWith(t.callExpression(
-					t.identifier("registerModule"),
+				path.replaceWith(types.callExpression(
+					types.identifier("registerModule"),
 					[
-						t.objectExpression([
+						types.objectExpression([
 							...path.node.arguments[0].properties,
-							t.objectProperty(
-								t.identifier("BUILD_ID"),
-								t.identifier("BUILD_ID")
+							types.objectProperty(
+								types.identifier("BUILD_ID"),
+								types.identifier("BUILD_ID")
 							),
 						]),
 					]
