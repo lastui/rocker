@@ -1,4 +1,4 @@
-import { Store, applyMiddleware, compose, createStore, combineReducers } from "redux";
+import { Store, applyMiddleware, compose, legacy_createStore, combineReducers } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { all, fork } from "redux-saga/effects";
 import { runtimeReducer } from "../reducer";
@@ -30,7 +30,7 @@ export default async (fetchContext, bootstrapMiddlewares) => {
     modules: modulesReducer,
   });
 
-  const store = createStore(reducer, {}, composer(...[applyMiddleware(...enhancers)]));
+  const store = legacy_createStore(reducer, {}, composer(...[applyMiddleware(...enhancers)]));
 
   setSagaRunner(sagaMiddleware.run);
   setStore(store);
