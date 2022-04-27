@@ -129,6 +129,10 @@ const createLoaderMiddleware = () => {
               if (uri) {
                 const promise = downloadAsset(uri)
                   .then((data) => data.json())
+                  .catch((error) => {
+                    warning(`invalid localisation asset ${uri}`, error);
+                    return null;
+                  })
                   .then((data) => {
                     if (!availableLocales[id]) {
                       return null;
@@ -143,6 +147,7 @@ const createLoaderMiddleware = () => {
                     console.debug(`module ${id} introducing locales for ${language}`);
                     return { module: id, data };
                   });
+
                 scheduledAssets.push(promise);
               }
             }
