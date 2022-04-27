@@ -73,6 +73,15 @@ const createLoaderMiddleware = () => {
           }
           return downloadAsset(uri)
             .then((data) => data.json())
+            .catch((error) => {
+              warning(`invalid localisation asset ${uri}`, error);
+              return next({
+                type: constants.MODULE_READY,
+                payload: {
+                  module: id,
+                },
+              });
+            })
             .then((data) => {
               if (!availableLocales[id]) {
                 return next({
