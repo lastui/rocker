@@ -1,6 +1,5 @@
 import { warning } from "../../utils";
 import { cancel, spawn } from "redux-saga/effects";
-import { getStore } from "./store";
 
 const sagas = {};
 

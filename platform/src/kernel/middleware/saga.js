@@ -4,12 +4,16 @@ import { setSagaRunner } from "../registry/saga";
 const createSagaMiddleware = (options = {}) => {
   const channel = stdChannel();
   const context = options.context || undefined;
-  const runSaga = (store, saga) => runSagaInternal({
-    context,
-    channel,
-    dispatch: store.dispatch,
-    getState: store.getState,
-  }, saga);
+  const runSaga = (store, saga) =>
+    runSagaInternal(
+      {
+        context,
+        channel,
+        dispatch: store.dispatch,
+        getState: store.getState,
+      },
+      saga,
+    );
   setSagaRunner(runSaga);
   return {
     sagaMiddleware: (_store) => (next) => (action) => {
@@ -17,8 +21,8 @@ const createSagaMiddleware = (options = {}) => {
       channel.put(action);
       return result;
     },
-    runSaga
+    runSaga,
   };
-}
+};
 
 export default createSagaMiddleware;
