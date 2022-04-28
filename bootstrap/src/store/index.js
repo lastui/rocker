@@ -1,5 +1,4 @@
 import { Store, applyMiddleware, compose, legacy_createStore, combineReducers } from "redux";
-import createSagaMiddleware from "redux-saga";
 import { all, fork } from "redux-saga/effects";
 import { runtimeReducer } from "../reducer";
 import { watchRefresh, watchFetchContext, watchBootstrap } from "../saga";
@@ -10,10 +9,11 @@ import {
   modulesReducer,
   moduleLoaderMiddleware,
   dynamicMiddleware,
+  createSagaMiddleware,
 } from "@lastui/rocker/platform";
 
 export default async (fetchContext, bootstrapMiddlewares) => {
-  const sagaMiddleware = createSagaMiddleware({
+  const { sagaMiddleware, runSaga } = createSagaMiddleware({
     context: {
       fetchContext,
     },
@@ -31,12 +31,10 @@ export default async (fetchContext, bootstrapMiddlewares) => {
   });
 
   const store = legacy_createStore(reducer, {}, composer(...[applyMiddleware(...enhancers)]));
-
-  setSagaRunner(sagaMiddleware.run);
   setStore(store);
 
   const sagas = [watchBootstrap, watchFetchContext, watchRefresh];
-  sagaMiddleware.run(function* rooSaga() {
+  runSaga(store, function* rooSaga() {
     yield all(sagas.map(fork));
   });
 
