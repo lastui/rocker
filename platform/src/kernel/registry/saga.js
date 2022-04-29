@@ -26,7 +26,7 @@ function removeSaga(id, preferentialStore) {
 }
 
 async function addSaga(id, preferentialStore, saga) {
-  if (!sagas[id]) {
+  if (sagas[id]) {
     delete sagas[id];
     console.debug(`module ${id} replacing saga`);
   } else {

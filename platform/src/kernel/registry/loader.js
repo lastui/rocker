@@ -19,7 +19,7 @@ const createModuleLoader = () => {
 
   const getLoadedModule = (id) => loadedModules[id];
 
-  const adaptModule = async (id, scope = {}) => {
+  const adaptModule = async (id, scope) => {
     const preferentialStore = scope.saga || scope.Main ? store.namespace(id) : null;
     const cleanup = () => {
       if (scope.BUILD_ID) {
