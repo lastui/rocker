@@ -19,13 +19,14 @@ const createModuleLoader = () => {
 
   const getLoadedModule = (id) => loadedModules[id];
 
-  const adaptModule = async (id, scope = {}) => {
+  const adaptModule = async (id, scope) => {
+    const preferentialStore = scope.saga || scope.Main ? store.namespace(id) : null;
     const cleanup = () => {
       if (scope.BUILD_ID) {
         removeStyles(id);
       }
       if (scope.saga) {
-        removeSaga(id);
+        removeSaga(id, preferentialStore);
       }
       if (scope.middleware) {
         removeMiddleware(id);
@@ -45,7 +46,7 @@ const createModuleLoader = () => {
       adaptationWork.push(addMiddleware(id, scope.middleware));
     }
     if (scope.saga) {
-      adaptationWork.push(addSaga(id, scope.saga));
+      adaptationWork.push(addSaga(id, preferentialStore, scope.saga));
     }
     try {
       await Promise.all(adaptationWork);
@@ -54,7 +55,7 @@ const createModuleLoader = () => {
       throw error;
     }
     return {
-      view: isolateProgram(id, scope),
+      view: isolateProgram(id, preferentialStore, scope),
       cleanup,
     };
   };
@@ -157,12 +158,10 @@ const createModuleLoader = () => {
     await Promise.allSettled(scheduledUnload);
   };
 
-  const isolateProgram = (id, scope) => {
+  const isolateProgram = (id, preferentialStore, scope) => {
     if (!scope.Main) {
       return null;
     }
-
-    const preferentialStore = store.namespace(id);
 
     const Bridge = (props) => {
       const parentContext = useReduxContext();

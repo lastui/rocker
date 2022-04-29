@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.11.6",
+  "version": "0.11.7",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",

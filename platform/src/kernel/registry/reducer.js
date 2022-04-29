@@ -13,7 +13,7 @@ function removeReducer(id) {
 }
 
 async function addReducer(id, reducer) {
-  if (!modulesReducers[id]) {
+  if (modulesReducers[id]) {
     delete modulesReducers[id];
     console.debug(`module ${id} replacing reducer`);
   } else {

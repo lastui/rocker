@@ -13,26 +13,26 @@ function setSagaRunner(nextSagaRunner) {
   }
 }
 
-function removeSaga(id) {
+function removeSaga(id, preferentialStore) {
   const dangling = sagas[id];
   if (!dangling) {
     return;
   }
   console.debug(`module ${id} removing saga`);
-  sagaRunner(function* () {
+  sagaRunner(preferentialStore, function* () {
     yield cancel(dangling);
   });
   delete sagas[id];
 }
 
-async function addSaga(id, saga) {
-  if (!sagas[id]) {
+async function addSaga(id, preferentialStore, saga) {
+  if (sagas[id]) {
     delete sagas[id];
     console.debug(`module ${id} replacing saga`);
   } else {
     console.debug(`module ${id} introducing saga`);
   }
-  sagaRunner(function* () {
+  sagaRunner(preferentialStore, function* () {
     try {
       sagas[id] = yield spawn(saga);
     } catch (error) {
