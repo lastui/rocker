@@ -22,19 +22,30 @@ function refresh() {
   };
 }
 
-function setShared(data, isLocal) {
+function setGlobalShared(data) {
   return {
     type: SET_SHARED,
     payload: {
       data,
-      module: Boolean(isLocal),
+      module: false,
+    },
+  };
+}
+
+function setLocalShared(data) {
+  return {
+    type: SET_SHARED,
+    payload: {
+      data,
+      module: true,
     },
   };
 }
 
 const actions = {
   setLanguage,
-  setShared,
+  setGlobalShared,
+  setLocalShared,
   refresh,
 };
 
