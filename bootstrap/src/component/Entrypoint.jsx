@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Module, Router } from "@lastui/rocker/platform";
 import { getEntrypoint } from "../selector";
 import { createBrowserHistory } from "history";
-import Globalisation from './Globalisation';
+import Globalisation from "./Globalisation";
 
 const history = createBrowserHistory();
 

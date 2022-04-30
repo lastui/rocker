@@ -26,11 +26,7 @@ const Globalisation = (props) => {
     [locale, messages],
   );
 
-  return (
-    <RawIntlProvider value={intl}>
-      {props.children}
-    </RawIntlProvider>
-  );
+  return <RawIntlProvider value={intl}>{props.children}</RawIntlProvider>;
 };
 
 export default Globalisation;

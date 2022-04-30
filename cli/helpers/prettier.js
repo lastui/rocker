@@ -7,7 +7,7 @@ exports.run = async function () {
 
   const fs = require("fs");
   const path = require("path");
-
+  
   await prettier.run([
     "--loglevel=warn",
     "--ignore-unknown",
