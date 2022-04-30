@@ -1,43 +1,40 @@
 import { StrictMode, useState, useCallback, useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
-import { constants } from "@lastui/rocker/platform";
+import { constants, getStore } from "@lastui/rocker/platform";
 import setupStore from "../store";
 import Entrypoint from "./Entrypoint";
 
 const Main = (props) => {
   const [_, setErrorState] = useState();
-  const [store, setStore] = useState();
+  const [ready, setReady] = useState(false);
 
-  const bootstrap = useCallback(async () => {
+  const bootstrap = useCallback(() => {
     console.debug("bootstraping runtime");
     try {
-      const nextStore = await setupStore(props.fetchContext, props.reduxMiddlewares);
-      nextStore.dispatch({
+      const store = setupStore(props.fetchContext, props.reduxMiddlewares);
+      store.dispatch({
         type: constants.INIT,
         payload: {
-          initializeRuntime: props.initializeRuntime,
           contextRefreshInterval: props.contextRefreshInterval,
         },
       });
-      setStore(nextStore);
+      setReady(true);
     } catch (error) {
       setErrorState(() => {
         throw error;
       });
     }
-  }, [props.reduxMiddlewares, props.fetchContext, props.initializeRuntime, props.contextRefreshInterval]);
+  }, [setReady, props.reduxMiddlewares, props.fetchContext, props.contextRefreshInterval]);
 
-  useEffect(() => {
-    bootstrap();
-  }, [bootstrap]);
+  useEffect(bootstrap, [bootstrap]);
 
-  if (!store) {
+  if (!ready) {
     return null;
   }
 
   return (
     <StrictMode>
-      <ReduxProvider store={store}>
+      <ReduxProvider store={getStore()}>
         <Entrypoint />
       </ReduxProvider>
     </StrictMode>

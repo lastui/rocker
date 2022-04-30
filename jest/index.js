@@ -8,6 +8,8 @@ if (!process.env.INIT_CWD) {
   process.env.INIT_CWD = process.cwd();
 }
 
+console.log(process.env.INIT_CWD, process.cwd())
+
 const node_modules =
   path.dirname(process.env.INIT_CWD) === path.resolve(__dirname, "..")
     ? [

@@ -2,7 +2,7 @@ import * as all from "../";
 
 describe("kernel module exports", () => {
   it("should expose fixed number of things", () => {
-    expect(Object.keys(all).length).toEqual(18);
+    expect(Object.keys(all).length).toEqual(19);
   });
 
   describe("setStore", () => {
@@ -11,9 +11,9 @@ describe("kernel module exports", () => {
     });
   });
 
-  describe("setSagaRunner", () => {
+  describe("getStore", () => {
     it("exposes expected", () => {
-      expect(all.setSagaRunner).toBeDefined();
+      expect(all.getStore).toBeDefined();
     });
   });
 
@@ -33,6 +33,7 @@ describe("kernel module exports", () => {
     it("exposes expected", () => {
       expect(all.moduleLoaderMiddleware).toBeDefined();
       expect(all.dynamicMiddleware).toBeDefined();
+      expect(all.createSagaMiddleware).toBeDefined();
     });
   });
 

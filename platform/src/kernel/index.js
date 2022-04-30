@@ -5,7 +5,7 @@ import registerModule from "../register";
 import moduleLoaderMiddleware from "./middleware/loader";
 import createSagaMiddleware from "./middleware/saga";
 import dynamicMiddleware from "./middleware/dynamic";
-import { setStore } from "./registry/store";
+import { getStore, setStore } from "./registry/store";
 import sharedReducer from "./reducer/shared";
 import modulesReducer from "./reducer/modules";
 
@@ -32,6 +32,7 @@ export {
   dynamicMiddleware,
   createSagaMiddleware,
   registerModule,
+  getStore,
   setStore,
 };
 
@@ -52,5 +53,6 @@ export default {
   dynamicMiddleware,
   createSagaMiddleware,
   registerModule,
+  getStore,
   setStore,
 };
