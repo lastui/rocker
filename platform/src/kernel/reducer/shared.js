@@ -1,7 +1,8 @@
 import * as constants from "../../constants";
 
 const initialState = {
-  meta: {},
+  global: {},
+  local: {},
   language: "en-US",
   messages: {},
   updatedAt: 0,
@@ -12,13 +13,22 @@ function createSharedReducer() {
   const localeMapping = {};
   return (state = initialState, action) => {
     switch (action.type) {
-      case constants.SET_AVAILABLE_MODULES: {
-        const meta = {};
-        for (const item of action.payload.modules) {
-          meta[item.id] = item.meta || {};
+      case constants.SET_SHARED: {
+        if (!action.payload.module) {
+          return {
+            global: Object.assign({}, state.global, action.payload.data),
+            local: state.local,
+            language: state.language,
+            messages: state.messages,
+            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
+            readyModules: state.readyModules,
+          };
         }
+        const nextLocal = { ...state.local };
+        nextLocal[action.payload.module] = Object.assign({}, nextLocal[action.payload.module], action.payload.data);
         return {
-          meta,
+          global: state.global,
+          local: nextLocal,
           language: state.language,
           messages: state.messages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -29,7 +39,8 @@ function createSharedReducer() {
         const nextReadyModules = { ...state.readyModules };
         nextReadyModules[action.payload.module] = true;
         return {
-          meta: state.meta,
+          global: state.global,
+          local: state.local,
           language: state.language,
           messages: state.messages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -38,7 +49,8 @@ function createSharedReducer() {
       }
       case constants.MODULE_LOADED: {
         return {
-          meta: state.meta,
+          global: state.global,
+          local: state.local,
           language: state.language,
           messages: state.messages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -46,6 +58,8 @@ function createSharedReducer() {
         };
       }
       case constants.MODULE_UNLOADED: {
+        const nextLocal = { ...state.local };
+        delete nextLocal[action.payload.module];
         const nextReadyModules = { ...state.readyModules };
         delete nextReadyModules[action.payload.module];
         const nextMessages = {};
@@ -61,7 +75,8 @@ function createSharedReducer() {
         delete localeMapping[action.payload.module];
 
         return {
-          meta: state.meta,
+          global: state.global,
+          local: nextLocal,
           language: state.language,
           messages: nextMessages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -72,7 +87,8 @@ function createSharedReducer() {
         if (action.payload.batch.length === 0) {
           if (action.payload.language !== state.language) {
             return {
-              meta: state.meta,
+              global: state.global,
+              local: state.local,
               language: action.payload.language,
               messages: state.messages,
               updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -102,7 +118,7 @@ function createSharedReducer() {
           const walk = (path, table) => {
             for (const property in table) {
               const item = table[property];
-              if (typeof item !== "object") {
+              if (item.constructor !== Object) {
                 addItem(`${path}.${property}`, item);
               } else {
                 walk(`${path}.${property}`, item);
@@ -113,7 +129,8 @@ function createSharedReducer() {
         }
 
         return {
-          meta: state.meta,
+          global: state.global,
+          local: state.local,
           language: action.payload.language,
           messages: nextMessages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,

@@ -15,7 +15,14 @@ import {
 export default (fetchContext, bootstrapMiddlewares) => {
   const { sagaMiddleware, runSaga } = createSagaMiddleware({
     context: {
-      fetchContext,
+      fetchContext: async () => {
+        const ctx = await fetchContext();
+        return {
+          entrypoint: ctx?.entrypoint || null,
+          available: ctx?.available || [],
+          environment: ctx?.environment || {},
+        };
+      },
     },
   });
 

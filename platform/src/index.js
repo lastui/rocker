@@ -1,4 +1,4 @@
-import { SET_LANGUAGE, REFRESH } from "./constants";
+import { SET_LANGUAGE, REFRESH, SET_SHARED } from "./constants";
 
 import registerModule from "./register";
 import Module from "./component/Module";
@@ -22,8 +22,30 @@ function refresh() {
   };
 }
 
+function setGlobalShared(data) {
+  return {
+    type: SET_SHARED,
+    payload: {
+      data,
+      module: false,
+    },
+  };
+}
+
+function setLocalShared(data) {
+  return {
+    type: SET_SHARED,
+    payload: {
+      data,
+      module: true,
+    },
+  };
+}
+
 const actions = {
   setLanguage,
+  setGlobalShared,
+  setLocalShared,
   refresh,
 };
 

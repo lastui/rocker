@@ -70,10 +70,14 @@ describe("context", () => {
       const fetchContextFuture = jest.fn();
       const ctx = {
         entrypoint: "my-entrypoint",
+        environment: {
+          cloud: false,
+        },
         available: [],
       };
 
       const gen = fetchContext();
+
       const stepSagaContext = gen.next();
 
       expect(stepSagaContext.done).toEqual(false);
@@ -90,6 +94,13 @@ describe("context", () => {
       expect(stepAvailableModules.done).toEqual(false);
       expect(stepAvailableModules.value.payload.action.type).toEqual(constants.SET_AVAILABLE_MODULES);
       expect(stepAvailableModules.value.payload.action.payload.modules).toEqual(ctx.available);
+
+      const stepSetShared = gen.next();
+
+      expect(stepSetShared.done).toEqual(false);
+      expect(stepSetShared.value.payload.action.type).toEqual(constants.SET_SHARED);
+      expect(stepSetShared.value.payload.action.payload.data).toEqual(ctx.environment);
+      expect(stepSetShared.value.payload.action.payload.module).not.toBeDefined();
 
       const stepEntrypointModule = gen.next();
 

@@ -1,4 +1,5 @@
 import { warning } from "../../utils";
+import { SET_SHARED } from "../../constants";
 
 const initial = {
   underlying: {
@@ -22,7 +23,19 @@ const handler = {
       let prevStateIsolated = {};
       let prevState = null;
       return (id) => ({
-        dispatch: proxy.dispatch,
+        dispatch: (action) => {
+          if (action.type === SET_SHARED) {
+            return proxy.dispatch({
+              type: SET_SHARED,
+              payload: {
+                data: action.payload.data,
+                module: action.payload.module ? id : undefined,
+              },
+            });
+          } else {
+            return proxy.dispatch(action);
+          }
+        },
         getState: function () {
           const state = proxy.getState();
           if (prevState === state) {

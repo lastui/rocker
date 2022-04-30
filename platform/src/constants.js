@@ -15,3 +15,5 @@ export const MODULE_UNLOADED = "@@modules/UNLOADED";
 
 export const ADD_I18N_MESSAGES = "@@shared/ADD_I18N_MESSAGES";
 export const REMOVE_I18N_MESSAGES = "@@shared/REMOVE_I18N_MESSAGES";
+
+export const SET_SHARED = "@@shared/SET_SHARED";
