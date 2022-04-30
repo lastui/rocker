@@ -13,8 +13,9 @@ describe("safe module exports", () => {
 
   describe("actions", () => {
     it("exposes expected", () => {
-      expect(Object.keys(all.actions).length).toEqual(2);
+      expect(Object.keys(all.actions).length).toEqual(3);
       expect(all.actions.setLanguage).toBeDefined();
+      expect(all.actions.setShared).toBeDefined();
       expect(all.actions.refresh).toBeDefined();
     });
 
@@ -24,6 +25,15 @@ describe("safe module exports", () => {
         payload: {
           language: "foo",
         },
+      });
+    });
+
+    it(".setShared", () => {
+      expect(all.actions.setShared({ foo:'bar' })).toEqual({
+        type: "@@shared/SET_SHARED",
+        payload: {
+          foo: 'bar',
+        }
       });
     });
 

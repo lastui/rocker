@@ -24,6 +24,10 @@ export function* fetchContext() {
       },
     });
     yield put({
+      type: constants.SET_SHARED,
+      payload: context.environment,
+    });
+    yield put({
       type: constants.SET_ENTRYPOINT_MODULE,
       payload: {
         entrypoint: context.entrypoint,

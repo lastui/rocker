@@ -7,6 +7,7 @@ describe("runtimeReducer", () => {
     const initialState = runtimeReducer(undefined, action);
     expect(initialState).toEqual({
       entrypoint: null,
+      available: {},
     });
   });
 

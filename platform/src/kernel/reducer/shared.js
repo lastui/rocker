@@ -1,24 +1,44 @@
 import * as constants from "../../constants";
 
 const initialState = {
-  meta: {},
+  env: {},
   language: "en-US",
   messages: {},
   updatedAt: 0,
   readyModules: {},
 };
 
+function isObject(item) {
+  return item && item.constructor === Object && !Array.isArray(item);
+}
+
+function mergeDeep(target, ...sources) {
+  if (!sources.length) {
+    return target;
+  }
+  const source = sources.shift();
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) {
+          Object.assign(target, { [key]: {} });
+        }
+        mergeDeep(target[key], source[key]);
+      } else {
+        Object.assign(target, { [key]: source[key] });
+      }
+    }
+  }
+  return mergeDeep(target, ...sources);
+}
+
 function createSharedReducer() {
   const localeMapping = {};
   return (state = initialState, action) => {
     switch (action.type) {
-      case constants.SET_AVAILABLE_MODULES: {
-        const meta = {};
-        for (const item of action.payload.modules) {
-          meta[item.id] = item.meta || {};
-        }
+      case constants.SET_SHARED: {
         return {
-          meta,
+          env: mergeDeep({}, state.evn, action.payload),
           language: state.language,
           messages: state.messages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -29,7 +49,7 @@ function createSharedReducer() {
         const nextReadyModules = { ...state.readyModules };
         nextReadyModules[action.payload.module] = true;
         return {
-          meta: state.meta,
+          env: state.env,
           language: state.language,
           messages: state.messages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -38,7 +58,7 @@ function createSharedReducer() {
       }
       case constants.MODULE_LOADED: {
         return {
-          meta: state.meta,
+          env: state.env,
           language: state.language,
           messages: state.messages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -61,7 +81,7 @@ function createSharedReducer() {
         delete localeMapping[action.payload.module];
 
         return {
-          meta: state.meta,
+          env: state.env,
           language: state.language,
           messages: nextMessages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -72,7 +92,7 @@ function createSharedReducer() {
         if (action.payload.batch.length === 0) {
           if (action.payload.language !== state.language) {
             return {
-              meta: state.meta,
+              env: state.env,
               language: action.payload.language,
               messages: state.messages,
               updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -113,7 +133,7 @@ function createSharedReducer() {
         }
 
         return {
-          meta: state.meta,
+          env: state.env,
           language: action.payload.language,
           messages: nextMessages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
