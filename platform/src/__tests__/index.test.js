@@ -33,7 +33,8 @@ describe("safe module exports", () => {
         type: "@@shared/SET_SHARED",
         payload: {
           foo: 'bar',
-        }
+        },
+        local: true,
       });
     });
 
