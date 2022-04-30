@@ -28,7 +28,9 @@ const Module = forwardRef((props, ref) => {
     }
   }, [props.name, updatedAt]);
 
-  useEffect(loadModule, [loadModule]);
+  useEffect(() => {
+    loadModule();
+  }, [loadModule]);
 
   if (!props.name) {
     return null;
