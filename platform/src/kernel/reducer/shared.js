@@ -58,7 +58,8 @@ function createSharedReducer() {
         };
       }
       case constants.MODULE_UNLOADED: {
-        // TODO delete local shared state
+        const nextLocal = { ...state.local };
+        delete nextLocal[action.payload.module];
         const nextReadyModules = { ...state.readyModules };
         delete nextReadyModules[action.payload.module];
         const nextMessages = {};
@@ -75,7 +76,7 @@ function createSharedReducer() {
 
         return {
           global: state.global,
-          local: state.local,
+          local: nextLocal,
           language: state.language,
           messages: nextMessages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -117,7 +118,7 @@ function createSharedReducer() {
           const walk = (path, table) => {
             for (const property in table) {
               const item = table[property];
-              if (typeof item !== "object") {
+              if (item.constructor !== Object) {
                 addItem(`${path}.${property}`, item);
               } else {
                 walk(`${path}.${property}`, item);
