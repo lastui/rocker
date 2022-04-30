@@ -1,10 +1,13 @@
 const React = require("react");
+const ReduxSaga = require("redux-saga");
 
 const constants = new Proxy(Object, {
   get(_ref, prop) {
     return prop;
   },
 });
+
+let store = null;
 
 module.exports = {
   Module: (props) =>
@@ -38,8 +41,28 @@ module.exports = {
   },
   moduleLoaderMiddleware: (_store) => (next) => (action) => next(action),
   dynamicMiddleware: (_store) => (next) => (action) => next(action),
-  setSagaRunner: () => {},
-  setStore: () => {},
+  createSagaMiddleware: (options) => {
+    if (options && options.context && options.context.fetchContext) {
+      options.context.fetchContext();
+    }
+    const channel = ReduxSaga.stdChannel();
+    return {
+      sagaMiddleware: (_store) => (next) => (action) => next(action),
+      runSaga: (preferentialStore, saga) => ReduxSaga.runSaga(
+        {
+          context: options.context,
+          channel,
+          dispatch: preferentialStore.dispatch,
+          getState: preferentialStore.getState,
+        },
+        saga,
+      ),
+    }
+  },
+  setStore: (nextStore) => {
+    store = nextStore;
+  },
+  getStore: () => store,
   sharedReducer: (state = {}, action) => state,
   modulesReducer: (state = {}, action) => state,
 };

@@ -32,23 +32,6 @@ describe("context", () => {
       console.warn = consoleWarn;
     });
 
-    it("should call initializeRuntime if provided", () => {
-      const initializeRuntime = jest.fn();
-      const action = {
-        type: constants.INIT,
-        payload: {
-          initializeRuntime,
-        },
-      };
-      const gen = runRefresher(action);
-
-      const step = gen.next();
-
-      expect(step.done).toEqual(false);
-      expect(step.value.type).toEqual("CALL");
-      expect(step.value.payload.fn).toEqual(initializeRuntime);
-    });
-
     it("single run", async () => {
       const ctx = {
         entrypoint: "my-entrypoint",

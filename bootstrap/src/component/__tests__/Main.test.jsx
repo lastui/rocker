@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, waitFor, act } from "@testing-library/react";
-import { constants } from "@lastui/rocker/platform";
+import { constants, setStore } from "@lastui/rocker/platform";
 
 import configureStore from "redux-mock-store";
 
@@ -14,8 +14,10 @@ const mockStore = configureStore([])({
   },
 });
 
-jest.mock("../../store", () => async (fetchContext) => {
-  await fetchContext();
+setStore(mockStore);
+
+jest.mock("../../store", () => (fetchContext) => {
+  fetchContext();
   return mockStore;
 });
 
@@ -52,9 +54,8 @@ describe("<Main />", () => {
   });
 
   it("should bootstrap", async () => {
-    const initializeRuntime = jest.fn();
     const fetchContext = jest.fn();
-    render(<Main contextRefreshInterval={10} fetchContext={fetchContext} initializeRuntime={initializeRuntime} />);
+    render(<Main contextRefreshInterval={10} fetchContext={fetchContext} />);
     await waitFor(() => {
       expect(console.debug).toHaveBeenCalledWith("bootstraping runtime");
       const entrypointModule = screen.getByTestId("module/some-entrypoint");
@@ -63,7 +64,6 @@ describe("<Main />", () => {
       const actions = mockStore.getActions();
       expect(actions.length).toEqual(1);
       expect(actions[0].type).toEqual(constants.INIT);
-      expect(actions[0].payload.initializeRuntime).toEqual(initializeRuntime);
       expect(actions[0].payload.contextRefreshInterval).toEqual(10);
     });
   });
@@ -72,7 +72,7 @@ describe("<Main />", () => {
     const spy = jest.spyOn(console, "error");
     spy.mockImplementation(() => {});
 
-    const fetchContext = jest.fn(async () => {
+    const fetchContext = jest.fn(() => {
       throw new Error("bootstrap error");
     });
     render(

@@ -11,6 +11,7 @@ describe("store", () => {
     const fetchContext = jest.fn();
     const store = await setupStore(fetchContext);
     expect(store).toBeDefined();
+    expect(fetchContext).toHaveBeenCalled();
   });
 
   it("accepts middlewares provided via bootstrap", async () => {

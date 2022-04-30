@@ -6,9 +6,6 @@ export function* watchBootstrap() {
 }
 
 export function* runRefresher(action) {
-  if (action.payload.initializeRuntime) {
-    yield call(action.payload.initializeRuntime);
-  }
   const interval = Number(action.payload.contextRefreshInterval);
   const predicate = interval > 0 && process.env.NODE_ENV !== "development";
   if (predicate) {

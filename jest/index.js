@@ -4,10 +4,6 @@ const babelConfig = require("../babel").env.test;
 
 process.env.TZ = "UTC";
 
-if (!process.env.INIT_CWD) {
-  process.env.INIT_CWD = process.cwd();
-}
-
 const node_modules =
   path.dirname(process.env.INIT_CWD) === path.resolve(__dirname, "..")
     ? [

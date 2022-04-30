@@ -12,7 +12,7 @@ import {
   createSagaMiddleware,
 } from "@lastui/rocker/platform";
 
-export default async (fetchContext, bootstrapMiddlewares) => {
+export default (fetchContext, bootstrapMiddlewares) => {
   const { sagaMiddleware, runSaga } = createSagaMiddleware({
     context: {
       fetchContext,

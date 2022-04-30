@@ -7,7 +7,6 @@ const Redirect = (props) => {
   const history = useContext(HistoryContext);
 
   const from = useMemo(() => `${ctx.match.url}/${props.from}`.replace(/\/+/g, "/"), [ctx.match.url, props.from]);
-
   const to = useMemo(() => `${ctx.match.url}/${props.to}`.replace(/\/+/g, "/"), [ctx.match.url, props.to]);
 
   useEffect(() => {
