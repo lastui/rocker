@@ -26,7 +26,9 @@ const Main = (props) => {
     }
   }, [setReady, props.reduxMiddlewares, props.fetchContext, props.contextRefreshInterval]);
 
-  useEffect(bootstrap, [bootstrap]);
+  useEffect(() => {
+    bootstrap();
+  }, [bootstrap]);
 
   if (!ready) {
     return null;
