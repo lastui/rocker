@@ -28,12 +28,12 @@ const handler = {
             return proxy.dispatch({
               type: SET_SHARED,
               payload: {
-                data: action.payload,
-                id: action.payload.local ? id : undefined,
+                data: action.payload.data,
+                module: action.payload.module ? id : undefined,
               },
-            })
+            });
           } else {
-            return proxy.dispatch(action)
+            return proxy.dispatch(action);
           }
         },
         getState: function () {

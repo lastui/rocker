@@ -22,11 +22,13 @@ function refresh() {
   };
 }
 
-function setShared(payload, isGlobal) {
+function setShared(data, isLocal) {
   return {
     type: SET_SHARED,
-    payload,
-    local: !Boolean(isGlobal),
+    payload: {
+      data,
+      module: Boolean(isLocal),
+    },
   };
 }
 

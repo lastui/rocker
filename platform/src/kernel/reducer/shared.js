@@ -1,7 +1,8 @@
 import * as constants from "../../constants";
 
 const initialState = {
-  env: {},
+  global: {},
+  local: {},
   language: "en-US",
   messages: {},
   updatedAt: 0,
@@ -13,8 +14,21 @@ function createSharedReducer() {
   return (state = initialState, action) => {
     switch (action.type) {
       case constants.SET_SHARED: {
+        if (!action.payload.module) {
+          return {
+            global: Object.assign({}, state.global, action.payload.data),
+            local: state.local,
+            language: state.language,
+            messages: state.messages,
+            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
+            readyModules: state.readyModules,
+          };
+        }
+        const nextLocal = { ...state.local };
+        nextLocal[action.payload.module] = Object.assign({}, nextLocal[action.payload.module], action.payload.data);
         return {
-          env: Object.assign({}, state.evn, action.payload),
+          global: state.global,
+          local: nextLocal,
           language: state.language,
           messages: state.messages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -25,7 +39,8 @@ function createSharedReducer() {
         const nextReadyModules = { ...state.readyModules };
         nextReadyModules[action.payload.module] = true;
         return {
-          env: state.env,
+          global: state.global,
+          local: state.local,
           language: state.language,
           messages: state.messages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -34,7 +49,8 @@ function createSharedReducer() {
       }
       case constants.MODULE_LOADED: {
         return {
-          env: state.env,
+          global: state.global,
+          local: state.local,
           language: state.language,
           messages: state.messages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -42,6 +58,7 @@ function createSharedReducer() {
         };
       }
       case constants.MODULE_UNLOADED: {
+        // TODO delete local shared state
         const nextReadyModules = { ...state.readyModules };
         delete nextReadyModules[action.payload.module];
         const nextMessages = {};
@@ -57,7 +74,8 @@ function createSharedReducer() {
         delete localeMapping[action.payload.module];
 
         return {
-          env: state.env,
+          global: state.global,
+          local: state.local,
           language: state.language,
           messages: nextMessages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -68,7 +86,8 @@ function createSharedReducer() {
         if (action.payload.batch.length === 0) {
           if (action.payload.language !== state.language) {
             return {
-              env: state.env,
+              global: state.global,
+              local: state.local,
               language: action.payload.language,
               messages: state.messages,
               updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
@@ -109,7 +128,8 @@ function createSharedReducer() {
         }
 
         return {
-          env: state.env,
+          global: state.global,
+          local: state.local,
           language: action.payload.language,
           messages: nextMessages,
           updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,

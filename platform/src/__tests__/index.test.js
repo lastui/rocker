@@ -29,12 +29,14 @@ describe("safe module exports", () => {
     });
 
     it(".setShared", () => {
-      expect(all.actions.setShared({ foo:'bar' })).toEqual({
+      expect(all.actions.setShared({ foo: "bar" })).toEqual({
         type: "@@shared/SET_SHARED",
         payload: {
-          foo: 'bar',
+          data: {
+            foo: "bar",
+          },
+          module: false,
         },
-        local: true,
       });
     });
 

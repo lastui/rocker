@@ -25,7 +25,9 @@ export function* fetchContext() {
     });
     yield put({
       type: constants.SET_SHARED,
-      payload: context.environment,
+      payload: {
+        data: context.environment,
+      },
     });
     yield put({
       type: constants.SET_ENTRYPOINT_MODULE,
