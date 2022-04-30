@@ -1,6 +1,5 @@
 const React = require("react");
 const ReduxSaga = require("redux-saga");
-const channel = ReduxSaga.stdChannel();
 
 const constants = new Proxy(Object, {
   get(_ref, prop) {
@@ -46,6 +45,7 @@ module.exports = {
     if (options && options.context && options.context.fetchContext) {
       options.context.fetchContext();
     }
+    const channel = ReduxSaga.stdChannel();
     return {
       sagaMiddleware: (_store) => (next) => (action) => next(action),
       runSaga: (preferentialStore, saga) => ReduxSaga.runSaga(
