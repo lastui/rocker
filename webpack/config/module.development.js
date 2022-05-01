@@ -254,51 +254,64 @@ config.plugins.push(
       }
 
       return `
-				<html>
-					<head>
-						${props.htmlWebpackPlugin.tags.headTags}
-					</head>
-					<body>
-						${scripts}
-						<script>
-							(function(){
-								"use strict";
+        <html>
+          <head>
+            ${props.htmlWebpackPlugin.tags.headTags}
+          </head>
+          <body>
+            ${scripts}
+            <script type="text/javascript" defer>
+              (function(){
+                "use strict";
 
-								window.addEventListener("load", function() {
-									const react = dependencies_dll("./node_modules/react/index.js");
-									const dom = dependencies_dll("./node_modules/react-dom/client.js");
-									const bootstrap = bootstrap_dll("./node_modules/@lastui/rocker/bootstrap/index.js");
+                const manifest = ${manifest.trim()};
 
-									const root = dom.createRoot(document.getElementById("${settings.PROJECT_NAME}"));
-								
-									root.render(react.createElement(bootstrap.Main, {
-										fetchContext: async function() {
-											const manifest = ${manifest.trim()};
-											console.debug('using context', manifest);
-											return manifest;
-										}
-									}));
-								})
-							}())
-						</script>
-						<div id="${settings.PROJECT_NAME}" />
-					</body>
-				</html>
-			`;
+                window.addEventListener("DOMContentLoaded", function() {
+                  const react = dependencies_dll("./node_modules/react/index.js");
+                  const dom = dependencies_dll("./node_modules/react-dom/client.js");
+                  const bootstrap = bootstrap_dll("./node_modules/@lastui/rocker/bootstrap/index.js");
+
+                  const root = dom.createRoot(document.getElementById("${settings.PROJECT_NAME}"));
+                
+                  root.render(react.createElement(bootstrap.Main, {
+                    fetchContext: async function() {
+                      console.debug('using context', manifest);
+                      return manifest;
+                    }
+                  }));
+                })
+              }())
+            </script>
+            <div id="${settings.PROJECT_NAME}" />
+          </body>
+        </html>
+      `;
     },
   }),
   new AddAssetHtmlPlugin([
     {
       filepath: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies.dll.js"),
       typeOfAsset: "js",
+      attributes: {
+        type: 'text/javascript',
+        defer: true,
+      }
     },
     {
       filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.js"),
       typeOfAsset: "js",
+      attributes: {
+        type: 'text/javascript',
+        defer: true,
+      }
     },
     {
       filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.js"),
       typeOfAsset: "js",
+      attributes: {
+        type: 'text/javascript',
+        defer: true,
+      }
     },
   ]),
 );

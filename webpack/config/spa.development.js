@@ -218,14 +218,26 @@ config.plugins.push(
     {
       filepath: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies.dll.js"),
       typeOfAsset: "js",
+      attributes: {
+        type: 'text/javascript',
+        defer: true,
+      }
     },
     {
       filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.js"),
       typeOfAsset: "js",
+      attributes: {
+        type: 'text/javascript',
+        defer: true,
+      }
     },
     {
       filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.js"),
       typeOfAsset: "js",
+      attributes: {
+        type: 'text/javascript',
+        defer: true,
+      }
     },
   ]),
 );
