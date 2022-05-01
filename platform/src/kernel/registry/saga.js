@@ -35,11 +35,13 @@ async function addSaga(id, preferentialStore, saga) {
   sagaRunner(preferentialStore, function* () {
     try {
       sagas[id] = yield spawn(function* () {
-        let isReady = yield select((state) => state.shared.readyModules[id]);
-        while (!isReady) {
+        while (true) {
+          const isReady = yield select((state) => state.shared.readyModules[id]);
+          if (isReady) {
+            break
+          }
           yield take();
-          isReady = yield select((state) => state.shared.readyModules[id]);
-        }
+        };
         yield saga();
       });
     } catch (error) {
