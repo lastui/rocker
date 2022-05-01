@@ -20,8 +20,6 @@ config.output.assetModuleFilename = "spa/[name][ext][query]";
 
 config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
 
-//console.log()
-
 config.module.rules.push(
   {
     test: /\.[j|t]sx?$/,
@@ -186,8 +184,8 @@ config.plugins.push(
       minofyCSS: false,
       minifyURLs: false,
     },
-    inject: "body",
-    scriptLoading: "blocking",
+    inject: "head",
+    scriptLoading: "defer",
   }),
   new CopyPlugin({
     patterns: [
@@ -205,7 +203,6 @@ config.plugins.push(
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
       attributes: {
-        type: 'text/javascript',
         defer: true,
       }
     },
@@ -215,7 +212,6 @@ config.plugins.push(
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
       attributes: {
-        type: 'text/javascript',
         defer: true,
       }
     },
@@ -225,7 +221,6 @@ config.plugins.push(
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
       attributes: {
-        type: 'text/javascript',
         defer: true,
       }
     },
