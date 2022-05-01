@@ -216,7 +216,7 @@ config.plugins.push(
     publicPath: "",
     minify: false,
     inject: false,
-    scriptLoading: "blocking",
+    scriptLoading: "defer",
     templateContent: (props) => {
       const entrypoints = props.compilation.chunkGroups.map((chunk) => {
         const isPrimaryEntrypoint = chunk.origins.some(
@@ -260,7 +260,7 @@ config.plugins.push(
           </head>
           <body>
             ${scripts}
-            <script type="text/javascript" defer>
+            <script defer>
               (function(){
                 "use strict";
 
@@ -293,7 +293,6 @@ config.plugins.push(
       filepath: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies.dll.js"),
       typeOfAsset: "js",
       attributes: {
-        type: 'text/javascript',
         defer: true,
       }
     },
@@ -301,7 +300,6 @@ config.plugins.push(
       filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.js"),
       typeOfAsset: "js",
       attributes: {
-        type: 'text/javascript',
         defer: true,
       }
     },
@@ -309,7 +307,6 @@ config.plugins.push(
       filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.js"),
       typeOfAsset: "js",
       attributes: {
-        type: 'text/javascript',
         defer: true,
       }
     },

@@ -202,8 +202,8 @@ config.plugins.push(
     production: false,
     publicPath: "/",
     minify: false,
-    inject: "body",
-    scriptLoading: "blocking",
+    inject: "head",
+    scriptLoading: "defer",
   }),
   new CopyPlugin({
     patterns: [
@@ -219,7 +219,6 @@ config.plugins.push(
       filepath: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies.dll.js"),
       typeOfAsset: "js",
       attributes: {
-        type: 'text/javascript',
         defer: true,
       }
     },
@@ -227,7 +226,6 @@ config.plugins.push(
       filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.js"),
       typeOfAsset: "js",
       attributes: {
-        type: 'text/javascript',
         defer: true,
       }
     },
@@ -235,7 +233,6 @@ config.plugins.push(
       filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.js"),
       typeOfAsset: "js",
       attributes: {
-        type: 'text/javascript',
         defer: true,
       }
     },
