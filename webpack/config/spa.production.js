@@ -204,18 +204,30 @@ config.plugins.push(
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
+      attributes: {
+        type: 'text/javascript',
+        defer: true,
+      }
     },
     {
       filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.min.js"),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
+      attributes: {
+        type: 'text/javascript',
+        defer: true,
+      }
     },
     {
       filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.min.js"),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
+      attributes: {
+        type: 'text/javascript',
+        defer: true,
+      }
     },
   ]),
 );

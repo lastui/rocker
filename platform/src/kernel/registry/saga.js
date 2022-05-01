@@ -1,5 +1,5 @@
 import { warning } from "../../utils";
-import { cancel, spawn } from "redux-saga/effects";
+import { cancel, spawn, select, take } from "redux-saga/effects";
 
 const sagas = {};
 
@@ -34,7 +34,16 @@ async function addSaga(id, preferentialStore, saga) {
   }
   sagaRunner(preferentialStore, function* () {
     try {
-      sagas[id] = yield spawn(saga);
+      sagas[id] = yield spawn(function* () {
+        while (true) {
+          const isReady = yield select((state) => state.shared.readyModules[id]);
+          if (isReady) {
+            break
+          }
+          yield take();
+        };
+        yield saga();
+      });
     } catch (error) {
       warning(`module ${id} saga crashed`, error);
     }
