@@ -53,13 +53,12 @@ function createModulesReducer() {
       case constants.FETCH_CONTEXT:
       case constants.ADD_I18N_MESSAGES:
       case constants.REMOVE_I18N_MESSAGES:
-      case constants.MODULE_LOADED:
       case constants.SET_AVAILABLE_MODULES: {
         return state;
       }
-      case constants.MODULE_READY: {
+      case constants.MODULE_LOADED: {
         const id = action.payload.module;
-        console.debug(`module ${id} ready`);
+        console.debug(`module ${id} loaded`);
         let changed = false;
         const reducer = modulesReducers[id];
         if (reducer) {
@@ -70,10 +69,14 @@ function createModulesReducer() {
             warning(`module ${id} reducer failed to reduce`, error);
           }
         }
-        console.log(`+ module ${id}`);
         if (changed) {
           return { ...state };
         }
+        return state;
+      }
+      case constants.MODULE_READY: {
+        console.debug(`module ${id} ready`);
+        console.log(`+ module ${id}`);
         return state;
       }
       case constants.MODULE_UNLOADED: {
