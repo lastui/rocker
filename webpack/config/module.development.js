@@ -225,7 +225,7 @@ config.plugins.push(
         return [chunk.options.name, isPrimaryEntrypoint];
       });
 
-      const scripts = props.htmlWebpackPlugin.tags.bodyTags.filter(
+      const headTags = props.htmlWebpackPlugin.tags.headTags.filter(
         (item) => !entrypoints.map((i) => `${i[0]}.js`).includes(item.attributes.src),
       );
 
@@ -256,10 +256,9 @@ config.plugins.push(
       return `
         <html>
           <head>
-            ${props.htmlWebpackPlugin.tags.headTags}
+            ${headTags}
           </head>
           <body>
-            ${scripts}
             <script defer>
               (function(){
                 "use strict";

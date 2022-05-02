@@ -75,6 +75,7 @@ function createModulesReducer() {
         return state;
       }
       case constants.MODULE_READY: {
+        const id = action.payload.module;
         console.debug(`module ${id} ready`);
         console.log(`+ module ${id}`);
         return state;
