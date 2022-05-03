@@ -1,3 +1,4 @@
+import * as constants from "../../constants";
 import { warning } from "../../utils";
 import { cancel, spawn, select, take } from "redux-saga/effects";
 
@@ -40,7 +41,10 @@ async function addSaga(id, preferentialStore, saga) {
           if (isReady) {
             break
           }
-          yield take();
+          const init = yield take(constants.MODULE_INIT);
+          if (init.payload.module == id) {
+            break
+          }
         };
         yield saga();
       });

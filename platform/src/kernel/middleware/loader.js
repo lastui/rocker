@@ -29,16 +29,14 @@ const createLoaderMiddleware = () => {
         case constants.MODULE_LOADED: {
           const id = action.payload.module;
           console.debug(`module ${id} loaded`);
-          if (!id) {
-            return next({
-              type: constants.MODULE_READY,
+          const language = store.getState().shared.language;
+          if (!language) {
+            store.dispatch({
+              type: constants.MODULE_INIT,
               payload: {
                 module: id,
               },
             });
-          }
-          const language = store.getState().shared.language;
-          if (!language) {
             return next({
               type: constants.MODULE_READY,
               payload: {
@@ -47,6 +45,12 @@ const createLoaderMiddleware = () => {
             });
           }
           if (loadedLocales[id] && loadedLocales[id][language]) {
+            store.dispatch({
+              type: constants.MODULE_INIT,
+              payload: {
+                module: id,
+              },
+            });
             return next({
               type: constants.MODULE_READY,
               payload: {
@@ -55,6 +59,12 @@ const createLoaderMiddleware = () => {
             });
           }
           if (!availableLocales[id]) {
+            store.dispatch({
+              type: constants.MODULE_INIT,
+              payload: {
+                module: id,
+              },
+            });
             return next({
               type: constants.MODULE_READY,
               payload: {
@@ -64,6 +74,12 @@ const createLoaderMiddleware = () => {
           }
           const uri = availableLocales[id][language];
           if (!uri) {
+            store.dispatch({
+              type: constants.MODULE_INIT,
+              payload: {
+                module: id,
+              },
+            });
             return next({
               type: constants.MODULE_READY,
               payload: {
@@ -75,6 +91,12 @@ const createLoaderMiddleware = () => {
             .then((data) => data.json())
             .catch((error) => {
               warning(`invalid localisation asset ${uri}`, error);
+              store.dispatch({
+                type: constants.MODULE_INIT,
+                payload: {
+                  module: id,
+                },
+              });
               return next({
                 type: constants.MODULE_READY,
                 payload: {
@@ -84,6 +106,12 @@ const createLoaderMiddleware = () => {
             })
             .then((data) => {
               if (!availableLocales[id]) {
+                store.dispatch({
+                  type: constants.MODULE_INIT,
+                  payload: {
+                    module: id,
+                  },
+                });
                 return next({
                   type: constants.MODULE_READY,
                   payload: {
@@ -96,6 +124,12 @@ const createLoaderMiddleware = () => {
               }
               loadedLocales[id][language] = true;
               if (Object.keys(data).length === 0) {
+                store.dispatch({
+                  type: constants.MODULE_INIT,
+                  payload: {
+                    module: id,
+                  },
+                });
                 return next({
                   type: constants.MODULE_READY,
                   payload: {
@@ -105,16 +139,22 @@ const createLoaderMiddleware = () => {
               }
               console.debug(`module ${id} introducing locales for ${language}`);
               store.dispatch({
-                type: constants.MODULE_READY,
+                type: constants.ADD_I18N_MESSAGES,
+                payload: {
+                  language,
+                  batch: [{ module: id, data }],
+                },
+              });
+              store.dispatch({
+                type: constants.MODULE_INIT,
                 payload: {
                   module: id,
                 },
               });
               return next({
-                type: constants.ADD_I18N_MESSAGES,
+                type: constants.MODULE_READY,
                 payload: {
-                  language,
-                  batch: [{ module: id, data }],
+                  module: id,
                 },
               });
             });
