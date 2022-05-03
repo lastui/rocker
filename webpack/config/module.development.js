@@ -293,21 +293,21 @@ config.plugins.push(
       typeOfAsset: "js",
       attributes: {
         defer: true,
-      }
+      },
     },
     {
       filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
-      }
+      },
     },
     {
       filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
-      }
+      },
     },
   ]),
 );

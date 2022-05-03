@@ -29,32 +29,18 @@ const createLoaderMiddleware = () => {
         case constants.MODULE_LOADED: {
           const id = action.payload.module;
           console.debug(`module ${id} loaded`);
-          if (!id) {
-            return next({
-              type: constants.MODULE_READY,
-              payload: {
-                module: id,
-              },
-            });
-          }
           const language = store.getState().shared.language;
-          if (!language) {
-            return next({
-              type: constants.MODULE_READY,
+          if (
+            !language ||
+            (loadedLocales[id] && loadedLocales[id][language]) ||
+            !(availableLocales[id] && availableLocales[id][language])
+          ) {
+            store.dispatch({
+              type: constants.MODULE_INIT,
               payload: {
                 module: id,
               },
             });
-          }
-          if (loadedLocales[id] && loadedLocales[id][language]) {
-            return next({
-              type: constants.MODULE_READY,
-              payload: {
-                module: id,
-              },
-            });
-          }
-          if (!availableLocales[id]) {
             return next({
               type: constants.MODULE_READY,
               payload: {
@@ -63,58 +49,44 @@ const createLoaderMiddleware = () => {
             });
           }
           const uri = availableLocales[id][language];
-          if (!uri) {
-            return next({
-              type: constants.MODULE_READY,
-              payload: {
-                module: id,
-              },
-            });
-          }
           return downloadAsset(uri)
             .then((data) => data.json())
-            .catch((error) => {
-              warning(`invalid localisation asset ${uri}`, error);
-              return next({
-                type: constants.MODULE_READY,
-                payload: {
-                  module: id,
-                },
-              });
-            })
             .then((data) => {
               if (!availableLocales[id]) {
-                return next({
-                  type: constants.MODULE_READY,
-                  payload: {
-                    module: id,
-                  },
-                });
+                throw new Error("locale no longer available");
               }
               if (!loadedLocales[id]) {
                 loadedLocales[id] = {};
               }
               loadedLocales[id][language] = true;
-              if (Object.keys(data).length === 0) {
-                return next({
-                  type: constants.MODULE_READY,
+              return data;
+            })
+            .then((data) => {
+              if (Object.keys(data).length > 0) {
+                console.debug(`module ${id} introducing locales for ${language}`);
+                store.dispatch({
+                  type: constants.ADD_I18N_MESSAGES,
                   payload: {
-                    module: id,
+                    language,
+                    batch: [{ module: id, data }],
                   },
                 });
               }
-              console.debug(`module ${id} introducing locales for ${language}`);
+            })
+            .catch((error) => {
+              warning(`invalid localisation asset ${uri}`, error);
+            })
+            .then(() => {
               store.dispatch({
-                type: constants.MODULE_READY,
+                type: constants.MODULE_INIT,
                 payload: {
                   module: id,
                 },
               });
               return next({
-                type: constants.ADD_I18N_MESSAGES,
+                type: constants.MODULE_READY,
                 payload: {
-                  language,
-                  batch: [{ module: id, data }],
+                  module: id,
                 },
               });
             });

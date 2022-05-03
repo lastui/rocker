@@ -56,9 +56,9 @@ function createModulesReducer() {
       case constants.SET_AVAILABLE_MODULES: {
         return state;
       }
-      case constants.MODULE_LOADED: {
+      case constants.MODULE_INIT: {
         const id = action.payload.module;
-        console.debug(`module ${id} loaded`);
+        console.debug(`module ${id} initialized`);
         let changed = false;
         const reducer = modulesReducers[id];
         if (reducer) {
