@@ -204,7 +204,7 @@ config.plugins.push(
       typeOfAsset: "js",
       attributes: {
         defer: true,
-      }
+      },
     },
     {
       filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.min.js"),
@@ -213,7 +213,7 @@ config.plugins.push(
       typeOfAsset: "js",
       attributes: {
         defer: true,
-      }
+      },
     },
     {
       filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.min.js"),
@@ -222,7 +222,7 @@ config.plugins.push(
       typeOfAsset: "js",
       attributes: {
         defer: true,
-      }
+      },
     },
   ]),
 );

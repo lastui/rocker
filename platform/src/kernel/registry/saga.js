@@ -39,13 +39,13 @@ async function addSaga(id, preferentialStore, saga) {
         while (true) {
           const isReady = yield select((state) => state.shared.readyModules[id]);
           if (isReady) {
-            break
+            break;
           }
           const init = yield take(constants.MODULE_INIT);
-          if (init.payload.module == id) {
-            break
+          if (init.payload.module === id) {
+            break;
           }
-        };
+        }
         yield saga();
       });
     } catch (error) {
