@@ -48,16 +48,17 @@ module.exports = {
     const channel = ReduxSaga.stdChannel();
     return {
       sagaMiddleware: (_store) => (next) => (action) => next(action),
-      runSaga: (preferentialStore, saga) => ReduxSaga.runSaga(
-        {
-          context: options.context,
-          channel,
-          dispatch: preferentialStore.dispatch,
-          getState: preferentialStore.getState,
-        },
-        saga,
-      ),
-    }
+      runSaga: (preferentialStore, saga) =>
+        ReduxSaga.runSaga(
+          {
+            context: options.context,
+            channel,
+            dispatch: preferentialStore.dispatch,
+            getState: preferentialStore.getState,
+          },
+          saga,
+        ),
+    };
   },
   setStore: (nextStore) => {
     store = nextStore;
