@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.11.17",
+  "version": "0.11.18",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -87,7 +87,7 @@
     "@babel/register": "7.17.7",
     "@linaria/webpack-loader": "3.0.0-beta.18",
     "@redux-devtools/extension": "3.2.2",
-    "@testing-library/react": "13.1.1",
+    "@testing-library/react": "13.2.0",
     "add-asset-html-webpack-plugin": "5.0.2",
     "babel-loader": "8.2.5",
     "clean-webpack-plugin": "4.0.0",
@@ -96,10 +96,10 @@
     "core-js": "3.22.4",
     "css-loader": "6.7.1",
     "dotenv": "16.0.0",
-    "eslint": "8.14.0",
+    "eslint": "8.15.0",
     "html-webpack-plugin": "5.5.0",
-    "jest": "28.0.3",
-    "jest-environment-jsdom": "28.0.2",
+    "jest": "28.1.0",
+    "jest-environment-jsdom": "28.1.0",
     "json5-loader": "4.0.1",
     "mini-css-extract-plugin": "2.6.0",
     "path-browserify": "1.0.1",
@@ -111,7 +111,7 @@
     "terser-webpack-plugin": "5.3.1",
     "util": "0.12.4",
     "webpack": "5.72.0",
-    "webpack-dev-server": "4.8.1",
+    "webpack-dev-server": "4.9.0",
     "yargs": "17.4.1"
   },
   "repository": {
