@@ -65,7 +65,7 @@ const createLoaderMiddleware = () => {
               if (Object.keys(data).length > 0) {
                 console.debug(`module ${id} introducing locales for ${language}`);
                 store.dispatch({
-                  type: constants.ADD_I18N_MESSAGES,
+                  type: constants.I18N_MESSAGES_BATCH,
                   payload: {
                     language,
                     batch: [{ module: id, data }],
@@ -132,7 +132,7 @@ const createLoaderMiddleware = () => {
               }
             }
             return next({
-              type: constants.ADD_I18N_MESSAGES,
+              type: constants.I18N_MESSAGES_BATCH,
               payload: {
                 language,
                 batch,

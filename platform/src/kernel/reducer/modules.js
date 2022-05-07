@@ -43,7 +43,7 @@ const handler = {
 
 const modulesReducers = new Proxy(initial, handler);
 
-const initialState = {};
+export const initialState = {};
 
 function createModulesReducer() {
   return (state = initialState, action) => {
@@ -51,8 +51,7 @@ function createModulesReducer() {
       case constants.INIT:
       case constants.REFRESH:
       case constants.FETCH_CONTEXT:
-      case constants.ADD_I18N_MESSAGES:
-      case constants.REMOVE_I18N_MESSAGES:
+      case constants.I18N_MESSAGES_BATCH:
       case constants.SET_AVAILABLE_MODULES: {
         return state;
       }

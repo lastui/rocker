@@ -1,6 +1,6 @@
 import * as constants from "../../constants";
 
-const initialState = {
+export const initialState = {
   global: {},
   local: {},
   language: "en-US",
@@ -14,7 +14,7 @@ function createSharedReducer() {
   return (state = initialState, action) => {
     switch (action.type) {
       case constants.SET_SHARED: {
-        if (!action.payload.module) {
+        if (!action.payload.module || typeof action.payload.module !== "string") {
           return {
             global: Object.assign({}, state.global, action.payload.data),
             local: state.local,
@@ -83,19 +83,19 @@ function createSharedReducer() {
           readyModules: nextReadyModules,
         };
       }
-      case constants.ADD_I18N_MESSAGES: {
+      case constants.I18N_MESSAGES_BATCH: {
         if (action.payload.batch.length === 0) {
-          if (action.payload.language !== state.language) {
-            return {
-              global: state.global,
-              local: state.local,
-              language: action.payload.language,
-              messages: state.messages,
-              updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
-              readyModules: state.readyModules,
-            };
+          if (action.payload.language === state.language) {
+            return state;
           }
-          return state;
+          return {
+            global: state.global,
+            local: state.local,
+            language: action.payload.language,
+            messages: state.messages,
+            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
+            readyModules: state.readyModules,
+          };
         }
 
         const nextMessages = {};
