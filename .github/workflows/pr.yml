@@ -26,14 +26,14 @@ jobs:
         uses: ArtiomTr/jest-coverage-report-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INIT_CWD: ${{ github.workspace }}/platform
         with:
-          test-command: node ./cli/index.js test
+          test-script: node ./cli/index.js test
+          working-directory: platform
       - name: Test bootstrap
         uses: ArtiomTr/jest-coverage-report-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INIT_CWD: ${{ github.workspace }}/bootstrap
         with:
-          test-command: node ./cli/index.js test
+          test-script: node ./cli/index.js test
+          working-directory: bootstrap
 
