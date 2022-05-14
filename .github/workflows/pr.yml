@@ -34,16 +34,18 @@ jobs:
       - name: Collect coverage for platform
         uses: 5monkeys/cobertura-action@master
         with:
-          path: platform/coverage/cover.xml
+          path: platform/coverage/clover.xml
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           minimum_coverage: 100
+          fail_below_threshold: true
       - name: Test package bootstrap
         working-directory: bootstrap
         run: node ../cli/index.js test
       - name: Collect coverage for bootstrap
         uses: 5monkeys/cobertura-action@master
         with:
-          path: bootstrap/coverage/cover.xml
+          path: bootstrap/coverage/clover.xml
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           minimum_coverage: 100
+          fail_below_threshold: true
 
