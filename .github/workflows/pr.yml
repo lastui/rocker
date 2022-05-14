@@ -30,7 +30,9 @@ jobs:
         run: npm run build:bootstrap
       - name: Test package platform
         working-directory: platform
-        run: node ../cli/index.js test
+        run: |
+          node ../cli/index.js test && \
+          cat '{ "coverageThreshold": { "global": { "branches": 100, "functions": 100, "lines": 100, "statements": 100 } } }' > jest.config.json
       - name: Collect coverage for platform
         uses: artiomtr/jest-coverage-report-action@v2
         with:
@@ -41,7 +43,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Test package bootstrap
         working-directory: bootstrap
-        run: node ../cli/index.js test
+        run: |
+          node ../cli/index.js test && \
+          cat '{ "coverageThreshold": { "global": { "branches": 100, "functions": 100, "lines": 100, "statements": 100 } } }' > jest.config.json
       - name: Collect coverage for bootstrap
         uses: artiomtr/jest-coverage-report-action@v2
         with:
