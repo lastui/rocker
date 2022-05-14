@@ -37,6 +37,7 @@ jobs:
           working-directory: platform
           skip-step: all
           coverage-file: coverage/coverage-final.json
+          base-coverage-file: coverage/coverage-final.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Test package bootstrap
         working-directory: bootstrap
@@ -47,5 +48,6 @@ jobs:
           working-directory: bootstrap
           skip-step: all
           coverage-file: coverage/coverage-final.json
+          base-coverage-file: coverage/coverage-final.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
