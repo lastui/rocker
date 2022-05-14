@@ -1,33 +1,33 @@
-import { createContext, useCallback, useContext, useRef, useMemo, useState } from "react";
+import React from "react";
 
 import { matchPath } from "../kernel/routing";
 
-export const HistoryContext = createContext();
-export const RouterContext = createContext();
+export const HistoryContext = React.createContext();
+export const RouterContext = React.createContext();
 
 export function useLocation() {
-  return useContext(RouterContext).location;
+  return React.useContext(RouterContext).location;
 }
 
 export function useParams() {
-  const match = useContext(RouterContext).match;
+  const match = React.useContext(RouterContext).match;
+  /* istanbul ignore next */
   return match ? match.params : {};
 }
 
 export function useRouteMatch(path) {
-  const ctx = useContext(RouterContext);
-  const result = useMemo(
+  const ctx = React.useContext(RouterContext);
+  return React.useMemo(
     () => (path ? matchPath(ctx.location.pathname, ctx.match.parent + path, {}) : ctx.match),
     [path, ctx.location.pathname, ctx.match],
   );
-  return result;
 }
 
 export function useHistory() {
-  const ctx = useContext(RouterContext);
-  const history = useContext(HistoryContext);
+  const ctx = React.useContext(RouterContext);
+  const history = React.useContext(HistoryContext);
 
-  const replace = useCallback(
+  const replace = React.useCallback(
     (to) => {
       const location = to.startsWith("/") ? to : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
       history.replace(location);
@@ -35,7 +35,7 @@ export function useHistory() {
     [history.replace, ctx.match.url],
   );
 
-  const push = useCallback(
+  const push = React.useCallback(
     (to) => {
       const location = to.startsWith("/") ? to : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
       history.push(location);
@@ -50,8 +50,9 @@ export function useHistory() {
 }
 
 const useInitEffect = (effect, observables) => {
-  const cleanup = useRef();
-  const _ = useMemo(() => {
+  const cleanup = React.useRef();
+  const _ = React.useMemo(() => {
+    /* istanbul ignore next */
     if (cleanup.current) {
       cleanup.current();
     }
@@ -60,8 +61,9 @@ const useInitEffect = (effect, observables) => {
 };
 
 const Router = (props) => {
-  const [location, setLocation] = useState(props.history.location);
+  const [location, setLocation] = React.useState(props.history.location);
 
+  /* istanbul ignore next */
   useInitEffect(
     () =>
       props.history.listen((action) => {
@@ -70,7 +72,7 @@ const Router = (props) => {
     [props.history.listen, setLocation],
   );
 
-  const composite = useMemo(
+  const composite = React.useMemo(
     () => ({
       location,
       match: {

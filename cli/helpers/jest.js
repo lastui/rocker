@@ -1,4 +1,3 @@
-const os = require("os");
 const path = require("path");
 const jest = require("jest");
 
@@ -11,9 +10,7 @@ exports.run = async function () {
     "--colors",
     "--passWithNoTests",
     "--injectGlobals",
-    "--resetMocks",
-    "--restoreMocks",
-    `--maxWorkers=${os.cpus().length}`,
+    `--maxWorkers=50%`,
     "--config",
     path.resolve(__dirname, "../../jest/index.js"),
   ]);

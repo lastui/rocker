@@ -1,6 +1,8 @@
-import * as constants from "../../constants";
-import { modulesReducers } from "../reducer/modules";
 import { combineReducers } from "redux";
+
+import * as constants from "../../constants";
+import { warning } from "../../utils";
+import { modulesReducers } from "../reducer/modules";
 
 const emptydict = {};
 

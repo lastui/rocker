@@ -1,13 +1,46 @@
-import { compose } from "redux";
+import * as constants from "../../constants";
 import { warning } from "../../utils";
 import { downloadAsset } from "../registry/assets";
 import loader from "../registry/loader";
-import * as constants from "../../constants";
 
 const createLoaderMiddleware = () => {
   let availableLocales = {};
   const loadedLocales = {};
-  const noop = { type: "" };
+
+  const downloadBatchLocales = async (ids, language) => {
+    const scheduledAssets = [];
+    for (const id of ids) {
+      if (!loadedLocales[id]) {
+        loadedLocales[id] = {};
+      }
+      if (loadedLocales[id][language]) {
+        continue;
+      }
+      loadedLocales[id][language] = true;
+
+      const uri = availableLocales[id] && availableLocales[id][language];
+      if (!uri) {
+        continue;
+      }
+      const promise = downloadAsset(uri)
+        .then((data) => data.json())
+        .then((data) => Object.keys(data).length > 0 && { module: id, data });
+      scheduledAssets.push(promise);
+    }
+
+    const scheduled = await Promise.allSettled(scheduledAssets);
+
+    const batch = [];
+    for (const action of scheduled) {
+      if (action.status !== "fulfilled" || !action.value) {
+        continue;
+      }
+      console.debug(`module ${action.value.module} introducing locales for ${language}`);
+      batch.push(action.value);
+    }
+
+    return batch;
+  };
 
   return (store) => (next) => (action) => {
     try {
@@ -30,11 +63,16 @@ const createLoaderMiddleware = () => {
           const id = action.payload.module;
           console.debug(`module ${id} loaded`);
           const language = store.getState().shared.language;
-          if (
-            !language ||
-            (loadedLocales[id] && loadedLocales[id][language]) ||
-            !(availableLocales[id] && availableLocales[id][language])
-          ) {
+          return downloadBatchLocales([id], language).then((items) => {
+            if (items.length > 0) {
+              store.dispatch({
+                type: constants.I18N_MESSAGES_BATCH,
+                payload: {
+                  language,
+                  batch: items,
+                },
+              });
+            }
             store.dispatch({
               type: constants.MODULE_INIT,
               payload: {
@@ -47,98 +85,28 @@ const createLoaderMiddleware = () => {
                 module: id,
               },
             });
-          }
-          const uri = availableLocales[id][language];
-          return downloadAsset(uri)
-            .then((data) => data.json())
-            .then((data) => {
-              if (!availableLocales[id]) {
-                throw new Error("locale no longer available");
-              }
-              if (!loadedLocales[id]) {
-                loadedLocales[id] = {};
-              }
-              loadedLocales[id][language] = true;
-              return data;
-            })
-            .then((data) => {
-              if (Object.keys(data).length > 0) {
-                console.debug(`module ${id} introducing locales for ${language}`);
-                store.dispatch({
-                  type: constants.I18N_MESSAGES_BATCH,
-                  payload: {
-                    language,
-                    batch: [{ module: id, data }],
-                  },
-                });
-              }
-            })
-            .catch((error) => {
-              warning(`invalid localisation asset ${uri}`, error);
-            })
-            .then(() => {
-              store.dispatch({
-                type: constants.MODULE_INIT,
-                payload: {
-                  module: id,
-                },
-              });
-              return next({
-                type: constants.MODULE_READY,
-                payload: {
-                  module: id,
-                },
-              });
-            });
+          });
         }
 
         case constants.SET_LANGUAGE: {
           const language = action.payload.language;
-          const scheduledAssets = [];
-          for (const id in loadedLocales) {
-            if (!loadedLocales[id][language]) {
-              const uri = availableLocales[id][language];
-              if (uri) {
-                const promise = downloadAsset(uri)
-                  .then((data) => data.json())
-                  .catch((error) => {
-                    warning(`invalid localisation asset ${uri}`, error);
-                    return null;
-                  })
-                  .then((data) => {
-                    if (!availableLocales[id]) {
-                      return null;
-                    }
-                    if (!loadedLocales[id]) {
-                      loadedLocales[id] = {};
-                    }
-                    loadedLocales[id][language] = true;
-                    if (Object.keys(data).length === 0) {
-                      return null;
-                    }
-                    console.debug(`module ${id} introducing locales for ${language}`);
-                    return { module: id, data };
-                  });
 
-                scheduledAssets.push(promise);
-              }
+          const missing = [];
+          for (const id in loadedLocales) {
+            if (loadedLocales[id][language]) {
+              continue;
             }
+            missing.push(id);
           }
-          return Promise.allSettled(scheduledAssets).then((scheduled) => {
-            const batch = [];
-            for (const action of scheduled) {
-              if (action.status === "fulfilled" && action.value !== null) {
-                batch.push(action.value);
-              }
-            }
-            return next({
+          return downloadBatchLocales(missing, language).then((items) =>
+            next({
               type: constants.I18N_MESSAGES_BATCH,
               payload: {
                 language,
-                batch,
+                batch: items,
               },
-            });
-          });
+            }),
+          );
         }
 
         case constants.MODULE_UNLOADED: {
@@ -160,4 +128,4 @@ const createLoaderMiddleware = () => {
   };
 };
 
-export default createLoaderMiddleware();
+export default createLoaderMiddleware;

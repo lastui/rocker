@@ -4,12 +4,39 @@ import reducer, { initialState, modulesReducers } from "../modules";
 describe("modules reducer", () => {
   afterEach(() => {
     const dangling = [];
-    for (const [id, _reducer] of modulesReducers) {
-      dangling.push(id);
+    for (const tuple of modulesReducers) {
+      dangling.push(tuple[0]);
     }
     for (const id of dangling) {
       delete modulesReducers[id];
     }
+  });
+
+  describe("modulesReducers set", () => {
+    it("set truthy", () => {
+      modulesReducers["test-probe"] = () => {};
+    });
+
+    it("set falsey", () => {
+      expect(() => {
+        modulesReducers["test-probe"] = false;
+      }).toThrow();
+    });
+
+    it("replace existing", () => {
+      modulesReducers["test-probe"] = 1;
+      modulesReducers["test-probe"] = 2;
+      expect(modulesReducers["test-probe"]).toEqual(2);
+    });
+
+    it("delete existing", () => {
+      modulesReducers["test-probe"] = () => {};
+      delete modulesReducers["test-probe"];
+    });
+
+    it("delete non existing", () => {
+      delete modulesReducers["test-probe"];
+    });
   });
 
   describe("is reducer", () => {
@@ -41,6 +68,7 @@ describe("modules reducer", () => {
         ...localState,
         me: "shiny",
       });
+      modulesReducers["my-feature-noop"] = (localState = {}, _action) => localState;
       const state = {
         ...initialState,
       };
@@ -49,9 +77,13 @@ describe("modules reducer", () => {
         "my-feature-fine": {
           me: "shiny",
         },
+        "my-feature-noop": {},
       };
-      expect(reducer(state, action)).toEqual(expectedState);
 
+      expect(reducer(state, action)).toEqual(expectedState);
+      expect(spyError).toHaveBeenCalledWith("module my-feature-broken reducer failed to reduce", "ouch");
+
+      expect(reducer(state, action)).toEqual(expectedState);
       expect(spyError).toHaveBeenCalledWith("module my-feature-broken reducer failed to reduce", "ouch");
     });
   });

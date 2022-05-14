@@ -1,23 +1,28 @@
-import { warning } from "../../utils";
 import { SET_SHARED } from "../../constants";
+import { warning } from "../../utils";
 
-const initial = {
-  underlying: {
-    dispatch() {
-      warning("Redux store is not provided!");
-    },
-    getState() {
-      warning("Redux store is not provided!");
-      return {};
-    },
-    subscribe() {
-      warning("Redux store is not provided!");
-    },
+const defaultStore = {
+  dispatch() {
+    warning("Redux store is not provided!");
+  },
+  getState() {
+    warning("Redux store is not provided!");
+    return {};
+  },
+  subscribe() {
+    warning("Redux store is not provided!");
+  },
+  replaceReducer() {
+    warning("Redux store is not provided!");
   },
 };
 
+const initial = {
+  underlying: defaultStore,
+};
+
 const handler = {
-  get: function (ref, prop) {
+  get(ref, prop) {
     if (prop === "namespace") {
       const proxy = arguments[arguments.length - 1];
       let prevStateIsolated = {};
@@ -36,7 +41,7 @@ const handler = {
             return proxy.dispatch(action);
           }
         },
-        getState: function () {
+        getState() {
           const state = proxy.getState();
           if (prevState === state) {
             return prevStateIsolated;
@@ -57,12 +62,12 @@ const handler = {
           return prevStateIsolated;
         },
         subscribe: proxy.subscribe,
-        replaceReducer: function (newReducer) {},
+        replaceReducer(newReducer) {},
       });
     }
     return Reflect.get(ref.underlying, prop);
   },
-  set: function (ref, prop, value) {
+  set(ref, prop, value) {
     if (prop === "underlying" && value) {
       ref.underlying = value;
       return true;
@@ -74,7 +79,11 @@ const handler = {
 const store = new Proxy(initial, handler);
 
 function setStore(nextStore) {
-  store.underlying = nextStore;
+  if (nextStore) {
+    store.underlying = nextStore;
+  } else {
+    store.underlying = defaultStore;
+  }
 }
 
 function getStore() {

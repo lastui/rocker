@@ -1,5 +1,5 @@
-const React = require("react");
-const ReduxSaga = require("redux-saga");
+const React = require('react');
+const ReduxSaga = require('redux-saga');
 
 const constants = new Proxy(Object, {
   get(_ref, prop) {
@@ -12,14 +12,14 @@ let store = null;
 module.exports = {
   Module: (props) =>
     props.children
-      ? React.createElement("section", { "data-testid": `module/${props.name}` }, props.children)
-      : React.createElement("section", {
-          "data-testid": `module/${props.name}`,
-        }),
+      ? React.createElement('section', { 'data-testid': `module/${props.name}` }, props.children)
+      : React.createElement('section', { 'data-testid': `module/${props.name}` }),
   Route: () => null,
-  Router: (props) => (props.children ? React.createElement(React.Fragment, {}, props.children) : null),
+  Router: (props) =>
+    props.children ? React.createElement(React.Fragment, {}, props.children) : null,
   Redirect: () => null,
-  Link: (props) => (props.component ? React.createElement(props.component, { navigate: () => {} }) : null),
+  Link: (props) =>
+    props.component ? React.createElement(props.component, { navigate: () => {} }) : null,
   useHistory: () => ({
     push: () => {},
     replace: () => {},
@@ -39,8 +39,8 @@ module.exports = {
       type: constants.REFRESH,
     }),
   },
-  moduleLoaderMiddleware: (_store) => (next) => (action) => next(action),
   dynamicMiddleware: (_store) => (next) => (action) => next(action),
+  createLoaderMiddleware: () => (_store) => (next) => (action) => next(action),
   createSagaMiddleware: (options) => {
     if (options && options.context && options.context.fetchContext) {
       options.context.fetchContext();
