@@ -32,7 +32,7 @@ jobs:
         working-directory: platform
         run: |
           node ../cli/index.js test && \
-          cat '{ "coverageThreshold": { "global": { "branches": 100, "functions": 100, "lines": 100, "statements": 100 } } }' > jest.config.json
+          echo '{ "coverageThreshold": { "global": { "branches": 100, "functions": 100, "lines": 100, "statements": 100 } } }' > jest.config.json
       - name: Collect coverage for platform
         uses: artiomtr/jest-coverage-report-action@v2
         with:
@@ -45,7 +45,7 @@ jobs:
         working-directory: bootstrap
         run: |
           node ../cli/index.js test && \
-          cat '{ "coverageThreshold": { "global": { "branches": 100, "functions": 100, "lines": 100, "statements": 100 } } }' > jest.config.json
+          echo '{ "coverageThreshold": { "global": { "branches": 100, "functions": 100, "lines": 100, "statements": 100 } } }' > jest.config.json
       - name: Collect coverage for bootstrap
         uses: artiomtr/jest-coverage-report-action@v2
         with:
