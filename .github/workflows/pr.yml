@@ -34,8 +34,9 @@ jobs:
       - name: Collect coverage for platform
         uses: artiomtr/jest-coverage-report-action@v2
         with:
+          working-directory: platform
           skip-step: all
-          coverage-file: ./platform/coverage-final.json
+          coverage-file: coverage-final.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Test package bootstrap
         working-directory: bootstrap
@@ -43,7 +44,8 @@ jobs:
       - name: Collect coverage for bootstrap
         uses: artiomtr/jest-coverage-report-action@v2
         with:
+          working-directory: bootstrap
           skip-step: all
-          coverage-file: ./bootstrap/coverage-final.json
+          coverage-file: coverage-final.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
