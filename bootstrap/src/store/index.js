@@ -1,5 +1,5 @@
-import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
-import { all, fork } from 'redux-saga/effects';
+import { applyMiddleware, compose, createStore, combineReducers } from "redux";
+import { all, fork } from "redux-saga/effects";
 import {
   setStore,
   sharedReducer,
@@ -7,10 +7,10 @@ import {
   createLoaderMiddleware,
   dynamicMiddleware,
   createSagaMiddleware,
-} from '@lastui/rocker/platform';
+} from "@lastui/rocker/platform";
 
-import { runtimeReducer } from '../reducer';
-import { watchRefresh, watchFetchContext, watchBootstrap } from '../saga';
+import { runtimeReducer } from "../reducer";
+import { watchRefresh, watchFetchContext, watchBootstrap } from "../saga";
 
 export default async (fetchContext, bootstrapMiddlewares) => {
   const loaderMiddleware = createLoaderMiddleware();
@@ -27,17 +27,10 @@ export default async (fetchContext, bootstrapMiddlewares) => {
     },
   });
 
-  const enhancers = [
-    loaderMiddleware,
-    sagaMiddleware,
-    ...(bootstrapMiddlewares || []),
-    dynamicMiddleware,
-  ];
+  const enhancers = [loaderMiddleware, sagaMiddleware, ...(bootstrapMiddlewares || []), dynamicMiddleware];
 
   const composer =
-    process.env.NODE_ENV === 'development'
-      ? require('@redux-devtools/extension').composeWithDevTools
-      : compose;
+    process.env.NODE_ENV === "development" ? require("@redux-devtools/extension").composeWithDevTools : compose;
 
   const reducer = combineReducers({
     runtime: runtimeReducer,

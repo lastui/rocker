@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { warning } from './utils';
+import { warning } from "./utils";
 
 /* istanbul ignore next */
 const GeneratorFunction = function* () {}.constructor;
@@ -19,7 +19,7 @@ export default function (scope) {
     throw new Error(`registerModule accepts only plain object, was called with ${typeof scope}`);
   }
   if (scope.BUILD_ID) {
-    if (typeof scope.BUILD_ID !== 'string') {
+    if (typeof scope.BUILD_ID !== "string") {
       warning(`implicit attribute "BUILD_ID" provided in registerModule is not string`);
     } else {
       window.__SANDBOX_SCOPE__.BUILD_ID = scope.BUILD_ID;
@@ -52,20 +52,14 @@ export default function (scope) {
       scope.middleware instanceof GeneratorFunction ||
       scope.middleware instanceof AsyncGeneratorFunction
     ) {
-      warning(
-        `attribute "middleware" provided in registerModule is not function or async function`,
-      );
+      warning(`attribute "middleware" provided in registerModule is not function or async function`);
     } else {
       window.__SANDBOX_SCOPE__.middleware = scope.middleware;
     }
   }
   if (scope.saga) {
-    if (
-      !(scope.saga instanceof GeneratorFunction || scope.saga instanceof AsyncGeneratorFunction)
-    ) {
-      warning(
-        `attribute "saga" provided in registerModule is not generator function or async generator function`,
-      );
+    if (!(scope.saga instanceof GeneratorFunction || scope.saga instanceof AsyncGeneratorFunction)) {
+      warning(`attribute "saga" provided in registerModule is not generator function or async generator function`);
     } else {
       window.__SANDBOX_SCOPE__.saga = scope.saga;
     }
