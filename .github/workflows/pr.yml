@@ -1,7 +1,13 @@
+name: Pull Request Gating
+
 on:
   pull_request:
+    branches:
+      - main
 
 jobs:
+
+  name: Test
   coverage:
     runs-on: ubuntu-latest
     steps:
