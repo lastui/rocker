@@ -7,11 +7,10 @@ on:
 
 jobs:
 
-  name: Test
-  coverage:
+  build:
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      - name: Test
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
