@@ -5,9 +5,9 @@ import { RouterContext, HistoryContext } from "./Router";
 
 const LinkAnchor = React.forwardRef((props, ref) => {
   const composite = React.useMemo(() => {
-    const { navigate, onClick, ...rest } = props;
+    const { navigate, onClick, to, ...rest } = props;
     return {
-      role: "link",
+      href: props.to,
       ...rest,
       onClick: (event) => {
         try {
@@ -34,9 +34,7 @@ const LinkAnchor = React.forwardRef((props, ref) => {
     };
   }, [props, ref]);
 
-  return props.children
-    ? React.createElement("a", composite, props.children)
-    : React.createElement("a", composite, null);
+  return props.children ? React.createElement("a", composite, props.children) : React.createElement("a", composite);
 });
 
 const Link = React.forwardRef((props, ref) => {
@@ -46,6 +44,7 @@ const Link = React.forwardRef((props, ref) => {
     const { replace, to, component, ...rest } = props;
     return {
       ...rest,
+      ...(props.component ? {} : { to }),
       navigate() {
         const location = to.startsWith("/") ? to : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
         if (replace) {
