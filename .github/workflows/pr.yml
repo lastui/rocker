@@ -23,7 +23,7 @@ jobs:
         uses: mattallty/jest-github-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INIT_CWD: ${{ env.base_directory }}/platform
+          INIT_CWD: ${{ github.workspace }}/platform
         with:
           test-command: |
             node ./cli/index.js test
@@ -31,7 +31,7 @@ jobs:
         uses: mattallty/jest-github-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INIT_CWD: ${{ env.base_directory }}/bootstrap
+          INIT_CWD: ${{ github.workspace }}/bootstrap
         with:
           test-command: |
             node ../cli/index.js test
