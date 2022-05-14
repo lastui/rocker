@@ -23,12 +23,16 @@ jobs:
         uses: mattallty/jest-github-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INIT_CWD: ${{ GITHUB_WORKSPACE }}/platform
         with:
-          test-command: "cd platform && node ../cli/index.js test"
+          test-command: |
+            node ./cli/index.js test
       - name: Test bootstrap
         uses: mattallty/jest-github-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INIT_CWD: ${{ GITHUB_WORKSPACE }}/bootstrap
         with:
-          test-command: "cd bootstrap && node ../cli/index.js test"
+          test-command: |
+            node ../cli/index.js test
 
