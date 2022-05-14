@@ -30,26 +30,20 @@ jobs:
         run: npm run build:bootstrap
       - name: Test package platform
         working-directory: platform
-        run: |
-          node ../cli/index.js test && \
-          cp coverage/coverage-final.json report.json && \
-          cat report.json
+        run: node ../cli/index.js test
       - name: Collect coverage for platform
         uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
         with:
           skip-step: all
-          working-directory: platform
+          coverage-file: ./platform/coverage-final.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Test package bootstrap
         working-directory: bootstrap
-        run: |
-          node ../cli/index.js test && \
-          cp coverage/coverage-final.json report.json && \
-          cat report.json
+        run: node ../cli/index.js test
       - name: Collect coverage for bootstrap
         uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
         with:
           skip-step: all
-          working-directory: bootstrap
+          coverage-file: ./bootstrap/coverage-final.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
