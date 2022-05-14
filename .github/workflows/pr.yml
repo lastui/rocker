@@ -32,20 +32,14 @@ jobs:
         working-directory: platform
         run: node ../cli/index.js test
       - name: Collect coverage for platform
-        uses: 5monkeys/cobertura-action@master
+        uses: codecov/codecov-action@v1.0.13
         with:
-          path: platform/coverage/clover.xml
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          minimum_coverage: 100
-          fail_below_threshold: true
+          file: platform/coverage/clover.xml
       - name: Test package bootstrap
         working-directory: bootstrap
         run: node ../cli/index.js test
       - name: Collect coverage for bootstrap
-        uses: 5monkeys/cobertura-action@master
+        uses: codecov/codecov-action@v1.0.13
         with:
-          path: bootstrap/coverage/clover.xml
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          minimum_coverage: 100
-          fail_below_threshold: true
+          file: bootstrap/coverage/clover.xml
 
