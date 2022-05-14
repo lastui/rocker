@@ -32,7 +32,7 @@ jobs:
         working-directory: platform
         run: node ../cli/index.js test
       - name: Collect coverage for platform
-        uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
+        uses: artiomtr/jest-coverage-report-action@v2.0
         with:
           skip-step: all
           coverage-file: ./platform/coverage-final.json
@@ -41,7 +41,7 @@ jobs:
         working-directory: bootstrap
         run: node ../cli/index.js test
       - name: Collect coverage for bootstrap
-        uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
+        uses: artiomtr/jest-coverage-report-action@v2.0
         with:
           skip-step: all
           coverage-file: ./bootstrap/coverage-final.json
