@@ -10,7 +10,8 @@ exports.run = async function () {
     "--colors",
     "--passWithNoTests",
     "--injectGlobals",
-    `--maxWorkers=50%`,
+    "--testLocationInResults",
+    "--maxWorkers=50%",
     "--config",
     path.resolve(__dirname, "../../jest/index.js"),
   ]);

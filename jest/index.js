@@ -23,7 +23,7 @@ module.exports = {
   collectCoverage: true,
   testEnvironment: "jsdom",
   coverageDirectory: "<rootDir>/coverage",
-  coverageReporters: ["text", "lcov", "clover"],
+  coverageReporters: ["text", "json", "lcov", "clover"],
   collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
   moduleFileExtensions: ["js", "ts", "jsx", "tsx"],
   transform: {
@@ -50,10 +50,10 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      branches: 0,
-      functions: 0,
-      lines: 0,
-      statements: 0,
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
     },
   },
   moduleDirectories: [...node_modules, "<rootDir>/src"],
