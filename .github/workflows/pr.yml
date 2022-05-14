@@ -32,17 +32,16 @@ jobs:
         working-directory: platform
         run: node ../cli/index.js test
       - name: Collect coverage for platform
-        uses: ArtiomTr/jest-coverage-report-action@v2
+        uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           skip-step: all
-          coverage-file: platform/coverage/coverage-final.json
       - name: Test package bootstrap
         working-directory: bootstrap
         run: node ../cli/index.js test
       - name: Collect coverage for bootstrap
-        uses: ArtiomTr/jest-coverage-report-action@v2
+        uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
