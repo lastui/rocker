@@ -31,7 +31,7 @@ describe("kernel module exports", () => {
 
   describe("middleware", () => {
     it("exposes expected", () => {
-      expect(all.moduleLoaderMiddleware).toBeDefined();
+      expect(all.createLoaderMiddleware).toBeDefined();
       expect(all.dynamicMiddleware).toBeDefined();
       expect(all.createSagaMiddleware).toBeDefined();
     });
