@@ -1,6 +1,7 @@
-import { forwardRef, useState, useMemo, useEffect, createElement, useCallback } from "react";
-import { useSelector } from "react-redux";
-import moduleLoader from "../kernel/registry/loader";
+import { forwardRef, useState, useMemo, useEffect, createElement, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+
+import moduleLoader from '../kernel/registry/loader';
 
 const Module = forwardRef((props, ref) => {
   const updatedAt = useSelector((state) => state.shared.updatedAt);
@@ -18,18 +19,30 @@ const Module = forwardRef((props, ref) => {
     };
   }, [ref, props, isReady, lastUpdate]);
 
-  const loadModule = useCallback(async () => {
-    if (!props.name) {
-      return;
-    }
-    const changed = await moduleLoader.loadModule(props.name);
-    if (changed) {
-      setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
-    }
-  }, [props.name, updatedAt]);
+  const loadModule = useCallback(
+    (signal) => {
+      const work = new Promise((resolve, reject) => {
+        if (!props.name) {
+          return;
+        }
+        const changed = moduleLoader.loadModule(props.name);
+        /* istanbul ignore next */
+        if (changed) {
+          setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
+        }
+      });
+      const abort = new Promise((resolve) => {
+        signal.onabort = resolve;
+      });
+      Promise.race([work, abort]);
+    },
+    [props.name, updatedAt],
+  );
 
   useEffect(() => {
-    loadModule();
+    const controller = new AbortController();
+    loadModule(controller.signal);
+    return () => controller.abort();
   }, [loadModule]);
 
   if (!props.name) {
@@ -51,7 +64,7 @@ const Module = forwardRef((props, ref) => {
 
   return props.children
     ? createElement(loadedModule.view, composite, props.children)
-    : createElement(loadedModule.view, composite);
+    : createElement(loadedModule.view, composite, null);
 });
 
 export default Module;
