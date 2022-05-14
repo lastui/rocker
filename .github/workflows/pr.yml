@@ -9,6 +9,9 @@ jobs:
 
   build:
     name: Test
+    permissions:
+      checks: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,14 +23,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Test platform
-        uses: mattallty/jest-github-action@v1
+        uses: ArtiomTr/jest-coverage-report-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INIT_CWD: ${{ github.workspace }}/platform
         with:
           test-command: node ./cli/index.js test
       - name: Test bootstrap
-        uses: mattallty/jest-github-action@v1
+        uses: ArtiomTr/jest-coverage-report-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INIT_CWD: ${{ github.workspace }}/bootstrap
