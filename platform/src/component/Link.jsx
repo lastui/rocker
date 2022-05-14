@@ -1,22 +1,25 @@
-import { createElement, forwardRef, useMemo, useContext } from "react";
+import React from "react";
+
+import { warning } from "../utils";
 import { RouterContext, HistoryContext } from "./Router";
 
-const LinkAnchor = forwardRef((props, ref) => {
-  const composite = useMemo(() => {
-    const { navigate, onClick, href, to, ...rest } = props;
+const LinkAnchor = React.forwardRef((props, ref) => {
+  const composite = React.useMemo(() => {
+    const { navigate, onClick, ...rest } = props;
     return {
+      role: "link",
       ...rest,
-      href: href || `/${to}`.replace(/\/+/g, "/"),
       onClick: (event) => {
         try {
           if (onClick) {
             onClick(event);
           }
-        } catch (error) {
+        } catch (err) {
           event.preventDefault();
-          throw error;
+          warning("onClick handler of Link component errored", err);
+          return;
         }
-
+        /* istanbul ignore next */
         if (
           !event.defaultPrevented &&
           event.button === 0 &&
@@ -30,17 +33,19 @@ const LinkAnchor = forwardRef((props, ref) => {
       ref,
     };
   }, [props, ref]);
-  return props.children ? createElement("a", composite, props.children) : createElement("a", composite);
+
+  return props.children
+    ? React.createElement("a", composite, props.children)
+    : React.createElement("a", composite, null);
 });
 
-const Link = forwardRef((props, ref) => {
-  const ctx = useContext(RouterContext);
-  const history = useContext(HistoryContext);
-  const composite = useMemo(() => {
-    const { component, replace, to, ...rest } = props;
+const Link = React.forwardRef((props, ref) => {
+  const ctx = React.useContext(RouterContext);
+  const history = React.useContext(HistoryContext);
+  const composite = React.useMemo(() => {
+    const { replace, to, component, ...rest } = props;
     return {
       ...rest,
-      to: props.component ? undefined : to,
       navigate() {
         const location = to.startsWith("/") ? to : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
         if (replace) {
@@ -52,9 +57,7 @@ const Link = forwardRef((props, ref) => {
       ref,
     };
   }, [props, ctx.match.url, history, ref]);
-  return props.children
-    ? createElement(props.component || LinkAnchor, composite, props.children)
-    : createElement(props.component || LinkAnchor, composite);
+  return React.createElement(props.component || LinkAnchor, composite, props.children);
 });
 
 export default Link;

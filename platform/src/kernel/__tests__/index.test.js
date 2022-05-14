@@ -25,7 +25,7 @@ describe("kernel module exports", () => {
 
   describe("constants", () => {
     it("exposes expected", () => {
-      expect(Object.keys(all.constants).length).toEqual(15);
+      expect(Object.keys(all.constants).length).toEqual(14);
     });
   });
 

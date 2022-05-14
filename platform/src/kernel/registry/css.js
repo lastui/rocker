@@ -1,5 +1,5 @@
 function removeStyles(id) {
-  const orphanStyles = document.querySelector(`[data-module=${id}`);
+  const orphanStyles = document.querySelector(`style[data-module=${id}`);
   if (!orphanStyles) {
     return;
   }

@@ -3,6 +3,7 @@ const fs = require("fs");
 const babelConfig = require("../babel").env.test;
 
 process.env.TZ = "UTC";
+process.env.NODE_ENV = "test";
 
 const node_modules =
   path.dirname(process.env.INIT_CWD) === path.resolve(__dirname, "..")
@@ -11,6 +12,7 @@ const node_modules =
         "<rootDir>/../dependencies/node_modules",
         "<rootDir>/../platform/node_modules",
         "<rootDir>/../bootstrap/node_modules",
+        "node_modules",
       ]
     : ["node_modules"];
 
@@ -42,6 +44,7 @@ module.exports = {
   transformIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   testPathIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   setupFilesAfterEnv: [
+    '@testing-library/jest-dom/extend-expect',
     path.resolve(__dirname, "setupTests.js"),
     ...(fs.existsSync(path.resolve(process.env.INIT_CWD, "src/setupTests.js")) ? ["<rootDir>/src/setupTests.js"] : []),
   ],

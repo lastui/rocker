@@ -1,64 +1,60 @@
-import { useMemo, createElement, Component } from "react";
-import { ReactReduxContext } from "react-redux";
-import { useReduxContext } from "react-redux/es/hooks/useReduxContext.js";
-import { downloadProgram } from "./assets";
 import * as constants from "../../constants";
 import { warning } from "../../utils";
+import Scoped from "../component/Scoped";
+import { downloadProgram } from "./assets";
+import { addStyles, removeStyles } from "./css";
+import { addMiddleware, removeMiddleware } from "./middleware";
 import { addReducer, removeReducer } from "./reducer";
 import { addSaga, removeSaga } from "./saga";
-import { addMiddleware, removeMiddleware } from "./middleware";
 import { getStore } from "./store";
-import { addStyles, removeStyles } from "./styles";
+
+export const adaptModule = async (id, scope) => {
+  const preferentialStore = scope.saga || scope.Main ? getStore().namespace(id) : null;
+  const cleanup = () => {
+    if (scope.BUILD_ID) {
+      removeStyles(id);
+    }
+    if (scope.saga) {
+      removeSaga(id, preferentialStore);
+    }
+    if (scope.middleware) {
+      removeMiddleware(id);
+    }
+    if (scope.reducer) {
+      removeReducer(id);
+    }
+  };
+  const adaptationWork = [];
+  if (scope.BUILD_ID) {
+    adaptationWork.push(addStyles(id, scope.BUILD_ID));
+  }
+  if (scope.reducer) {
+    adaptationWork.push(addReducer(id, scope.reducer));
+  }
+  if (scope.middleware) {
+    adaptationWork.push(addMiddleware(id, scope.middleware));
+  }
+  if (scope.saga) {
+    adaptationWork.push(addSaga(id, preferentialStore, scope.saga));
+  }
+  try {
+    await Promise.all(adaptationWork);
+  } catch (error) {
+    cleanup();
+    throw error;
+  }
+  return {
+    view: Scoped(id, preferentialStore, scope),
+    cleanup,
+  };
+};
 
 const createModuleLoader = () => {
-  const store = getStore();
-
   const availableModules = {};
   const loadedModules = {};
   const loadingModules = {};
 
   const getLoadedModule = (id) => loadedModules[id];
-
-  const adaptModule = async (id, scope) => {
-    const preferentialStore = scope.saga || scope.Main ? store.namespace(id) : null;
-    const cleanup = () => {
-      if (scope.BUILD_ID) {
-        removeStyles(id);
-      }
-      if (scope.saga) {
-        removeSaga(id, preferentialStore);
-      }
-      if (scope.middleware) {
-        removeMiddleware(id);
-      }
-      if (scope.reducer) {
-        removeReducer(id);
-      }
-    };
-    const adaptationWork = [];
-    if (scope.BUILD_ID) {
-      adaptationWork.push(addStyles(id, scope.BUILD_ID));
-    }
-    if (scope.reducer) {
-      adaptationWork.push(addReducer(id, scope.reducer));
-    }
-    if (scope.middleware) {
-      adaptationWork.push(addMiddleware(id, scope.middleware));
-    }
-    if (scope.saga) {
-      adaptationWork.push(addSaga(id, preferentialStore, scope.saga));
-    }
-    try {
-      await Promise.all(adaptationWork);
-    } catch (error) {
-      cleanup();
-      throw error;
-    }
-    return {
-      view: isolateProgram(id, preferentialStore, scope),
-      cleanup,
-    };
-  };
 
   const loadModule = (id) => {
     const available = availableModules[id];
@@ -92,7 +88,7 @@ const createModuleLoader = () => {
           return true;
         }
         loadedModules[id] = data;
-        store.dispatch({
+        getStore().dispatch({
           type: constants.MODULE_LOADED,
           payload: {
             module: id,
@@ -112,17 +108,11 @@ const createModuleLoader = () => {
     return promise;
   };
 
-  const unloadModule = (id) =>
+  const unloadModule = (id, loaded) =>
     new Promise((resolve) => {
-      if (!id) {
-        return resolve(false);
-      }
-      const loaded = loadedModules[id];
-      if (loaded) {
-        delete loadedModules[id];
-        loaded.cleanup();
-      }
-      store.dispatch({
+      delete loadedModules[id];
+      loaded.cleanup();
+      getStore().dispatch({
         type: constants.MODULE_UNLOADED,
         payload: {
           module: id,
@@ -131,7 +121,7 @@ const createModuleLoader = () => {
       return resolve(true);
     });
 
-  const setAvailableModules = async (modules = []) => {
+  const setAvailableModules = async (modules) => {
     const scheduledUnload = [];
     const newModules = {};
     for (let i = modules.length; i--; ) {
@@ -148,7 +138,7 @@ const createModuleLoader = () => {
         obsoleteModules.push(existing);
         const loaded = loadedModules[existing];
         if (loaded) {
-          scheduledUnload.push(unloadModule(existing));
+          scheduledUnload.push(unloadModule(existing, loaded));
         }
       }
     }
@@ -156,91 +146,6 @@ const createModuleLoader = () => {
       delete availableModules[obsoleteModules[i]];
     }
     await Promise.allSettled(scheduledUnload);
-  };
-
-  const isolateProgram = (id, preferentialStore, scope) => {
-    if (!scope.Main) {
-      return null;
-    }
-
-    const Bridge = (props) => {
-      const parentContext = useReduxContext();
-
-      const reduxContext = useMemo(
-        () => ({
-          store: preferentialStore,
-          subscription: parentContext.subscription,
-        }),
-        [parentContext.subscription],
-      );
-
-      const composite = useMemo(() => {
-        if (props.ref) {
-          return {
-            ...(scope.props || {}),
-            ...(props.owned || {}),
-            ref: props.ref,
-          };
-        } else if (scope.props) {
-          return {
-            ...scope.props,
-            ...(props.owned || {}),
-          };
-        } else if (props.owned) {
-          return props.owned;
-        } else {
-          return null;
-        }
-      }, [props.ref, props.owned]);
-
-      return (
-        <ReactReduxContext.Provider value={reduxContext}>
-          {props.children ? createElement(scope.Main, composite, props.children) : createElement(scope.Main, composite)}
-        </ReactReduxContext.Provider>
-      );
-    };
-
-    class Boundaries extends Component {
-      state = { error: null };
-
-      static displayName = `Module(${id})`;
-
-      static getDerivedStateFromError(error) {
-        return { error };
-      }
-
-      shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.isReady ^ nextProps.isReady) {
-          return true;
-        }
-        if (this.state.error !== nextState.error) {
-          return true;
-        }
-        if (this.props.lastUpdate !== nextProps.lastUpdate) {
-          return true;
-        }
-        for (const key in nextProps.owned) {
-          if (this.props.owned[key] !== nextProps.owned[key]) {
-            return true;
-          }
-        }
-        return false;
-      }
-
-      render() {
-        if (this.state.error === null) {
-          return this.props.children
-            ? createElement(Bridge, this.props, this.props.children)
-            : createElement(Bridge, this.props);
-        }
-        if (scope.Error) {
-          return createElement(scope.Error, this.state);
-        }
-        return null;
-      }
-    }
-
-    return Boundaries;
   };
 
   return {

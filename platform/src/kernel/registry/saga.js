@@ -1,16 +1,21 @@
+import { cancel, spawn, select, take } from "redux-saga/effects";
+
 import * as constants from "../../constants";
 import { warning } from "../../utils";
-import { cancel, spawn, select, take } from "redux-saga/effects";
 
 const sagas = {};
 
-let sagaRunner = () => {
+const defaultSagaRunner = () => {
   warning("Sagas runnner is not provided!");
 };
+
+let sagaRunner = defaultSagaRunner;
 
 function setSagaRunner(nextSagaRunner) {
   if (nextSagaRunner) {
     sagaRunner = nextSagaRunner;
+  } else {
+    sagaRunner = defaultSagaRunner;
   }
 }
 
@@ -34,23 +39,23 @@ async function addSaga(id, preferentialStore, saga) {
     console.debug(`module ${id} introducing saga`);
   }
   sagaRunner(preferentialStore, function* () {
-    try {
-      sagas[id] = yield spawn(function* () {
-        while (true) {
-          const isReady = yield select((state) => state.shared.readyModules[id]);
-          if (isReady) {
-            break;
-          }
-          const init = yield take(constants.MODULE_INIT);
-          if (init.payload.module === id) {
-            break;
-          }
+    sagas[id] = yield spawn(function* () {
+      while (true) {
+        const isReady = yield select((state) => state.shared.readyModules[id]);
+        if (isReady) {
+          break;
         }
+        const init = yield take(constants.MODULE_INIT);
+        if (init.payload.module === id) {
+          break;
+        }
+      }
+      try {
         yield saga();
-      });
-    } catch (error) {
-      warning(`module ${id} saga crashed`, error);
-    }
+      } catch (error) {
+        warning(`module ${id} saga crashed`, error);
+      }
+    });
   });
 }
 

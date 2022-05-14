@@ -1,18 +1,19 @@
-import { Store, applyMiddleware, compose, legacy_createStore, combineReducers } from "redux";
-import { all, fork } from "redux-saga/effects";
-import { runtimeReducer } from "../reducer";
-import { watchRefresh, watchFetchContext, watchBootstrap } from "../saga";
+import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
+import { all, fork } from 'redux-saga/effects';
 import {
-  setSagaRunner,
   setStore,
   sharedReducer,
   modulesReducer,
-  moduleLoaderMiddleware,
+  createLoaderMiddleware,
   dynamicMiddleware,
   createSagaMiddleware,
-} from "@lastui/rocker/platform";
+} from '@lastui/rocker/platform';
 
-export default (fetchContext, bootstrapMiddlewares) => {
+import { runtimeReducer } from '../reducer';
+import { watchRefresh, watchFetchContext, watchBootstrap } from '../saga';
+
+export default async (fetchContext, bootstrapMiddlewares) => {
+  const loaderMiddleware = createLoaderMiddleware();
   const { sagaMiddleware, runSaga } = createSagaMiddleware({
     context: {
       fetchContext: async () => {
@@ -26,10 +27,17 @@ export default (fetchContext, bootstrapMiddlewares) => {
     },
   });
 
-  const enhancers = [moduleLoaderMiddleware, sagaMiddleware, ...(bootstrapMiddlewares || []), dynamicMiddleware];
+  const enhancers = [
+    loaderMiddleware,
+    sagaMiddleware,
+    ...(bootstrapMiddlewares || []),
+    dynamicMiddleware,
+  ];
 
   const composer =
-    process.env.NODE_ENV === "development" ? require("@redux-devtools/extension").composeWithDevTools : compose;
+    process.env.NODE_ENV === 'development'
+      ? require('@redux-devtools/extension').composeWithDevTools
+      : compose;
 
   const reducer = combineReducers({
     runtime: runtimeReducer,
@@ -37,7 +45,7 @@ export default (fetchContext, bootstrapMiddlewares) => {
     modules: modulesReducer,
   });
 
-  const store = legacy_createStore(reducer, {}, composer(...[applyMiddleware(...enhancers)]));
+  const store = createStore(reducer, {}, composer(...[applyMiddleware(...enhancers)]));
   setStore(store);
 
   const sagas = [watchBootstrap, watchFetchContext, watchRefresh];

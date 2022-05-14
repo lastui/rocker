@@ -7,7 +7,7 @@ const initial = {
 };
 
 const handler = {
-  deleteProperty: function (target, prop) {
+  deleteProperty(target, prop) {
     const index = target.keys.indexOf(prop);
     if (index === -1) {
       return true;
@@ -16,7 +16,7 @@ const handler = {
     target.values = target.values.filter((_, idx) => idx !== index);
     return true;
   },
-  get: function (target, prop) {
+  get(target, prop) {
     if (prop === Symbol.iterator) {
       return target.values[Symbol.iterator].bind(target.values);
     }
@@ -26,7 +26,7 @@ const handler = {
     }
     return undefined;
   },
-  set: function (obj, prop, value) {
+  set(obj, prop, value) {
     if (!value) {
       return false;
     }
@@ -43,7 +43,7 @@ const handler = {
 
 const modulesReducers = new Proxy(initial, handler);
 
-const initialState = {};
+export const initialState = {};
 
 function createModulesReducer() {
   return (state = initialState, action) => {
@@ -51,8 +51,8 @@ function createModulesReducer() {
       case constants.INIT:
       case constants.REFRESH:
       case constants.FETCH_CONTEXT:
-      case constants.ADD_I18N_MESSAGES:
-      case constants.REMOVE_I18N_MESSAGES:
+      case constants.I18N_MESSAGES_BATCH:
+      case constants.MODULE_LOADED:
       case constants.SET_AVAILABLE_MODULES: {
         return state;
       }

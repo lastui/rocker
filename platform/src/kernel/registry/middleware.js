@@ -13,10 +13,7 @@ async function addMiddleware(id, middleware) {
   } else {
     console.debug(`module ${id} introducing middleware`);
   }
-  const ok = await injectMiddleware(id, middleware);
-  if (!ok) {
-    return;
-  }
+  await injectMiddleware(id, middleware);
 }
 
 export { addMiddleware, removeMiddleware };

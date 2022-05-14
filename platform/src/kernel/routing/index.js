@@ -1,4 +1,4 @@
-export function compilePath(path) {
+function compilePath(path) {
   const paramNames = [];
   let regexpSource =
     "^" +
@@ -23,8 +23,8 @@ export function compilePath(path) {
   return [matcher, paramNames];
 }
 
-export function matchPath(pathname, path, exact) {
-  const [matcher, paramNames] = compilePath(path);
+export function matchPath(pathname, mask, exact) {
+  const [matcher, paramNames] = compilePath(mask);
 
   const match = pathname.match(matcher);
   if (!match) {
@@ -40,18 +40,17 @@ export function matchPath(pathname, path, exact) {
   }
 
   const captureGroups = match.slice(1);
-  const params = paramNames.reduce((memo, paramName, index) => {
+  const params = paramNames.reduce((acc, paramName, index) => {
     try {
-      memo[paramName] = decodeURIComponent(captureGroups[index] || "");
+      acc[paramName] = decodeURIComponent(captureGroups[index]);
     } catch (error) {
-      memo[paramName] = captureGroups[index] || "";
+      acc[paramName] = captureGroups[index];
     }
-
-    return memo;
+    return acc;
   }, {});
 
   return {
-    path,
+    path: mask,
     url,
     isExact,
     params,
