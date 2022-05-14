@@ -64,7 +64,7 @@ const Module = forwardRef((props, ref) => {
 
   return props.children
     ? createElement(loadedModule.view, composite, props.children)
-    : createElement(loadedModule.view, composite, null);
+    : createElement(loadedModule.view, composite);
 });
 
 export default Module;
