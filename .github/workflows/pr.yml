@@ -30,30 +30,20 @@ jobs:
         run: npm run build:bootstrap
       - name: Test package platform
         working-directory: platform
-        run: |
-          node ../cli/index.js test && \
-          echo '{ "coverageThreshold": { "global": { "branches": 100, "functions": 100, "lines": 100, "statements": 100 } } }' > jest.config.json
+        run: node ../cli/index.js test
       - name: Collect coverage for platform
-        uses: artiomtr/jest-coverage-report-action@v2
+        uses: 5monkeys/cobertura-action@master
         with:
-          working-directory: platform
-          skip-step: all
-          coverage-file: coverage/coverage-final.json
-          base-coverage-file: coverage/coverage-final.json
-          annotations: none
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: platform/coverage/cover.xml
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 100
       - name: Test package bootstrap
         working-directory: bootstrap
-        run: |
-          node ../cli/index.js test && \
-          echo '{ "coverageThreshold": { "global": { "branches": 100, "functions": 100, "lines": 100, "statements": 100 } } }' > jest.config.json
+        run: node ../cli/index.js test
       - name: Collect coverage for bootstrap
-        uses: artiomtr/jest-coverage-report-action@v2
+        uses: 5monkeys/cobertura-action@master
         with:
-          working-directory: bootstrap
-          skip-step: all
-          annotations: none
-          coverage-file: coverage/coverage-final.json
-          base-coverage-file: coverage/coverage-final.json
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: bootstrap/coverage/cover.xml
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 100
 
