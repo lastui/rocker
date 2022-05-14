@@ -23,14 +23,14 @@ jobs:
         uses: mattallty/jest-github-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: platform
         with:
-          working-directory: platform
           test-command: "node ../cli/index.js test"
       - name: Test bootstrap
         uses: mattallty/jest-github-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: bootstrap
         with:
-          working-directory: bootstrap
           test-command: "node ../cli/index.js test"
 
