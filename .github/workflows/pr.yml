@@ -27,7 +27,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          test-script: node ./cli/index.js test
+          test-script: node ../cli/index.js test
           working-directory: platform
           threshold: 100
       - name: Test bootstrap
@@ -35,7 +35,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          test-script: node ./cli/index.js test
+          test-script: node ../cli/index.js test
           working-directory: bootstrap
           threshold: 100
 
