@@ -12,7 +12,7 @@ import {
 import { runtimeReducer } from "../reducer";
 import { watchRefresh, watchFetchContext, watchBootstrap } from "../saga";
 
-export default async (fetchContext, bootstrapMiddlewares) => {
+export default (fetchContext, bootstrapMiddlewares) => {
   const loaderMiddleware = createLoaderMiddleware();
   const { sagaMiddleware, runSaga } = createSagaMiddleware({
     context: {

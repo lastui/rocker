@@ -25,6 +25,12 @@ jobs:
         run: npm run build:platform
       - name: Compile package bootstrap
         run: npm run build:bootstrap
+      - name: Test package platform
+        working-directory: platform
+        run: node ../cli/index.js test
+      - name: Test package bootstrap
+        working-directory: bootstrap
+        run: node ../cli/index.js test
       - name: Publish @lastui/dependencies
         continue-on-error: true
         working-directory: dependencies
