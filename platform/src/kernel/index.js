@@ -2,7 +2,7 @@ import * as constants from "../constants";
 
 import registerModule from "../register";
 
-import moduleLoaderMiddleware from "./middleware/loader";
+import createLoaderMiddleware from "./middleware/loader";
 import createSagaMiddleware from "./middleware/saga";
 import dynamicMiddleware from "./middleware/dynamic";
 import { getStore, setStore } from "./registry/store";
@@ -26,7 +26,7 @@ export {
   useParams,
   useRouteMatch,
   constants,
-  moduleLoaderMiddleware,
+  createLoaderMiddleware,
   sharedReducer,
   modulesReducer,
   dynamicMiddleware,
@@ -47,7 +47,7 @@ export default {
   useParams,
   useRouteMatch,
   constants,
-  moduleLoaderMiddleware,
+  createLoaderMiddleware,
   sharedReducer,
   modulesReducer,
   dynamicMiddleware,
