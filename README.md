@@ -55,3 +55,10 @@ A: Yes, but you need to contain them into a single chunk (module) that you will 
 Q: What does the name mean?
 
 A: Rocker like [D]ocker for [R]eact UIs
+
+## Badges
+
+[![codecov](https://codecov.io/gh/lastui/rocker/branch/main/graph/badge.svg?token=V1GE1GTHY2)](https://codecov.io/gh/lastui/rocker)
+[![npm version](https://badge.fury.io/js/@lastui%2Frocker.svg)](https://badge.fury.io/js/@lastui%2Frocker)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
