@@ -1,14 +1,17 @@
-name: Pull Request Gating
+name: Testing
 
 on:
   pull_request:
+    branches:
+      - main
+  push:
     branches:
       - main
 
 jobs:
 
   build:
-    name: Gate PR
+    name: Run Tests and Report Coverage
     permissions:
       checks: write
       pull-requests: write
