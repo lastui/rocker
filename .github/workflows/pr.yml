@@ -32,7 +32,8 @@ jobs:
         working-directory: platform
         run: |
           node ../cli/index.js test && \
-          mv coverage/coverage-final.json report.json
+          cp coverage/coverage-final.json report.json && \
+          cat report.json
       - name: Collect coverage for platform
         uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
         with:
@@ -43,7 +44,8 @@ jobs:
         working-directory: bootstrap
         run: |
           node ../cli/index.js test && \
-          mv coverage/coverage-final.json report.json
+          cp coverage/coverage-final.json report.json && \
+          cat report.json
       - name: Collect coverage for bootstrap
         uses: artiomtr/jest-coverage-report-action@v2.0-rc.1
         with:
