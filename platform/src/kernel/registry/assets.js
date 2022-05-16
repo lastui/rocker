@@ -67,8 +67,10 @@ function downloadAsset(resource) {
 
   const fetcher = new Promise((resolve, reject) => {
     async function work() {
-      const etagKey = `etag:/${resource}`;
-      const currentEtag = window.localStorage.getItem(etagKey);
+      const etags = await window.caches.open("rocker/etags");
+      const etagEntry = await etags.match(resource);
+      /* istanbul ignore next */
+      const currentEtag = etagEntry ? await etagEntry.clone().text() : null;
 
       const options = {
         signal: fetchController.signal,
@@ -92,13 +94,13 @@ function downloadAsset(resource) {
       /* istanbul ignore next */
       if (response.status === 304) {
         if (currentEtag) {
-          const cacheEntry = await resources.match(`${resource}_${currentEtag}`);
-          if (cacheEntry) {
-            return cacheEntry.clone();
+          const assetEntry = await resources.match(`${resource}_${currentEtag}`);
+          if (assetEntry) {
+            return assetEntry.clone();
           }
           resources.delete(`${resource}_${currentEtag}`);
         }
-        window.localStorage.removeItem(etagKey);
+        etags.delete(resource);
         const bounced = await work();
         return bounced;
       }
@@ -107,16 +109,16 @@ function downloadAsset(resource) {
         throw new Error(String(response.status));
       }
 
-      window.localStorage.removeItem(etagKey);
       /* istanbul ignore next */
       if (currentEtag) {
+        etags.delete(resource);
         resources.delete(`${resource}_${currentEtag}`);
       }
       const latestEtag = response.headers.get("Etag");
       /* istanbul ignore next */
       if (latestEtag) {
         resources.put(`${resource}_${latestEtag}`, response.clone());
-        window.localStorage.setItem(etagKey, latestEtag);
+        etags.put(resource, new Response(latestEtag, { status: 200, statusText: "OK" }));
       }
       return response;
     }
