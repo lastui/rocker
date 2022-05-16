@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import * as constants from "../constants";
 
 import registerModule from "../register";

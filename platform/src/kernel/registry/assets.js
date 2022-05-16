@@ -56,25 +56,80 @@ function downloadAsset(resource) {
   const id = setTimeout(() => {
     controller.abort();
   }, CLIENT_TIMEOUT);
-  const request = new Promise((resolve, reject) => {
-    const options = {
-      signal: controller.signal,
-      referrerPolicy: "no-referrer",
-      cache: "no-cache",
+
+  const fetchController = new AbortController();
+  const aborter = new Promise((resolve, reject) => {
+    controller.signal.onabort = function () {
+      fetchController.abort();
+      reject("aborted");
     };
-    fetch(resource, options)
-      .then((response) => {
-        clearTimeout(id);
-        if (!response.ok) {
-          return reject(new Error(String(response.status)));
+  });
+
+  const fetcher = new Promise((resolve, reject) => {
+    async function work() {
+      const etagKey = `etag:/${resource}`;
+      const etag = window.localStorage.getItem(etagKey);
+
+      const options = {
+        signal: fetchController.signal,
+        referrerPolicy: "no-referrer",
+        cache: "no-cache",
+        headers: new Headers(),
+      };
+
+      /* istanbul ignore next */
+      if (etag) {
+        options.headers.set("If-None-Match", etag);
+      }
+
+      const response = await fetch(resource, options);
+      clearTimeout(id);
+
+      const resources = await window.caches.open("assets-cache");
+
+      /* istanbul ignore next */
+      if (response.status === 304) {
+        if (etag) {
+          const cacheEntry = await resources.match(`${resource}_${etag}`);
+          if (cacheEntry) {
+            return cacheEntry.clone();
+          }
+          resources.delete(`${resource}/${etag.replaceAll('"', "")}`);
         }
-        return resolve(response);
+        window.localStorage.removeItem(etagKey);
+        const bounced = await downloadAsset(resource);
+        return bounced;
+      }
+
+      if (!response.ok) {
+        throw new Error(String(response.status));
+      }
+
+      window.localStorage.removeItem(etagKey);
+      /* istanbul ignore next */
+      if (etag) {
+        resources.delete(`${resource}_${etag}`);
+      }
+      const responseEtag = response.headers.get("Etag");
+      /* istanbul ignore next */
+      if (responseEtag) {
+        resources.put(`${resource}_${responseEtag}`, response.clone());
+        window.localStorage.setItem(etagKey, responseEtag);
+      }
+      return response;
+    }
+
+    work()
+      .then((response) => {
+        resolve(response);
       })
       .catch((error) => {
         clearTimeout(id);
-        return reject(error);
+        reject(error);
       });
   });
+
+  const request = Promise.race([aborter, fetcher]);
   request[CANCEL] = () => {
     clearTimeout(id);
     controller.abort();

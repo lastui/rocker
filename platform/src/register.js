@@ -3,15 +3,17 @@ import React from "react";
 import { warning } from "./utils";
 
 /* istanbul ignore next */
-const GeneratorFunction = function* () {}.constructor;
+function isGenerator(val) {
+  return /\[object Generator|GeneratorFunction\]/.test(Object.prototype.toString.call(val));
+}
+
 /* istanbul ignore next */
-const AsyncGeneratorFunction = async function* () {}.constructor;
-/* istanbul ignore next */
-const AsyncFunction = async function () {}.constructor;
-/* istanbul ignore next */
-const PlainFunction = function () {}.constructor;
+function isFunction(val) {
+  return /\[object Function|AsyncFunction\]/.test(Object.prototype.toString.call(val));
+}
 
 export default function (scope) {
+  console.log("scope is", scope);
   if (!scope) {
     return;
   }
@@ -26,14 +28,14 @@ export default function (scope) {
     }
   }
   if (scope.Main) {
-    if (!(scope.Main instanceof PlainFunction || scope.Main instanceof React.Component)) {
+    if (!(isFunction(scope.Main) || scope.Main instanceof React.Component)) {
       warning(`attribute "Main" provided in registerModule is not function or React.Component`);
     } else {
       window.__SANDBOX_SCOPE__.Main = scope.Main;
     }
   }
   if (scope.Error) {
-    if (!(scope.Error instanceof PlainFunction || scope.Error instanceof React.Component)) {
+    if (!(isFunction(scope.Error) || scope.Error instanceof React.Component)) {
       warning(`attribute "Error" provided in registerModule is not function or React.Component`);
     } else {
       window.__SANDBOX_SCOPE__.Error = scope.Error;
@@ -47,18 +49,14 @@ export default function (scope) {
     }
   }
   if (scope.middleware) {
-    if (
-      !(scope.middleware instanceof PlainFunction || scope.middleware instanceof AsyncFunction) ||
-      scope.middleware instanceof GeneratorFunction ||
-      scope.middleware instanceof AsyncGeneratorFunction
-    ) {
+    if (!isFunction(scope.middleware) || isGenerator(scope.middleware)) {
       warning(`attribute "middleware" provided in registerModule is not function or async function`);
     } else {
       window.__SANDBOX_SCOPE__.middleware = scope.middleware;
     }
   }
   if (scope.saga) {
-    if (!(scope.saga instanceof GeneratorFunction || scope.saga instanceof AsyncGeneratorFunction)) {
+    if (!isGenerator(scope.saga)) {
       warning(`attribute "saga" provided in registerModule is not generator function or async generator function`);
     } else {
       window.__SANDBOX_SCOPE__.saga = scope.saga;

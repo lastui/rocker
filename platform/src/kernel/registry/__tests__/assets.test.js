@@ -27,6 +27,9 @@ describe("assets registry", () => {
         ok: true,
         status: 200,
         text: async () => "data",
+        headers: {
+          get() {},
+        },
       }));
 
       const result = await downloadAsset("/path/data.json");
@@ -107,6 +110,9 @@ describe("assets registry", () => {
         text: async () => `
           window.__SANDBOX_SCOPE__.Main = () => 'main';
         `,
+        headers: {
+          get() {},
+        },
       }));
 
       const result = await downloadProgram("my-feature", {
@@ -127,6 +133,9 @@ describe("assets registry", () => {
         text: async () => `
           throw 'ouch';
         `,
+        headers: {
+          get() {},
+        },
       }));
 
       const result = await downloadProgram("my-feature", {
