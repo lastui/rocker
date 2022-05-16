@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import "regenerator-runtime/runtime.js";
 
 import Main from "./component/Main";

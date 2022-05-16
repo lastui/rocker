@@ -33,3 +33,13 @@ jest.mock("linaria", () => ({
     };
   },
 }));
+
+window.caches = {
+  async open() {
+    return {
+      async match() {},
+      put() {},
+      delete() {},
+    }
+  }
+}
