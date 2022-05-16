@@ -40,6 +40,6 @@ window.caches = {
       async match() {},
       put() {},
       delete() {},
-    }
-  }
-}
+    };
+  },
+};
