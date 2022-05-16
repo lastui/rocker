@@ -13,7 +13,6 @@ function isFunction(val) {
 }
 
 export default function (scope) {
-  console.log("scope is", scope);
   if (!scope) {
     return;
   }
