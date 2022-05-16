@@ -68,7 +68,7 @@ function downloadAsset(resource) {
   const fetcher = new Promise((resolve, reject) => {
     async function work() {
       const etagKey = `etag:/${resource}`;
-      const etag = window.localStorage.getItem(etagKey);
+      const currentEtag = window.localStorage.getItem(etagKey);
 
       const options = {
         signal: fetchController.signal,
@@ -80,26 +80,26 @@ function downloadAsset(resource) {
       };
 
       /* istanbul ignore next */
-      if (etag) {
-        options.headers.set("If-None-Match", etag);
+      if (currentEtag) {
+        options.headers.set("If-None-Match", currentEtag);
       }
 
       const response = await fetch(resource, options);
       clearTimeout(id);
 
-      const resources = await window.caches.open("assets-cache");
+      const resources = await window.caches.open("rocker/assets");
 
       /* istanbul ignore next */
       if (response.status === 304) {
-        if (etag) {
-          const cacheEntry = await resources.match(`${resource}_${etag}`);
+        if (currentEtag) {
+          const cacheEntry = await resources.match(`${resource}_${currentEtag}`);
           if (cacheEntry) {
             return cacheEntry.clone();
           }
-          resources.delete(`${resource}/${etag.replaceAll('"', "")}`);
+          resources.delete(`${resource}_${currentEtag}`);
         }
         window.localStorage.removeItem(etagKey);
-        const bounced = await downloadAsset(resource);
+        const bounced = await work();
         return bounced;
       }
 
@@ -109,14 +109,14 @@ function downloadAsset(resource) {
 
       window.localStorage.removeItem(etagKey);
       /* istanbul ignore next */
-      if (etag) {
-        resources.delete(`${resource}_${etag}`);
+      if (currentEtag) {
+        resources.delete(`${resource}_${currentEtag}`);
       }
-      const responseEtag = response.headers.get("Etag");
+      const latestEtag = response.headers.get("Etag");
       /* istanbul ignore next */
-      if (responseEtag) {
-        resources.put(`${resource}_${responseEtag}`, response.clone());
-        window.localStorage.setItem(etagKey, responseEtag);
+      if (latestEtag) {
+        resources.put(`${resource}_${latestEtag}`, response.clone());
+        window.localStorage.setItem(etagKey, latestEtag);
       }
       return response;
     }
