@@ -99,7 +99,7 @@ function downloadAsset(resource) {
           resources.delete(`${resource}_${currentEtag}`);
         }
         window.localStorage.removeItem(etagKey);
-        const bounced = await downloadAsset(resource);
+        const bounced = await work();
         return bounced;
       }
 
