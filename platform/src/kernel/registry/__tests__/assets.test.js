@@ -36,7 +36,12 @@ describe("assets registry", () => {
 
       expect(global.fetch).toHaveBeenCalledWith(
         "/path/data.json",
-        expect.objectContaining({ cache: "no-cache", referrerPolicy: "no-referrer" }),
+        expect.objectContaining({
+          cache: "no-cache",
+          referrerPolicy: "no-referrer",
+          mode: "cors",
+          credentials: "same-origin",
+        }),
       );
 
       const data = await result.text();

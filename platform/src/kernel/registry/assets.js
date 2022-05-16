@@ -74,6 +74,8 @@ function downloadAsset(resource) {
         signal: fetchController.signal,
         referrerPolicy: "no-referrer",
         cache: "no-cache",
+        mode: "cors",
+        credentials: "same-origin",
         headers: new Headers(),
       };
 
