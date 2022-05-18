@@ -15,6 +15,7 @@ const config = {
 };
 
 config.output.filename = "module/[name].min.js";
+config.output.assetModuleFilename = "module/[name][ext][query]";
 
 config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
 
