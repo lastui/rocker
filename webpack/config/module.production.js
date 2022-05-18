@@ -14,7 +14,8 @@ const config = {
   ...require("../internal/build.js"),
 };
 
-config.output.filename = "[name].min.js";
+config.output.filename = "module/[name].min.js";
+config.output.assetModuleFilename = "module/[name][ext][query]";
 
 config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
 
@@ -155,13 +156,15 @@ config.module.rules.push(
 config.plugins.push(
   new CleanWebpackPlugin({
     root: settings.PROJECT_BUILD_PATH,
-    cleanOnceBeforeBuildPatterns: ["**/*"],
+    cleanOnceBeforeBuildPatterns: ["module/**/*"],
     cleanStaleWebpackAssets: true,
     dangerouslyAllowCleanPatternsOutsideProject: false,
     verbose: false,
     dry: false,
   }),
-  new ModuleLocalesPlugin(),
+  new ModuleLocalesPlugin({
+    from: path.resolve(settings.PROJECT_ROOT_PATH, 'messages'),
+  }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies-prod-manifest.json"),
     sourceType: "var",
