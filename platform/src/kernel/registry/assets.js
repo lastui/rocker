@@ -51,6 +51,21 @@ export class SequentialProgramEvaluator {
   }
 }
 
+/* istanbul ignore next */
+async function clientCache(id) {
+  try {
+    return await window.caches.open(`rocker/${id}`);
+  } catch (_err) {
+    return {
+      async match() {
+        return null;
+      },
+      delete() {},
+      put() {},
+    };
+  }
+}
+
 function downloadAsset(resource) {
   const controller = new AbortController();
   const id = setTimeout(() => {
@@ -67,7 +82,7 @@ function downloadAsset(resource) {
 
   const fetcher = new Promise((resolve, reject) => {
     async function work() {
-      const etags = await window.caches.open("rocker/etags");
+      const etags = await clientCache("etags");
       const etagEntry = await etags.match(resource);
       /* istanbul ignore next */
       const currentEtag = etagEntry ? await etagEntry.clone().text() : null;
@@ -89,7 +104,7 @@ function downloadAsset(resource) {
       const response = await fetch(resource, options);
       clearTimeout(id);
 
-      const resources = await window.caches.open("rocker/assets");
+      const resources = await clientCache("assets");
 
       /* istanbul ignore next */
       if (response.status === 304) {
@@ -145,6 +160,7 @@ async function downloadProgram(id, program) {
   if (!program) {
     return {};
   }
+  console.log("downloading program", id);
   const data = await downloadAsset(program.url);
   const content = await data.text();
   return SequentialProgramEvaluator.compile(id, content);
