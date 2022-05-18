@@ -160,7 +160,6 @@ async function downloadProgram(id, program) {
   if (!program) {
     return {};
   }
-  console.log("downloading program", id);
   const data = await downloadAsset(program.url);
   const content = await data.text();
   return SequentialProgramEvaluator.compile(id, content);
