@@ -3,14 +3,10 @@ const fs = require("fs");
 const path = require("path");
 
 class ModuleLocalesPlugin {
-  constructor() {
-    this.paths_to_watch = {};
+  constructor(options) {
+    this.paths_to_watch = [];
     for (const language of settings.SUPPORTED_LOCALES) {
-      this.paths_to_watch[`messages/${language}.json`] = path.resolve(
-        settings.PROJECT_ROOT_PATH,
-        "messages",
-        `${language}.json`,
-      );
+      this.paths_to_watch.push(path.resolve(options.from, `${language}.json`));
     }
   }
 
@@ -22,7 +18,9 @@ class ModuleLocalesPlugin {
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
         },
         (_assets) => {
-          for (const [name, asset] of Object.entries(this.paths_to_watch)) {
+          const outputPath = path.dirname(compilation.outputOptions.assetModuleFilename);
+
+          for (const asset of this.paths_to_watch) {
             fs.promises
               .readFile(asset, "utf8")
               .catch(async () => {
@@ -50,9 +48,10 @@ class ModuleLocalesPlugin {
                 return content;
               })
               .then((content) => {
+                const target = path.join(outputPath, 'messages', path.basename(asset))
                 compilation.fileDependencies.add(asset);
-                if (!compilation.getAsset(name)) {
-                  compilation.emitAsset(name, new compiler.webpack.sources.RawSource(content));
+                if (!compilation.getAsset(target)) {
+                  compilation.emitAsset(target, new compiler.webpack.sources.RawSource(content));
                 }
               })
               .catch((error) => {

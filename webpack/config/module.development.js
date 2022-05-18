@@ -210,7 +210,9 @@ config.plugins.push(
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
-  new ModuleLocalesPlugin(),
+  new ModuleLocalesPlugin({
+    from: path.resolve(settings.PROJECT_ROOT_PATH, 'messages'),
+  }),
   new HTMLWebpackPlugin({
     production: false,
     publicPath: "",

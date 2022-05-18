@@ -38,7 +38,7 @@ exports.PROJECT_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "build");
 exports.PROJECT_DEV_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dev");
 exports.PROJECT_SRC_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "src");
 
-exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT || 9000);
+exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT || 8888);
 
 exports.PROGRESS = process.env.PROGRESS === "false" ? false : true;
 
