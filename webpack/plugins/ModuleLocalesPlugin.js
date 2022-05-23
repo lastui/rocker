@@ -19,30 +19,30 @@ class ModuleLocalesPlugin {
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
         },
         (_assets) => {
-          let paths = []
+          let paths = [];
 
           for (const entryPoint of compilation.entrypoints.values()) {
             let entryPointOrigin = null;
 
             for (const origin of entryPoint.origins) {
-              if (origin.request.indexOf('webpack') !== -1) {
-                continue
+              if (origin.request.indexOf("webpack") !== -1) {
+                continue;
               }
-              entryPointOrigin = path.resolve(origin.request.split('src')[0])
+              entryPointOrigin = path.resolve(origin.request.split("src")[0]);
             }
 
             for (const chunk of entryPoint.chunks) {
               paths.push({
-                input: path.resolve(this.from, entryPointOrigin, 'messages'),
-                output: path.join(path.dirname(compilation.outputOptions.assetModuleFilename), chunk.name, 'messages'),
-              })
+                input: path.resolve(this.from, entryPointOrigin, "messages"),
+                output: path.join(path.dirname(compilation.outputOptions.assetModuleFilename), chunk.name, "messages"),
+              });
             }
           }
 
           for (const asset of this.paths_to_watch) {
             for (const chunk of paths) {
-              const inputPath = path.resolve(chunk.input, asset)
-              const outputPath = path.join(chunk.output, asset)
+              const inputPath = path.resolve(chunk.input, asset);
+              const outputPath = path.join(chunk.output, asset);
 
               fs.promises
                 .readFile(inputPath, "utf8")

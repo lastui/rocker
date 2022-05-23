@@ -106,11 +106,11 @@ exports.getConfig = async function (packageName) {
   if (exist) {
     config = require(projectConfig);
   } else {
-    config = require(`../../webpack/config/${packageName === 'spa' ? 'spa' : 'module'}.js`);
+    config = require(`../../webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
     config.entry = {};
     const indexExists = await fileExists(path.resolve("./src/index.js"));
     if (indexExists) {
-      config.entry[packageName === 'spa' ? 'main' : packageName] = ["./src/index.js"];
+      config.entry[packageName === "spa" ? "main" : packageName] = ["./src/index.js"];
     }
   }
   if (!config.infrastructureLogging) {
