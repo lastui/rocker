@@ -20,8 +20,8 @@ const config = {
 };
 
 config.devServer = {
-  hot: true,
-  liveReload: false,
+  hot: false,
+  liveReload: true,
   setupExitSignals: true,
   static: {
     publicPath: ["/"],
@@ -29,6 +29,7 @@ config.devServer = {
   },
   devMiddleware: {
     publicPath: "/",
+    writeToDisk : false,
   },
   https: false,
   allowedHosts: "all",
