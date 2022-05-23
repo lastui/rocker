@@ -99,18 +99,18 @@ async function propagateProgressOption() {
   } catch (err) {}
 }
 
-exports.getConfig = async function () {
+exports.getConfig = async function (packageName) {
   const projectConfig = path.resolve("./webpack.config.js");
   const exist = await fileExists(projectConfig);
   let config = null;
   if (exist) {
     config = require(projectConfig);
   } else {
-    config = require("../../webpack/config/module.js");
+    config = require(`../../webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
     config.entry = {};
     const indexExists = await fileExists(path.resolve("./src/index.js"));
     if (indexExists) {
-      config.entry.main = ["./src/index.js"];
+      config.entry[packageName === "spa" ? "main" : packageName] = ["./src/index.js"];
     }
   }
   if (!config.infrastructureLogging) {

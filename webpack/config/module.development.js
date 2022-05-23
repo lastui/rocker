@@ -220,12 +220,11 @@ config.plugins.push(
     inject: false,
     scriptLoading: "defer",
     templateContent: (props) => {
-
-      let entrypoints = []
+      let entrypoints = [];
 
       for (const entryPoint of props.compilation.entrypoints.values()) {
         for (const chunk of entryPoint.chunks) {
-          entrypoints.push(chunk.name)
+          entrypoints.push(chunk.name);
         }
       }
 
@@ -247,7 +246,9 @@ config.plugins.push(
             meta: {},
           };
           for (const language of settings.SUPPORTED_LOCALES) {
-            hotModule.locales[language] = `${props.compilation.outputOptions.publicPath}${name}/messages/${language}.json`;
+            hotModule.locales[
+              language
+            ] = `${props.compilation.outputOptions.publicPath}${name}/messages/${language}.json`;
           }
           return hotModule;
         });
