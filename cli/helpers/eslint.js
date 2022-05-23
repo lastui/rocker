@@ -37,7 +37,7 @@ exports.run = async function () {
 
   const results = await engine.lintFiles(
     fs.existsSync(path.resolve(process.env.INIT_CWD, "src"))
-      ? ["src/**/*.{js,ts,jsx,tsx}", "*.{js,ts,jsx,tsx}"]
+      ? ["src/**/*.{js,ts,jsx,tsx}"]
       : ["**/*.{js,ts,jsx,tsx}"],
   );
 
