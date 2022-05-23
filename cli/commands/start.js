@@ -15,7 +15,7 @@ exports.handler = async function (argv, cleanupHooks) {
     },
     packageName,
   );
-  const { config, webpack, devServer } = await getStack(packageName);
+  const { config, webpack, DevServer } = await getStack(packageName);
 
   const devServerConfig = config.devServer;
   delete config.devServer;
@@ -24,7 +24,7 @@ exports.handler = async function (argv, cleanupHooks) {
   compiler.hooks.invalid.tap("invalid", () => {
     console.log(colors.bold(`Compiling ${packageName}...`));
   });
-  const instance = new devServer(devServerConfig, compiler);
+  const instance = new DevServer(devServerConfig, compiler);
   instance.startCallback((err) => {
     if (err) {
       callback(err);
