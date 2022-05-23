@@ -124,8 +124,6 @@ exports.getStack = async function (packageName) {
       }
       config.entry[entrypoint] = patchedSources;
     }
-    webpack = require(`${projectNodeModules}/webpack`);
-    DevServer = require(`${projectNodeModules}/webpack-dev-server`);
   } else if (projectNodeModulesExists) {
     config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${
       packageName === "spa" ? "spa" : "module"
@@ -136,8 +134,6 @@ exports.getStack = async function (packageName) {
     if (indexExists) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
-    webpack = require(`${projectNodeModules}/webpack`);
-    DevServer = require(`${projectNodeModules}/webpack-dev-server`);
   } else {
     config = require(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
     config.entry = {};
@@ -146,13 +142,19 @@ exports.getStack = async function (packageName) {
     if (indexExists) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
-    webpack = require("webpack");
-    DevServer = require("webpack-dev-server");
   }
   if (!config.infrastructureLogging) {
     config.infrastructureLogging = { level: "info" };
   }
   config.infrastructureLogging.stream = process.stdout;
+
+  if (projectNodeModulesExists) {
+    webpack = require(`${projectNodeModules}/webpack`);
+    DevServer = require(`${projectNodeModules}/webpack-dev-server`);
+  } else {
+    webpack = require("webpack");
+    DevServer = require("webpack-dev-server");
+  }
 
   return {
     config,
