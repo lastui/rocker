@@ -1,16 +1,24 @@
+async function patchCwd(argv) {
+  if (argv.cwd) {
+    const requested = require("path").resolve(argv.cwd);
+    const exists = await require("./io.js").directoryExists(requested);
+    if (exists) {
+      process.env.INIT_CWD = requested;
+      return;
+    }
+  }
+  process.env.INIT_CWD = process.cwd();
+}
+
 exports.envelope = function (command) {
   return {
     command: command.command,
     describe: command.describe,
     builder: command.builder,
     async handler(argv) {
-      const cleanupHooks = [];
+      await patchCwd(argv);
 
-      if (argv.cwd) {
-        process.env.INIT_CWD = require("path").resolve(argv.cwd);
-      } else {
-        process.env.INIT_CWD = process.cwd();
-      }
+      const cleanupHooks = [];
 
       cleanupHooks.push(() => process.exit(process.exitCode || 0));
 
