@@ -50,7 +50,7 @@ config.devServer = {
   },
 };
 
-config.output.filename = "[name].js";
+config.output.filename = "[name]/main.js";
 
 config.resolve.alias["react-dom$"] = "react-dom/profiling";
 config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
@@ -211,7 +211,7 @@ config.plugins.push(
     context: settings.PROJECT_ROOT_PATH,
   }),
   new ModuleLocalesPlugin({
-    from: path.resolve(settings.PROJECT_ROOT_PATH, 'messages'),
+    from: settings.PROJECT_ROOT_PATH,
   }),
   new HTMLWebpackPlugin({
     production: false,
@@ -220,37 +220,39 @@ config.plugins.push(
     inject: false,
     scriptLoading: "defer",
     templateContent: (props) => {
-      const entrypoints = props.compilation.chunkGroups.map((chunk) => {
-        const isPrimaryEntrypoint = chunk.origins.some(
-          (origin) => path.dirname(path.resolve(origin.request)) === settings.PROJECT_SRC_PATH,
-        );
-        return [chunk.options.name, isPrimaryEntrypoint];
-      });
+
+      let entrypoints = []
+
+      for (const entryPoint of props.compilation.entrypoints.values()) {
+        for (const chunk of entryPoint.chunks) {
+          entrypoints.push(chunk.name)
+        }
+      }
 
       const headTags = props.htmlWebpackPlugin.tags.headTags.filter(
-        (item) => !entrypoints.map((i) => `${i[0]}.js`).includes(item.attributes.src),
+        (item) => !entrypoints.map((name) => `${name}/main.js`).includes(item.attributes.src),
       );
 
       let manifest;
       try {
         manifest = fs.readFileSync(path.resolve(process.cwd(), "manifest.json"), "utf8");
       } catch (_) {
-        const hotModules = entrypoints.map(([name, isPrimary]) => {
+        const hotModules = entrypoints.map((name) => {
           const hotModule = {
-            id: isPrimary ? settings.PROJECT_NAME : name,
+            id: name,
             program: {
-              url: `${props.compilation.outputOptions.publicPath}${name}.js`,
+              url: `${props.compilation.outputOptions.publicPath}${name}/main.js`,
             },
             locales: {},
             meta: {},
           };
           for (const language of settings.SUPPORTED_LOCALES) {
-            hotModule.locales[language] = `${props.compilation.outputOptions.publicPath}messages/${language}.json`;
+            hotModule.locales[language] = `${props.compilation.outputOptions.publicPath}${name}/messages/${language}.json`;
           }
           return hotModule;
         });
         manifest = JSON.stringify({
-          entrypoint: settings.PROJECT_NAME,
+          entrypoint: entrypoints.find((name) => name === settings.PROJECT_NAME) || entrypoints[0],
           available: hotModules,
         });
       }

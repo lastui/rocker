@@ -14,7 +14,7 @@ const config = {
   ...require("../internal/build.js"),
 };
 
-config.output.filename = "module/[name].min.js";
+config.output.filename = "module/[name]/main.min.js";
 config.output.assetModuleFilename = "module/[name][ext][query]";
 
 config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
@@ -163,7 +163,7 @@ config.plugins.push(
     dry: false,
   }),
   new ModuleLocalesPlugin({
-    from: path.resolve(settings.PROJECT_ROOT_PATH, 'messages'),
+    from: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies-prod-manifest.json"),
