@@ -107,7 +107,8 @@ exports.getConfig = async function (packageName) {
     config = require(projectConfig);
     for (const entrypoint in config.entry) {
       const patchedSources = [];
-      for (const source of config.entry[entrypoint]) {
+      const originalSources = Array.isArray(config.entry[entrypoint]) ? config.entry[entrypoint] : [config.entry[entrypoint]];
+      for (const source of originalSources) {
         if (source.startsWith(".")) {
           patchedSources.push(path.resolve(process.env.INIT_CWD, source));
         } else {
