@@ -1,7 +1,7 @@
 const path = require("path");
 const colors = require("colors/safe");
 const { execShellCommand } = require("./shell.js");
-const { fileExists } = require("./io.js");
+const { fileExists, directoryExists } = require("./io.js");
 
 function isLikelyASyntaxError(message) {
   return message.indexOf("Syntax error:") !== -1;
@@ -101,9 +101,12 @@ async function propagateProgressOption() {
 
 exports.getConfig = async function (packageName) {
   const projectConfig = path.resolve(process.env.INIT_CWD, "webpack.config.js");
-  const exist = await fileExists(projectConfig);
+  const customConfigExists = await fileExists(projectConfig);
+  const projectNodeModules = path.resolve(process.env.INIT_CWD, "node_modules");
+  const projectNodeModulesExists = await directoryExists(projectNodeModules);
+
   let config = null;
-  if (exist) {
+  if (customConfigExists) {
     config = require(projectConfig);
     for (const entrypoint in config.entry) {
       const patchedSources = [];
@@ -117,8 +120,16 @@ exports.getConfig = async function (packageName) {
       }
       config.entry[entrypoint] = patchedSources;
     }
+  } else if (projectNodeModulesExists) {
+    config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
+    config.entry = {};
+    const indexFile = path.resolve(process.env.INIT_CWD, "src/index.js");
+    const indexExists = await fileExists(indexFile);
+    if (indexExists) {
+      config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
+    }
   } else {
-    config = require(`../../webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
+    config = require(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src/index.js");
     const indexExists = await fileExists(indexFile);
@@ -130,7 +141,10 @@ exports.getConfig = async function (packageName) {
     config.infrastructureLogging = { level: "info" };
   }
   config.infrastructureLogging.stream = process.stdout;
-  return config;
+  return {
+    config,
+    node_modules: projectNodeModulesExists ? `${projectNodeModules}/` : '',
+  };
 };
 
 exports.setup = async function (options, packageName) {

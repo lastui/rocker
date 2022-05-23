@@ -15,15 +15,16 @@ exports.handler = async function (argv, cleanupHooks) {
     },
     packageName,
   );
-  const config = await getConfig(packageName);
+  const { config, node_modules } = await getConfig(packageName);
 
   const devServerConfig = config.devServer;
   delete config.devServer;
-  const compiler = require("webpack")(config, callback);
+    
+  const compiler = require(`${node_modules}webpack`)(config, callback);
   compiler.hooks.invalid.tap("invalid", () => {
     console.log(colors.bold(`Compiling ${packageName}...`));
   });
-  const server = require("webpack-dev-server");
+  const server = require(`${node_modules}webpack-dev-server`);
   const instance = new server(devServerConfig, compiler);
   instance.startCallback((err) => {
     if (err) {

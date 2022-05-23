@@ -15,6 +15,20 @@ exports.fileExists = async function (nodePath) {
   });
 };
 
+exports.directoryExists = async function (nodePath) {
+  return new Promise(function (resolve, reject) {
+    fs.lstat(nodePath, function (err, stats) {
+      if (err === null) {
+        return resolve(stats.isDirectory());
+      } else if (err.code === "ENOENT") {
+        return resolve(false);
+      } else {
+        return reject(err);
+      }
+    });
+  });
+};
+
 exports.createSymlink = async function (source, target) {
   return new Promise((resolve, reject) => {
     fs.lstat(source, function (err, stats) {
