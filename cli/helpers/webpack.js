@@ -106,7 +106,7 @@ exports.getConfig = async function (packageName) {
   if (exist) {
     config = require(projectConfig);
   } else {
-    config = packageName === 'spa' ? require("../../webpack/config/spa.js") : require("../../webpack/config/module.js");
+    config = require(`../../webpack/config/${packageName === 'spa' ? 'spa' : 'module'}.js`);
     config.entry = {};
     const indexExists = await fileExists(path.resolve("./src/index.js"));
     if (indexExists) {
