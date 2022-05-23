@@ -4,11 +4,12 @@ exports.envelope = function (command) {
     describe: command.describe,
     builder: command.builder,
     async handler(argv) {
+      console.log('process')
       let cleanupHooks = [];
 
       if (argv.cwd) {
         process.env.INIT_CWD = path.resolve(argv.cwd);
-      } else if (!process.env.INIT_CWD) {
+      } else {
         process.env.INIT_CWD = process.cwd();
       }
 
