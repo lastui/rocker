@@ -105,8 +105,18 @@ exports.getConfig = async function (packageName) {
   let config = null;
   if (exist) {
     config = require(projectConfig);
+    for (const entrypoint in config.entry) {
+      const patchedSources = []
+      for (const source of config.entry[entrypoint]) {
+        if (source.startsWith('.')) {
+          patchedSources.push(path.resolve(process.env.INIT_CWD, source))
+        } else {
+          patchedSources.push(source)
+        }
+      }
+      config.entry[entrypoint] = patchedSources;
+    }
   } else {
-    console.log('packageName?', packageName);
     config = require(`../../webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, 'src/index.js');
