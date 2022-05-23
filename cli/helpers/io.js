@@ -1,11 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 
-exports.fileExists = async function (nodePath) {
+function nodeExists(nodePath, predicate) {
   return new Promise(function (resolve, reject) {
     fs.lstat(nodePath, function (err, stats) {
       if (err === null) {
-        return resolve(!stats.isDirectory());
+        return resolve(predicate(stats));
       } else if (err.code === "ENOENT") {
         return resolve(false);
       } else {
@@ -13,10 +13,18 @@ exports.fileExists = async function (nodePath) {
       }
     });
   });
+}
+
+exports.fileExists = async function (nodePath) {
+  return await nodeExists(nodePath, (stats) => !stats.isDirectory());
+};
+
+exports.directoryExists = async function (nodePath) {
+  return await nodeExists(nodePath, (stats) => stats.isDirectory());
 };
 
 exports.createSymlink = async function (source, target) {
-  return new Promise((resolve, reject) => {
+  const work = new Promise((resolve, reject) => {
     fs.lstat(source, function (err, stats) {
       if (err === null) {
         if (stats.isDirectory() && !stats.isSymbolicLink()) {
@@ -39,10 +47,11 @@ exports.createSymlink = async function (source, target) {
       }
     });
   });
+  return await work;
 };
 
 exports.ensureDirectory = async function (nodePath) {
-  return new Promise((resolve, reject) => {
+  const work = new Promise((resolve, reject) => {
     fs.stat(nodePath, function (err, stats) {
       if (err === null) {
         return resolve();
@@ -59,6 +68,7 @@ exports.ensureDirectory = async function (nodePath) {
       }
     });
   });
+  return await work;
 };
 
 exports.clearDirectory = async function (nodePath) {

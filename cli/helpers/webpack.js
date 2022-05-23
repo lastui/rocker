@@ -1,7 +1,7 @@
 const path = require("path");
 const colors = require("colors/safe");
 const { execShellCommand } = require("./shell.js");
-const { fileExists } = require("./io.js");
+const { fileExists, directoryExists } = require("./io.js");
 
 function isLikelyASyntaxError(message) {
   return message.indexOf("Syntax error:") !== -1;
@@ -99,15 +99,24 @@ async function propagateProgressOption() {
   } catch (err) {}
 }
 
-exports.getConfig = async function (packageName) {
+exports.getStack = async function (packageName) {
   const projectConfig = path.resolve(process.env.INIT_CWD, "webpack.config.js");
-  const exist = await fileExists(projectConfig);
+  const customConfigExists = await fileExists(projectConfig);
+
+  const projectNodeModules = path.resolve(process.env.INIT_CWD, "node_modules");
+  const projectNodeModulesExists = await directoryExists(`${projectNodeModules}/webpack`);
+
   let config = null;
-  if (exist) {
+  let webpack = null;
+  let DevServer = null;
+
+  if (customConfigExists) {
     config = require(projectConfig);
     for (const entrypoint in config.entry) {
       const patchedSources = [];
-      const originalSources = Array.isArray(config.entry[entrypoint]) ? config.entry[entrypoint] : [config.entry[entrypoint]];
+      const originalSources = Array.isArray(config.entry[entrypoint])
+        ? config.entry[entrypoint]
+        : [config.entry[entrypoint]];
       for (const source of originalSources) {
         if (source.startsWith(".")) {
           patchedSources.push(path.resolve(process.env.INIT_CWD, source));
@@ -117,8 +126,18 @@ exports.getConfig = async function (packageName) {
       }
       config.entry[entrypoint] = patchedSources;
     }
+  } else if (projectNodeModulesExists) {
+    config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${
+      packageName === "spa" ? "spa" : "module"
+    }.js`);
+    config.entry = {};
+    const indexFile = path.resolve(process.env.INIT_CWD, "src/index.js");
+    const indexExists = await fileExists(indexFile);
+    if (indexExists) {
+      config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
+    }
   } else {
-    config = require(`../../webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
+    config = require(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src/index.js");
     const indexExists = await fileExists(indexFile);
@@ -130,7 +149,20 @@ exports.getConfig = async function (packageName) {
     config.infrastructureLogging = { level: "info" };
   }
   config.infrastructureLogging.stream = process.stdout;
-  return config;
+
+  if (projectNodeModulesExists) {
+    webpack = require(`${projectNodeModules}/webpack`);
+    DevServer = require(`${projectNodeModules}/webpack-dev-server`);
+  } else {
+    webpack = require("webpack");
+    DevServer = require("webpack-dev-server");
+  }
+
+  return {
+    config,
+    webpack,
+    DevServer,
+  };
 };
 
 exports.setup = async function (options, packageName) {

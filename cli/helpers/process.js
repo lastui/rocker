@@ -7,7 +7,7 @@ exports.envelope = function (command) {
       const cleanupHooks = [];
 
       if (argv.cwd) {
-        process.env.INIT_CWD = require('path').resolve(argv.cwd);
+        process.env.INIT_CWD = require("path").resolve(argv.cwd);
       } else {
         process.env.INIT_CWD = process.cwd();
       }
