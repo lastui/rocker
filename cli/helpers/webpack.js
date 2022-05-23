@@ -103,7 +103,7 @@ exports.getConfig = async function (packageName) {
   const projectConfig = path.resolve(process.env.INIT_CWD, "webpack.config.js");
   const customConfigExists = await fileExists(projectConfig);
   const projectNodeModules = path.resolve(process.env.INIT_CWD, "node_modules");
-  const projectNodeModulesExists = await directoryExists(projectNodeModules);
+  const projectNodeModulesExists = await directoryExists(`${projectNodeModules}/webpack`);
 
   let config = null;
   if (customConfigExists) {
