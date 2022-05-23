@@ -100,17 +100,19 @@ async function propagateProgressOption() {
 }
 
 exports.getConfig = async function (packageName) {
-  const projectConfig = path.resolve("./webpack.config.js");
+  const projectConfig = path.resolve(process.env.INIT_CWD, 'webpack.config.js');
   const exist = await fileExists(projectConfig);
   let config = null;
   if (exist) {
     config = require(projectConfig);
   } else {
+    console.log('packageName?', packageName);
     config = require(`../../webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
     config.entry = {};
-    const indexExists = await fileExists(path.resolve("./src/index.js"));
+    const indexFile = path.resolve(process.env.INIT_CWD, 'src/index.js');
+    const indexExists = await fileExists(indexFile);
     if (indexExists) {
-      config.entry[packageName === "spa" ? "main" : packageName] = ["./src/index.js"];
+      config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
   }
   if (!config.infrastructureLogging) {

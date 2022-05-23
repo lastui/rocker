@@ -19,6 +19,9 @@ require("yargs")
   .option("fix", {
     type: "boolean",
   })
+  .option("cwd", {
+    type: "string",
+  })
   .command(require("./commands/build.js"))
   .command(require("./commands/start.js"))
   .command(require("./commands/test.js"))

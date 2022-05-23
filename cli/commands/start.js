@@ -7,6 +7,14 @@ exports.builder = {};
 exports.handler = async function (argv) {
   let cleanupHooks = [];
 
+  const path = require("path");
+
+  if (argv.cwd) {
+    process.env.INIT_CWD = path.resolve(argv.cwd)
+  } else if (!process.env.INIT_CWD) {
+    process.env.INIT_CWD = process.cwd();
+  }
+
   cleanupHooks.push(() => process.exit(process.exitCode || 0));
 
   const signals = ["SIGINT", "SIGTERM"];
@@ -17,7 +25,6 @@ exports.handler = async function (argv) {
   });
 
   const colors = require("colors/safe");
-  const path = require("path");
   const packageName = path.basename(process.env.INIT_CWD);
   const { setup, getConfig } = require("../helpers/webpack.js");
   const callback = await setup(
@@ -28,6 +35,7 @@ exports.handler = async function (argv) {
     packageName,
   );
   const config = await getConfig(packageName);
+
   const devServerConfig = config.devServer;
   delete config.devServer;
   const compiler = require("webpack")(config, callback);
