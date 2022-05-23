@@ -99,7 +99,7 @@ async function propagateProgressOption() {
   } catch (err) {}
 }
 
-exports.getConfig = async function (packageName) {
+exports.getStack = async function (packageName) {
   const projectConfig = path.resolve(process.env.INIT_CWD, "webpack.config.js");
   const customConfigExists = await fileExists(projectConfig);
   const projectNodeModules = path.resolve(process.env.INIT_CWD, "node_modules");
@@ -143,7 +143,8 @@ exports.getConfig = async function (packageName) {
   config.infrastructureLogging.stream = process.stdout;
   return {
     config,
-    node_modules: projectNodeModulesExists ? `${projectNodeModules}/` : '',
+    webpack: projectNodeModulesExists ? require(`${projectNodeModules}/webpack`) : require('webpack'),
+    devServer: projectNodeModulesExists ? require(`${projectNodeModules}/webpack-dev-server`) : require('webpack-dev-server'),
   };
 };
 
