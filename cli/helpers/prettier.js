@@ -11,7 +11,7 @@ exports.run = async function (prefix) {
   const cwd = (prefix ? `${prefix.replaceAll('./', '')}/` : '');
 
   await prettier.run([
-    "--loglevel=error",
+    "--loglevel=warn",
     "--ignore-unknown",
     "--no-config",
     "--no-editorconfig",
