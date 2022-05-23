@@ -4,21 +4,10 @@ exports.describe = "lint sources";
 
 exports.builder = {};
 
-exports.handler = async function (argv) {
-  let cleanupHooks = [];
-
-  cleanupHooks.push(() => process.exit(process.exitCode || 0));
-
-  const signals = ["SIGINT", "SIGTERM"];
-  signals.forEach(function (sig) {
-    process.on(sig, () => {
-      cleanupHooks.forEach((hook) => hook());
-    });
-  });
-
+exports.handler = async function (argv, cleanupHooks) {
   const { run: prettierRun } = require("../helpers/prettier.js");
-  const { run: eslintRun } = require("../helpers/eslint.js");
+  await prettierRun(argv.cwd);
 
-  await prettierRun();
-  await eslintRun();
+  const { run: eslintRun } = require("../helpers/eslint.js");
+  await eslintRun(argv.cwd);
 };

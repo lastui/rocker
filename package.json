@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.12.13",
+  "version": "0.12.14",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -28,6 +28,7 @@
     "babel/index.js",
     "babel/plugins/RegisterModuleInjectBuildId.js",
     "cli/index.js",
+    "cli/helpers/process.js",
     "cli/helpers/webpack.js",
     "cli/helpers/jest.js",
     "cli/helpers/io.js",

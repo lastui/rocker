@@ -4,21 +4,9 @@ exports.describe = "develop package";
 
 exports.builder = {};
 
-exports.handler = async function (argv) {
-  let cleanupHooks = [];
-
-  cleanupHooks.push(() => process.exit(process.exitCode || 0));
-
-  const signals = ["SIGINT", "SIGTERM"];
-  signals.forEach(function (sig) {
-    process.on(sig, () => {
-      cleanupHooks.forEach((hook) => hook());
-    });
-  });
-
+exports.handler = async function (argv, cleanupHooks) {
   const colors = require("colors/safe");
-  const path = require("path");
-  const packageName = path.basename(process.env.INIT_CWD);
+  const packageName = require('path').basename(process.env.INIT_CWD);
   const { setup, getConfig } = require("../helpers/webpack.js");
   const callback = await setup(
     {
@@ -28,6 +16,7 @@ exports.handler = async function (argv) {
     packageName,
   );
   const config = await getConfig(packageName);
+
   const devServerConfig = config.devServer;
   delete config.devServer;
   const compiler = require("webpack")(config, callback);

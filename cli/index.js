@@ -3,9 +3,7 @@
 process.on("warning", (e) => console.warn(e.stack));
 process.setMaxListeners(100);
 
-if (!process.env.INIT_CWD) {
-  process.env.INIT_CWD = process.cwd();
-}
+const { envelope } = require("./helpers/process.js");
 
 require("yargs")
   .scriptName("rocker")
@@ -19,10 +17,13 @@ require("yargs")
   .option("fix", {
     type: "boolean",
   })
-  .command(require("./commands/build.js"))
-  .command(require("./commands/start.js"))
-  .command(require("./commands/test.js"))
-  .command(require("./commands/lint.js"))
+  .option("cwd", {
+    type: "string",
+  })
+  .command(envelope(require("./commands/build.js")))
+  .command(envelope(require("./commands/start.js")))
+  .command(envelope(require("./commands/test.js")))
+  .command(envelope(require("./commands/lint.js")))
   .demandCommand()
   .help(false)
   .strict().argv;

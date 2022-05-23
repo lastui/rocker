@@ -1,4 +1,4 @@
-exports.run = async function () {
+exports.run = async function (prefix) {
   process.on("unhandledRejection", (reason) => {
     throw reason;
   });
@@ -7,6 +7,8 @@ exports.run = async function () {
   const fs = require("fs");
   const eslint = require("eslint");
   const babelOptions = require("../../babel").env.production;
+
+  const cwd = prefix ? `${prefix.replaceAll("./", "")}/` : "";
 
   const engine = new eslint.ESLint({
     allowInlineConfig: true,
@@ -36,7 +38,9 @@ exports.run = async function () {
   });
 
   const results = await engine.lintFiles(
-    fs.existsSync(path.resolve(process.env.INIT_CWD, "src")) ? ["src/**/*.{js,ts,jsx,tsx}"] : ["**/*.{js,ts,jsx,tsx}"],
+    fs.existsSync(path.resolve(process.env.INIT_CWD, "src"))
+      ? [`${cwd}src/**/*.{js,ts,jsx,tsx}`]
+      : [`${cwd}**/*.{js,ts,jsx,tsx}`],
   );
 
   await eslint.ESLint.outputFixes(results);
