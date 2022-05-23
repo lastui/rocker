@@ -8,7 +8,7 @@ exports.run = async function (prefix) {
   const eslint = require("eslint");
   const babelOptions = require("../../babel").env.production;
 
-  const cwd = (prefix ? `${prefix.replaceAll('./', '')}/` : '');
+  const cwd = prefix ? `${prefix.replaceAll("./", "")}/` : "";
 
   const engine = new eslint.ESLint({
     allowInlineConfig: true,
@@ -38,7 +38,9 @@ exports.run = async function (prefix) {
   });
 
   const results = await engine.lintFiles(
-    fs.existsSync(path.resolve(process.env.INIT_CWD, "src")) ? [`${cwd}src/**/*.{js,ts,jsx,tsx}`] : [`${cwd}**/*.{js,ts,jsx,tsx}`],
+    fs.existsSync(path.resolve(process.env.INIT_CWD, "src"))
+      ? [`${cwd}src/**/*.{js,ts,jsx,tsx}`]
+      : [`${cwd}**/*.{js,ts,jsx,tsx}`],
   );
 
   await eslint.ESLint.outputFixes(results);

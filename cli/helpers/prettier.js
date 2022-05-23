@@ -7,8 +7,8 @@ exports.run = async function (prefix) {
 
   const fs = require("fs");
   const path = require("path");
-  
-  const cwd = (prefix ? `${prefix.replaceAll('./', '')}/` : '');
+
+  const cwd = prefix ? `${prefix.replaceAll("./", "")}/` : "";
 
   await prettier.run([
     "--loglevel=warn",
