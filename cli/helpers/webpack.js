@@ -106,11 +106,15 @@ exports.getStack = async function (packageName) {
   const projectNodeModulesExists = await directoryExists(`${projectNodeModules}/webpack`);
 
   let config = null;
+  let webpack = null;
+  let devServer = null;
   if (customConfigExists) {
     config = require(projectConfig);
     for (const entrypoint in config.entry) {
       const patchedSources = [];
-      const originalSources = Array.isArray(config.entry[entrypoint]) ? config.entry[entrypoint] : [config.entry[entrypoint]];
+      const originalSources = Array.isArray(config.entry[entrypoint])
+        ? config.entry[entrypoint]
+        : [config.entry[entrypoint]];
       for (const source of originalSources) {
         if (source.startsWith(".")) {
           patchedSources.push(path.resolve(process.env.INIT_CWD, source));
@@ -120,14 +124,20 @@ exports.getStack = async function (packageName) {
       }
       config.entry[entrypoint] = patchedSources;
     }
+    webpack = require(`${projectNodeModules}/webpack`);
+    devServer = require(`${projectNodeModules}/webpack-dev-server`);
   } else if (projectNodeModulesExists) {
-    config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
+    config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${
+      packageName === "spa" ? "spa" : "module"
+    }.js`);
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src/index.js");
     const indexExists = await fileExists(indexFile);
     if (indexExists) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
+    webpack = require(`${projectNodeModules}/webpack`);
+    devServer = require(`${projectNodeModules}/webpack-dev-server`);
   } else {
     config = require(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
     config.entry = {};
@@ -136,15 +146,18 @@ exports.getStack = async function (packageName) {
     if (indexExists) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
+    webpack = require("webpack");
+    devServer = require("webpack-dev-server");
   }
   if (!config.infrastructureLogging) {
     config.infrastructureLogging = { level: "info" };
   }
   config.infrastructureLogging.stream = process.stdout;
+
   return {
     config,
-    webpack: projectNodeModulesExists ? require(`${projectNodeModules}/webpack`) : require('webpack'),
-    devServer: projectNodeModulesExists ? require(`${projectNodeModules}/webpack-dev-server`) : require('webpack-dev-server'),
+    webpack,
+    devServer,
   };
 };
 
