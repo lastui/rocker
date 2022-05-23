@@ -27,7 +27,7 @@ exports.handler = async function (argv) {
     },
     packageName,
   );
-  const config = await getConfig();
+  const config = await getConfig(packageName);
   const devServerConfig = config.devServer;
   delete config.devServer;
   const compiler = require("webpack")(config, callback);
