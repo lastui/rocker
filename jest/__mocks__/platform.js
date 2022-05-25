@@ -37,7 +37,7 @@ module.exports = {
       type: constants.REFRESH,
     }),
   },
-  dynamicMiddleware: (_store) => (next) => (action) => next(action),
+  createDynamicMiddleware: () => (_store) => (next) => (action) => next(action),
   createLoaderMiddleware: () => (_store) => (next) => (action) => next(action),
   createSagaMiddleware: (options) => {
     if (options && options.context && options.context.fetchContext) {
