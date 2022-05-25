@@ -7,7 +7,9 @@ async function patchCwd(argv) {
       return;
     }
   }
-  process.env.INIT_CWD = process.cwd();
+  if (!process.env.INIT_CWD) {
+    process.env.INIT_CWD = process.cwd();
+  }
 }
 
 exports.envelope = function (command) {
