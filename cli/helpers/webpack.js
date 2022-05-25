@@ -111,7 +111,6 @@ exports.getStack = async function (packageName) {
   let DevServer = null;
 
   if (customConfigExists) {
-    console.log('CASE 1')
     config = require(projectConfig);
     for (const entrypoint in config.entry) {
       const patchedSources = [];
@@ -128,7 +127,6 @@ exports.getStack = async function (packageName) {
       config.entry[entrypoint] = patchedSources;
     }
   } else if (projectNodeModulesExists) {
-    console.log('CASE 2')
     config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${
       packageName === "spa" ? "spa" : "module"
     }.js`);
@@ -139,7 +137,6 @@ exports.getStack = async function (packageName) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
   } else {
-    console.log('CASE 3')
     config = require(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src/index.js");
