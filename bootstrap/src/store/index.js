@@ -5,7 +5,7 @@ import {
   sharedReducer,
   modulesReducer,
   createLoaderMiddleware,
-  dynamicMiddleware,
+  createDynamicMiddleware,
   createSagaMiddleware,
 } from "@lastui/rocker/platform";
 
@@ -13,6 +13,7 @@ import { runtimeReducer } from "../reducer";
 import { watchRefresh, watchFetchContext, watchBootstrap } from "../saga";
 
 export default (fetchContext, bootstrapMiddlewares) => {
+  const dynamicMiddleware = createDynamicMiddleware();
   const loaderMiddleware = createLoaderMiddleware();
   const { sagaMiddleware, runSaga } = createSagaMiddleware({
     context: {

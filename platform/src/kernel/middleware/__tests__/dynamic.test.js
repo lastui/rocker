@@ -1,39 +1,36 @@
 import configureStore from "redux-mock-store";
 
-import dynamicMiddlewares, { injectMiddleware, ejectMiddleware } from "../dynamic";
+import createDynamicMiddleware, { injectMiddleware, ejectMiddleware } from "../dynamic";
 
 describe("dynamic middleware", () => {
   afterEach(() => {
     ejectMiddleware("test");
   });
 
-  describe("dynamicMiddlewares", () => {
-    it("is defined", () => {
-      // FIXME test if is a middleware
-      expect(dynamicMiddlewares).toBeDefined();
+  describe("createDynamicMiddleware", () => {
+    it("is function", () => {
+      expect(typeof createDynamicMiddleware).toEqual("function");
     });
-
-    // TODO test if can work as middleware even with no injected middlewares
   });
 
   describe("injectMiddleware", () => {
     it("truthy middleware", async () => {
-      const store = configureStore([dynamicMiddlewares])({});
+      const store = configureStore([createDynamicMiddleware()])({});
       await injectMiddleware("test", () => (localStore) => (next) => (action) => next(action));
     });
 
     it("falsey middleware", async () => {
-      const store = configureStore([dynamicMiddlewares])({});
+      const store = configureStore([createDynamicMiddleware()])({});
       await injectMiddleware("test", () => false);
     });
 
     it("async middleware", async () => {
-      const store = configureStore([dynamicMiddlewares])({});
+      const store = configureStore([createDynamicMiddleware()])({});
       await injectMiddleware("test", async () => (localStore) => (next) => (action) => next(action));
     });
 
     it("replace middleware", async () => {
-      const store = configureStore([dynamicMiddlewares])({});
+      const store = configureStore([createDynamicMiddleware()])({});
       await injectMiddleware("test", () => (localStore) => (next) => (action) => next(action));
       await injectMiddleware("test", () => (localStore) => (next) => (action) => next(action));
     });
@@ -41,19 +38,19 @@ describe("dynamic middleware", () => {
 
   describe("ejectMiddleware", () => {
     it("when exists", async () => {
-      const store = configureStore([dynamicMiddlewares])({});
+      const store = configureStore([createDynamicMiddleware()])({});
       await injectMiddleware("test", () => (localStore) => (next) => (action) => next(action));
       ejectMiddleware("test");
     });
 
     it("when does not exist", () => {
-      const store = configureStore([dynamicMiddlewares])({});
+      const store = configureStore([createDynamicMiddleware()])({});
       ejectMiddleware("test");
     });
   });
 
   it("enables to dynamically inject and eject middlewares", async () => {
-    const store = configureStore([dynamicMiddlewares])({});
+    const store = configureStore([createDynamicMiddleware()])({});
 
     const action = { type: "probe" };
     const middlewareAction = { type: "mw-probe" };
@@ -79,7 +76,7 @@ describe("dynamic middleware", () => {
     spy.mockImplementation(() => {});
     spy.mockClear();
 
-    const store = configureStore([dynamicMiddlewares])({});
+    const store = configureStore([createDynamicMiddleware()])({});
 
     const action = { type: "probe" };
 

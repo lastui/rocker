@@ -49,4 +49,4 @@ const dynamicMiddlewaresInstance = createDynamicMiddlewares();
 
 export const { injectMiddleware, ejectMiddleware } = dynamicMiddlewaresInstance;
 
-export default dynamicMiddlewaresInstance.underlying;
+export default () => dynamicMiddlewaresInstance.underlying;
