@@ -1,6 +1,7 @@
 const settings = require("../settings");
 
 module.exports = {
+  context: settings.PROJECT_ROOT_PATH,
   target: "web",
   externalsType: "var",
   mode: settings.DEVELOPMENT ? "development" : "production",

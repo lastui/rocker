@@ -28,7 +28,7 @@ exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US").split(","
 
 exports.PROJECT_ROOT_PATH = path.resolve(".", process.env.INIT_CWD);
 
-exports.PROJECT_NAME = process.env.PROJECT_NAME || path.resolve(process.cwd()).split(path.sep).pop();
+exports.PROJECT_NAME = process.env.PROJECT_NAME || path.resolve(exports.PROJECT_ROOT_PATH).split(path.sep).pop();
 
 exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 
