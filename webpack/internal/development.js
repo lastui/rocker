@@ -1,8 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-
 const settings = require(path.resolve(__dirname, "../settings"));
 
 module.exports = {
