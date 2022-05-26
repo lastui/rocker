@@ -4,6 +4,9 @@ const path = require("path");
 const envConfig = require("dotenv").config({ debug: process.env.DEBUG });
 
 for (const k in envConfig) {
+  if (k === 'npm_config_argv') {
+    continue;
+  };
   process.env[k] = envConfig[k];
 }
 
@@ -35,7 +38,6 @@ exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 exports.NODE_MODULES_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "node_modules");
 exports.DLL_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dll");
 exports.PROJECT_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "build");
-exports.PROJECT_DEV_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dev");
 exports.PROJECT_SRC_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "src");
 
 exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT || 8888);

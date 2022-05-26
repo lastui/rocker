@@ -21,7 +21,6 @@ config.devServer = {
   setupExitSignals: true,
   static: {
     publicPath: ["/"],
-    directory: settings.PROJECT_DEV_PATH,
   },
   devMiddleware: {
     publicPath: "/",
@@ -204,15 +203,6 @@ config.plugins.push(
     minify: false,
     inject: "head",
     scriptLoading: "defer",
-  }),
-  new CopyPlugin({
-    patterns: [
-      {
-        from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
-        to: settings.PROJECT_DEV_PATH,
-        filter: async (resourcePath) => !resourcePath.endsWith("index.html"),
-      },
-    ],
   }),
   new AddAssetHtmlPlugin([
     {
