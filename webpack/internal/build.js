@@ -55,11 +55,11 @@ module.exports = {
               sourceMap: false,
               toplevel: false,
               parse: {
-                ecma: 8,
+                ecma: 2021,
                 html5_comments: false,
               },
               compress: {
-                ecma: 5,
+                ecma: 2021,
                 warnings: false,
                 comparisons: false,
                 inline: 2,
