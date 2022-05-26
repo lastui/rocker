@@ -25,7 +25,6 @@ config.devServer = {
   setupExitSignals: true,
   static: {
     publicPath: ["/"],
-    directory: settings.PROJECT_DEV_PATH,
   },
   devMiddleware: {
     publicPath: "/",
