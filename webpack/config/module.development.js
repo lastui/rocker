@@ -28,7 +28,7 @@ config.devServer = {
   },
   devMiddleware: {
     publicPath: "/",
-    writeToDisk: true,
+    writeToDisk: false,
   },
   https: false,
   allowedHosts: "all",
