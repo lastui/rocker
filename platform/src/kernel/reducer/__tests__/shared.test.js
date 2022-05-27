@@ -17,6 +17,24 @@ describe("shared reducer", () => {
     });
   });
 
+  describe("SET_ENTRYPOINT_MODULE", () => {
+    it("bumps update", () => {
+      const action = {
+        type: constants.SET_ENTRYPOINT_MODULE,
+        payload: {
+          entrypoint: "my-feature",
+        },
+      };
+      const state = { ...initialState };
+      const expectedState = {
+        ...initialState,
+        lastUpdate: 1,
+      };
+
+      expect(reducer(state, action)).toEqual(expectedState);
+    });
+  });
+
   describe("SET_SHARED", () => {
     it("module not set", () => {
       const action = {
@@ -114,6 +132,7 @@ describe("shared reducer", () => {
       const state = { ...initialState };
       const expectedState = {
         ...initialState,
+        lastUpdate: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -138,6 +157,7 @@ describe("shared reducer", () => {
       };
       const expectedState = {
         ...initialState,
+        lastUpdate: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -172,6 +192,7 @@ describe("shared reducer", () => {
         messages: {
           "en-US": {},
         },
+        lastUpdate: 1,
       };
       expect(reducer(state, action)).toEqual(expectedState);
     });
@@ -195,6 +216,7 @@ describe("shared reducer", () => {
         readyModules: {
           "still-there": true,
         },
+        lastUpdate: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
