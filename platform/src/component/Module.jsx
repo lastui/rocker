@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import moduleLoader from "../kernel/registry/loader";
 
 const Module = forwardRef((props, ref) => {
-  const updatedAt = useSelector((state) => state.shared.updatedAt);
   const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
 
   const [lastUpdate, setLastUpdate] = useState(0);
@@ -22,6 +21,9 @@ const Module = forwardRef((props, ref) => {
   /* istanbul ignore next */
   const loadModule = useCallback(
     (signal) => {
+      if (isReady) {
+        return;
+      }
       async function work() {
         if (!props.name) {
           return false;
@@ -39,7 +41,7 @@ const Module = forwardRef((props, ref) => {
         }
       });
     },
-    [props.name, updatedAt],
+    [props.name, isReady],
   );
 
   useEffect(() => {
