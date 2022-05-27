@@ -33,7 +33,6 @@ describe("<Module />", () => {
         readyModules: {
           "my-feature": true,
         },
-        updatedAt: 1,
       },
     });
 
@@ -52,7 +51,6 @@ describe("<Module />", () => {
         readyModules: {
           "my-feature": true,
         },
-        updatedAt: 1,
       },
     });
 
@@ -74,7 +72,6 @@ describe("<Module />", () => {
         readyModules: {
           "my-feature": false,
         },
-        updatedAt: 1,
       },
     });
 
@@ -91,7 +88,6 @@ describe("<Module />", () => {
         readyModules: {
           "my-feature-without-view": true,
         },
-        updatedAt: 1,
       },
     });
 
@@ -110,7 +106,6 @@ describe("<Module />", () => {
         readyModules: {
           "my-feature": false,
         },
-        updatedAt: 1,
       },
     });
 
@@ -127,7 +122,6 @@ describe("<Module />", () => {
     const store = configureStore([])({
       shared: {
         readyModules: {},
-        updatedAt: 1,
       },
     });
 

@@ -5,7 +5,6 @@ export const initialState = {
   local: {},
   language: "en-US",
   messages: {},
-  updatedAt: 0,
   readyModules: {},
 };
 
@@ -20,7 +19,6 @@ function createSharedReducer() {
             local: state.local,
             language: state.language,
             messages: state.messages,
-            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
             readyModules: state.readyModules,
           };
         }
@@ -31,7 +29,6 @@ function createSharedReducer() {
           local: nextLocal,
           language: state.language,
           messages: state.messages,
-          updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: state.readyModules,
         };
       }
@@ -43,7 +40,6 @@ function createSharedReducer() {
           local: state.local,
           language: state.language,
           messages: state.messages,
-          updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: nextReadyModules,
         };
       }
@@ -53,7 +49,6 @@ function createSharedReducer() {
           local: state.local,
           language: state.language,
           messages: state.messages,
-          updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: state.readyModules,
         };
       }
@@ -79,7 +74,6 @@ function createSharedReducer() {
           local: nextLocal,
           language: state.language,
           messages: nextMessages,
-          updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: nextReadyModules,
         };
       }
@@ -93,7 +87,6 @@ function createSharedReducer() {
             local: state.local,
             language: action.payload.language,
             messages: state.messages,
-            updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
             readyModules: state.readyModules,
           };
         }
@@ -133,7 +126,6 @@ function createSharedReducer() {
           local: state.local,
           language: action.payload.language,
           messages: nextMessages,
-          updatedAt: (state.updatedAt + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: state.readyModules,
         };
       }

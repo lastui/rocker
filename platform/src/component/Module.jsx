@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import moduleLoader from "../kernel/registry/loader";
 
 const Module = forwardRef((props, ref) => {
-  const updatedAt = useSelector((state) => state.shared.updatedAt);
   const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
 
   const [lastUpdate, setLastUpdate] = useState(0);
@@ -24,25 +23,30 @@ const Module = forwardRef((props, ref) => {
     (signal) => {
       async function work() {
         if (!props.name) {
-          return;
+          return false;
         }
-        const changed = await moduleLoader.loadModule(props.name);
+        return await moduleLoader.loadModule(props.name);
+      }
+      const abort = new Promise((resolve) => {
+        signal.onabort = function () {
+          resolve(false);
+        };
+      });
+      Promise.race([work(), abort]).then((changed) => {
         if (changed) {
           setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
         }
-      }
-      const abort = new Promise((resolve) => {
-        signal.onabort = resolve;
       });
-      Promise.race([work, abort]);
     },
-    [props.name, updatedAt],
+    [props.name],
   );
 
   useEffect(() => {
     const controller = new AbortController();
     loadModule(controller.signal);
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+    };
   }, [loadModule]);
 
   if (!props.name) {

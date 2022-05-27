@@ -33,7 +33,6 @@ describe("shared reducer", () => {
         global: {
           hair: "yes",
         },
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -57,7 +56,6 @@ describe("shared reducer", () => {
             hair: "yes",
           },
         },
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -79,7 +77,6 @@ describe("shared reducer", () => {
         global: {
           hair: "yes",
         },
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -100,7 +97,6 @@ describe("shared reducer", () => {
         readyModules: {
           "my-feature": true,
         },
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -118,7 +114,6 @@ describe("shared reducer", () => {
       const state = { ...initialState };
       const expectedState = {
         ...initialState,
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -143,7 +138,6 @@ describe("shared reducer", () => {
       };
       const expectedState = {
         ...initialState,
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -178,7 +172,6 @@ describe("shared reducer", () => {
         messages: {
           "en-US": {},
         },
-        updatedAt: 2,
       };
       expect(reducer(state, action)).toEqual(expectedState);
     });
@@ -202,7 +195,6 @@ describe("shared reducer", () => {
         readyModules: {
           "still-there": true,
         },
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -222,7 +214,6 @@ describe("shared reducer", () => {
       const expectedState = {
         ...initialState,
         language: "fr-FR",
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -275,7 +266,6 @@ describe("shared reducer", () => {
             "nested.localisation": "value",
           },
         },
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -321,7 +311,6 @@ describe("shared reducer", () => {
             "nested.localisation": "value",
           },
         },
-        updatedAt: 1,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
