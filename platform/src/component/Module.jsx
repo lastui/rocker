@@ -38,7 +38,7 @@ const Module = forwardRef((props, ref) => {
         }
       });
     },
-    [props.name, isReady],
+    [props.name],
   );
 
   useEffect(() => {
