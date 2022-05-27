@@ -77,7 +77,7 @@ function createModulesReducer() {
       case constants.MODULE_READY: {
         const id = action.payload.module;
         console.debug(`module ${id} ready`);
-        console.log(`+ module ${id}`);
+        console.info(`+ module ${id}`);
         return state;
       }
       case constants.MODULE_UNLOADED: {
@@ -89,7 +89,7 @@ function createModulesReducer() {
           changed = true;
         }
         console.debug(`module ${id} unloaded`);
-        console.log(`- module ${id}`);
+        console.info(`- module ${id}`);
         if (changed) {
           return { ...state };
         }

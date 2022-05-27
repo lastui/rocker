@@ -24,17 +24,20 @@ const Module = forwardRef((props, ref) => {
     (signal) => {
       async function work() {
         if (!props.name) {
-          return;
+          return false;
         }
-        const changed = await moduleLoader.loadModule(props.name);
+        return await moduleLoader.loadModule(props.name);
+      }
+      const abort = new Promise((resolve) => {
+        signal.onabort = function () {
+          resolve(false);
+        };
+      });
+      Promise.race([work(), abort]).then((changed) => {
         if (changed) {
           setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
         }
-      }
-      const abort = new Promise((resolve) => {
-        signal.onabort = resolve;
       });
-      Promise.race([work, abort]);
     },
     [props.name, updatedAt],
   );
@@ -42,7 +45,9 @@ const Module = forwardRef((props, ref) => {
   useEffect(() => {
     const controller = new AbortController();
     loadModule(controller.signal);
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+    };
   }, [loadModule]);
 
   if (!props.name) {
