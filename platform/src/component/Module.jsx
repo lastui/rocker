@@ -25,9 +25,6 @@ const Module = forwardRef((props, ref) => {
         if (!props.name) {
           return false;
         }
-        if (isReady) {
-          return true;
-        }
         return await moduleLoader.loadModule(props.name);
       }
       const abort = new Promise((resolve) => {
