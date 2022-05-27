@@ -4,10 +4,10 @@ import { useSelector } from "react-redux";
 import moduleLoader from "../kernel/registry/loader";
 
 const Module = forwardRef((props, ref) => {
-
   const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
-  
+
   const lastUpdate = useSelector((state) => state.shared.lastUpdate);
+
   const [lastLocalUpdate, setLastLocalUpdate] = useState(0);
 
   const composite = useMemo(() => {
