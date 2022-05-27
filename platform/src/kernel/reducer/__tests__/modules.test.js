@@ -220,8 +220,8 @@ describe("modules reducer", () => {
       const spyDebug = jest.spyOn(console, "debug");
       spyDebug.mockImplementation(() => {});
 
-      const spyLog = jest.spyOn(console, "log");
-      spyLog.mockImplementation(() => {});
+      const spyInfo = jest.spyOn(console, "info");
+      spyInfo.mockImplementation(() => {});
 
       const action = {
         type: constants.MODULE_READY,
@@ -232,7 +232,7 @@ describe("modules reducer", () => {
       expect(reducer(initialState, action)).toEqual(initialState);
 
       expect(spyDebug).toHaveBeenCalledWith("module my-feature ready");
-      expect(spyLog).toHaveBeenCalledWith("+ module my-feature");
+      expect(spyInfo).toHaveBeenCalledWith("+ module my-feature");
     });
   });
 
@@ -241,8 +241,8 @@ describe("modules reducer", () => {
       const spyDebug = jest.spyOn(console, "debug");
       spyDebug.mockImplementation(() => {});
 
-      const spyLog = jest.spyOn(console, "log");
-      spyLog.mockImplementation(() => {});
+      const spyInfo = jest.spyOn(console, "info");
+      spyInfo.mockImplementation(() => {});
 
       const action = {
         type: constants.MODULE_UNLOADED,
@@ -263,15 +263,15 @@ describe("modules reducer", () => {
 
       expect(spyDebug).toHaveBeenCalledWith("module my-feature evicting redux state");
       expect(spyDebug).toHaveBeenCalledWith("module my-feature unloaded");
-      expect(spyLog).toHaveBeenCalledWith("- module my-feature");
+      expect(spyInfo).toHaveBeenCalledWith("- module my-feature");
     });
 
     it("without existing module state", () => {
       const spyDebug = jest.spyOn(console, "debug");
       spyDebug.mockImplementation(() => {});
 
-      const spyLog = jest.spyOn(console, "log");
-      spyLog.mockImplementation(() => {});
+      const spyInfo = jest.spyOn(console, "info");
+      spyInfo.mockImplementation(() => {});
 
       const action = {
         type: constants.MODULE_UNLOADED,
@@ -282,7 +282,7 @@ describe("modules reducer", () => {
       expect(reducer(initialState, action)).toEqual(initialState);
 
       expect(spyDebug).toHaveBeenCalledWith("module my-feature unloaded");
-      expect(spyLog).toHaveBeenCalledWith("- module my-feature");
+      expect(spyInfo).toHaveBeenCalledWith("- module my-feature");
     });
   });
 });
