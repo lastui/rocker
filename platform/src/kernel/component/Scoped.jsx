@@ -45,6 +45,7 @@ const Scoped = (id, preferentialStore, scope) => {
       return { error };
     }
 
+    /*
     shouldComponentUpdate(nextProps, nextState) {
       if (this.props.isReady ^ nextProps.isReady) {
         return true;
@@ -55,13 +56,16 @@ const Scoped = (id, preferentialStore, scope) => {
       if (this.props.lastUpdate !== nextProps.lastUpdate) {
         return true;
       }
+      if (this.props.lastRuntimeUpdate !== nextProps.lastRuntimeUpdate) {
+        return true;
+      }
       for (const key in nextProps.owned) {
         if (this.props.owned[key] !== nextProps.owned[key]) {
           return true;
         }
       }
       return false;
-    }
+    }*/
 
     render() {
       if (this.state.error === null) {

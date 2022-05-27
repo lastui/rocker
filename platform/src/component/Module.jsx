@@ -4,9 +4,11 @@ import { useSelector } from "react-redux";
 import moduleLoader from "../kernel/registry/loader";
 
 const Module = forwardRef((props, ref) => {
-  const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
 
-  const [lastUpdate, setLastUpdate] = useState(0);
+  const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
+  
+  const lastUpdate = useSelector((state) => state.shared.lastUpdate);
+  const [lastLocalUpdate, setLastLocalUpdate] = useState(0);
 
   const composite = useMemo(() => {
     const { name, fallback, ...owned } = props;
@@ -15,8 +17,9 @@ const Module = forwardRef((props, ref) => {
       ref,
       isReady,
       lastUpdate,
+      lastLocalUpdate,
     };
-  }, [ref, props, isReady, lastUpdate]);
+  }, [ref, props, isReady, lastUpdate, lastLocalUpdate]);
 
   /* istanbul ignore next */
   const loadModule = useCallback(
@@ -34,12 +37,14 @@ const Module = forwardRef((props, ref) => {
       });
       Promise.race([work(), abort]).then((changed) => {
         if (changed) {
-          setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
+          setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
         }
       });
     },
-    [props.name],
+    [props.name, isReady, lastUpdate],
   );
+
+  console.log('Render in Module', props.name, isReady, lastUpdate, lastLocalUpdate);
 
   useEffect(() => {
     const controller = new AbortController();

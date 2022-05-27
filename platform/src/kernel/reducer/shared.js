@@ -6,6 +6,7 @@ export const initialState = {
   language: "en-US",
   messages: {},
   readyModules: {},
+  lastUpdate: 0,
 };
 
 function createSharedReducer() {
@@ -19,6 +20,7 @@ function createSharedReducer() {
             local: state.local,
             language: state.language,
             messages: state.messages,
+            lastUpdate: state.lastUpdate,
             readyModules: state.readyModules,
           };
         }
@@ -29,6 +31,17 @@ function createSharedReducer() {
           local: nextLocal,
           language: state.language,
           messages: state.messages,
+          lastUpdate: state.lastUpdate,
+          readyModules: state.readyModules,
+        };
+      }
+      case constants.SET_ENTRYPOINT_MODULE: {
+        return {
+          global: state.global,
+          local: state.local,
+          language: state.language,
+          messages: state.messages,
+          lastUpdate: (state.lastUpdate + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: state.readyModules,
         };
       }
@@ -40,6 +53,7 @@ function createSharedReducer() {
           local: state.local,
           language: state.language,
           messages: state.messages,
+          lastUpdate: state.lastUpdate,
           readyModules: nextReadyModules,
         };
       }
@@ -49,6 +63,7 @@ function createSharedReducer() {
           local: state.local,
           language: state.language,
           messages: state.messages,
+          lastUpdate: (state.lastUpdate + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: state.readyModules,
         };
       }
@@ -74,6 +89,7 @@ function createSharedReducer() {
           local: nextLocal,
           language: state.language,
           messages: nextMessages,
+          lastUpdate: (state.lastUpdate + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: nextReadyModules,
         };
       }
@@ -87,6 +103,7 @@ function createSharedReducer() {
             local: state.local,
             language: action.payload.language,
             messages: state.messages,
+            lastUpdate: state.lastUpdate,
             readyModules: state.readyModules,
           };
         }
@@ -126,6 +143,7 @@ function createSharedReducer() {
           local: state.local,
           language: action.payload.language,
           messages: nextMessages,
+          lastUpdate: state.lastUpdate,
           readyModules: state.readyModules,
         };
       }

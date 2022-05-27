@@ -60,9 +60,11 @@ const createModuleLoader = () => {
     const available = availableModules[id];
     const loaded = loadedModules[id];
     if (!available || !available.program) {
+      console.log(id, 'not available');
       return Promise.resolve(Boolean(loaded));
     }
     if (loaded) {
+      console.log(id, 'no change already loaded');
       return Promise.resolve(false);
     }
     const loading = loadingModules[id];
@@ -102,6 +104,7 @@ const createModuleLoader = () => {
       })
       .then((changed) => {
         delete loadingModules[id];
+        console.log(id, 'changed?', changed);
         return changed;
       });
     loadingModules[id] = promise;
