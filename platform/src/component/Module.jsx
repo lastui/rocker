@@ -21,12 +21,12 @@ const Module = forwardRef((props, ref) => {
   /* istanbul ignore next */
   const loadModule = useCallback(
     (signal) => {
-      if (isReady) {
-        return;
-      }
       async function work() {
         if (!props.name) {
           return false;
+        }
+        if (isReady) {
+          return true;
         }
         return await moduleLoader.loadModule(props.name);
       }
