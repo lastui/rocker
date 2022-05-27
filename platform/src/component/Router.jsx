@@ -18,7 +18,7 @@ export function useParams() {
 export function useRouteMatch(path) {
   const ctx = React.useContext(RouterContext);
   return React.useMemo(
-    () => (path ? matchPath(ctx.location.pathname, ctx.match.parent + path, {}) : ctx.match),
+    () => (path ? matchPath(ctx.location.pathname, ctx.match.parent + path, true) : ctx.match),
     [path, ctx.location.pathname, ctx.match],
   );
 }

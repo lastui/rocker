@@ -19,18 +19,18 @@ const Module = forwardRef((props, ref) => {
     };
   }, [ref, props, isReady, lastUpdate]);
 
+  /* istanbul ignore next */
   const loadModule = useCallback(
     (signal) => {
-      const work = new Promise((resolve, reject) => {
+      async function work() {
         if (!props.name) {
           return;
         }
-        const changed = moduleLoader.loadModule(props.name);
-        /* istanbul ignore next */
+        const changed = await moduleLoader.loadModule(props.name);
         if (changed) {
           setLastUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
         }
-      });
+      }
       const abort = new Promise((resolve) => {
         signal.onabort = resolve;
       });
