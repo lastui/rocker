@@ -44,8 +44,6 @@ const Module = forwardRef((props, ref) => {
     [props.name, isReady, lastUpdate],
   );
 
-  console.log('Render in Module', props.name, isReady, lastUpdate, lastLocalUpdate);
-
   useEffect(() => {
     const controller = new AbortController();
     loadModule(controller.signal);
