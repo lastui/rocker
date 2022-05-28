@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.12.25",
+  "version": "0.12.26",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -94,7 +94,7 @@
     "@redux-devtools/extension": "3.2.2",
     "@testing-library/dom": "8.13.0",
     "@testing-library/jest-dom": "5.16.4",
-    "@testing-library/react": "13.2.0",
+    "@testing-library/react": "13.3.0",
     "@testing-library/user-event": "14.2.0",
     "add-asset-html-webpack-plugin": "5.0.2",
     "babel-loader": "8.2.5",
