@@ -41,7 +41,7 @@ const Module = forwardRef((props, ref) => {
         }
       });
     },
-    [props.name, isReady, lastUpdate],
+    [props.name, lastUpdate],
   );
 
   useEffect(() => {

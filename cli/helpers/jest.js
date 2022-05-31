@@ -1,7 +1,7 @@
 const path = require("path");
 const jest = require("jest");
 
-exports.run = async function () {
+exports.run = async function (debug) {
   process.on("unhandledRejection", (reason) => {
     throw reason;
   });
@@ -11,7 +11,9 @@ exports.run = async function () {
     "--passWithNoTests",
     "--injectGlobals",
     "--testLocationInResults",
-    "--maxWorkers=50%",
+    ...(debug
+      ? ["--runInBand", "--detectOpenHandles", "--detectLeaks", "--logHeapUsage"]
+      : ["--maxWorkers=50%", "--maxConcurency=10"]),
     "--config",
     path.resolve(__dirname, "../../jest/index.js"),
   ]);
