@@ -11,6 +11,10 @@ require("yargs")
     alias: "development",
     type: "boolean",
   })
+  .option("debug", {
+    alias: "development",
+    type: "boolean",
+  })
   .option("silent", {
     type: "boolean",
   })
