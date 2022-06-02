@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.12.29",
+  "version": "0.12.30",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -116,7 +116,7 @@
     "sass": "1.52.1",
     "sass-loader": "13.0.0",
     "style-loader": "3.3.1",
-    "terser-webpack-plugin": "5.3.1",
+    "terser-webpack-plugin": "5.3.3",
     "util": "0.12.4",
     "weak-napi": "2.0.2",
     "webpack": "5.72.1",
