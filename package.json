@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.12.32",
+  "version": "0.12.33",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -120,7 +120,7 @@
     "util": "0.12.4",
     "weak-napi": "2.0.2",
     "webpack": "5.73.0",
-    "webpack-dev-server": "4.9.1",
+    "webpack-dev-server": "4.9.2",
     "yargs": "17.5.1"
   },
   "repository": {
