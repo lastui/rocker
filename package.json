@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.12.31",
+  "version": "0.12.32",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -89,8 +89,8 @@
     "@babel/preset-react": "7.17.12",
     "@babel/preset-typescript": "7.17.12",
     "@babel/register": "7.17.7",
-    "@linaria/shaker": "3.0.0-beta.19",
-    "@linaria/webpack-loader": "3.0.0-beta.19",
+    "@linaria/shaker": "3.0.0-beta.20",
+    "@linaria/webpack-loader": "3.0.0-beta.20",
     "@redux-devtools/extension": "3.2.2",
     "@testing-library/dom": "8.13.0",
     "@testing-library/jest-dom": "5.16.4",
