@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.12.36",
+  "version": "0.12.37",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -95,7 +95,7 @@
     "@testing-library/dom": "8.13.0",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "13.3.0",
-    "@testing-library/user-event": "14.2.0",
+    "@testing-library/user-event": "14.2.1",
     "add-asset-html-webpack-plugin": "5.0.2",
     "babel-loader": "8.2.5",
     "clean-webpack-plugin": "4.0.0",
@@ -104,7 +104,7 @@
     "core-js": "3.23.1",
     "css-loader": "6.7.1",
     "dotenv": "16.0.1",
-    "eslint": "8.17.0",
+    "eslint": "8.18.0",
     "html-webpack-plugin": "5.5.0",
     "jest": "28.1.1",
     "jest-environment-jsdom": "28.1.1",
