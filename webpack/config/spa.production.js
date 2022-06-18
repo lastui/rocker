@@ -55,7 +55,7 @@ config.module.rules.push(
         },
       },
       {
-        loader: "@linaria/webpack-loader",
+        loader: "@linaria/webpack5-loader",
         options: {
           sourceMap: false,
           preprocessor: "stylis",
