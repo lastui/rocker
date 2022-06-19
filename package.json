@@ -121,7 +121,8 @@
     "weak-napi": "2.0.2",
     "webpack": "5.73.0",
     "webpack-dev-server": "4.9.2",
-    "yargs": "17.5.1"
+    "yargs": "17.5.1",
+    "source-map": "mozilla/source-map#master"
   },
   "repository": {
     "type": "git",
