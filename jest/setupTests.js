@@ -16,20 +16,3 @@ jest.mock("@linaria/react", () => {
 jest.mock("@linaria/core", () => ({
   css: jest.fn(() => ""),
 }));
-
-jest.mock("linaria", () => ({
-  css: jest.fn(() => ""),
-  cx: jest.fn(() => ""),
-  react: () => {
-    function styled(tag) {
-      return jest.fn(() => tag);
-    }
-    return {
-      styled: new Proxy(styled, {
-        get(ref, prop) {
-          return ref(prop);
-        },
-      }),
-    };
-  },
-}));

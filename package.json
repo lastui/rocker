@@ -90,7 +90,7 @@
     "@babel/preset-typescript": "7.17.12",
     "@babel/register": "7.17.7",
     "@linaria/shaker": "3.0.0-beta.21",
-    "@linaria/webpack-loader": "3.0.0-beta.21",
+    "@linaria/webpack5-loader": "3.0.0-beta.21",
     "@redux-devtools/extension": "3.2.2",
     "@testing-library/dom": "8.13.0",
     "@testing-library/jest-dom": "5.16.4",
@@ -121,7 +121,8 @@
     "weak-napi": "2.0.2",
     "webpack": "5.73.0",
     "webpack-dev-server": "4.9.2",
-    "yargs": "17.5.1"
+    "yargs": "17.5.1",
+    "source-map": "mozilla/source-map#master"
   },
   "repository": {
     "type": "git",

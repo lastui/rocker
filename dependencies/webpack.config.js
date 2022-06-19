@@ -15,7 +15,6 @@ config.entry = {
     "redux-saga",
     "redux-saga/effects",
     // css-in-js
-    "linaria",
     "@linaria/react",
     "@linaria/core",
   ],
