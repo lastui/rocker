@@ -36,6 +36,8 @@ exports.PROJECT_NAME = process.env.PROJECT_NAME || path.resolve(exports.PROJECT_
 exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 
 exports.NODE_MODULES_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "node_modules");
+exports.DEPENDENCIES_NODE_MODULES_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "node_modules/@lastui/dependencies/node_modules");
+
 exports.DLL_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dll");
 exports.PROJECT_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "build");
 exports.PROJECT_SRC_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "src");
