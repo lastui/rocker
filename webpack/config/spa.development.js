@@ -95,13 +95,15 @@ config.module.rules.push(
           classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
           babelOptions: {
             babelrc: false,
-            presets: babel.presets.map((preset) => {
-              if (!Array.isArray(preset)) {
-                return [preset, {}, `linaria-${preset}`];
-              } else {
-                return [preset[0], preset[1], `linaria-${preset[0]}`];
-              }
-            }),
+            presets: babel.presets
+              .map((preset) => {
+                if (!Array.isArray(preset)) {
+                  return [preset, {}, `linaria-${preset}`];
+                } else {
+                  return [preset[0], preset[1], `linaria-${preset[0]}`];
+                }
+              })
+              .filter((preset) => preset[0] !== "@babel/preset-env"),
             plugins: babel.plugins.map((plugin) => {
               if (!Array.isArray(plugin)) {
                 return [plugin, {}, `linaria-${plugin.name || plugin}`];
