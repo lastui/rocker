@@ -1,5 +1,5 @@
 const path = require("path");
-const colors = require("colors/safe");
+const colors = require("ansi-colors");
 const { execShellCommand } = require("./shell.js");
 const { fileExists, directoryExists } = require("./io.js");
 
