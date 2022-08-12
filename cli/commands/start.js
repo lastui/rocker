@@ -5,7 +5,7 @@ exports.describe = "develop package";
 exports.builder = {};
 
 exports.handler = async function (argv, cleanupHooks) {
-  const colors = require("colors/safe");
+  const colors = require("ansi-colors");
   const packageName = require("path").basename(process.env.INIT_CWD);
   const { setup, getStack } = require("../helpers/webpack.js");
   const callback = await setup(
