@@ -1,6 +1,6 @@
 {
 	"name": "@lastui/dependencies",
-	"version": "1.2.19",
+	"version": "1.2.20",
 	"files": [
 		"index.js",
 		"dll/dependencies-dev-manifest.json",
@@ -17,7 +17,7 @@
 		"react-intl": "6.0.5",
 		"react-redux": "8.0.2",
 		"redux": "4.2.0",
-		"redux-saga": "1.2.0",
+		"redux-saga": "1.2.1",
 		"regenerator-runtime": "0.13.9"
 	},
 	"repository": {
