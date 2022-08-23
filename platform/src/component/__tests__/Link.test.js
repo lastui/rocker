@@ -17,8 +17,8 @@ describe("<Link />", () => {
           pathname: "/a",
         },
         match: {
-          path: "/",
-          url: "/",
+          path: props.path ? props.path : "/",
+          url: props.path ? props.path : "/",
           parent: "",
           params: {},
           isExact: true,
@@ -107,6 +107,42 @@ describe("<Link />", () => {
       expect(onClick).toHaveBeenCalled();
       expect(spy).toHaveBeenCalledWith("onClick handler of Link component errored", "ouch");
     });
+  });
+
+  it("renders implicit href attribute", () => {
+    render(
+      <Setup path="/a">
+        <Link to="b">
+          link to B
+        </Link>
+      </Setup>,
+    );
+
+    expect(screen.getByRole("link")).toMatchInlineSnapshot(`
+      <a
+        href="/a/b"
+      >
+        link to B
+      </a>
+    `);
+  });
+
+  it("renders provided href attribute", () => {
+    render(
+      <Setup>
+        <Link to="b" href="/somewhere/else">
+          link to B
+        </Link>
+      </Setup>,
+    );
+
+    expect(screen.getByRole("link")).toMatchInlineSnapshot(`
+      <a
+        href="/somewhere/else"
+      >
+        link to B
+      </a>
+    `);
   });
 
   it("navigates relatively", async () => {

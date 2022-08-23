@@ -1,13 +1,12 @@
-import React from "react";
+import { forwardRef, useMemo, useContext, createElement } from "react";
 
 import { warning } from "../utils";
 import { RouterContext, HistoryContext } from "./Router";
 
-const LinkAnchor = React.forwardRef((props, ref) => {
-  const composite = React.useMemo(() => {
+const LinkAnchor = forwardRef((props, ref) => {
+  const composite = useMemo(() => {
     const { navigate, onClick, to, ...rest } = props;
     return {
-      href: props.to,
       ...rest,
       onClick: (event) => {
         try {
@@ -34,19 +33,19 @@ const LinkAnchor = React.forwardRef((props, ref) => {
     };
   }, [props, ref]);
 
-  return props.children ? React.createElement("a", composite, props.children) : React.createElement("a", composite);
+  return props.children ? createElement("a", composite, props.children) : createElement("a", composite);
 });
 
-const Link = React.forwardRef((props, ref) => {
-  const ctx = React.useContext(RouterContext);
-  const history = React.useContext(HistoryContext);
-  const composite = React.useMemo(() => {
-    const { replace, to, component, ...rest } = props;
+const Link = forwardRef((props, ref) => {
+  const ctx = useContext(RouterContext);
+  const history = useContext(HistoryContext);
+  const composite = useMemo(() => {
+    const { replace, to, component, href, ...rest } = props;
+    const location = to.startsWith("/") ? to : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
     return {
       ...rest,
-      ...(props.component ? {} : { to }),
+      ...(props.component ? {} : { to, href: href ? href : location }),
       navigate() {
-        const location = to.startsWith("/") ? to : `${ctx.match.url}/${to}`.replace(/\/+/g, "/");
         if (replace) {
           history.replace(location);
         } else {
@@ -56,7 +55,7 @@ const Link = React.forwardRef((props, ref) => {
       ref,
     };
   }, [props, ctx.match.url, history, ref]);
-  return React.createElement(props.component || LinkAnchor, composite, props.children);
+  return createElement(props.component || LinkAnchor, composite, props.children);
 });
 
 export default Link;
