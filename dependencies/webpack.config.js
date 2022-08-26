@@ -14,6 +14,8 @@ config.entry = {
     "redux",
     "redux-saga",
     "redux-saga/effects",
+    "react-router",
+    "react-router-dom",
     // css-in-js
     "@linaria/react",
     "@linaria/core",

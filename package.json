@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.12.71",
+  "version": "0.12.72",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -113,6 +113,7 @@
     "mini-css-extract-plugin": "2.6.1",
     "path-browserify": "1.0.1",
     "prettier": "2.7.1",
+    "pretty-format": "29.0.0",
     "redux-mock-store": "1.5.4",
     "sass": "1.54.5",
     "sass-loader": "13.0.2",

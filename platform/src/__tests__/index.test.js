@@ -2,7 +2,7 @@ import * as all from "../";
 
 describe("safe module exports", () => {
   it("should expose fixed number of things", () => {
-    expect(Object.keys(all).length).toEqual(12);
+    expect(Object.keys(all).length).toEqual(4);
   });
 
   describe("registerModule", () => {
@@ -60,22 +60,9 @@ describe("safe module exports", () => {
     });
   });
 
-  describe("hooks", () => {
-    it("exposes expected", () => {
-      expect(all.useLocation).toBeDefined();
-      expect(all.useParams).toBeDefined();
-      expect(all.useRouteMatch).toBeDefined();
-      expect(all.useHistory).toBeDefined();
-    });
-  });
-
   describe("components", () => {
     it("exposes expected", () => {
       expect(all.Module).toBeDefined();
-      expect(all.Link).toBeDefined();
-      expect(all.Router).toBeDefined();
-      expect(all.Route).toBeDefined();
-      expect(all.Redirect).toBeDefined();
     });
   });
 });
