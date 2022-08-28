@@ -14,17 +14,6 @@ module.exports = {
     props.children
       ? React.createElement("section", { "data-testid": `module/${props.name}` }, props.children)
       : React.createElement("section", { "data-testid": `module/${props.name}` }),
-  //Route: () => null,
-  //Router: (props) => (props.children ? React.createElement(React.Fragment, {}, props.children) : null),
-  //Redirect: () => null,
-  //Link: (props) => (props.component ? React.createElement(props.component, { navigate: () => {} }) : null),
-  //useHistory: () => ({
-  //push: () => {},
-  //replace: () => {},
-  //}),
-  //useLocation: () => null,
-  //useParams: () => null,
-  //useRouteMatch: () => null,
   constants,
   actions: {
     setLanguage: (language) => ({
