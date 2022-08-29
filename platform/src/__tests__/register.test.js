@@ -67,13 +67,13 @@ describe("register", () => {
     });
 
     it("accepts React Component", () => {
-      class ClasComponent extends React.Component {
+      class ClassComponent extends React.Component {
         render() {
           return <React.Fragment />;
         }
       }
-      register({ component: ClasComponent });
-      expect(window.__SANDBOX_SCOPE__.component).toEqual(ClasComponent);
+      register({ component: ClassComponent });
+      expect(window.__SANDBOX_SCOPE__.component).toEqual(ClassComponent);
     });
 
     it("accepts function", () => {
