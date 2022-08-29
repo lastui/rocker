@@ -19,9 +19,9 @@ describe("Scoped", () => {
     cleanup();
   });
 
-  it("renders Main component", () => {
+  it("renders given component", () => {
     const scope = {
-      Main: () => <div data-testid="happy-component" />,
+      component: () => <div data-testid="happy-component" />,
     };
 
     const View = Scoped("my-feature", store, scope);
@@ -37,7 +37,7 @@ describe("Scoped", () => {
 
   it("passes scope props", () => {
     const scope = {
-      Main: (props) => <div {...props} />,
+      component: (props) => <div {...props} />,
       props: {
         "data-testid": "happy-component",
       },
@@ -56,7 +56,7 @@ describe("Scoped", () => {
 
   it("passes owned props", () => {
     const scope = {
-      Main: (props) => <div {...props} />,
+      component: (props) => <div {...props} />,
     };
 
     const View = Scoped("my-feature", store, scope);
@@ -72,7 +72,7 @@ describe("Scoped", () => {
 
   it("passes ref", () => {
     const scope = {
-      Main: React.forwardRef((props, ref) => <div data-testid="happy-component" ref={ref} />),
+      component: React.forwardRef((props, ref) => <div data-testid="happy-component" ref={ref} />),
     };
 
     const ref = React.createRef();
@@ -95,7 +95,7 @@ describe("Scoped", () => {
 
   it("passes children", () => {
     const scope = {
-      Main: (props) => <div data-testid="happy-component">{props.children}</div>,
+      component: (props) => <div data-testid="happy-component">{props.children}</div>,
     };
 
     const ref = React.createRef();
@@ -116,7 +116,7 @@ describe("Scoped", () => {
 
   it("has error boundaries", () => {
     const scope = {
-      Main: () => {
+      component: () => {
         throw "ouch";
       },
     };
@@ -134,10 +134,10 @@ describe("Scoped", () => {
 
   it("has error boundaries with custom component", () => {
     const scope = {
-      Main: () => {
+      component: () => {
         throw "ouch";
       },
-      Error: () => <div data-testid="sad-component" />,
+      fallback: () => <div data-testid="sad-component" />,
     };
 
     const View = Scoped("my-feature", store, scope);
@@ -154,7 +154,7 @@ describe("Scoped", () => {
 
   it("updates properly", () => {
     const scope = {
-      Main: () => <div data-testid="happy-component" />,
+      component: () => <div data-testid="happy-component" />,
     };
 
     const View = Scoped("my-feature", store, scope);

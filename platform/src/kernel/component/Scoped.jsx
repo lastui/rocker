@@ -2,7 +2,7 @@ import { forwardRef, useMemo, createElement, Component, useContext } from "react
 import { ReactReduxContext } from "react-redux";
 
 const Scoped = (id, preferentialStore, scope) => {
-  if (!scope.Main) {
+  if (!scope.component) {
     return null;
   }
 
@@ -31,7 +31,9 @@ const Scoped = (id, preferentialStore, scope) => {
 
     return (
       <ReactReduxContext.Provider value={reduxContext}>
-        {props.children ? createElement(scope.Main, composite, props.children) : createElement(scope.Main, composite)}
+        {props.children
+          ? createElement(scope.component, composite, props.children)
+          : createElement(scope.component, composite)}
       </ReactReduxContext.Provider>
     );
   };
@@ -51,8 +53,8 @@ const Scoped = (id, preferentialStore, scope) => {
           ? createElement(Bridge, this.props, this.props.children)
           : createElement(Bridge, this.props);
       }
-      if (scope.Error) {
-        return createElement(scope.Error, this.state);
+      if (scope.fallback) {
+        return createElement(scope.fallback, this.state);
       }
       return null;
     }

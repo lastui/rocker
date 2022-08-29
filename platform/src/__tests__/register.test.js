@@ -53,63 +53,63 @@ describe("register", () => {
     });
   });
 
-  describe("Main", () => {
+  describe("component", () => {
     it("does not accept invalid type", () => {
       const spy = jest.spyOn(console, "error");
       spy.mockImplementation(() => {});
-      const scope = { Main: 1 };
+      const scope = { component: 1 };
 
       register(scope);
-      expect(window.__SANDBOX_SCOPE__.Main).not.toBeDefined();
+      expect(window.__SANDBOX_SCOPE__.component).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(
-        `attribute "Main" provided in registerModule is not function or React.Component`,
+        `attribute "component" provided in registerModule is not function or React.Component`,
       );
     });
 
     it("accepts React Component", () => {
-      class Main extends React.Component {
+      class ClasComponent extends React.Component {
         render() {
           return <React.Fragment />;
         }
       }
-      register({ Main });
-      expect(window.__SANDBOX_SCOPE__.Main).toEqual(Main);
+      register({ component: ClasComponent });
+      expect(window.__SANDBOX_SCOPE__.component).toEqual(ClasComponent);
     });
 
     it("accepts function", () => {
-      const Main = () => null;
-      register({ Main });
-      expect(window.__SANDBOX_SCOPE__.Main).toEqual(Main);
+      const functionComponent = () => null;
+      register({ component: functionComponent });
+      expect(window.__SANDBOX_SCOPE__.component).toEqual(functionComponent);
     });
   });
 
-  describe("Error", () => {
+  describe("fallback", () => {
     it("does not accept invalid type", () => {
       const spy = jest.spyOn(console, "error");
       spy.mockImplementation(() => {});
-      const scope = { Error: 1 };
+      const scope = { fallback: 1 };
 
       register(scope);
-      expect(window.__SANDBOX_SCOPE__.Error).not.toBeDefined();
+      expect(window.__SANDBOX_SCOPE__.fallback).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(
-        `attribute "Error" provided in registerModule is not function or React.Component`,
+        `attribute "fallback" provided in registerModule is not function or React.Component`,
       );
     });
 
     it("accepts React Component", () => {
-      class ErrorFallback extends React.Component {
+      class ClassFallback extends React.Component {
         render() {
           return <React.Fragment />;
         }
       }
-      register({ Error: ErrorFallback });
-      expect(window.__SANDBOX_SCOPE__.Error).toEqual(ErrorFallback);
+      register({ fallback: ClassFallback });
+      expect(window.__SANDBOX_SCOPE__.fallback).toEqual(ClassFallback);
     });
 
     it("accepts function", () => {
-      const ErrorFallback = () => null;
-      register({ Error: ErrorFallback });
-      expect(window.__SANDBOX_SCOPE__.Error).toEqual(ErrorFallback);
+      const functionFallback = () => null;
+      register({ fallback: functionFallback });
+      expect(window.__SANDBOX_SCOPE__.fallback).toEqual(functionFallback);
     });
   });
 

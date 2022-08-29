@@ -26,18 +26,18 @@ export default function (scope) {
       window.__SANDBOX_SCOPE__.BUILD_ID = scope.BUILD_ID;
     }
   }
-  if (scope.Main) {
-    if (!(isFunction(scope.Main) || scope.Main instanceof React.Component)) {
-      warning(`attribute "Main" provided in registerModule is not function or React.Component`);
+  if (scope.component) {
+    if (!(isFunction(scope.component) || scope.component instanceof React.Component)) {
+      warning(`attribute "component" provided in registerModule is not function or React.Component`);
     } else {
-      window.__SANDBOX_SCOPE__.Main = scope.Main;
+      window.__SANDBOX_SCOPE__.component = scope.component;
     }
   }
-  if (scope.Error) {
-    if (!(isFunction(scope.Error) || scope.Error instanceof React.Component)) {
-      warning(`attribute "Error" provided in registerModule is not function or React.Component`);
+  if (scope.fallback) {
+    if (!(isFunction(scope.fallback) || scope.fallback instanceof React.Component)) {
+      warning(`attribute "fallback" provided in registerModule is not function or React.Component`);
     } else {
-      window.__SANDBOX_SCOPE__.Error = scope.Error;
+      window.__SANDBOX_SCOPE__.fallback = scope.fallback;
     }
   }
   if (scope.reducer) {
