@@ -59,6 +59,6 @@ A: Rocker like [D]ocker for [R]eact UIs
 ## Badges
 
 [![codecov](https://codecov.io/gh/lastui/rocker/branch/main/graph/badge.svg?token=V1GE1GTHY2)](https://codecov.io/gh/lastui/rocker)
-[![npm version](https://badge.fury.io/js/@lastui%2Frocker.svg)](https://badge.fury.io/js/@lastui%2Frocker)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-
+[![npm version](https://badge.fury.io/js/@lastui%2Frocker.svg)](https://badge.fury.io/js/@lastui%2Frocker)
+[![npm version](https://badge.fury.io/js/@lastui%2Fdependencies.svg)](https://badge.fury.io/js/@lastui%2Fdependencies)
