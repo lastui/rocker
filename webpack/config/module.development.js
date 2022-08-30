@@ -278,7 +278,7 @@ config.plugins.push(
 
                   const root = dom.createRoot(document.getElementById("${settings.PROJECT_NAME}"));
                 
-                  root.render(react.createElement(bootstrap.Main, {
+                  root.render(react.createElement(bootstrap.component, {
                     fetchContext: async function() {
                       console.debug('using context', manifest);
                       return manifest;

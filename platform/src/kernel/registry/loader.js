@@ -9,7 +9,7 @@ import { addSaga, removeSaga } from "./saga";
 import { getStore } from "./store";
 
 export const adaptModule = async (id, scope) => {
-  const preferentialStore = scope.saga || scope.Main ? getStore().namespace(id) : null;
+  const preferentialStore = scope.saga || scope.component ? getStore().namespace(id) : null;
   const cleanup = () => {
     if (scope.BUILD_ID) {
       removeStyles(id);

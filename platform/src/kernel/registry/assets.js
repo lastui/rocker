@@ -38,7 +38,7 @@ export class SequentialProgramEvaluator {
       new Function("", item.data)({});
     } catch (error) {
       warning(`module ${item.id} failed to adapt with error`, error);
-      sandbox.__SANDBOX_SCOPE__.Main = () => {
+      sandbox.__SANDBOX_SCOPE__.component = () => {
         throw error;
       };
     } finally {

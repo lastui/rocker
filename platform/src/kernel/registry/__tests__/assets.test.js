@@ -113,7 +113,7 @@ describe("assets registry", () => {
         ok: true,
         status: 200,
         text: async () => `
-          window.__SANDBOX_SCOPE__.Main = () => 'main';
+          window.__SANDBOX_SCOPE__.component = () => 'main';
         `,
         headers: {
           get() {},
@@ -124,7 +124,7 @@ describe("assets registry", () => {
         url: "/service/program.js",
       });
 
-      expect(result.Main()).toEqual("main");
+      expect(result.component()).toEqual("main");
     });
 
     it("has error boundaries", async () => {
@@ -147,8 +147,8 @@ describe("assets registry", () => {
         url: "/service/program.js",
       });
 
-      expect(result.Main).toBeDefined();
-      expect(() => result.Main()).toThrow();
+      expect(result.component).toBeDefined();
+      expect(() => result.component()).toThrow();
       expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt with error", "ouch");
     });
   });
