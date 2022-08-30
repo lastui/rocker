@@ -76,9 +76,9 @@ describe("loader registry", () => {
       cleanup();
     });
 
-    it("adapt reducer", async () => {
+    it("adapt reducers", async () => {
       const scope = {
-        reducer: {
+        reducers: {
           "my-state": (state = {}, action) => state,
         },
       };

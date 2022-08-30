@@ -40,11 +40,11 @@ export default function (scope) {
       window.__SANDBOX_SCOPE__.fallback = scope.fallback;
     }
   }
-  if (scope.reducer) {
-    if (scope.reducer.constructor !== Object) {
-      warning(`attribute "reducer" provided in registerModule is not plain object`);
+  if (scope.reducers) {
+    if (scope.reducers.constructor !== Object) {
+      warning(`attribute "reducers" provided in registerModule is not plain object`);
     } else {
-      window.__SANDBOX_SCOPE__.reducer = scope.reducer;
+      window.__SANDBOX_SCOPE__.reducers = scope.reducers;
     }
   }
   if (scope.middleware) {

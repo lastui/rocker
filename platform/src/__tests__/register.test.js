@@ -113,23 +113,22 @@ describe("register", () => {
     });
   });
 
-  describe("reducer", () => {
+  describe("reducers", () => {
     it("does not accept invalid type", () => {
       const spy = jest.spyOn(console, "error");
       spy.mockImplementation(() => {});
-      const scope = { reducer: 1 };
 
-      register(scope);
-      expect(window.__SANDBOX_SCOPE__.reducer).not.toBeDefined();
-      expect(spy).toHaveBeenLastCalledWith(`attribute \"reducer\" provided in registerModule is not plain object`);
+      register({ reducers: 1 });
+      expect(window.__SANDBOX_SCOPE__.reducers).not.toBeDefined();
+      expect(spy).toHaveBeenLastCalledWith(`attribute \"reducers\" provided in registerModule is not plain object`);
     });
 
     it("accepts plain object", () => {
-      const reducer = {
+      const reducers = {
         a: 1,
       };
-      register({ reducer });
-      expect(window.__SANDBOX_SCOPE__.reducer).toEqual(reducer);
+      register({ reducers });
+      expect(window.__SANDBOX_SCOPE__.reducers).toEqual(reducers);
     });
   });
 
