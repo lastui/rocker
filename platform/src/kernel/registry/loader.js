@@ -20,7 +20,7 @@ export const adaptModule = async (id, scope) => {
     if (scope.middleware) {
       removeMiddleware(id);
     }
-    if (scope.reducer) {
+    if (scope.reducers) {
       removeReducer(id);
     }
   };
@@ -28,8 +28,8 @@ export const adaptModule = async (id, scope) => {
   if (scope.BUILD_ID) {
     adaptationWork.push(addStyles(id, scope.BUILD_ID));
   }
-  if (scope.reducer) {
-    adaptationWork.push(addReducer(id, scope.reducer));
+  if (scope.reducers) {
+    adaptationWork.push(addReducer(id, scope.reducers));
   }
   if (scope.middleware) {
     adaptationWork.push(addMiddleware(id, scope.middleware));
