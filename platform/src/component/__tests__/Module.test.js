@@ -17,8 +17,17 @@ jest.mock("../../kernel/registry/loader", () => ({
       return {};
     }
     return {
-      view: (props) => <div data-testid="happy-component">{props.children}</div>,
+      view: (props) => <div data-testid="view-probe">{props.children}</div>,
     };
+  },
+  isAvailable: (id) => {
+    if (id === "my-feature-without-view") {
+      return true;
+    }
+    if (id === "my-feature") {
+      return true;
+    }
+    return false;
   },
 }));
 
@@ -36,13 +45,15 @@ describe("<Module />", () => {
       },
     });
 
-    render(
+    const { unmount } = render(
       <ReduxProvider store={store}>
         <Module name="my-feature" />
       </ReduxProvider>,
     );
 
-    expect(screen.getByTestId("happy-component")).toBeInTheDocument();
+    expect(screen.getByTestId("view-probe")).toBeInTheDocument();
+
+    unmount();
   });
 
   it("renders children of loaded module", () => {
@@ -54,16 +65,18 @@ describe("<Module />", () => {
       },
     });
 
-    render(
+    const { unmount } = render(
       <ReduxProvider store={store}>
         <Module name="my-feature">
-          <div data-testid="happy-child" />
+          <div data-testid="child-probe" />
         </Module>
       </ReduxProvider>,
     );
 
-    expect(screen.getByTestId("happy-component")).toBeInTheDocument();
-    expect(screen.getByTestId("happy-child")).toBeInTheDocument();
+    expect(screen.getByTestId("view-probe")).toBeInTheDocument();
+    expect(screen.getByTestId("child-probe")).toBeInTheDocument();
+
+    unmount();
   });
 
   it("renders nothing if module not ready", () => {
@@ -75,11 +88,17 @@ describe("<Module />", () => {
       },
     });
 
-    render(
+    const { unmount } = render(
       <ReduxProvider store={store}>
-        <Module name="my-feature" />
+        <Module name="my-feature">
+          <div data-testid="child-probe" />
+        </Module>
       </ReduxProvider>,
     );
+
+    expect(screen.queryByTestId("child-probe")).not.toBeInTheDocument();
+
+    unmount();
   });
 
   it("renders nothing if there is no view", async () => {
@@ -93,14 +112,18 @@ describe("<Module />", () => {
 
     const { unmount } = render(
       <ReduxProvider store={store}>
-        <Module name="my-feature-without-view" />
+        <Module name="my-feature-without-view">
+          <div data-testid="child-probe" />
+        </Module>
       </ReduxProvider>,
     );
+
+    expect(screen.queryByTestId("child-probe")).not.toBeInTheDocument();
 
     unmount();
   });
 
-  it("renders fallback while still loading", () => {
+  it("renders fallback while loading", () => {
     const store = configureStore([])({
       shared: {
         readyModules: {
@@ -109,13 +132,15 @@ describe("<Module />", () => {
       },
     });
 
-    render(
+    const { unmount } = render(
       <ReduxProvider store={store}>
         <Module name="my-feature" fallback={() => <div data-testid="pending-fallback" />} />
       </ReduxProvider>,
     );
 
     expect(screen.getByTestId("pending-fallback")).toBeInTheDocument();
+
+    unmount();
   });
 
   it("renders nothing if there is no module name provided", () => {
@@ -125,10 +150,36 @@ describe("<Module />", () => {
       },
     });
 
-    render(
+    const { unmount } = render(
       <ReduxProvider store={store}>
-        <Module />
+        <Module>
+          <div data-testid="child-probe" />
+        </Module>
       </ReduxProvider>,
     );
+
+    expect(screen.queryByTestId("child-probe")).not.toBeInTheDocument();
+
+    unmount();
+  });
+
+  it("renders nothing if module is not available", () => {
+    const store = configureStore([])({
+      shared: {
+        readyModules: {},
+      },
+    });
+
+    const { unmount } = render(
+      <ReduxProvider store={store}>
+        <Module name="module-that-is-not-available">
+          <div data-testid="child-probe" />
+        </Module>
+      </ReduxProvider>,
+    );
+
+    expect(screen.queryByTestId("child-probe")).not.toBeInTheDocument();
+
+    unmount();
   });
 });

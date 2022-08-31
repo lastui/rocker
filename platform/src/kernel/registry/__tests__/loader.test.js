@@ -283,5 +283,16 @@ describe("loader registry", () => {
         expect(spy).toHaveBeenCalledWith("module my-feature failed to load", "ouch");
       });
     });
+
+    describe(".isAvailable", () => {
+      beforeEach(async () => {
+        await moduleLoader.setAvailableModules([]);
+      });
+
+      it("checks is module is available", async () => {
+        const available = moduleLoader.isAvailable("my-feature");
+        expect(available).toEqual(true);
+      });
+    });
   });
 });

@@ -148,8 +148,11 @@ const createModuleLoader = () => {
     await Promise.allSettled(scheduledUnload);
   };
 
+  const isAvailable = (id) => Boolean(availableModules);
+
   return {
     setAvailableModules,
+    isAvailable,
     loadModule,
     getLoadedModule,
   };

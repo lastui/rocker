@@ -52,7 +52,9 @@ const Module = forwardRef((props, ref) => {
     };
   }, [loadModule]);
 
-  if (!props.name) {
+  const availableModule = moduleLoader.isAvailable(props.name);
+
+  if (!props.name || !availableModule) {
     return null;
   }
 
