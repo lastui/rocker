@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.13.5",
+  "version": "0.13.6",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -115,7 +115,7 @@
     "prettier": "2.7.1",
     "pretty-format": "29.0.1",
     "redux-mock-store": "1.5.4",
-    "sass": "1.54.7",
+    "sass": "1.54.8",
     "sass-loader": "13.0.2",
     "source-map": "mozilla/source-map#master",
     "style-loader": "3.3.1",
