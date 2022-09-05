@@ -6,6 +6,12 @@ process.setMaxListeners(100);
 const { envelope } = require("./helpers/process.js");
 
 require("yargs")
+  .parserConfiguration({
+    "unknown-options-as-args": true,
+    "populate--": false,
+    "short-option-groups": true,
+    "greedy-arrays": false,
+  })
   .scriptName("rocker")
   .option("dev", {
     alias: "development",
@@ -29,5 +35,4 @@ require("yargs")
   .command(envelope(require("./commands/test.js")))
   .command(envelope(require("./commands/lint.js")))
   .demandCommand()
-  .help(false)
-  .strict().argv;
+  .help(false).argv;

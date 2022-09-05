@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, act } from "@testing-library/react";
 import { Provider as ReduxProvider } from "react-redux";
 import configureStore from "redux-mock-store";
 
@@ -32,7 +32,12 @@ jest.mock("../../kernel/registry/loader", () => ({
 }));
 
 describe("<Module />", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
   afterEach(() => {
+    jest.useRealTimers();
     cleanup();
   });
 
@@ -137,6 +142,10 @@ describe("<Module />", () => {
         <Module name="my-feature" fallback={() => <div data-testid="pending-fallback" />} />
       </ReduxProvider>,
     );
+
+    act(() => {
+      jest.runAllTimers();
+    });
 
     expect(screen.getByTestId("pending-fallback")).toBeInTheDocument();
 

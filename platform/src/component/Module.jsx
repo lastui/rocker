@@ -2,6 +2,7 @@ import { forwardRef, useState, useMemo, useEffect, createElement, useCallback } 
 import { useSelector } from "react-redux";
 
 import moduleLoader from "../kernel/registry/loader";
+import Fallback from "./Fallback";
 
 const Module = forwardRef((props, ref) => {
   const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
@@ -62,7 +63,7 @@ const Module = forwardRef((props, ref) => {
 
   if (!isReady || !loadedModule) {
     if (props.fallback) {
-      return props.fallback(composite.owned);
+      return createElement(Fallback, composite.owned, props.fallback);
     }
     return null;
   }
