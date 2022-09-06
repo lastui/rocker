@@ -40,7 +40,7 @@ describe("<Fallback />", () => {
     );
 
     act(() => {
-      jest.advanceTimersByTime(1000);
+      jest.runAllTimers();
     });
 
     expect(screen.getByTestId("child-probe")).toBeInTheDocument();

@@ -1,6 +1,6 @@
 const prettier = require("prettier/cli");
 
-exports.run = async function (prefix) {
+exports.run = async function (options) {
   process.on("unhandledRejection", (reason) => {
     throw reason;
   });
@@ -8,7 +8,7 @@ exports.run = async function (prefix) {
   const fs = require("fs");
   const path = require("path");
 
-  const cwd = prefix ? `${prefix.replaceAll("./", "")}/` : "";
+  const cwd = options.cwd ? `${options.cwd.replaceAll("./", "")}/` : "";
 
   await prettier.run([
     "--loglevel=warn",
