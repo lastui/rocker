@@ -1,6 +1,6 @@
 {
 	"name": "@lastui/dependencies",
-	"version": "1.3.0",
+	"version": "1.3.1",
 	"files": [
 		"index.js",
 		"dll/dependencies-dev-manifest.json",
@@ -9,11 +9,11 @@
 		"dll/dependencies.dll.min.js"
 	],
 	"dependencies": {
-		"@linaria/core": "4.1.1",
-		"@linaria/react": "4.1.2",
+		"@linaria/core": "4.1.2",
+		"@linaria/react": "4.1.3",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"react-intl": "6.1.0",
+		"react-intl": "6.1.1",
 		"react-redux": "8.0.2",
 		"react-router-dom": "6.3.0",
 		"redux": "4.2.0",
