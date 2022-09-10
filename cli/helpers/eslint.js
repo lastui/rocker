@@ -1,4 +1,4 @@
-exports.run = async function (prefix) {
+exports.run = async function (options) {
   process.on("unhandledRejection", (reason) => {
     throw reason;
   });
@@ -8,7 +8,7 @@ exports.run = async function (prefix) {
   const eslint = require("eslint");
   const babelOptions = require("../../babel").env.production;
 
-  const cwd = prefix ? `${prefix.replaceAll("./", "")}/` : "";
+  const cwd = options.cwd ? `${options.cwd.replaceAll("./", "")}/` : "";
 
   const engine = new eslint.ESLint({
     allowInlineConfig: true,

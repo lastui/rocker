@@ -6,5 +6,5 @@ exports.builder = {};
 
 exports.handler = async function (argv, cleanupHooks) {
   const { run } = require("../helpers/jest.js");
-  await run(argv.debug);
+  await run(argv);
 };

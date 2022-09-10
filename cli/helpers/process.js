@@ -31,7 +31,13 @@ exports.envelope = function (command) {
         });
       });
 
-      await command.handler(argv, cleanupHooks);
+      await command.handler(
+        {
+          ...argv,
+          _: argv._.filter((item) => item !== command.command),
+        },
+        cleanupHooks,
+      );
     },
   };
 };
