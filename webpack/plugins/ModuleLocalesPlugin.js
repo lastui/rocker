@@ -87,4 +87,6 @@ class ModuleLocalesPlugin {
   }
 }
 
+ModuleLocalesPlugin.name = "ModuleLocalesPlugin";
+
 module.exports = ModuleLocalesPlugin;

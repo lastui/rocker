@@ -1,6 +1,8 @@
 const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
 
+const NormalizedModuleIdPlugin = require("../plugins/NormalizedModuleIdPlugin");
+
 const settings = require("../settings");
 
 module.exports = {
@@ -82,6 +84,7 @@ module.exports = {
         ],
   },
   plugins: [
+    new NormalizedModuleIdPlugin(),
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
       process: ["process"],

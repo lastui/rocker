@@ -3,7 +3,6 @@ const config = require("../webpack/config/dll.js");
 config.entry = {
   dependencies: [
     // essentials
-    "history",
     "react",
     "regenerator-runtime/runtime.js",
     "react/jsx-runtime",
