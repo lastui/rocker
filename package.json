@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.13.17",
+  "version": "0.13.18",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -103,7 +103,7 @@
     "buffer": "6.0.3",
     "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "11.0.0",
-    "core-js": "3.25.3",
+    "core-js": "3.25.5",
     "css-loader": "6.7.1",
     "dotenv": "16.0.3",
     "eslint": "8.24.0",
@@ -125,7 +125,7 @@
     "weak-napi": "2.0.2",
     "webpack": "5.74.0",
     "webpack-dev-server": "4.11.1",
-    "yargs": "17.5.1"
+    "yargs": "17.6.0"
   },
   "repository": {
     "type": "git",
