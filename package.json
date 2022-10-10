@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.13.19",
+  "version": "0.13.20",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -74,7 +74,7 @@
   "dependencies": {
     "@babel/core": "7.19.3",
     "@babel/eslint-parser": "7.19.1",
-    "@babel/parser": "7.19.3",
+    "@babel/parser": "7.19.4",
     "@babel/plugin-proposal-class-properties": "7.18.6",
     "@babel/plugin-proposal-export-default-from": "7.18.10",
     "@babel/plugin-proposal-export-namespace-from": "7.18.9",
@@ -86,7 +86,7 @@
     "@babel/plugin-proposal-throw-expressions": "7.18.6",
     "@babel/plugin-transform-modules-commonjs": "7.18.6",
     "@babel/plugin-transform-react-display-name": "7.18.6",
-    "@babel/preset-env": "7.19.3",
+    "@babel/preset-env": "7.19.4",
     "@babel/preset-react": "7.18.6",
     "@babel/preset-typescript": "7.18.6",
     "@babel/register": "7.18.9",
