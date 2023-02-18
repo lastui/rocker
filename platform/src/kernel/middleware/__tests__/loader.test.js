@@ -93,7 +93,7 @@ describe("loader middleware", () => {
       const action = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [{ id: "my-feature" }],
+          modules: [{ name: "my-feature" }],
         },
       };
 
@@ -111,9 +111,9 @@ describe("loader middleware", () => {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
           modules: [
-            { id: "my-feature-a" },
-            { id: "my-feature-b", locales: {} },
-            { id: "my-feature-c", locales: { "en-US": {} } },
+            { name: "my-feature-a" },
+            { name: "my-feature-b", locales: {} },
+            { name: "my-feature-c", locales: { "en-US": {} } },
           ],
         },
       };
@@ -235,7 +235,7 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [{ id: "my-feature", locales: { "en-US": false } }],
+          modules: [{ name: "my-feature", locales: { "en-US": false } }],
         },
       };
 
@@ -280,7 +280,7 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [{ id: "my-feature", locales: { "en-US": "/i18n/broken.json" } }],
+          modules: [{ name: "my-feature", locales: { "en-US": "/i18n/broken.json" } }],
         },
       };
 
@@ -327,7 +327,7 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [{ id: "my-feature", locales: { "en-US": "/i18n/empty.json" } }],
+          modules: [{ name: "my-feature", locales: { "en-US": "/i18n/empty.json" } }],
         },
       };
 
@@ -374,7 +374,7 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [{ id: "my-feature", locales: { "en-US": "/i18n/valid.json" } }],
+          modules: [{ name: "my-feature", locales: { "en-US": "/i18n/valid.json" } }],
         },
       };
 
@@ -435,7 +435,7 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [{ id: "my-feature", locales: { "en-US": "/i18n/valid.json" } }],
+          modules: [{ name: "my-feature", locales: { "en-US": "/i18n/valid.json" } }],
         },
       };
 
@@ -514,7 +514,7 @@ describe("loader middleware", () => {
         payload: {
           modules: [
             {
-              id: "my-feature",
+              name: "my-feature",
               locales: { "en-US": "/i18n/valid.json", "fr-FR": "/i18n/valid.json" },
             },
           ],

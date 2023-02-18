@@ -6,30 +6,30 @@ import { modulesReducers } from "../reducer/modules";
 
 const emptydict = {};
 
-function removeReducer(id) {
-  if (!modulesReducers[id]) {
+function removeReducer(name) {
+  if (!modulesReducers[name]) {
     return;
   }
-  console.debug(`module ${id} removing reducer`);
-  delete modulesReducers[id];
+  console.debug(`module ${name} removing reducer`);
+  delete modulesReducers[name];
 }
 
-async function addReducer(id, reducer) {
-  if (modulesReducers[id]) {
-    delete modulesReducers[id];
-    console.debug(`module ${id} replacing reducer`);
+async function addReducer(name, reducer) {
+  if (modulesReducers[name]) {
+    delete modulesReducers[name];
+    console.debug(`module ${name} replacing reducer`);
   } else {
-    console.debug(`module ${id} introducing reducer`);
+    console.debug(`module ${name} introducing reducer`);
   }
   try {
     const composedReducer = combineReducers({
       ...reducer,
       shared: (_state, _action) => emptydict,
     });
-    composedReducer(undefined, { type: constants.MODULE_INIT, module: id });
-    modulesReducers[id] = composedReducer;
+    composedReducer(undefined, { type: constants.MODULE_INIT, module: name });
+    modulesReducers[name] = composedReducer;
   } catch (error) {
-    warning(`module ${id} wanted to register invalid reducer`, error);
+    warning(`module ${name} wanted to register invalid reducer`, error);
   }
 }
 

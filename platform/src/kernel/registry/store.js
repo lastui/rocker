@@ -27,14 +27,14 @@ const handler = {
       const proxy = arguments[arguments.length - 1];
       let prevStateIsolated = {};
       let prevState = null;
-      return (id) => ({
+      return (name) => ({
         dispatch: (action) => {
           if (action.type === SET_SHARED) {
             return proxy.dispatch({
               type: SET_SHARED,
               payload: {
                 data: action.payload.data,
-                module: action.payload.module ? id : undefined,
+                module: action.payload.module ? name : undefined,
               },
             });
           } else {
@@ -49,12 +49,12 @@ const handler = {
           prevState = state;
           prevStateIsolated = {};
           for (const mid in state.modules) {
-            if (mid === id) {
+            if (mid === name) {
               continue;
             }
             prevStateIsolated = Object.assign(prevStateIsolated, state.modules[mid]);
           }
-          const itself = state.modules[id];
+          const itself = state.modules[name];
           if (itself) {
             prevStateIsolated = Object.assign(prevStateIsolated, itself);
           }

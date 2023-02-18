@@ -57,16 +57,16 @@ function createModulesReducer() {
         return state;
       }
       case constants.MODULE_INIT: {
-        const id = action.payload.module;
-        console.debug(`module ${id} initialized`);
+        const name = action.payload.module;
+        console.debug(`module ${name} initialized`);
         let changed = false;
-        const reducer = modulesReducers[id];
+        const reducer = modulesReducers[name];
         if (reducer) {
           try {
-            state[id] = reducer(state[id], action);
+            state[name] = reducer(state[name], action);
             changed = true;
           } catch (error) {
-            warning(`module ${id} reducer failed to reduce`, error);
+            warning(`module ${name} reducer failed to reduce`, error);
           }
         }
         if (changed) {
@@ -75,21 +75,21 @@ function createModulesReducer() {
         return state;
       }
       case constants.MODULE_READY: {
-        const id = action.payload.module;
-        console.debug(`module ${id} ready`);
-        console.info(`+ module ${id}`);
+        const name = action.payload.module;
+        console.debug(`module ${name} ready`);
+        console.info(`+ module ${name}`);
         return state;
       }
       case constants.MODULE_UNLOADED: {
-        const id = action.payload.module;
+        const name = action.payload.module;
         let changed = false;
-        if (state[id]) {
-          console.debug(`module ${id} evicting redux state`);
-          delete state[id];
+        if (state[name]) {
+          console.debug(`module ${name} evicting redux state`);
+          delete state[name];
           changed = true;
         }
-        console.debug(`module ${id} unloaded`);
-        console.info(`- module ${id}`);
+        console.debug(`module ${name} unloaded`);
+        console.info(`- module ${name}`);
         if (changed) {
           return { ...state };
         }
@@ -97,15 +97,15 @@ function createModulesReducer() {
       }
       default: {
         let changed = false;
-        for (const [id, reducer] of modulesReducers) {
+        for (const [name, reducer] of modulesReducers) {
           try {
-            const nextState = reducer(state[id], action);
-            if (state[id] !== nextState) {
-              state[id] = nextState;
+            const nextState = reducer(state[name], action);
+            if (state[name] !== nextState) {
+              state[name] = nextState;
               changed = true;
             }
           } catch (error) {
-            warning(`module ${id} reducer failed to reduce`, error);
+            warning(`module ${name} reducer failed to reduce`, error);
           }
         }
         if (changed) {

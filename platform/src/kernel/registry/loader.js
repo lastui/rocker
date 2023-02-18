@@ -8,34 +8,34 @@ import { addReducer, removeReducer } from "./reducer";
 import { addSaga, removeSaga } from "./saga";
 import { getStore } from "./store";
 
-export const adaptModule = async (id, scope) => {
-  const preferentialStore = scope.saga || scope.component ? getStore().namespace(id) : null;
+export const adaptModule = async (name, scope) => {
+  const preferentialStore = scope.saga || scope.component ? getStore().namespace(name) : null;
   const cleanup = () => {
     if (scope.BUILD_ID) {
-      removeStyles(id);
+      removeStyles(name);
     }
     if (scope.saga) {
-      removeSaga(id, preferentialStore);
+      removeSaga(name, preferentialStore);
     }
     if (scope.middleware) {
-      removeMiddleware(id);
+      removeMiddleware(name);
     }
     if (scope.reducers) {
-      removeReducer(id);
+      removeReducer(name);
     }
   };
   const adaptationWork = [];
   if (scope.BUILD_ID) {
-    adaptationWork.push(addStyles(id, scope.BUILD_ID));
+    adaptationWork.push(addStyles(name, scope.BUILD_ID));
   }
   if (scope.reducers) {
-    adaptationWork.push(addReducer(id, scope.reducers));
+    adaptationWork.push(addReducer(name, scope.reducers));
   }
   if (scope.middleware) {
-    adaptationWork.push(addMiddleware(id, scope.middleware));
+    adaptationWork.push(addMiddleware(name, scope.middleware));
   }
   if (scope.saga) {
-    adaptationWork.push(addSaga(id, preferentialStore, scope.saga));
+    adaptationWork.push(addSaga(name, preferentialStore, scope.saga));
   }
   try {
     await Promise.all(adaptationWork);
@@ -44,7 +44,7 @@ export const adaptModule = async (id, scope) => {
     throw error;
   }
   return {
-    view: Scoped(id, preferentialStore, scope),
+    view: Scoped(name, preferentialStore, scope),
     cleanup,
   };
 };
@@ -54,22 +54,22 @@ const createModuleLoader = () => {
   const loadedModules = {};
   const loadingModules = {};
 
-  const getLoadedModule = (id) => loadedModules[id];
+  const getLoadedModule = (name) => loadedModules[name];
 
-  const loadModule = (id) => {
-    const available = availableModules[id];
-    const loaded = loadedModules[id];
+  const loadModule = (name) => {
+    const available = availableModules[name];
+    const loaded = loadedModules[name];
     if (!available || !available.program) {
       return Promise.resolve(Boolean(loaded));
     }
     if (loaded) {
       return Promise.resolve(false);
     }
-    const loading = loadingModules[id];
+    const loading = loadingModules[name];
     if (loading) {
       return loading;
     }
-    const promise = downloadProgram(id, available.program)
+    const promise = downloadProgram(name, available.program)
       .then((data) => {
         const scope = data;
         if (available.props && scope.props) {
@@ -80,42 +80,42 @@ const createModuleLoader = () => {
         } else if (available.props) {
           scope.props = { ...available.props };
         }
-        return adaptModule(id, scope);
+        return adaptModule(name, scope);
       })
       .then((data) => {
-        if (!availableModules[id]) {
+        if (!availableModules[name]) {
           data.cleanup();
           return true;
         }
-        loadedModules[id] = data;
+        loadedModules[name] = data;
         getStore().dispatch({
           type: constants.MODULE_LOADED,
           payload: {
-            module: id,
+            module: name,
           },
         });
         return true;
       })
       .catch((error) => {
-        warning(`module ${id} failed to load`, error);
+        warning(`module ${name} failed to load`, error);
         return Promise.resolve(false);
       })
       .then((changed) => {
-        delete loadingModules[id];
+        delete loadingModules[name];
         return changed;
       });
-    loadingModules[id] = promise;
+    loadingModules[name] = promise;
     return promise;
   };
 
-  const unloadModule = (id, loaded) =>
+  const unloadModule = (name, loaded) =>
     new Promise((resolve) => {
-      delete loadedModules[id];
+      delete loadedModules[name];
       loaded.cleanup();
       getStore().dispatch({
         type: constants.MODULE_UNLOADED,
         payload: {
-          module: id,
+          module: name,
         },
       });
       return resolve(true);
@@ -126,9 +126,9 @@ const createModuleLoader = () => {
     const newModules = {};
     for (let i = modules.length; i--; ) {
       const item = modules[i];
-      newModules[item.id] = item;
-      if (!availableModules[item.id]) {
-        availableModules[item.id] = item;
+      newModules[item.name] = item;
+      if (!availableModules[item.name]) {
+        availableModules[item.name] = item;
       }
     }
     const obsoleteModules = [];
@@ -148,7 +148,7 @@ const createModuleLoader = () => {
     await Promise.allSettled(scheduledUnload);
   };
 
-  const isAvailable = (id) => Boolean(availableModules);
+  const isAvailable = (name) => Boolean(availableModules[name]);
 
   return {
     setAvailableModules,

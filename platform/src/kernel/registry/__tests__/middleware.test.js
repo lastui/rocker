@@ -4,15 +4,15 @@ jest.mock("../../middleware/dynamic", () => {
   const memo = {};
 
   const injectMiddleware = jest.fn();
-  injectMiddleware.mockImplementation((id, middleware) => {
-    memo[id] = true;
+  injectMiddleware.mockImplementation((name, middleware) => {
+    memo[name] = true;
     return Promise.resolve(true);
   });
 
   const ejectMiddleware = jest.fn();
-  ejectMiddleware.mockImplementation((id) => {
-    if (memo[id]) {
-      delete memo[id];
+  ejectMiddleware.mockImplementation((name) => {
+    if (memo[name]) {
+      delete memo[name];
       return true;
     } else {
       return false;

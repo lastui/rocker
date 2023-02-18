@@ -6,8 +6,8 @@ const createDynamicMiddlewares = () => {
   let keys = [];
   let values = [];
 
-  const injectMiddleware = async (id, middleware) => {
-    const index = keys.indexOf(id);
+  const injectMiddleware = async (name, middleware) => {
+    const index = keys.indexOf(name);
     const instance = await middleware();
     if (!instance) {
       return false;
@@ -15,14 +15,14 @@ const createDynamicMiddlewares = () => {
     if (index !== -1) {
       values[index] = instance(getStore());
     } else {
-      keys.push(id);
+      keys.push(name);
       values.push(instance(getStore()));
     }
     return true;
   };
 
-  const ejectMiddleware = (id) => {
-    const index = keys.indexOf(id);
+  const ejectMiddleware = (name) => {
+    const index = keys.indexOf(name);
     if (index === -1) {
       return false;
     }

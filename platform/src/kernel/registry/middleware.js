@@ -1,19 +1,19 @@
 import { injectMiddleware, ejectMiddleware } from "../middleware/dynamic";
 
-function removeMiddleware(id) {
-  if (!ejectMiddleware(id)) {
+function removeMiddleware(name) {
+  if (!ejectMiddleware(name)) {
     return;
   }
-  console.debug(`module ${id} removing middleware`);
+  console.debug(`module ${name} removing middleware`);
 }
 
-async function addMiddleware(id, middleware) {
-  if (ejectMiddleware(id)) {
-    console.debug(`module ${id} replacing middleware`);
+async function addMiddleware(name, middleware) {
+  if (ejectMiddleware(name)) {
+    console.debug(`module ${name} replacing middleware`);
   } else {
-    console.debug(`module ${id} introducing middleware`);
+    console.debug(`module ${name} introducing middleware`);
   }
-  await injectMiddleware(id, middleware);
+  await injectMiddleware(name, middleware);
 }
 
 export { addMiddleware, removeMiddleware };

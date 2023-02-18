@@ -7,24 +7,24 @@ const createLoaderMiddleware = () => {
   let availableLocales = {};
   const loadedLocales = {};
 
-  const downloadBatchLocales = async (ids, language) => {
+  const downloadBatchLocales = async (names, language) => {
     const scheduledAssets = [];
-    for (const id of ids) {
-      if (!loadedLocales[id]) {
-        loadedLocales[id] = {};
+    for (const name of names) {
+      if (!loadedLocales[name]) {
+        loadedLocales[name] = {};
       }
-      if (loadedLocales[id][language]) {
+      if (loadedLocales[name][language]) {
         continue;
       }
-      loadedLocales[id][language] = true;
+      loadedLocales[name][language] = true;
 
-      const uri = availableLocales[id] && availableLocales[id][language];
+      const uri = availableLocales[name] && availableLocales[name][language];
       if (!uri) {
         continue;
       }
       const promise = downloadAsset(uri)
         .then((data) => data.json())
-        .then((data) => Object.keys(data).length > 0 && { module: id, data });
+        .then((data) => Object.keys(data).length > 0 && { module: name, data });
       scheduledAssets.push(promise);
     }
 
@@ -49,7 +49,7 @@ const createLoaderMiddleware = () => {
           availableLocales = {};
           for (const item of action.payload.modules) {
             if (item.locales && Object.keys(item.locales) !== 0) {
-              availableLocales[item.id] = item.locales;
+              availableLocales[item.name] = item.locales;
             }
           }
           return loader.setAvailableModules(action.payload.modules).then(() => next(action));
@@ -60,10 +60,10 @@ const createLoaderMiddleware = () => {
         }
 
         case constants.MODULE_LOADED: {
-          const id = action.payload.module;
-          console.debug(`module ${id} loaded`);
+          const name = action.payload.module;
+          console.debug(`module ${name} loaded`);
           const language = store.getState().shared.language;
-          return downloadBatchLocales([id], language).then((items) => {
+          return downloadBatchLocales([name], language).then((items) => {
             if (items.length > 0) {
               store.dispatch({
                 type: constants.I18N_MESSAGES_BATCH,
@@ -76,13 +76,13 @@ const createLoaderMiddleware = () => {
             store.dispatch({
               type: constants.MODULE_INIT,
               payload: {
-                module: id,
+                module: name,
               },
             });
             return next({
               type: constants.MODULE_READY,
               payload: {
-                module: id,
+                module: name,
               },
             });
           });
@@ -92,11 +92,11 @@ const createLoaderMiddleware = () => {
           const language = action.payload.language;
 
           const missing = [];
-          for (const id in loadedLocales) {
-            if (loadedLocales[id][language]) {
+          for (const name in loadedLocales) {
+            if (loadedLocales[name][language]) {
               continue;
             }
-            missing.push(id);
+            missing.push(name);
           }
           return downloadBatchLocales(missing, language).then((items) =>
             next({
@@ -110,9 +110,9 @@ const createLoaderMiddleware = () => {
         }
 
         case constants.MODULE_UNLOADED: {
-          const id = action.payload.module;
-          if (loadedLocales[id]) {
-            delete loadedLocales[id];
+          const name = action.payload.module;
+          if (loadedLocales[name]) {
+            delete loadedLocales[name];
           }
           return next(action);
         }
