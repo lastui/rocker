@@ -239,7 +239,7 @@ config.plugins.push(
       } catch (_) {
         const hotModules = entrypoints.map((name) => {
           const hotModule = {
-            name: name,
+            name,
             program: {
               url: `${props.compilation.outputOptions.publicPath}${name}/main.js`,
             },
