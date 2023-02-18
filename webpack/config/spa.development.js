@@ -184,22 +184,22 @@ config.module.rules.push(
 
 config.plugins.push(
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies-dev-manifest.json"),
+    manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", "dependencies-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "../../platform/dll/platform-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "platform", "dll", "platform-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "../../bootstrap/dll/bootstrap-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new HTMLWebpackPlugin({
-    template: path.resolve(settings.PROJECT_ROOT_PATH, "static/index.html"),
+    template: path.resolve(settings.PROJECT_ROOT_PATH, "static", "index.html"),
     production: false,
     publicPath: "/",
     minify: false,
@@ -208,21 +208,21 @@ config.plugins.push(
   }),
   new AddAssetHtmlPlugin([
     {
-      filepath: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies.dll.js"),
+      filepath: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", "dependencies.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     },
     {
-      filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.js"),
+      filepath: path.resolve(__dirname, "..", "..", "platform", "dll", "platform.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     },
     {
-      filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.js"),
+      filepath: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,

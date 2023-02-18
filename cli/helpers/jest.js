@@ -15,7 +15,7 @@ exports.run = async function (options) {
       ? ["--runInBand", "--detectOpenHandles", "--detectLeaks", "--logHeapUsage"]
       : ["--maxWorkers=50%", "--maxConcurency=10"]),
     "--config",
-    path.resolve(__dirname, "../../jest/index.js"),
+    path.resolve(__dirname, "..", "..", "jest", "index.js"),
     ...(options._.length > 0 ? [options._[options._.length - 1]] : []),
   ]);
 };

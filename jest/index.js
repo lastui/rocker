@@ -37,8 +37,8 @@ module.exports = {
         plugins: babelConfig.plugins,
       },
     ],
-    "\\.css$": path.resolve(__dirname, "transform/css.js"),
-    "^(?!.*\\.(ts|js|jsx|tsx|css))": path.resolve(__dirname, "transform/file.js"),
+    "\\.css$": path.resolve(__dirname, "transform", "css.js"),
+    "^(?!.*\\.(ts|js|jsx|tsx|css))": path.resolve(__dirname, "transform", "file.js"),
   },
   cacheDirectory: "<rootDir>/node_modules/@lastui/rocker/jest/.jest-cache",
   transformIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
@@ -46,7 +46,9 @@ module.exports = {
   setupFilesAfterEnv: [
     "@testing-library/jest-dom/extend-expect",
     path.resolve(__dirname, "setupTests.js"),
-    ...(fs.existsSync(path.resolve(process.env.INIT_CWD, "src/setupTests.js")) ? ["<rootDir>/src/setupTests.js"] : []),
+    ...(fs.existsSync(path.resolve(process.env.INIT_CWD, "src", "setupTests.js"))
+      ? ["<rootDir>/src/setupTests.js"]
+      : []),
   ],
   coverageThreshold: {
     global: {
@@ -58,6 +60,6 @@ module.exports = {
   },
   moduleDirectories: [...node_modules, "<rootDir>/src"],
   moduleNameMapper: {
-    "@lastui/rocker/platform": path.resolve(__dirname, "__mocks__/platform.js"),
+    "@lastui/rocker/platform": path.resolve(__dirname, "__mocks__", "platform.js"),
   },
 };

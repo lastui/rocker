@@ -155,22 +155,22 @@ config.plugins.push(
     dry: false,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies-prod-manifest.json"),
+    manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", "dependencies-prod-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "../../platform/dll/platform-prod-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "platform", "dll", "platform-prod-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "../../bootstrap/dll/bootstrap-prod-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap-prod-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new HTMLWebpackPlugin({
-    template: path.resolve(settings.PROJECT_ROOT_PATH, "static/index.html"),
+    template: path.resolve(settings.PROJECT_ROOT_PATH, "static", "index.html"),
     filename: "spa/index.html",
     production: true,
     publicPath: settings.PROJECT_NAMESPACE,
@@ -193,14 +193,14 @@ config.plugins.push(
     patterns: [
       {
         from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
-        to: settings.PROJECT_BUILD_PATH + "/spa",
+        to: path.join(settings.PROJECT_BUILD_PATH, "spa"),
         filter: async (resourcePath) => !resourcePath.endsWith("index.html"),
       },
     ],
   }),
   new AddAssetHtmlPlugin([
     {
-      filepath: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies.dll.min.js"),
+      filepath: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", "dependencies.dll.min.js"),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
@@ -209,7 +209,7 @@ config.plugins.push(
       },
     },
     {
-      filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.min.js"),
+      filepath: path.resolve(__dirname, "..", "..", "platform", "dll", "platform.dll.min.js"),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
@@ -218,7 +218,7 @@ config.plugins.push(
       },
     },
     {
-      filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.min.js"),
+      filepath: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap.dll.min.js"),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",

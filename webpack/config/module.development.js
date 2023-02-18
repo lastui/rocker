@@ -197,17 +197,17 @@ config.module.rules.push(
 
 config.plugins.push(
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies-dev-manifest.json"),
+    manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", "dependencies-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "../../platform/dll/platform-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "platform", "dll", "platform-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "../../bootstrap/dll/bootstrap-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
@@ -230,7 +230,7 @@ config.plugins.push(
       }
 
       const headTags = props.htmlWebpackPlugin.tags.headTags.filter(
-        (item) => !entrypoints.map((name) => `${name}/main.js`).includes(item.attributes.src),
+        (item) => !entrypoints.map((name) => path.join(name, "main.js")).includes(item.attributes.src),
       );
 
       let manifest;
@@ -241,15 +241,18 @@ config.plugins.push(
           const hotModule = {
             name,
             program: {
-              url: `${props.compilation.outputOptions.publicPath}${name}/main.js`,
+              url: path.join(props.compilation.outputOptions.publicPath, name, "main.js"),
             },
             locales: {},
             meta: {},
           };
           for (const language of settings.SUPPORTED_LOCALES) {
-            hotModule.locales[
-              language
-            ] = `${props.compilation.outputOptions.publicPath}${name}/messages/${language}.json`;
+            hotModule.locales[language] = path.join(
+              props.compilation.outputOptions.publicPath,
+              name,
+              "messages",
+              `${language}.json`,
+            );
           }
           return hotModule;
         });
@@ -295,21 +298,21 @@ config.plugins.push(
   }),
   new AddAssetHtmlPlugin([
     {
-      filepath: path.resolve(require.resolve("@lastui/dependencies"), "../dll/dependencies.dll.js"),
+      filepath: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", "dependencies.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     },
     {
-      filepath: path.resolve(__dirname, "../../platform/dll/platform.dll.js"),
+      filepath: path.resolve(__dirname, "..", "..", "platform", "dll", "platform.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     },
     {
-      filepath: path.resolve(__dirname, "../../bootstrap/dll/bootstrap.dll.js"),
+      filepath: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
