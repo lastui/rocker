@@ -8,11 +8,11 @@ export class SequentialProgramEvaluator {
   static queue = [];
   static compiling = false;
 
-  static compile(id, data) {
+  static compile(name, data) {
     return new Promise((resolve) => {
       this.queue.push({
         data,
-        id,
+        name,
         resolve,
       });
       this.tick();
@@ -37,7 +37,7 @@ export class SequentialProgramEvaluator {
       window.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
       new Function("", item.data)({});
     } catch (error) {
-      warning(`module ${item.id} failed to adapt with error`, error);
+      warning(`module ${item.name} failed to adapt with error`, error);
       sandbox.__SANDBOX_SCOPE__.component = () => {
         throw error;
       };
@@ -52,9 +52,9 @@ export class SequentialProgramEvaluator {
 }
 
 /* istanbul ignore next */
-async function clientCache(id) {
+async function clientCache(name) {
   try {
-    return await window.caches.open(`rocker/${id}`);
+    return await window.caches.open(`rocker/${name}`);
   } catch (_err) {
     return {
       async match() {
@@ -156,13 +156,13 @@ function downloadAsset(resource) {
   return request;
 }
 
-async function downloadProgram(id, program) {
+async function downloadProgram(name, program) {
   if (!program) {
     return {};
   }
   const data = await downloadAsset(program.url);
   const content = await data.text();
-  return SequentialProgramEvaluator.compile(id, content);
+  return SequentialProgramEvaluator.compile(name, content);
 }
 
 export { downloadAsset, downloadProgram };

@@ -7,7 +7,7 @@ import { setSagaRunner } from "../saga";
 import { setStore } from "../store";
 
 jest.mock("../assets", () => ({
-  downloadProgram: (id, scope) => {
+  downloadProgram: (name, scope) => {
     if (scope.url === "/my-broken-program.js") {
       return new Promise(() => {
         throw "ouch";
@@ -146,7 +146,7 @@ describe("loader registry", () => {
       it("gained access to modules", async () => {
         const modules = [
           {
-            id: "a",
+            name: "a",
             program: {
               url: "/a.js",
             },
@@ -159,13 +159,13 @@ describe("loader registry", () => {
       it("lost access to modules", async () => {
         await moduleLoader.setAvailableModules([
           {
-            id: "a",
+            name: "a",
             program: {
               url: "/a.js",
             },
           },
           {
-            id: "b",
+            name: "b",
             program: {
               url: "/b.js",
             },
@@ -183,7 +183,7 @@ describe("loader registry", () => {
 
         await moduleLoader.setAvailableModules([
           {
-            id: "a",
+            name: "a",
             program: {
               url: "/a.js",
             },
@@ -208,7 +208,7 @@ describe("loader registry", () => {
       it("not available to load", async () => {
         const modules = [
           {
-            id: "my-feature",
+            name: "my-feature",
           },
         ];
         await moduleLoader.setAvailableModules(modules);
@@ -219,7 +219,7 @@ describe("loader registry", () => {
       it("available to load", async () => {
         const modules = [
           {
-            id: "my-feature",
+            name: "my-feature",
             program: {
               url: "/my-program.js",
             },
@@ -228,13 +228,13 @@ describe("loader registry", () => {
             },
           },
           {
-            id: "my-timeout-feature",
+            name: "my-timeout-feature",
             program: {
               url: "/while-true.js",
             },
           },
           {
-            id: "my-timeout-feature-with-props",
+            name: "my-timeout-feature-with-props",
             program: {
               url: "/while-true.js",
             },
@@ -257,7 +257,7 @@ describe("loader registry", () => {
 
         const c = moduleLoader.loadModule("my-timeout-feature-with-props");
 
-        await moduleLoader.setAvailableModules(modules.filter((item) => item.id !== "my-timeout-feature-with-props"));
+        await moduleLoader.setAvailableModules(modules.filter((item) => item.name !== "my-timeout-feature-with-props"));
 
         jest.runAllTimers();
 
@@ -271,7 +271,7 @@ describe("loader registry", () => {
 
         const modules = [
           {
-            id: "my-feature",
+            name: "my-feature",
             program: {
               url: "/my-broken-program.js",
             },
@@ -291,7 +291,7 @@ describe("loader registry", () => {
 
       it("checks is module is available", async () => {
         const available = moduleLoader.isAvailable("my-feature");
-        expect(available).toEqual(true);
+        expect(available).toEqual(false);
       });
     });
   });

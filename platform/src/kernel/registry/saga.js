@@ -19,41 +19,41 @@ function setSagaRunner(nextSagaRunner) {
   }
 }
 
-function removeSaga(id, preferentialStore) {
-  const dangling = sagas[id];
+function removeSaga(name, preferentialStore) {
+  const dangling = sagas[name];
   if (!dangling) {
     return;
   }
-  console.debug(`module ${id} removing saga`);
+  console.debug(`module ${name} removing saga`);
   sagaRunner(preferentialStore, function* () {
     yield cancel(dangling);
   });
-  delete sagas[id];
+  delete sagas[name];
 }
 
-async function addSaga(id, preferentialStore, saga) {
-  if (sagas[id]) {
-    delete sagas[id];
-    console.debug(`module ${id} replacing saga`);
+async function addSaga(name, preferentialStore, saga) {
+  if (sagas[name]) {
+    delete sagas[name];
+    console.debug(`module ${name} replacing saga`);
   } else {
-    console.debug(`module ${id} introducing saga`);
+    console.debug(`module ${name} introducing saga`);
   }
   sagaRunner(preferentialStore, function* () {
-    sagas[id] = yield spawn(function* () {
+    sagas[name] = yield spawn(function* () {
       while (true) {
-        const isReady = yield select((state) => state.shared.readyModules[id]);
+        const isReady = yield select((state) => state.shared.readyModules[name]);
         if (isReady) {
           break;
         }
         const init = yield take(constants.MODULE_INIT);
-        if (init.payload.module === id) {
+        if (init.payload.module === name) {
           break;
         }
       }
       try {
         yield saga();
       } catch (error) {
-        warning(`module ${id} saga crashed`, error);
+        warning(`module ${name} saga crashed`, error);
       }
     });
   });

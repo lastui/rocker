@@ -1,7 +1,7 @@
 import { forwardRef, useMemo, createElement, Component, useContext } from "react";
 import { ReactReduxContext } from "react-redux";
 
-const Scoped = (id, preferentialStore, scope) => {
+const Scoped = (name, preferentialStore, scope) => {
   if (!scope.component) {
     return null;
   }
@@ -41,7 +41,7 @@ const Scoped = (id, preferentialStore, scope) => {
   class Boundaries extends Component {
     state = { error: null };
 
-    static displayName = `Module(${id})`;
+    static displayName = `Module(${name})`;
 
     static getDerivedStateFromError(error) {
       return { error };

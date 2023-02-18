@@ -28,13 +28,13 @@ describe("runtimeReducer", () => {
       payload: {
         modules: [
           {
-            id: "A",
+            name: "A",
           },
           {
-            id: "C",
+            name: "C",
           },
           {
-            id: "B",
+            name: "B",
           },
         ],
       },
@@ -47,11 +47,12 @@ describe("runtimeReducer", () => {
       payload: {
         modules: [
           {
-            id: "A",
+            name: "A",
           },
           {
-            id: "C",
+            name: "C",
           },
+          {},
         ],
       },
     };

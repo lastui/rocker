@@ -16,7 +16,10 @@ export default (state = initialState, action) => {
     case constants.SET_AVAILABLE_MODULES: {
       const nextAvailable = {};
       for (const item of action.payload.modules) {
-        nextAvailable[item.id] = true;
+        if (!item.name) {
+          continue;
+        }
+        nextAvailable[item.name] = true;
       }
       return {
         entrypoint: state.entrypoint,
