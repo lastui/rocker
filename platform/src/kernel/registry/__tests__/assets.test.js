@@ -112,9 +112,9 @@ describe("assets registry", () => {
       global.fetch.mockImplementationOnce(async () => ({
         ok: true,
         status: 200,
-        text: async () => `
-          window.__SANDBOX_SCOPE__.component = () => 'main';
-        `,
+        text: async () => `!function(){
+          window.__SANDBOX_SCOPE__.component = () => 'main'
+        }();`,
         headers: {
           get() {},
         },
@@ -127,7 +127,7 @@ describe("assets registry", () => {
       expect(result.component()).toEqual("main");
     });
 
-    it("has error boundaries", async () => {
+    it("raises error when program is not a module", async () => {
       const spy = jest.spyOn(console, "error");
       spy.mockImplementation(() => {});
       spy.mockClear();
@@ -136,7 +136,7 @@ describe("assets registry", () => {
         ok: true,
         status: 200,
         text: async () => `
-          throw 'ouch';
+          window.__SANDBOX_SCOPE__.component = () => 'main';
         `,
         headers: {
           get() {},
@@ -148,8 +148,33 @@ describe("assets registry", () => {
       });
 
       expect(result.component).toBeDefined();
-      expect(() => result.component()).toThrow();
-      expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt with error", "ouch");
+      expect(() => result.component()).toThrow(new Error("Asset is not a module"));
+      expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt");
+    });
+
+    it("has error boundaries", async () => {
+      const spy = jest.spyOn(console, "error");
+      spy.mockImplementation(() => {});
+      spy.mockClear();
+
+      global.fetch.mockImplementationOnce(async () => ({
+        ok: true,
+        status: 200,
+        text: async () => `!function(){
+          throw new Error('ouch');
+        }();`,
+        headers: {
+          get() {},
+        },
+      }));
+
+      const result = await downloadProgram("my-feature", {
+        url: "/service/program.js",
+      });
+
+      expect(result.component).toBeDefined();
+      expect(() => result.component()).toThrow(new Error("ouch"));
+      expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt");
     });
   });
 
