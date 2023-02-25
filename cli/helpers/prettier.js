@@ -8,7 +8,7 @@ exports.run = async function (options) {
   const fs = require("fs");
   const path = require("path");
 
-  const cwd = options.cwd ? `${options.cwd.replaceAll("./", "")}/` : "";
+  const cwd = options.cwd ? `${options.cwd.replaceAll(`.${path.delimiter}`, "")}${path.delimiter}` : "";
 
   await prettier.run([
     "--loglevel=warn",
@@ -22,7 +22,7 @@ exports.run = async function (options) {
     "--trailing-comma=all",
     "--write",
     fs.existsSync(path.resolve(process.env.INIT_CWD, "src"))
-      ? `(${cwd}*\\.(js|ts|jsx|tsx)|(${cwd}src/**/*\\.(js|ts|jsx|tsx)))`
-      : `(${cwd}**/*\\.(js|ts|jsx|tsx))`,
+      ? `(${cwd}*\\.(js|ts|jsx|tsx)|(${cwd}${path.join("src", "**", "*")}\\.(js|ts|jsx|tsx)))`
+      : `(${cwd}${path.join("**", "*")}\\.(js|ts|jsx|tsx))`,
   ]);
 };
