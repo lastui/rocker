@@ -112,6 +112,29 @@ describe("assets registry", () => {
       global.fetch.mockImplementationOnce(async () => ({
         ok: true,
         status: 200,
+        text: async () => `!function(){
+          window.__SANDBOX_SCOPE__.component = () => 'main'
+        }();`,
+        headers: {
+          get() {},
+        },
+      }));
+
+      const result = await downloadProgram("my-feature", {
+        url: "/service/program.js",
+      });
+
+      expect(result.component()).toEqual("main");
+    });
+
+    it("raises error when program is not a module", async () => {
+      const spy = jest.spyOn(console, "error");
+      spy.mockImplementation(() => {});
+      spy.mockClear();
+
+      global.fetch.mockImplementationOnce(async () => ({
+        ok: true,
+        status: 200,
         text: async () => `
           window.__SANDBOX_SCOPE__.component = () => 'main';
         `,
@@ -124,7 +147,9 @@ describe("assets registry", () => {
         url: "/service/program.js",
       });
 
-      expect(result.component()).toEqual("main");
+      expect(result.component).toBeDefined();
+      expect(() => result.component()).toThrow();
+      expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt");
     });
 
     it("has error boundaries", async () => {
@@ -149,7 +174,7 @@ describe("assets registry", () => {
 
       expect(result.component).toBeDefined();
       expect(() => result.component()).toThrow();
-      expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt with error", "ouch");
+      expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt");
     });
   });
 

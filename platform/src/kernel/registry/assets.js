@@ -35,8 +35,8 @@ export class SequentialProgramEvaluator {
     };
     try {
       window.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
-      if (!item.data.startsWith('!function')) {
-        throw new Error(`Asset is not a module`)
+      if (!item.data.startsWith("!function")) {
+        throw new Error(`Asset is not a module`);
       }
       new Function("", item.data)({});
     } catch (error) {
