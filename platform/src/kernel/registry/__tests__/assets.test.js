@@ -148,7 +148,7 @@ describe("assets registry", () => {
       });
 
       expect(result.component).toBeDefined();
-      expect(() => result.component()).toThrow();
+      expect(() => result.component()).toThrow(new Error("Asset is not a module"));
       expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt");
     });
 
@@ -160,9 +160,9 @@ describe("assets registry", () => {
       global.fetch.mockImplementationOnce(async () => ({
         ok: true,
         status: 200,
-        text: async () => `
-          throw 'ouch';
-        `,
+        text: async () => `!function(){
+          throw new Error('ouch');
+        }();`,
         headers: {
           get() {},
         },
@@ -173,7 +173,7 @@ describe("assets registry", () => {
       });
 
       expect(result.component).toBeDefined();
-      expect(() => result.component()).toThrow();
+      expect(() => result.component()).toThrow(new Error("ouch"));
       expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt");
     });
   });
