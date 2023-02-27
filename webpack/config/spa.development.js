@@ -55,6 +55,7 @@ config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kerne
 config.module.rules.push(
   {
     test: /\.[j|t]sx?$/,
+    enforce: "pre",
     use: [
       {
         loader: "babel-loader",

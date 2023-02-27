@@ -22,6 +22,7 @@ config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platfor
 config.module.rules.push(
   {
     test: /\.[j|t]sx?$/,
+    enforce: "pre",
     use: [
       {
         loader: "babel-loader",

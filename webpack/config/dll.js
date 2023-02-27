@@ -15,6 +15,7 @@ const config = {
 config.module.rules.push(
   {
     test: /\.[j|t]sx?$/,
+    enforce: "pre",
     use: [
       {
         loader: "babel-loader",
