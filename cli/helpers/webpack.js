@@ -112,6 +112,8 @@ exports.getStack = async function (packageName) {
 
   if (customConfigExists) {
     config = require(projectConfig);
+    const nodeModules = [];
+
     for (const entrypoint in config.entry) {
       const patchedSources = [];
       const originalSources = Array.isArray(config.entry[entrypoint])
@@ -124,7 +126,18 @@ exports.getStack = async function (packageName) {
           patchedSources.push(source);
         }
       }
+
+      for (const file of patchedSources) {
+        const nodeModulesCandidate = path.resolve(file, "..", "..", "node_modules");
+        if (await directoryExists(nodeModulesCandidate)) {
+          nodeModules.push(nodeModulesCandidate);
+        }
+      }
+
       config.entry[entrypoint] = patchedSources;
+
+      config.resolve.modules.push(...nodeModules);
+      config.snapshot.managedPaths.push(...nodeModules);
     }
   } else if (projectNodeModulesExists) {
     config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${
