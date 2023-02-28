@@ -153,7 +153,7 @@ config.plugins.push(
     dry: false,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", "dependencies-prod-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "dependencies", "dll", "dependencies-prod-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
@@ -198,7 +198,7 @@ config.plugins.push(
   }),
   new AddAssetHtmlPlugin([
     {
-      filepath: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", "dependencies.dll.min.js"),
+      filepath: path.resolve(__dirname, "..", "..", "..", "dependencies", "dll", "dependencies.dll.min.js"),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",

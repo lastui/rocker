@@ -29,11 +29,14 @@ exports.PROJECT_NAMESPACE = namespace(exports.DEVELOPMENT ? "" : process.env.PRO
 
 exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US").split(",").map((locale) => locale.trim());
 
-exports.PROJECT_ROOT_PATH = path.resolve(".", process.env.INIT_CWD);
+exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
+
+exports.PROJECT_ROOT_PATH =
+  exports.WEBPACK_ROOT_PATH.indexOf("node_modules") !== -1
+    ? path.resolve(__dirname, "..", "..", "..", "..", "..")
+    : path.resolve(".", process.env.INIT_CWD);
 
 exports.PROJECT_NAME = process.env.PROJECT_NAME || path.resolve(exports.PROJECT_ROOT_PATH).split(path.sep).pop();
-
-exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 
 exports.NODE_MODULES_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "node_modules");
 
