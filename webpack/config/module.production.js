@@ -166,7 +166,7 @@ config.plugins.push(
     from: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", "dependencies-prod-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "dependencies", "dll", "dependencies-prod-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),

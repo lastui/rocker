@@ -7,7 +7,8 @@ module.exports = {
   mode: settings.DEVELOPMENT ? "development" : "production",
   resolve: {
     unsafeCache: false,
-    preferRelative: false,
+    preferRelative: true,
+    preferAbsolute: false,
     modules: [settings.NODE_MODULES_PATH],
     extensions: [".js", ".jsx", ".ts", ".tsx"],
     mainFields: ["browser", "module", "main"],
@@ -21,6 +22,7 @@ module.exports = {
       crypto: false,
     },
     alias: {},
+    roots: [settings.PROJECT_ROOT_PATH],
   },
   module: {
     strictExportPresence: true,
