@@ -1,7 +1,5 @@
 const settings = require("../settings");
 
-console.log("settings.PROJECT_ROOT_PATH", settings.PROJECT_ROOT_PATH);
-
 module.exports = {
   context: settings.PROJECT_ROOT_PATH,
   target: "web",
