@@ -66,7 +66,7 @@ function createModulesReducer() {
             state[name] = reducer(state[name], action);
             changed = true;
           } catch (error) {
-            warning(`module ${name} reducer failed to reduce`, error);
+            warning(`module ${name} reducer failed to reduce on action ${action.type}`, error);
           }
         }
         if (changed) {
@@ -105,7 +105,7 @@ function createModulesReducer() {
               changed = true;
             }
           } catch (error) {
-            warning(`module ${name} reducer failed to reduce`, error);
+            warning(`module ${name} reducer failed to reduce on action ${action.type}`, error);
           }
         }
         if (changed) {
