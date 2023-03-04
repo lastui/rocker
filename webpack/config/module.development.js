@@ -2,6 +2,9 @@ const path = require("path");
 const fs = require("fs");
 const webpack = require("webpack");
 
+const parser = require("@babel/parser");
+const traverse = require("@babel/traverse").default;
+
 const { setLogLevel } = require("webpack/hot/log");
 setLogLevel("none");
 
@@ -224,40 +227,113 @@ config.plugins.push(
 
       for (const entryPoint of props.compilation.entrypoints.values()) {
         for (const chunk of entryPoint.chunks) {
-          entrypoints.push(chunk.name);
+          entrypoints.push(chunk);
         }
       }
 
       const headTags = props.htmlWebpackPlugin.tags.headTags.filter(
-        (item) => !entrypoints.map((name) => path.join(name, "main.js")).includes(item.attributes.src),
+        (item) => !entrypoints.map((chunk) => path.join(chunk.id, "main.js")).includes(item.attributes.src),
       );
 
       let manifest;
       try {
-        manifest = fs.readFileSync(path.resolve(process.cwd(), "manifest.json"), "utf8");
+        manifest = fs.readFileSync(path.resolve(settings.PROJECT_ROOT_PATH, "manifest.json"), "utf8");
       } catch (_) {
-        const hotModules = entrypoints.map((name) => {
-          const hotModule = {
-            name,
+        let entrypoint = null;
+
+        if (entrypoints.length === 1) {
+          entrypoint = entrypoints[0].id;
+        } else {
+          const dependencyGraph = {};
+
+          for (const chunk of entrypoints) {
+            props.compilation.chunkGraph.getChunkModulesIterable(chunk).forEach((fragment) => {
+              const matchedImports = fragment.dependencies.filter(
+                (item) => item.request === "@lastui/rocker/platform" && item.name === "Module",
+              );
+
+              if (matchedImports.length > 0) {
+                fragment._source._sourceMapAsObject.sourcesContent.forEach((sourceCode) => {
+                  const ast = parser.parse(sourceCode, {
+                    sourceType: "module",
+                    plugins: ["jsx"],
+                  });
+
+                  traverse(ast, {
+                    JSXElement: (path) => {
+                      (path.node.openingElement.attributes ?? []).forEach((attribute) => {
+                        if (attribute.name.type === "JSXIdentifier" && attribute.name.name === "name") {
+                          if (!dependencyGraph[chunk.id]) {
+                            dependencyGraph[chunk.id] = [];
+                          }
+                          if (!dependencyGraph[attribute.value.value]) {
+                            dependencyGraph[attribute.value.value] = [];
+                          }
+                          if (!dependencyGraph[attribute.value.value].includes(chunk.id)) {
+                            dependencyGraph[attribute.value.value].push(chunk.id);
+                          }
+                        }
+                      });
+                    },
+                  });
+                });
+              }
+            });
+          }
+
+          const executionOrder = [];
+          const visited = {};
+          const completed = {};
+          const trail = {};
+
+          function walk(node) {
+            if (completed[node]) {
+              return;
+            }
+            if (trail[node]) {
+              return executionOrder.unshift(node);
+            }
+            visited[node] = true;
+            trail[node] = true;
+            dependencyGraph[node].forEach(walk);
+            delete trail[node];
+            completed[node] = true;
+            executionOrder.unshift(node);
+          }
+
+          for (const node of Object.keys(dependencyGraph)) {
+            if (visited[node]) {
+              continue;
+            }
+            walk(node);
+          }
+
+          entrypoint = executionOrder[executionOrder.length - 1];
+        }
+
+        const available = entrypoints.map((chunk) => {
+          const entry = {
+            name: chunk.id,
             program: {
-              url: path.join(props.compilation.outputOptions.publicPath, name, "main.js"),
+              url: path.join(props.compilation.outputOptions.publicPath, chunk.id, "main.js"),
             },
             locales: {},
             meta: {},
           };
           for (const language of settings.SUPPORTED_LOCALES) {
-            hotModule.locales[language] = path.join(
+            entry.locales[language] = path.join(
               props.compilation.outputOptions.publicPath,
-              name,
+              chunk.id,
               "messages",
               `${language}.json`,
             );
           }
-          return hotModule;
+          return entry;
         });
+
         manifest = JSON.stringify({
-          entrypoint: entrypoints.find((name) => name === settings.PROJECT_NAME) || entrypoints[0],
-          available: hotModules,
+          entrypoint,
+          available,
         });
       }
 
@@ -268,7 +344,7 @@ config.plugins.push(
           </head>
           <body>
             <script defer>
-              (function(){
+              (function() {
                 "use strict";
 
                 const manifest = ${manifest.trim()};
