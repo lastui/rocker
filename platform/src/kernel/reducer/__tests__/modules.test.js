@@ -81,10 +81,16 @@ describe("modules reducer", () => {
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
-      expect(spyError).toHaveBeenCalledWith("module my-feature-broken reducer failed to reduce", "ouch");
+      expect(spyError).toHaveBeenCalledWith(
+        "module my-feature-broken reducer failed to reduce on action non-handled",
+        "ouch",
+      );
 
       expect(reducer(state, action)).toEqual(expectedState);
-      expect(spyError).toHaveBeenCalledWith("module my-feature-broken reducer failed to reduce", "ouch");
+      expect(spyError).toHaveBeenCalledWith(
+        "module my-feature-broken reducer failed to reduce on action non-handled",
+        "ouch",
+      );
     });
   });
 
@@ -211,7 +217,10 @@ describe("modules reducer", () => {
       expect(reducer(initialState, action)).toEqual(initialState);
 
       expect(spyDebug).toHaveBeenCalledWith("module my-feature initialized");
-      expect(spyError).toHaveBeenCalledWith("module my-feature reducer failed to reduce", "ouch");
+      expect(spyError).toHaveBeenCalledWith(
+        "module my-feature reducer failed to reduce on action @@modules/INIT",
+        "ouch",
+      );
     });
   });
 
