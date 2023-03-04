@@ -237,7 +237,7 @@ config.plugins.push(
 
       let manifest;
       try {
-        manifest = fs.readFileSync(path.resolve(process.cwd(), "manifest.json"), "utf8");
+        manifest = fs.readFileSync(path.resolve(settings.PROJECT_ROOT_PATH, "manifest.json"), "utf8");
       } catch (_) {
         let entrypoint = null;
 
@@ -266,11 +266,9 @@ config.plugins.push(
                           if (!dependencyGraph[chunk.id]) {
                             dependencyGraph[chunk.id] = [];
                           }
-
                           if (!dependencyGraph[attribute.value.value]) {
                             dependencyGraph[attribute.value.value] = [];
                           }
-
                           if (!dependencyGraph[attribute.value.value].includes(chunk.id)) {
                             dependencyGraph[attribute.value.value].push(chunk.id);
                           }
@@ -283,47 +281,38 @@ config.plugins.push(
             });
           }
 
-          function getExecutionOrder(obj) {
-            const result = [];
-            const visited = {};
-            const completed = {};
-            const path = {};
+          const executionOrder = [];
+          const visited = {};
+          const completed = {};
+          const trail = {};
 
-            function dfs(node) {
-              if (completed[node]) {
-                return;
-              }
-
-              if (path[node]) {
-                return result.unshift(node);
-              }
-
-              visited[node] = true;
-              path[node] = true;
-
-              obj[node].forEach(dfs);
-
-              delete path[node];
-              completed[node] = true;
-              result.unshift(node);
+          function walk(node) {
+            if (completed[node]) {
+              return;
             }
-
-            Object.keys(obj).forEach((node) => {
-              if (!visited[node]) {
-                dfs(node);
-              }
-            });
-
-            return result;
+            if (trail[node]) {
+              return executionOrder.unshift(node);
+            }
+            visited[node] = true;
+            trail[node] = true;
+            dependencyGraph[node].forEach(walk);
+            delete trail[node];
+            completed[node] = true;
+            executionOrder.unshift(node);
           }
 
-          const executionOrder = getExecutionOrder(dependencyGraph);
+          for (const node of Object.keys(dependencyGraph)) {
+            if (visited[node]) {
+              continue;
+            }
+            walk(node);
+          }
 
           entrypoint = executionOrder[executionOrder.length - 1];
         }
 
-        const hotModules = entrypoints.map((chunk) => {
-          const hotModule = {
+        const available = entrypoints.map((chunk) => {
+          const entry = {
             name: chunk.id,
             program: {
               url: path.join(props.compilation.outputOptions.publicPath, chunk.id, "main.js"),
@@ -332,19 +321,19 @@ config.plugins.push(
             meta: {},
           };
           for (const language of settings.SUPPORTED_LOCALES) {
-            hotModule.locales[language] = path.join(
+            entry.locales[language] = path.join(
               props.compilation.outputOptions.publicPath,
               chunk.id,
               "messages",
               `${language}.json`,
             );
           }
-          return hotModule;
+          return entry;
         });
 
         manifest = JSON.stringify({
           entrypoint,
-          available: hotModules,
+          available,
         });
       }
 
@@ -355,7 +344,7 @@ config.plugins.push(
           </head>
           <body>
             <script defer>
-              (function(){
+              (function() {
                 "use strict";
 
                 const manifest = ${manifest.trim()};
