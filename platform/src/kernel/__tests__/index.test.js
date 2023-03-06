@@ -2,7 +2,7 @@ import * as all from "../";
 
 describe("kernel module exports", () => {
   it("should expose fixed number of things", () => {
-    expect(Object.keys(all).length).toEqual(11);
+    expect(Object.keys(all).length).toEqual(12);
   });
 
   describe("setStore", () => {
@@ -20,6 +20,12 @@ describe("kernel module exports", () => {
   describe("registerModule", () => {
     it("exposes expected", () => {
       expect(all.registerModule).toBeDefined();
+    });
+  });
+
+  describe("manualCleanup", () => {
+    it("exposes expected", () => {
+      expect(all.manualCleanup).toBeDefined();
     });
   });
 

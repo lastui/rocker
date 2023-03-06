@@ -50,6 +50,7 @@ module.exports = {
   setStore: (nextStore) => {
     store = nextStore;
   },
+  manualCleanup: () => {},
   getStore: () => store,
   sharedReducer: (state = {}, action) => state,
   modulesReducer: (state = {}, action) => state,

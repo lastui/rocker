@@ -160,9 +160,6 @@ const createModuleLoader = () => {
     }
     setSagaRunner(null);
     setStore(null);
-    for (const name in loadingModules) {
-      delete loadingModules[name];
-    }
   };
 
   return {
