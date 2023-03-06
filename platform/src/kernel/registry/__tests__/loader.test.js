@@ -311,6 +311,7 @@ describe("loader registry", () => {
       expect(moduleLoader.getLoadedModule("a")).toBeDefined();
       manualCleanup();
       expect(moduleLoader.getLoadedModule("a")).not.toBeDefined();
+      expect(moduleLoader.isAvailable("a")).toEqual(false);
     });
   });
 });
