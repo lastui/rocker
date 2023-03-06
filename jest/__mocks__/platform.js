@@ -25,6 +25,20 @@ module.exports = {
     refresh: () => ({
       type: constants.REFRESH,
     }),
+    setGlobalShared: (data) => ({
+      type: constants.SET_SHARED,
+      payload: {
+        data,
+        module: false,
+      },
+    }),
+    setLocalShared: (data) => ({
+      type: constants.SET_SHARED,
+      payload: {
+        data,
+        module: true,
+      },
+    }),
   },
   createDynamicMiddleware: () => (_store) => (next) => (action) => next(action),
   createLoaderMiddleware: () => (_store) => (next) => (action) => next(action),
