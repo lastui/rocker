@@ -8,9 +8,11 @@ import { BrowserRouter } from "react-router-dom";
 
 const Entrypoint = (props) => {
   const entrypoint = useSelector(getEntrypoint);
+  console.log("entrypoint is", entrypoint);
   if (entrypoint === null) {
     return null;
   }
+  console.log("rendering entrypoint");
   return (
     <Globalisation>
       <BrowserRouter>

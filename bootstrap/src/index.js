@@ -3,8 +3,11 @@ import "regenerator-runtime/runtime.js";
 
 import Main from "./component/Main";
 
-export { Main };
+import { manualCleanup } from "@lastui/rocker/platform";
+
+export { Main, manualCleanup };
 
 export default {
   Main,
+  manualCleanup,
 };

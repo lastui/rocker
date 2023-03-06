@@ -5,8 +5,8 @@ import { downloadProgram } from "./assets";
 import { addStyles, removeStyles } from "./css";
 import { addMiddleware, removeMiddleware } from "./middleware";
 import { addReducer, removeReducer } from "./reducer";
-import { addSaga, removeSaga } from "./saga";
-import { getStore } from "./store";
+import { addSaga, removeSaga, setSagaRunner } from "./saga";
+import { setStore, getStore } from "./store";
 
 export const adaptModule = async (name, scope) => {
   const preferentialStore = scope.saga || scope.component ? getStore().namespace(name) : null;
@@ -155,7 +155,25 @@ const createModuleLoader = () => {
     isAvailable,
     loadModule,
     getLoadedModule,
+    manualCleanup,
   };
 };
 
-export default createModuleLoader();
+const instance = createModuleLoader();
+
+export const manualCleanup = () => {
+  for (const name in instance.availableModules) {
+    delete instance.availableModules[name];
+  }
+  for (const name in instance.loadedModules) {
+    instance.loadedModules[name].cleanup();
+    delete instance.loadedModules[name];
+  }
+  setSagaRunner(null);
+  setStore(null);
+  for (const name in instance.loadingModules) {
+    delete instance.loadingModules[name];
+  }
+};
+
+export default instance;

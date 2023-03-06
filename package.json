@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.14",
+  "version": "0.14.15",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -61,6 +61,7 @@
     "webpack/plugins/ModuleLocalesPlugin.js",
     "webpack/plugins/NormalizedModuleIdPlugin.js",
     "platform/index.js",
+    "platform/kernel/index.js",
     "platform/dll/platform-dev-manifest.json",
     "platform/dll/platform-prod-manifest.json",
     "platform/dll/platform.dll.js",

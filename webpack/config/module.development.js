@@ -358,7 +358,6 @@ config.plugins.push(
                 
                   root.render(react.createElement(bootstrap.Main, {
                     fetchContext: async function() {
-                      console.debug('using context', manifest);
                       return manifest;
                     }
                   }));

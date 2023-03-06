@@ -9,7 +9,6 @@ const Main = (props) => {
   const [ready, setReady] = useState(false);
 
   const bootstrap = useCallback(() => {
-    console.debug("bootstraping runtime");
     try {
       const store = setupStore(props.fetchContext, props.reduxMiddlewares);
       store.dispatch({
@@ -33,6 +32,8 @@ const Main = (props) => {
   if (!ready) {
     return null;
   }
+
+  console.log("Main is ready");
 
   return (
     <StrictMode>
