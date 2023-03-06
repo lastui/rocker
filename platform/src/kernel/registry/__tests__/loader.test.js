@@ -56,7 +56,7 @@ describe("loader registry", () => {
     );
   });
 
-  afterEach(() => {
+  afterAll(() => {
     setStore(null);
     setSagaRunner(null);
   });
