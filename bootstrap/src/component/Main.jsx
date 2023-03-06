@@ -1,6 +1,6 @@
 import { StrictMode, useState, useCallback, useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
-import { constants, getStore } from "@lastui/rocker/platform";
+import { constants, getStore, manualCleanup } from "@lastui/rocker/platform";
 import setupStore from "../store";
 import Entrypoint from "./Entrypoint";
 
@@ -29,11 +29,11 @@ const Main = (props) => {
     bootstrap();
   }, [bootstrap]);
 
+  useEffect(() => () => manualCleanup(), []);
+
   if (!ready) {
     return null;
   }
-
-  console.log("Main is ready");
 
   return (
     <StrictMode>

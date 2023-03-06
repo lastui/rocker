@@ -150,6 +150,21 @@ const createModuleLoader = () => {
 
   const isAvailable = (name) => Boolean(availableModules[name]);
 
+  const manualCleanup = () => {
+    for (const name in availableModules) {
+      delete availableModules[name];
+    }
+    for (const name in loadedModules) {
+      loadedModules[name].cleanup();
+      delete loadedModules[name];
+    }
+    setSagaRunner(null);
+    setStore(null);
+    for (const name in loadingModules) {
+      delete loadingModules[name];
+    }
+  };
+
   return {
     setAvailableModules,
     isAvailable,
@@ -161,19 +176,6 @@ const createModuleLoader = () => {
 
 const instance = createModuleLoader();
 
-export const manualCleanup = () => {
-  for (const name in instance.availableModules) {
-    delete instance.availableModules[name];
-  }
-  for (const name in instance.loadedModules) {
-    instance.loadedModules[name].cleanup();
-    delete instance.loadedModules[name];
-  }
-  setSagaRunner(null);
-  setStore(null);
-  for (const name in instance.loadingModules) {
-    delete instance.loadingModules[name];
-  }
-};
+export const manualCleanup = instance.manualCleanup;
 
 export default instance;

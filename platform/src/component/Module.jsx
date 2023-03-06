@@ -25,7 +25,6 @@ const Module = forwardRef((props, ref) => {
   /* istanbul ignore next */
   const loadModule = useCallback(
     (signal) => {
-      console.log("loading module", props.name);
       async function work() {
         if (!props.name) {
           return false;
@@ -56,16 +55,13 @@ const Module = forwardRef((props, ref) => {
 
   const available = moduleLoader.isAvailable(props.name);
 
-  console.log("in Module name", props.name);
   if (!props.name || !available) {
-    console.log("no name or not available");
     return null;
   }
 
   const loadedModule = moduleLoader.getLoadedModule(props.name);
 
   if (!isReady || !loadedModule) {
-    console.log("not ready or not loaded", isReady, loadedModule);
     if (props.fallback) {
       return createElement(Fallback, composite.owned, props.fallback);
     }
@@ -73,11 +69,8 @@ const Module = forwardRef((props, ref) => {
   }
 
   if (!loadedModule.view) {
-    console.log("no view");
     return null;
   }
-
-  console.log("yes render");
 
   return props.children
     ? createElement(loadedModule.view, composite, props.children)
