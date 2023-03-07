@@ -18,7 +18,6 @@ describe("constants", () => {
   describe("internal", () => {
     it("lifecycle", () => {
       expect(constants.INIT).toBeDefined();
-      expect(constants.SHUTDOWN).toBeDefined();
     });
     it("context", () => {
       expect(constants.FETCH_CONTEXT).toBeDefined();

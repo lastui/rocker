@@ -8,7 +8,7 @@ const Main = (props) => {
   const [_, setErrorState] = useState();
   const [ready, setReady] = useState(false);
 
-  const bootstrap = useCallback(() => {
+  const manualInit = useCallback(() => {
     try {
       const store = setupStore(props.fetchContext, props.reduxMiddlewares);
       store.dispatch({
@@ -26,10 +26,11 @@ const Main = (props) => {
   }, [setReady, props.reduxMiddlewares, props.fetchContext, props.contextRefreshInterval]);
 
   useEffect(() => {
-    bootstrap();
-  }, [bootstrap]);
-
-  useEffect(() => () => manualCleanup(), []);
+    manualInit();
+    return () => {
+      manualCleanup();
+    };
+  }, [manualInit]);
 
   if (!ready) {
     return null;
