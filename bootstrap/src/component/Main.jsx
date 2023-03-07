@@ -26,6 +26,7 @@ const Main = (props) => {
   }, [setReady, props.reduxMiddlewares, props.fetchContext, props.contextRefreshInterval]);
 
   useEffect(() => {
+    manualCleanup();
     manualInit();
     return () => {
       manualCleanup();
