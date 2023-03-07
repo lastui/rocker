@@ -61,7 +61,6 @@
     "webpack/plugins/ModuleLocalesPlugin.js",
     "webpack/plugins/NormalizedModuleIdPlugin.js",
     "platform/index.js",
-    "platform/kernel/index.js",
     "platform/dll/platform-dev-manifest.json",
     "platform/dll/platform-prod-manifest.json",
     "platform/dll/platform.dll.js",
