@@ -1,6 +1,6 @@
 import { StrictMode, useState, useCallback, useEffect } from "react";
 import { Provider as ReduxProvider } from "react-redux";
-import { constants, getStore } from "@lastui/rocker/platform";
+import { constants, getStore, manualCleanup } from "@lastui/rocker/platform";
 import setupStore from "../store";
 import Entrypoint from "./Entrypoint";
 
@@ -8,8 +8,7 @@ const Main = (props) => {
   const [_, setErrorState] = useState();
   const [ready, setReady] = useState(false);
 
-  const bootstrap = useCallback(() => {
-    console.debug("bootstraping runtime");
+  const manualInit = useCallback(() => {
     try {
       const store = setupStore(props.fetchContext, props.reduxMiddlewares);
       store.dispatch({
@@ -27,8 +26,12 @@ const Main = (props) => {
   }, [setReady, props.reduxMiddlewares, props.fetchContext, props.contextRefreshInterval]);
 
   useEffect(() => {
-    bootstrap();
-  }, [bootstrap]);
+    manualCleanup();
+    manualInit();
+    return () => {
+      manualCleanup();
+    };
+  }, [manualInit]);
 
   if (!ready) {
     return null;

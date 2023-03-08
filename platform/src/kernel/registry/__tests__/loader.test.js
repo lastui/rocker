@@ -1,7 +1,7 @@
 import configureStore from "redux-mock-store";
 import { runSaga, stdChannel } from "redux-saga";
 
-import moduleLoader, { adaptModule } from "../loader";
+import moduleLoader, { adaptModule, manualCleanup } from "../loader";
 import { addReducer, removeReducer } from "../reducer";
 import { setSagaRunner } from "../saga";
 import { setStore } from "../store";
@@ -34,7 +34,7 @@ describe("loader registry", () => {
   const debugSpy = jest.spyOn(console, "debug");
   debugSpy.mockImplementation(() => {});
 
-  beforeAll(() => {
+  beforeEach(() => {
     const channel = stdChannel();
     const storeRef = configureStore([])({
       modules: {},
@@ -293,6 +293,25 @@ describe("loader registry", () => {
         const available = moduleLoader.isAvailable("my-feature");
         expect(available).toEqual(false);
       });
+    });
+  });
+
+  describe("manualCleanup", () => {
+    it("resets and cleans up loader into initial state", async () => {
+      await moduleLoader.setAvailableModules([
+        {
+          name: "a",
+          program: {
+            url: "/a.js",
+          },
+        },
+      ]);
+      expect(moduleLoader.isAvailable("a")).toEqual(true);
+      await moduleLoader.loadModule("a");
+      expect(moduleLoader.getLoadedModule("a")).toBeDefined();
+      manualCleanup();
+      expect(moduleLoader.getLoadedModule("a")).not.toBeDefined();
+      expect(moduleLoader.isAvailable("a")).toEqual(false);
     });
   });
 });

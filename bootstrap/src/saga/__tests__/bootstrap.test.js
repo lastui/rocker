@@ -2,6 +2,19 @@ import { watchBootstrap, runRefresher } from "../bootstrap";
 import { constants } from "@lastui/rocker/platform";
 
 describe("context", () => {
+  const consoleDebug = console.warn;
+  const consoleWarn = console.warn;
+
+  beforeEach(() => {
+    console.debug = jest.fn();
+    console.warn = jest.fn();
+  });
+
+  afterAll(() => {
+    console.debug = consoleDebug;
+    console.warn = consoleWarn;
+  });
+
   describe("watchBootstrap", () => {
     it("should be defined", () => {
       expect(watchBootstrap).toBeDefined();
@@ -19,19 +32,6 @@ describe("context", () => {
   });
 
   describe("runRefresher", () => {
-    const consoleDebug = console.warn;
-    const consoleWarn = console.warn;
-
-    beforeEach(() => {
-      console.debug = jest.fn();
-      console.warn = jest.fn();
-    });
-
-    afterAll(() => {
-      console.debug = consoleDebug;
-      console.warn = consoleWarn;
-    });
-
     it("single run", async () => {
       const ctx = {
         entrypoint: "my-entrypoint",

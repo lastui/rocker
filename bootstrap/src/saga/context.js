@@ -17,6 +17,7 @@ export function* fetchContext() {
   try {
     const fetcher = yield getContext("fetchContext");
     const context = yield call(fetcher);
+    console.debug("using context", context);
     yield put({
       type: constants.SET_AVAILABLE_MODULES,
       payload: {

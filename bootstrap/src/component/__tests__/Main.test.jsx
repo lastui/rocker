@@ -43,21 +43,10 @@ class ErrorBoundary extends React.Component {
 }
 
 describe("<Main />", () => {
-  const consoleDebug = console.warn;
-
-  beforeEach(() => {
-    console.debug = jest.fn();
-  });
-
-  afterAll(() => {
-    console.debug = consoleDebug;
-  });
-
   it("should bootstrap", async () => {
     const fetchContext = jest.fn();
     render(<Main contextRefreshInterval={10} fetchContext={fetchContext} />);
     await waitFor(() => {
-      expect(console.debug).toHaveBeenCalledWith("bootstraping runtime");
       const entrypointModule = screen.getByTestId("module/some-entrypoint");
       expect(entrypointModule).toBeDefined();
       expect(fetchContext).toHaveBeenCalled();
@@ -82,7 +71,6 @@ describe("<Main />", () => {
     );
 
     await waitFor(() => {
-      expect(console.debug).toHaveBeenCalledWith("bootstraping runtime");
       expect(fetchContext).toHaveBeenCalled();
       expect(screen.getByTestId("MainErrorBoundaries")).toBeDefined();
     });
