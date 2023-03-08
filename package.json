@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.16",
+  "version": "0.14.17",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -120,10 +120,10 @@
     "sass-loader": "13.2.0",
     "source-map": "mozilla/source-map#master",
     "style-loader": "3.3.1",
-    "terser-webpack-plugin": "5.3.6",
+    "terser-webpack-plugin": "5.3.7",
     "util": "0.12.5",
     "weak-napi": "2.0.2",
-    "webpack": "5.75.0",
+    "webpack": "5.76.0",
     "webpack-dev-server": "4.11.1",
     "yargs": "17.7.1"
   },
