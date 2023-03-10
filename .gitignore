@@ -1,6 +1,8 @@
 node_modules
 coverage
-dll
+platform/dll
+dependencies/dll
+bootstrap/dll
 .idea
 webpack/.babel-cache
 webpack/.linaria-cache

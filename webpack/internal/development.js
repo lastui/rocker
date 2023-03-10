@@ -1,7 +1,6 @@
-const path = require("path");
 const webpack = require("webpack");
 
-const settings = require(path.resolve(__dirname, "../settings"));
+const settings = require("../settings");
 
 module.exports = {
   bail: false,
