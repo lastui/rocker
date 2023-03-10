@@ -138,7 +138,7 @@ exports.getStack = async function (packageName) {
   } else if (projectNodeModulesExists) {
     config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${
       packageName === "spa" ? "spa" : "module"
-    }.js`);
+    }`);
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
     const indexExists = await fileExists(indexFile);
@@ -146,7 +146,7 @@ exports.getStack = async function (packageName) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
   } else {
-    config = require(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}.js`);
+    config = require(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}`);
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
     const indexExists = await fileExists(indexFile);
