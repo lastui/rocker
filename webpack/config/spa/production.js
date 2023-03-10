@@ -6,13 +6,12 @@ const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
-const settings = require("../settings");
-
-const babel = require("../../babel").env.production;
+const settings = require("../../settings");
+const babel = require("../../../babel").env.production;
 
 const config = {
-  ...require("../internal/base.js"),
-  ...require("../internal/build.js"),
+  ...require("../../internal/base.js"),
+  ...require("../../internal/build.js"),
 };
 
 config.output.filename = "spa/[name].min.js";
