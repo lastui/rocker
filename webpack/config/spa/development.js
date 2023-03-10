@@ -1,22 +1,54 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const { setLogLevel } = require("webpack/hot/log");
+setLogLevel("none");
+
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const settings = require("../settings");
-
-const babel = require("../../babel").env.production;
+const settings = require("../../settings");
+const babel = require("../../../babel").env.development;
 
 const config = {
-  ...require("../internal/base.js"),
-  ...require("../internal/build.js"),
+  ...require("../../internal/base.js"),
+  ...require("../../internal/development.js"),
 };
 
-config.output.filename = "spa/[name].min.js";
-config.output.assetModuleFilename = "spa/[name][ext][query]";
+config.devServer = {
+  hot: true,
+  liveReload: false,
+  setupExitSignals: true,
+  static: {
+    publicPath: ["/"],
+  },
+  devMiddleware: {
+    publicPath: "/",
+    writeToDisk: false,
+  },
+  https: false,
+  allowedHosts: "all",
+  historyApiFallback: true,
+  compress: false,
+  host: "0.0.0.0",
+  port: settings.DEV_SERVER_PORT,
+  client: {
+    overlay: {
+      errors: true,
+      warnings: false,
+    },
+    logging: settings.LOG_LEVEL,
+    webSocketURL: {
+      hostname: "0.0.0.0",
+      pathname: "/ws",
+      port: settings.DEV_SERVER_PORT,
+    },
+  },
+};
+
+config.output.filename = "[name].js";
+
+config.resolve.alias["react-dom$"] = "react-dom/profiling";
+config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
 
 config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
 
@@ -48,7 +80,7 @@ config.module.rules.push(
           sourceType: "module",
           highlightCode: true,
           shouldPrintComment: (val) => /license/.test(val),
-          compact: true,
+          compact: false,
           inputSourceMap: false,
         },
       },
@@ -93,7 +125,10 @@ config.module.rules.push(
     test: /\.css$/i,
     use: [
       {
-        loader: MiniCssExtractPlugin.loader,
+        loader: "style-loader",
+        options: {
+          injectType: "singletonStyleTag",
+        },
       },
       {
         loader: "css-loader",
@@ -109,7 +144,10 @@ config.module.rules.push(
     test: /\.s[a|c]ss$/,
     use: [
       {
-        loader: MiniCssExtractPlugin.loader,
+        loader: "style-loader",
+        options: {
+          injectType: "singletonStyleTag",
+        },
       },
       {
         loader: "css-loader",
@@ -132,93 +170,57 @@ config.module.rules.push(
     ],
   },
   {
-    test: /\.(woff|woff2|svg|eot|otf|ttf|png|jpe?g|gif)(\?.*$|$)/,
+    test: /\.(png|jpe?g|gif)$/i,
+    dependency: { not: ["url"] },
+    type: "asset/inline",
+  },
+  {
+    test: /\.(woff|woff2|svg|eot|otf|ttf)(\?.*$|$)/,
     type: "asset/resource",
   },
 );
 
 config.plugins.push(
-  new MiniCssExtractPlugin({
-    filename: "spa/[name].css",
-    chunkFilename: "spa/[id].css",
-    linkType: "text/css",
-    ignoreOrder: false,
-  }),
-  new CleanWebpackPlugin({
-    root: settings.PROJECT_BUILD_PATH,
-    cleanOnceBeforeBuildPatterns: ["spa/**/*"],
-    cleanStaleWebpackAssets: true,
-    dangerouslyAllowCleanPatternsOutsideProject: false,
-    verbose: false,
-    dry: false,
-  }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "dependencies", "dll", "dependencies-prod-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "platform", "dll", "platform-prod-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap-prod-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new HTMLWebpackPlugin({
     template: path.resolve(settings.PROJECT_ROOT_PATH, "static", "index.html"),
-    filename: "spa/index.html",
-    production: true,
-    publicPath: settings.PROJECT_NAMESPACE,
-    minify: {
-      removeComments: true,
-      collapseWhitespace: true,
-      removeRedundandAttributes: true,
-      useShortDoctype: true,
-      removeEmptyAttributes: true,
-      removeStyleLinkTypeAttributes: false,
-      keepClosingSlash: true,
-      minifyJS: false,
-      minofyCSS: false,
-      minifyURLs: false,
-    },
+    production: false,
+    publicPath: "/",
+    minify: false,
     inject: "head",
     scriptLoading: "defer",
   }),
-  new CopyPlugin({
-    patterns: [
-      {
-        from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
-        to: path.join(settings.PROJECT_BUILD_PATH, "spa"),
-        filter: async (resourcePath) => !resourcePath.endsWith("index.html"),
-      },
-    ],
-  }),
   new AddAssetHtmlPlugin([
     {
-      filepath: path.resolve(__dirname, "..", "..", "..", "dependencies", "dll", "dependencies.dll.min.js"),
-      outputPath: "spa",
-      publicPath: `${settings.PROJECT_NAMESPACE}spa`,
+      filepath: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     },
     {
-      filepath: path.resolve(__dirname, "..", "..", "platform", "dll", "platform.dll.min.js"),
-      outputPath: "spa",
-      publicPath: `${settings.PROJECT_NAMESPACE}spa`,
+      filepath: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     },
     {
-      filepath: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap.dll.min.js"),
-      outputPath: "spa",
-      publicPath: `${settings.PROJECT_NAMESPACE}spa`,
+      filepath: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,

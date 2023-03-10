@@ -1,56 +1,23 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const { setLogLevel } = require("webpack/hot/log");
-setLogLevel("none");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
+const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
 
-const HTMLWebpackPlugin = require("html-webpack-plugin");
-const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
-const settings = require("../settings");
-const babel = require("../../babel").env.development;
+const settings = require("../../settings");
+
+const babel = require("../../../babel").env.production;
 
 const config = {
-  ...require("../internal/base.js"),
-  ...require("../internal/development.js"),
+  ...require("../../internal/base.js"),
+  ...require("../../internal/build.js"),
 };
 
-config.devServer = {
-  hot: true,
-  liveReload: false,
-  setupExitSignals: true,
-  static: {
-    publicPath: ["/"],
-  },
-  devMiddleware: {
-    publicPath: "/",
-    writeToDisk: false,
-  },
-  https: false,
-  allowedHosts: "all",
-  historyApiFallback: true,
-  compress: false,
-  host: "0.0.0.0",
-  port: settings.DEV_SERVER_PORT,
-  client: {
-    overlay: {
-      errors: true,
-      warnings: false,
-    },
-    logging: settings.LOG_LEVEL,
-    webSocketURL: {
-      hostname: "0.0.0.0",
-      pathname: "/ws",
-      port: settings.DEV_SERVER_PORT,
-    },
-  },
-};
+config.output.filename = "module/[name]/main.min.js";
+config.output.assetModuleFilename = "module/[name][ext][query]";
 
-config.output.filename = "[name].js";
-
-config.resolve.alias["react-dom$"] = "react-dom/profiling";
-config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
-
-config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
+config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
 
 config.module.rules.push(
   {
@@ -68,7 +35,7 @@ config.module.rules.push(
               return [preset[0], preset[1], `babel-${preset[0]}`];
             }
           }),
-          plugins: babel.plugins.map((plugin) => {
+          plugins: [RegisterModuleInjectBuildId, ...babel.plugins].map((plugin) => {
             if (!Array.isArray(plugin)) {
               return [plugin, {}, `babel-${plugin.name || plugin}`];
             } else {
@@ -80,7 +47,7 @@ config.module.rules.push(
           sourceType: "module",
           highlightCode: true,
           shouldPrintComment: (val) => /license/.test(val),
-          compact: false,
+          compact: true,
           inputSourceMap: false,
         },
       },
@@ -122,12 +89,20 @@ config.module.rules.push(
     type: "asset/source",
   },
   {
+    test: /\.(mp3|png|jpe?g|gif)$/i,
+    dependency: { not: ["url"] },
+    type: "asset/inline",
+  },
+  {
     test: /\.css$/i,
     use: [
       {
         loader: "style-loader",
         options: {
           injectType: "singletonStyleTag",
+          attributes: {
+            id: `rocker-${settings.BUILD_ID}`,
+          },
         },
       },
       {
@@ -147,6 +122,9 @@ config.module.rules.push(
         loader: "style-loader",
         options: {
           injectType: "singletonStyleTag",
+          attributes: {
+            id: `rocker-${settings.BUILD_ID}`,
+          },
         },
       },
       {
@@ -170,63 +148,38 @@ config.module.rules.push(
     ],
   },
   {
-    test: /\.(png|jpe?g|gif)$/i,
-    dependency: { not: ["url"] },
+    test: /\.(png|jpg|gif)$/i,
     type: "asset/inline",
-  },
-  {
-    test: /\.(woff|woff2|svg|eot|otf|ttf)(\?.*$|$)/,
-    type: "asset/resource",
   },
 );
 
 config.plugins.push(
+  new CleanWebpackPlugin({
+    root: settings.PROJECT_BUILD_PATH,
+    cleanOnceBeforeBuildPatterns: ["module/**/*"],
+    cleanStaleWebpackAssets: true,
+    dangerouslyAllowCleanPatternsOutsideProject: false,
+    verbose: false,
+    dry: false,
+  }),
+  new ModuleLocalesPlugin({
+    from: settings.PROJECT_ROOT_PATH,
+  }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "dependencies", "dll", "dependencies-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies-prod-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "platform", "dll", "platform-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-prod-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-prod-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
-  new HTMLWebpackPlugin({
-    template: path.resolve(settings.PROJECT_ROOT_PATH, "static", "index.html"),
-    production: false,
-    publicPath: "/",
-    minify: false,
-    inject: "head",
-    scriptLoading: "defer",
-  }),
-  new AddAssetHtmlPlugin([
-    {
-      filepath: path.resolve(__dirname, "..", "..", "..", "dependencies", "dll", "dependencies.dll.js"),
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    },
-    {
-      filepath: path.resolve(__dirname, "..", "..", "platform", "dll", "platform.dll.js"),
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    },
-    {
-      filepath: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap.dll.js"),
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    },
-  ]),
 );
 
 module.exports = config;

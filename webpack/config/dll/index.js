@@ -3,13 +3,13 @@ const webpack = require("webpack");
 
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const settings = require("../settings");
+const settings = require("../../settings");
 
-const babel = require("../../babel").env[settings.DEVELOPMENT ? "development" : "production"];
+const babel = require("../../../babel").env[settings.DEVELOPMENT ? "development" : "production"];
 
 const config = {
-  ...require("../internal/base.js"),
-  ...require("../internal/build.js"),
+  ...require("../../internal/base.js"),
+  ...require("../../internal/build.js"),
 };
 
 config.module.rules.push(

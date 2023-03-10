@@ -10,16 +10,16 @@ setLogLevel("none");
 
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
-const ModuleLocalesPlugin = require("../plugins/ModuleLocalesPlugin");
-const RegisterModuleInjectBuildId = require("../../babel/plugins/RegisterModuleInjectBuildId");
+const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
+const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
 
-const babel = require("../../babel").env.development;
+const babel = require("../../../babel").env.development;
 
-const settings = require("../settings");
+const settings = require("../../settings");
 
 const config = {
-  ...require("../internal/base.js"),
-  ...require("../internal/development.js"),
+  ...require("../../internal/base.js"),
+  ...require("../../internal/development.js"),
 };
 
 config.devServer = {
@@ -199,17 +199,17 @@ config.module.rules.push(
 
 config.plugins.push(
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "dependencies", "dll", "dependencies-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "platform", "dll", "platform-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
+    manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
     sourceType: "var",
     context: settings.PROJECT_ROOT_PATH,
   }),
@@ -372,21 +372,21 @@ config.plugins.push(
   }),
   new AddAssetHtmlPlugin([
     {
-      filepath: path.resolve(__dirname, "..", "..", "..", "dependencies", "dll", "dependencies.dll.js"),
+      filepath: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     },
     {
-      filepath: path.resolve(__dirname, "..", "..", "platform", "dll", "platform.dll.js"),
+      filepath: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     },
     {
-      filepath: path.resolve(__dirname, "..", "..", "bootstrap", "dll", "bootstrap.dll.js"),
+      filepath: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,

@@ -1,7 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 const settings = require("../webpack/settings");
-const config = require("../webpack/config/dll.js");
+const config = require("../webpack/config/dll");
 
 config.entry = {
   platform: ["@lastui/rocker/platform", "@lastui/rocker/platform/kernel"],

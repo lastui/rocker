@@ -43,7 +43,6 @@ Q: What about "DLL hell" when introducing modularity?
 
 A: Yes that's a valid concern, if you compile your module at one time, make incompatible changes to your runtime or dependencies and try to run the code it will gracefully crash at the level of a module. You need to keep this in mind. These updates (of dependencies or runtime) are usually planned and downstream recompilation could be automated. It's a similar use case as you compiling `.apk` with android v1 and then trying to run it on android `vx`. If it's incompatible, you need to recompile your module to match the runtime. Recompilation of runtime by itself does not break the contract between runtime and modules. But for example, changing ES5 exports and behavior change does.
 
-
 ---
 
 Q: I noticed that some dependencies are part of the platform. Can I supply mine?

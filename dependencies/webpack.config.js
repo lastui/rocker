@@ -1,4 +1,4 @@
-const config = require("../webpack/config/dll.js");
+const config = require("../webpack/config/dll");
 
 config.entry = {
   dependencies: [
