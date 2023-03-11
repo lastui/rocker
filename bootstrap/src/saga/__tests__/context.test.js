@@ -2,6 +2,16 @@ import { watchRefresh, watchFetchContext, refreshContext, fetchContext } from ".
 import { constants } from "@lastui/rocker/platform";
 
 describe("context", () => {
+  const consoleDebug = console.warn;
+
+  beforeEach(() => {
+    console.debug = jest.fn();
+  });
+
+  afterAll(() => {
+    console.debug = consoleDebug;
+  });
+
   describe("watchRefresh", () => {
     it("should be defined", () => {
       expect(watchRefresh).toBeDefined();

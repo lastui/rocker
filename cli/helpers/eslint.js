@@ -1,11 +1,12 @@
+const fs = require("fs");
+const path = require("path");
+const eslint = require("eslint");
+
 exports.run = async function (options) {
   process.on("unhandledRejection", (reason) => {
     throw reason;
   });
 
-  const path = require("path");
-  const fs = require("fs");
-  const eslint = require("eslint");
   const babelOptions = require("../../babel").env.production;
 
   const cwd = options.cwd ? `${options.cwd.replaceAll(`.${path.delimiter}`, "")}${path.delimiter}` : "";
@@ -13,7 +14,7 @@ exports.run = async function (options) {
   const engine = new eslint.ESLint({
     allowInlineConfig: true,
     useEslintrc: false,
-    fix: true,
+    fix: options.fix,
     baseConfig: {
       env: {
         es6: true,
