@@ -260,7 +260,44 @@ config.plugins.push(
                   });
 
                   traverse(ast, {
+                    CallExpression: (path) => {
+                      if (path.node.callee.type !== "MemberExpression") {
+                        return;
+                      }
+                      if (path.node.callee.object.name !== "React") {
+                        return;
+                      }
+                      if (path.node.callee.property.name !== "createElement") {
+                        return;
+                      }
+                      if (path.node.arguments.length < 2) {
+                        return;
+                      }
+                      if (path.node.arguments[0].type !== "Identifier" && path.node.arguments[0].name !== "Module") {
+                        return;
+                      }
+                      if (path.node.arguments[1].type !== "ObjectExpression") {
+                        return;
+                      }
+
+                      (path.node.arguments[1].properties ?? []).forEach((attribute) => {
+                        if (attribute.name.type === "Identifier" && attribute.key.name === "name") {
+                          if (!dependencyGraph[chunk.id]) {
+                            dependencyGraph[chunk.id] = [];
+                          }
+                          if (!dependencyGraph[attribute.value.value]) {
+                            dependencyGraph[attribute.value.value] = [];
+                          }
+                          if (!dependencyGraph[attribute.value.value].includes(chunk.id)) {
+                            dependencyGraph[attribute.value.value].push(chunk.id);
+                          }
+                        }
+                      });
+                    },
                     JSXElement: (path) => {
+                      if (path.node.openingElement.name.name !== "Module") {
+                        return;
+                      }
                       (path.node.openingElement.attributes ?? []).forEach((attribute) => {
                         if (attribute.name.type === "JSXIdentifier" && attribute.name.name === "name") {
                           if (!dependencyGraph[chunk.id]) {
