@@ -281,7 +281,7 @@ config.plugins.push(
                       }
 
                       (path.node.arguments[1].properties ?? []).forEach((attribute) => {
-                        if (attribute.name.type === "Identifier" && attribute.key.name === "name") {
+                        if (attribute.key.type === "Identifier" && attribute.key.name === "name") {
                           if (!dependencyGraph[chunk.id]) {
                             dependencyGraph[chunk.id] = [];
                           }
