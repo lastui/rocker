@@ -17,7 +17,7 @@ const config = {
 config.output.clean = {
   keep(asset) {
     for (const entry in config.entry) {
-      if (asset.startsWith(`module/${entry}`)) {
+      if (asset.startsWith(`module/${entry}/`)) {
         return false;
       }
     }
