@@ -11,12 +11,6 @@ const config = {
   ...require("../../internal/build.js"),
 };
 
-config.output.clean = {
-  keep(asset) {
-    return !(asset.includes(`[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`) || asset.includes(`[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`));
-  },
-},
-
 config.output.path = settings.DLL_BUILD_PATH;
 config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;
 config.output.library = {
