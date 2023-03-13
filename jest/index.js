@@ -61,5 +61,6 @@ module.exports = {
   moduleDirectories: [...node_modules, "<rootDir>/src"],
   moduleNameMapper: {
     "@lastui/rocker/platform": path.resolve(__dirname, "__mocks__", "platform.js"),
+    "@lastui/rocker/test": path.resolve(__dirname, "helpers", "platform.js"),
   },
 };
