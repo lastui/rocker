@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.26",
+  "version": "0.14.27",
   "scripts": {
     "lint": "node ./cli/index.js lint --fix",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -103,7 +103,7 @@
     "babel-loader": "9.1.2",
     "buffer": "6.0.3",
     "copy-webpack-plugin": "11.0.0",
-    "core-js": "3.29.0",
+    "core-js": "3.29.1",
     "css-loader": "6.7.3",
     "dotenv": "16.0.3",
     "eslint": "8.36.0",
