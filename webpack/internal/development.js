@@ -24,39 +24,6 @@ module.exports = {
     errorStack: true,
   },
   devtool: "eval-cheap-module-source-map",
-  plugins: [
-    new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"],
-      process: ["process"],
-    }),
-    new webpack.DefinePlugin(
-      Object.entries(process.env).reduce(
-        (acc, [k, v]) => {
-          if (acc[k] === undefined) {
-            switch (typeof v) {
-              case "boolean":
-              case "number": {
-                acc[`process.env.${k}`] = v;
-                break;
-              }
-              default: {
-                acc[`process.env.${k}`] = `"${v}"`;
-                break;
-              }
-            }
-          }
-          return acc;
-        },
-        {
-          process: {},
-          "process.env": {},
-          "process.env.NODE_ENV": `"development"`,
-          "process.env.NODE_DEBUG": false,
-          BUILD_ID: `"${settings.BUILD_ID}"`,
-        },
-      ),
-    ),
-    new webpack.EnvironmentPlugin([...Object.keys(process.env), "NODE_ENV"]),
-  ],
+  plugins: [],
   watch: true,
 };

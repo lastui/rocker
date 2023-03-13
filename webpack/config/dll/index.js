@@ -2,14 +2,21 @@ const path = require("path");
 const webpack = require("webpack");
 
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
 
 const settings = require("../../settings");
-
 const babel = require("../../../babel").env[settings.DEVELOPMENT ? "development" : "production"];
 
 const config = {
   ...require("../../internal/base.js"),
   ...require("../../internal/build.js"),
+};
+
+config.output.path = settings.DLL_BUILD_PATH;
+config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;
+config.output.library = {
+  name: "[name]_dll",
+  type: "var",
 };
 
 config.module.rules.push(
@@ -81,13 +88,6 @@ config.module.rules.push(
   },
 );
 
-config.output.path = settings.DLL_BUILD_PATH;
-config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;
-config.output.library = {
-  name: "[name]_dll",
-  type: "var",
-};
-
 config.plugins.push(
   new CleanWebpackPlugin({
     root: settings.PROJECT_ROOT_PATH,
@@ -105,6 +105,39 @@ config.plugins.push(
     path: path.join(settings.DLL_BUILD_PATH, `[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`),
     name: "[name]_dll",
   }),
+  new webpack.ProvidePlugin({
+    Buffer: ["buffer", "Buffer"],
+    process: ["process"],
+  }),
+  new webpack.DefinePlugin(
+    Object.entries(process.env).reduce(
+      (acc, [k, v]) => {
+        if (acc[k] === undefined) {
+          switch (typeof v) {
+            case "boolean":
+            case "number": {
+              acc[`process.env.${k}`] = v;
+              break;
+            }
+            default: {
+              acc[`process.env.${k}`] = `"${v}"`;
+              break;
+            }
+          }
+        }
+        return acc;
+      },
+      {
+        process: {},
+        "process.env": {},
+        "process.env.NODE_ENV": `"development"`,
+        "process.env.NODE_DEBUG": false,
+        BUILD_ID: `"${settings.BUILD_ID}"`,
+      },
+    ),
+  ),
+  new webpack.EnvironmentPlugin([...Object.keys(process.env), "NODE_ENV"]),
+  new NormalizedModuleIdPlugin(),
 );
 
 module.exports = config;

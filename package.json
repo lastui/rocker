@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.24",
+  "version": "0.14.25",
   "scripts": {
     "lint": "node ./cli/index.js lint --fix",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -47,6 +47,7 @@
     "jest/transform/file.js",
     "jest/index.js",
     "jest/setupTests.js",
+    "webpack/config/library/index.js",
     "webpack/config/dll/index.js",
     "webpack/config/module/index.js",
     "webpack/config/module/development.js",
