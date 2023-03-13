@@ -1,7 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
 
 const settings = require("../../settings");
@@ -11,6 +10,12 @@ const config = {
   ...require("../../internal/base.js"),
   ...require("../../internal/build.js"),
 };
+
+config.output.clean = {
+  keep(asset) {
+    return asset.includes(`[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`) || asset.includes(`[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`);
+  },
+},
 
 config.output.path = settings.DLL_BUILD_PATH;
 config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;
@@ -89,15 +94,6 @@ config.module.rules.push(
 );
 
 config.plugins.push(
-  new CleanWebpackPlugin({
-    root: settings.PROJECT_ROOT_PATH,
-    cleanOnceBeforeBuildPatterns: [
-      path.join(settings.DLL_BUILD_PATH, `[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`),
-      path.join(settings.DLL_BUILD_PATH, `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`),
-    ],
-    verbose: false,
-    dry: false,
-  }),
   new webpack.DllPlugin({
     entryOnly: false,
     format: true,

@@ -1,7 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
@@ -13,6 +12,17 @@ const babel = require("../../../babel").env.production;
 const config = {
   ...require("../../internal/base.js"),
   ...require("../../internal/build.js"),
+};
+
+config.output.clean = {
+  keep(asset) {
+    for (const entry in config.entry) {
+      if (asset.startsWith(`module/${entry}`)) {
+        return false;
+      }
+    }
+    return true;
+  },
 };
 
 config.output.filename = "module/[name]/main.min.js";
@@ -155,14 +165,6 @@ config.module.rules.push(
 );
 
 config.plugins.push(
-  new CleanWebpackPlugin({
-    root: settings.PROJECT_BUILD_PATH,
-    cleanOnceBeforeBuildPatterns: ["module/**/*"],
-    cleanStaleWebpackAssets: true,
-    dangerouslyAllowCleanPatternsOutsideProject: false,
-    verbose: false,
-    dry: false,
-  }),
   new ModuleLocalesPlugin({
     from: settings.PROJECT_ROOT_PATH,
   }),

@@ -1,7 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -13,6 +12,12 @@ const babel = require("../../../babel").env.production;
 const config = {
   ...require("../../internal/base.js"),
   ...require("../../internal/build.js"),
+};
+
+config.output.clean = {
+  keep(asset) {
+    return !asset.startsWith('spa');
+  },
 };
 
 config.output.filename = "spa/[name].min.js";
@@ -143,14 +148,6 @@ config.plugins.push(
     chunkFilename: "spa/[id].css",
     linkType: "text/css",
     ignoreOrder: false,
-  }),
-  new CleanWebpackPlugin({
-    root: settings.PROJECT_BUILD_PATH,
-    cleanOnceBeforeBuildPatterns: ["spa/**/*"],
-    cleanStaleWebpackAssets: true,
-    dangerouslyAllowCleanPatternsOutsideProject: false,
-    verbose: false,
-    dry: false,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies-prod-manifest.json"),
