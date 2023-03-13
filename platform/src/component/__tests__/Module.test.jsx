@@ -1,7 +1,6 @@
 import { render, screen, cleanup, act } from "@testing-library/react";
-import { Provider as ReduxProvider } from "react-redux";
 import configureStore from "redux-mock-store";
-
+import { withRedux } from "@lastui/rocker/test";
 import moduleLoader from "../../kernel/registry/loader";
 import Module from "../Module";
 
@@ -50,11 +49,7 @@ describe("<Module />", () => {
       },
     });
 
-    const { unmount } = render(
-      <ReduxProvider store={store}>
-        <Module name="my-feature" />
-      </ReduxProvider>,
-    );
+    const { unmount } = render(withRedux(<Module name="my-feature" />, store));
 
     expect(screen.getByTestId("view-probe")).toBeInTheDocument();
 
@@ -71,11 +66,12 @@ describe("<Module />", () => {
     });
 
     const { unmount } = render(
-      <ReduxProvider store={store}>
+      withRedux(
         <Module name="my-feature">
           <div data-testid="child-probe" />
-        </Module>
-      </ReduxProvider>,
+        </Module>,
+        store,
+      ),
     );
 
     expect(screen.getByTestId("view-probe")).toBeInTheDocument();
@@ -94,11 +90,12 @@ describe("<Module />", () => {
     });
 
     const { unmount } = render(
-      <ReduxProvider store={store}>
+      withRedux(
         <Module name="my-feature">
           <div data-testid="child-probe" />
-        </Module>
-      </ReduxProvider>,
+        </Module>,
+        store,
+      ),
     );
 
     expect(screen.queryByTestId("child-probe")).not.toBeInTheDocument();
@@ -116,11 +113,12 @@ describe("<Module />", () => {
     });
 
     const { unmount } = render(
-      <ReduxProvider store={store}>
+      withRedux(
         <Module name="my-feature-without-view">
           <div data-testid="child-probe" />
-        </Module>
-      </ReduxProvider>,
+        </Module>,
+        store,
+      ),
     );
 
     expect(screen.queryByTestId("child-probe")).not.toBeInTheDocument();
@@ -138,9 +136,7 @@ describe("<Module />", () => {
     });
 
     const { unmount } = render(
-      <ReduxProvider store={store}>
-        <Module name="my-feature" fallback={() => <div data-testid="pending-fallback" />} />
-      </ReduxProvider>,
+      withRedux(<Module name="my-feature" fallback={() => <div data-testid="pending-fallback" />} />, store),
     );
 
     act(() => {
@@ -160,11 +156,12 @@ describe("<Module />", () => {
     });
 
     const { unmount } = render(
-      <ReduxProvider store={store}>
+      withRedux(
         <Module>
           <div data-testid="child-probe" />
-        </Module>
-      </ReduxProvider>,
+        </Module>,
+        store,
+      ),
     );
 
     expect(screen.queryByTestId("child-probe")).not.toBeInTheDocument();
@@ -180,11 +177,12 @@ describe("<Module />", () => {
     });
 
     const { unmount } = render(
-      <ReduxProvider store={store}>
+      withRedux(
         <Module name="module-that-is-not-available">
           <div data-testid="child-probe" />
-        </Module>
-      </ReduxProvider>,
+        </Module>,
+        store,
+      ),
     );
 
     expect(screen.queryByTestId("child-probe")).not.toBeInTheDocument();

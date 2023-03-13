@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import Entrypoint from "../Entrypoint";
-import { Provider as ReduxProvider } from "react-redux";
+import { withRedux } from "@lastui/rocker/test";
 import configureStore from "redux-mock-store";
 import { FormattedMessage } from "react-intl";
 
@@ -44,22 +44,14 @@ describe("<Entrypoint />", () => {
         entrypoint: "entrypoint",
       },
     });
-    render(
-      <ReduxProvider store={store}>
-        <Entrypoint />
-      </ReduxProvider>,
-    );
+    render(withRedux(<Entrypoint />, store));
     expect(screen.getByTestId("module/entrypoint")).toBeDefined();
   });
 
   it("entrypoint missing", () => {
     const store = mockStore(initialState);
 
-    const { container } = render(
-      <ReduxProvider store={store}>
-        <Entrypoint />
-      </ReduxProvider>,
-    );
+    const { container } = render(withRedux(<Entrypoint />, store));
     expect(container.innerHTML).toBe("");
   });
 
@@ -80,11 +72,12 @@ describe("<Entrypoint />", () => {
     });
 
     render(
-      <ReduxProvider store={store}>
+      withRedux(
         <Entrypoint>
           <FormattedMessage id="existant" values={{ key: "K", value: "V" }} />
-        </Entrypoint>
-      </ReduxProvider>,
+        </Entrypoint>,
+        store,
+      ),
     );
 
     expect(screen.getByText("message with key K and value V")).toBeDefined();
@@ -98,11 +91,12 @@ describe("<Entrypoint />", () => {
       },
     });
     render(
-      <ReduxProvider store={store}>
+      withRedux(
         <Entrypoint>
           <FormattedMessage id="non-existant" />
-        </Entrypoint>
-      </ReduxProvider>,
+        </Entrypoint>,
+        store,
+      ),
     );
     expect(screen.getByTestId("module/entrypoint")).toBeDefined();
   });
@@ -119,11 +113,12 @@ describe("<Entrypoint />", () => {
       },
     });
     render(
-      <ReduxProvider store={store}>
+      withRedux(
         <Entrypoint>
           <FormattedMessage id="non-existant" />
-        </Entrypoint>
-      </ReduxProvider>,
+        </Entrypoint>,
+        store,
+      ),
     );
     expect(screen.getByTestId("module/entrypoint")).toBeDefined();
   });
@@ -148,14 +143,16 @@ describe("<Entrypoint />", () => {
     });
 
     render(
-      <ErrorBoundary>
-        <ReduxProvider store={store}>
+      withRedux(
+        <ErrorBoundary>
           <Entrypoint>
             <FormattedMessage id="existant" values={{ key: "K", value: "V" }} />
           </Entrypoint>
-        </ReduxProvider>
-      </ErrorBoundary>,
+        </ErrorBoundary>,
+        store,
+      ),
     );
+
     await waitFor(() => {
       expect(screen.getByTestId("EntrypointErrorBoundaries")).toBeDefined();
     });

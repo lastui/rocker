@@ -9,8 +9,8 @@ exports.run = async function (options) {
 
   const cwd = options.cwd ? `${options.cwd.replaceAll(`.${path.delimiter}`, "")}${path.delimiter}` : "";
 
-  await prettier.run([
-    "--loglevel=warn",
+  const prettierOptions = [
+    ...(options.debug ? ["--loglevel=log"] : ["--loglevel=warn"]),
     "--ignore-unknown",
     "--no-config",
     "--no-editorconfig",
@@ -23,5 +23,7 @@ exports.run = async function (options) {
     fs.existsSync(path.resolve(process.env.INIT_CWD, "src"))
       ? `(${cwd}*\\.(js|ts|jsx|tsx)|(${cwd}${path.join("src", "**", "*")}\\.(js|ts|jsx|tsx)))`
       : `(${cwd}${path.join("**", "*")}\\.(js|ts|jsx|tsx))`,
-  ]);
+  ];
+
+  await prettier.run(prettierOptions);
 };

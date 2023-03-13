@@ -1,6 +1,6 @@
 import { render, screen, cleanup } from "@testing-library/react";
 import React from "react";
-import { Provider as ReduxProvider } from "react-redux";
+import { withRedux } from "@lastui/rocker/test";
 import configureStore from "redux-mock-store";
 
 import Scoped from "../Scoped";
@@ -26,11 +26,7 @@ describe("Scoped", () => {
 
     const View = Scoped("my-feature", store, scope);
 
-    render(
-      <ReduxProvider store={store}>
-        <View />
-      </ReduxProvider>,
-    );
+    render(withRedux(<View />, store));
 
     expect(screen.getByTestId("happy-component")).toBeInTheDocument();
   });
@@ -45,11 +41,7 @@ describe("Scoped", () => {
 
     const View = Scoped("my-feature", store, scope);
 
-    render(
-      <ReduxProvider store={store}>
-        <View />
-      </ReduxProvider>,
-    );
+    render(withRedux(<View />, store));
 
     expect(screen.getByTestId("happy-component")).toBeInTheDocument();
   });
@@ -61,11 +53,7 @@ describe("Scoped", () => {
 
     const View = Scoped("my-feature", store, scope);
 
-    render(
-      <ReduxProvider store={store}>
-        <View owned={{ "data-testid": "happy-component" }} />
-      </ReduxProvider>,
-    );
+    render(withRedux(<View owned={{ "data-testid": "happy-component" }} />, store));
 
     expect(screen.getByTestId("happy-component")).toBeInTheDocument();
   });
@@ -79,11 +67,7 @@ describe("Scoped", () => {
 
     const View = Scoped("my-feature", store, scope);
 
-    render(
-      <ReduxProvider store={store}>
-        <View ref={ref} />
-      </ReduxProvider>,
-    );
+    render(withRedux(<View ref={ref} />, store));
 
     expect(screen.getByTestId("happy-component")).toBeInTheDocument();
     expect(ref.current).toMatchInlineSnapshot(`
@@ -103,11 +87,12 @@ describe("Scoped", () => {
     const View = Scoped("my-feature", store, scope);
 
     render(
-      <ReduxProvider store={store}>
+      withRedux(
         <View>
           <div data-testid="happy-child" />
-        </View>
-      </ReduxProvider>,
+        </View>,
+        store,
+      ),
     );
 
     expect(screen.getByTestId("happy-component")).toBeInTheDocument();
@@ -123,11 +108,7 @@ describe("Scoped", () => {
 
     const View = Scoped("my-feature", store, scope);
 
-    render(
-      <ReduxProvider store={store}>
-        <View />
-      </ReduxProvider>,
-    );
+    render(withRedux(<View />, store));
 
     expect(spyError).toHaveBeenCalled();
   });
@@ -142,11 +123,7 @@ describe("Scoped", () => {
 
     const View = Scoped("my-feature", store, scope);
 
-    render(
-      <ReduxProvider store={store}>
-        <View />
-      </ReduxProvider>,
-    );
+    render(withRedux(<View />, store));
 
     expect(screen.getByTestId("sad-component")).toBeInTheDocument();
     expect(spyError).toHaveBeenCalled();
@@ -159,35 +136,11 @@ describe("Scoped", () => {
 
     const View = Scoped("my-feature", store, scope);
 
-    const { rerender } = render(
-      <ReduxProvider store={store}>
-        <View owned={{}} />
-      </ReduxProvider>,
-    );
-
-    rerender(
-      <ReduxProvider store={store}>
-        <View owned={{}} isReady />
-      </ReduxProvider>,
-    );
-
-    rerender(
-      <ReduxProvider store={store}>
-        <View owned={{}} isReady lastUpdate={2} />
-      </ReduxProvider>,
-    );
-
-    rerender(
-      <ReduxProvider store={store}>
-        <View owned={{ boo: "fur" }} isReady lastUpdate={2} />
-      </ReduxProvider>,
-    );
-
-    rerender(
-      <ReduxProvider store={store}>
-        <View owned={{ boo: "fur" }} isReady lastUpdate={2} />
-      </ReduxProvider>,
-    );
+    const { rerender } = render(withRedux(<View owned={{}} />, store));
+    rerender(withRedux(<View owned={{}} isReady />, store));
+    rerender(withRedux(<View owned={{}} isReady lastUpdate={2} />, store));
+    rerender(withRedux(<View owned={{ boo: "fur" }} isReady lastUpdate={2} />, store));
+    rerender(withRedux(<View owned={{ boo: "fur" }} isReady lastUpdate={2} />, store));
 
     expect(screen.getByTestId("happy-component")).toBeInTheDocument();
   });
