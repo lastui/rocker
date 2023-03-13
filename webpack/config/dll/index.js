@@ -13,7 +13,7 @@ const config = {
 
 config.output.clean = {
   keep(asset) {
-    return asset.includes(`[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`) || asset.includes(`[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`);
+    return !(asset.includes(`[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`) || asset.includes(`[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`));
   },
 },
 
