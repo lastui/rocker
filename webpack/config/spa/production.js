@@ -16,7 +16,7 @@ const config = {
 
 config.output.clean = {
   keep(asset) {
-    return !asset.startsWith('spa');
+    return !asset.startsWith("spa");
   },
 };
 
