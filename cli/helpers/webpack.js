@@ -177,7 +177,7 @@ exports.setup = async function (options, packageName) {
 
   process.env.BABEL_ENV = process.env.NODE_ENV;
 
-  if (options.silent) {
+  if (options.quiet) {
     process.env.PROGRESS === "false";
   } else {
     await propagateProgressOption();

@@ -16,20 +16,25 @@ require("yargs")
   .option("dev", {
     alias: "development",
     type: "boolean",
+    describe: "Development mode",
   })
   .option("debug", {
-    alias: "development",
     type: "boolean",
+    describe: "Debug issue",
   })
-  .option("silent", {
+  .option("quiet", {
     type: "boolean",
+    describe: "Silence output",
   })
   .option("fix", {
     type: "boolean",
+    describe: "Fix automatically fixable issues",
   })
   .option("cwd", {
     type: "string",
+    describe: "Override working directory",
   })
+  .conflicts("quiet", "debug")
   .command(envelope(require("./commands/build.js")))
   .command(envelope(require("./commands/start.js")))
   .command(envelope(require("./commands/test.js")))

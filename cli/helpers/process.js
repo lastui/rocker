@@ -24,12 +24,11 @@ exports.envelope = function (command) {
 
       cleanupHooks.push(() => process.exit(process.exitCode || 0));
 
-      const signals = ["SIGINT", "SIGTERM"];
-      signals.forEach(function (sig) {
-        process.on(sig, () => {
+      for (const signal in ["SIGINT", "SIGTERM"]) {
+        process.on(signal, () => {
           cleanupHooks.forEach((hook) => hook());
         });
-      });
+      }
 
       await command.handler(
         {
