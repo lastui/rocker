@@ -1,12 +1,12 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.30",
+  "version": "0.14.31",
   "scripts": {
     "lint": "node ./cli/index.js lint --fix",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "prebuild:dependencies": "npm --prefix=dependencies ci --no-fund --no-audit",
     "build:dependencies": "npm run build:dependencies:dev && npm run build:dependencies:prod",
-    "build:dependencies:prod": "node ./cli/index.js build --cwd=dependencies",
+    "build:dependencies:prod": "node ./cli/index.js build --cwd=dependencies --debug",
     "build:dependencies:dev": "node ./cli/index.js build --cwd=dependencies --dev",
     "prebuild:platform": "node ./platform/scripts/link.js",
     "build:platform": "npm run build:platform:dev && npm run build:platform:prod",

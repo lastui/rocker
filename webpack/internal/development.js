@@ -11,7 +11,7 @@ module.exports = {
     publicPath: settings.PROJECT_NAMESPACE,
   },
   performance: {
-    hints: false,
+    hints: settings.LOG_LEVEL === 'debug',
   },
   stats: {
     colors: true,

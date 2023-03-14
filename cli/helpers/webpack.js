@@ -183,6 +183,13 @@ exports.setup = async function (options, packageName) {
     await propagateProgressOption();
   }
 
+  if (options.debug) {
+    if (process.env.DEBUG) {
+      process.env.DEBUG = ["babel:config:*", ...process.env.DEBUG.split(',')].join(',')
+    } else {
+      process.env.DEBUG = "babel:config:*"
+    }
+  }
   console.log(colors.bold(`Compiling ${packageName}...`));
 
   return function (err, stats) {

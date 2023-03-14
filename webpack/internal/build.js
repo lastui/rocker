@@ -19,12 +19,12 @@ module.exports = {
     },
   },
   performance: {
-    hints: settings.DEVELOPMENT ? false : "warning",
+    hints: settings.LOG_LEVEL === 'debug' || settings.DEVELOPMENT ? false : "warning",
   },
   stats: {
     colors: true,
-    all: false,
-    assets: false,
+    all: settings.LOG_LEVEL === 'debug',
+    assets: settings.LOG_LEVEL === 'debug',
     modules: true,
     timings: true,
     errors: true,
