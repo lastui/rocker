@@ -71,9 +71,9 @@ function formatMessage(message) {
   return message.trim();
 }
 
-function formatWebpackMessages(json) {
-  const formattedErrors = json.errors.map(formatMessage);
-  const formattedWarnings = json.warnings.map(formatMessage);
+function formatWebpackMessages(stats) {
+  const formattedErrors = (stats.compilation.errors ?? []).map(formatMessage);
+  const formattedWarnings = (stats.compilation.warnings ?? []).map(formatMessage);
   const result = { errors: formattedErrors, warnings: formattedWarnings };
   if (result.errors.some(isLikelyASyntaxError)) {
     result.errors = result.errors.filter(isLikelyASyntaxError);
@@ -99,7 +99,7 @@ async function propagateProgressOption() {
   } catch (err) {}
 }
 
-exports.getStack = async function (packageName) {
+exports.getStack = async function (options, packageName) {
   const projectConfig = path.resolve(process.env.INIT_CWD, "webpack.config.js");
   const customConfigExists = await fileExists(projectConfig);
 
@@ -152,8 +152,13 @@ exports.getStack = async function (packageName) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
   }
+
   if (!config.infrastructureLogging) {
-    config.infrastructureLogging = { level: "info" };
+    config.infrastructureLogging = {
+      appendOnly: options.debug,
+      level: options.debug ? "verbose" : "info",
+      colors: process.stdout.isTTY,
+    };
   }
   config.infrastructureLogging.stream = process.stdout;
 
@@ -183,6 +188,14 @@ exports.setup = async function (options, packageName) {
     await propagateProgressOption();
   }
 
+  if (options.debug) {
+    if (process.env.DEBUG) {
+      process.env.DEBUG = ["babel:*", ...process.env.DEBUG.split(",")].join(",");
+    } else {
+      process.env.DEBUG = "babel:*";
+    }
+  }
+
   console.log(colors.bold(`Compiling ${packageName}...`));
 
   return function (err, stats) {
@@ -196,12 +209,7 @@ exports.setup = async function (options, packageName) {
     if (!stats) {
       return;
     }
-    const statsData = stats.toJson({
-      all: false,
-      warnings: true,
-      errors: true,
-    });
-    const messages = formatWebpackMessages(statsData);
+    const messages = formatWebpackMessages(stats);
     const isSuccessful = !messages.errors.length && !messages.warnings.length;
     if (isSuccessful) {
       console.log(colors.bold("Compiled successfully!"));
