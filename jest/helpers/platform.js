@@ -6,7 +6,7 @@ const { createIntl, createIntlCache, RawIntlProvider } = require("react-intl");
 let testIntl = null;
 
 function withLocalisation(component) {
-  if (testIntl) {
+  if (!testIntl) {
     testIntl = createIntl(
       {
         locale: "en-US",
@@ -14,7 +14,7 @@ function withLocalisation(component) {
         messages: (function () {
           const result = {};
           try {
-            const stack = [{ path: "", table: require("../../../messages/en-US.json") }];
+            const stack = [{ path: "", table: require("../../../../../messages/en-US.json") }];
             while (stack.length) {
               const { path, table } = stack.pop();
               for (const property in table) {
