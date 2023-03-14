@@ -9,7 +9,7 @@ exports.run = async function (options) {
 
   const babelOptions = require("../../babel").env.production;
 
-  const cwd = options.cwd ? `${options.cwd.replaceAll(`.${path.delimiter}`, "")}${path.delimiter}` : "";
+  const cwd = options.cwd ? path.relative(process.env.PWD, process.env.INIT_CWD).replaceAll(`.${path.sep}`, "") : "";
 
   const engine = new eslint.ESLint({
     allowInlineConfig: true,
@@ -32,25 +32,27 @@ exports.run = async function (options) {
       rules: {
         "no-debugger": "error",
         eqeqeq: "error",
-        "eol-last": ["error", "never"],
-        "no-multiple-empty-lines": ["error", { max: 1, maxEOF: 0 }],
       },
     },
   });
 
   const results = await engine.lintFiles(
-    fs.existsSync(path.resolve(process.env.INIT_CWD, "src"))
-      ? [`${cwd}${path.join("src", "**", "*.{js,ts,jsx,tsx}")}`]
-      : [`${cwd}${path.join("**", "*.{js,ts,jsx,tsx}")}`],
+    fs.existsSync(path.resolve(cwd, "src"))
+      ? [path.join(cwd, "src", "**", "*.{js,ts,jsx,tsx}")]
+      : [path.join(cwd, "**", "*.{js,ts,jsx,tsx}")],
   );
 
-  await eslint.ESLint.outputFixes(results);
+  if (options.fix) {
+    await eslint.ESLint.outputFixes(results);
+  }
 
   const formatter = await engine.loadFormatter("stylish");
   const output = await formatter.format(results);
 
   if (output) {
     console.log(output);
+  } else if (options.debug) {
+    console.log("All matched files use ESlint code style!");
   }
 
   for (const result of results) {

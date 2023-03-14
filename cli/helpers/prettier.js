@@ -7,7 +7,7 @@ exports.run = async function (options) {
     throw reason;
   });
 
-  const cwd = options.cwd ? `${options.cwd.replaceAll(`.${path.delimiter}`, "")}${path.delimiter}` : "";
+  const cwd = options.cwd ? path.relative(process.env.PWD, process.env.INIT_CWD).replaceAll(`.${path.sep}`, "") : "";
 
   const prettierOptions = [
     ...(options.debug ? ["--loglevel=log"] : ["--loglevel=warn"]),
@@ -19,10 +19,10 @@ exports.run = async function (options) {
     "--end-of-line=lf",
     "--print-width=120",
     "--trailing-comma=all",
-    ...(options.fix ? ["--write"] : []),
-    fs.existsSync(path.resolve(process.env.INIT_CWD, "src"))
-      ? `(${cwd}*\\.(js|ts|jsx|tsx)|(${cwd}${path.join("src", "**", "*")}\\.(js|ts|jsx|tsx)))`
-      : `(${cwd}${path.join("**", "*")}\\.(js|ts|jsx|tsx))`,
+    ...(options.fix ? ["--write"] : ["--check"]),
+    fs.existsSync(path.resolve(cwd, "src"))
+      ? `(${path.join(cwd, "*")}\\.(js|ts|jsx|tsx)|(${path.join(cwd, "src", "**", "*")}\\.(js|ts|jsx|tsx)))`
+      : `(${path.join(cwd, "**", "*")}\\.(js|ts|jsx|tsx))`,
   ];
 
   await prettier.run(prettierOptions);
