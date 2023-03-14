@@ -15,7 +15,7 @@ exports.handler = async function (argv, cleanupHooks) {
     },
     packageName,
   );
-  const { config, webpack, DevServer } = await getStack(packageName);
+  const { config, webpack, DevServer } = await getStack(argv, packageName);
 
   const devServerConfig = config.devServer;
   delete config.devServer;

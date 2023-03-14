@@ -18,8 +18,6 @@ exports.envelope = function (command) {
     describe: command.describe,
     builder: command.builder,
     async handler(argv) {
-      //console.log('BEFORE', process.env)
-
       await patchCwd(argv);
 
       const cleanupHooks = [];
@@ -32,11 +30,6 @@ exports.envelope = function (command) {
         });
       }
 
-      process.on('beforeExit', (code) => {
-        //console.log('AFTER', process.env)
-        //console.log('Process beforeExit event with code: ', code);
-      });
-
       await command.handler(
         {
           ...argv,
@@ -47,4 +40,3 @@ exports.envelope = function (command) {
     },
   };
 };
-

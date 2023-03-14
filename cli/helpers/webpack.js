@@ -156,7 +156,7 @@ exports.getStack = async function (options, packageName) {
   if (!config.infrastructureLogging) {
     config.infrastructureLogging = {
       appendOnly: options.debug,
-      level: options.debug ? 'verbose' : "info",
+      level: options.debug ? "verbose" : "info",
       colors: process.stdout.isTTY,
     };
   }
@@ -190,15 +190,13 @@ exports.setup = async function (options, packageName) {
 
   if (options.debug) {
     if (process.env.DEBUG) {
-      process.env.DEBUG = ["babel:*", ...process.env.DEBUG.split(',')].join(',')
+      process.env.DEBUG = ["babel:*", ...process.env.DEBUG.split(",")].join(",");
     } else {
-      process.env.DEBUG = "babel:*"
+      process.env.DEBUG = "babel:*";
     }
   }
 
   console.log(colors.bold(`Compiling ${packageName}...`));
-
-  //console.log('in the middle', process.env);
 
   return function (err, stats) {
     process.exitCode = 0;

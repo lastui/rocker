@@ -19,12 +19,12 @@ module.exports = {
     },
   },
   performance: {
-    hints: (settings.LOG_LEVEL === 'debug' || !settings.DEVELOPMENT) ? "warning" : false,
+    hints: settings.LOG_LEVEL === "debug" || !settings.DEVELOPMENT ? "warning" : false,
   },
   stats: {
     logging: true,
     colors: true,
-    all: settings.LOG_LEVEL === 'debug',
+    all: settings.LOG_LEVEL === "debug",
     assets: false,
     modules: true,
     chunks: false,
@@ -88,7 +88,7 @@ module.exports = {
     ...(settings.PROGRESS
       ? [
           new webpack.ProgressPlugin({
-            percentBy: 'entries',
+            percentBy: "entries",
             activeModules: false,
             entries: true,
             modules: true,
