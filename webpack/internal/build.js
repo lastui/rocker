@@ -23,7 +23,7 @@ module.exports = {
   },
   stats: {
     logging: true,
-    colors: true,
+    colors: process.stdout.isTTY,
     all: settings.LOG_LEVEL === "debug",
     assets: false,
     modules: true,

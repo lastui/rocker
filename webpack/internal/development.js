@@ -11,12 +11,14 @@ module.exports = {
     publicPath: settings.PROJECT_NAMESPACE,
   },
   performance: {
-    hints: settings.LOG_LEVEL === "debug",
+    hints: false,
   },
   stats: {
-    colors: true,
-    all: false,
+    colors: process.stdout.isTTY,
+    all: settings.LOG_LEVEL === "debug",
     assets: false,
+    chunks: false,
+    source: false,
     modules: true,
     timings: true,
     errors: true,
