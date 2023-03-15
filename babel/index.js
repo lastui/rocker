@@ -18,15 +18,13 @@ const presets = [
 ];
 
 const assumptions = {
-  noDocumentAll: false,
+  noDocumentAll: true,
   setPublicClassFields: false,
 };
 
 module.exports = {
   assumptions,
-
   presets,
-
   plugins,
 
   env: {
@@ -54,7 +52,15 @@ module.exports = {
     },
     test: {
       presets,
-      plugins: [...plugins, "@babel/plugin-transform-modules-commonjs"],
+      plugins: [
+        ...plugins,
+        [
+          "@babel/plugin-transform-modules-commonjs",
+          {
+            importInterop: "babel",
+          },
+        ],
+      ],
       assumptions,
     },
   },
