@@ -41,6 +41,7 @@ config.module.rules.push(
               return [plugin[0], plugin[1], `babel-${plugin[0].name || plugin[0]}`];
             }
           }),
+          assumptions: babel.assumptions,
           cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".babel-cache"),
           sourceMaps: false,
           sourceType: "module",
@@ -73,6 +74,7 @@ config.module.rules.push(
                 return [plugin[0], plugin[1], `linaria-${plugin[0].name || plugin[0]}`];
               }
             }),
+            assumptions: babel.assumptions,
             sourceMaps: false,
             sourceType: "module",
             inputSourceMap: false,
