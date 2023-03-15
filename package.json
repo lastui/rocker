@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.31",
+  "version": "0.14.32",
   "scripts": {
     "lint": "node ./cli/index.js lint --fix",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -74,9 +74,9 @@
     "bootstrap/dll/bootstrap.dll.min.js"
   ],
   "dependencies": {
-    "@babel/core": "7.21.0",
-    "@babel/eslint-parser": "7.19.1",
-    "@babel/parser": "7.21.2",
+    "@babel/core": "7.21.3",
+    "@babel/eslint-parser": "7.21.3",
+    "@babel/parser": "7.21.3",
     "@babel/plugin-proposal-class-properties": "7.18.6",
     "@babel/plugin-proposal-export-default-from": "7.18.10",
     "@babel/plugin-proposal-export-namespace-from": "7.18.9",
@@ -117,7 +117,7 @@
     "prettier": "2.8.4",
     "pretty-format": "29.5.0",
     "redux-mock-store": "1.5.4",
-    "sass": "1.59.2",
+    "sass": "1.59.3",
     "sass-loader": "13.2.0",
     "source-map": "mozilla/source-map#master",
     "style-loader": "3.3.2",
@@ -125,7 +125,7 @@
     "util": "0.12.5",
     "weak-napi": "2.0.2",
     "webpack": "5.76.1",
-    "webpack-dev-server": "4.11.1",
+    "webpack-dev-server": "4.12.0",
     "yargs": "17.7.1"
   },
   "repository": {
