@@ -1,32 +1,12 @@
-const plugins = [
-  "@babel/plugin-proposal-export-default-from",
-  "@babel/plugin-transform-react-display-name",
-  "@babel/plugin-proposal-logical-assignment-operators",
-  [
-    "@babel/plugin-proposal-optional-chaining",
-    {
-      loose: false,
-    },
-  ],
-  [
-    "@babel/plugin-proposal-nullish-coalescing-operator",
-    {
-      loose: false,
-    },
-  ],
-  "@babel/plugin-proposal-export-namespace-from",
-  "@babel/plugin-proposal-numeric-separator",
-  "@babel/plugin-proposal-throw-expressions",
-  [
-    "@babel/plugin-proposal-class-properties",
-    {
-      loose: false,
-    },
-  ],
-];
+const plugins = ["@babel/plugin-proposal-export-default-from", "@babel/plugin-proposal-throw-expressions"];
 
 const presets = [
-  "@babel/preset-typescript",
+  [
+    "@babel/preset-typescript",
+    {
+      allowNamespaces: true,
+    },
+  ],
   [
     "@babel/preset-react",
     {
@@ -37,15 +17,21 @@ const presets = [
   ],
 ];
 
-module.exports = {
-  presets,
+const assumptions = {
+  noDocumentAll: true,
+  setPublicClassFields: false,
+};
 
+module.exports = {
+  assumptions,
+  presets,
   plugins,
 
   env: {
     development: {
       presets,
       plugins,
+      assumptions,
     },
     production: {
       presets: [
@@ -61,11 +47,21 @@ module.exports = {
           },
         ],
       ],
-      plugins: [...plugins, "@babel/plugin-proposal-json-strings"],
+      plugins,
+      assumptions,
     },
     test: {
       presets,
-      plugins: [...plugins, "@babel/plugin-transform-modules-commonjs"],
+      plugins: [
+        ...plugins,
+        [
+          "@babel/plugin-transform-modules-commonjs",
+          {
+            importInterop: "babel",
+          },
+        ],
+      ],
+      assumptions,
     },
   },
 };
