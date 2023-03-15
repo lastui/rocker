@@ -90,8 +90,6 @@ exports.clearDirectory = async function (nodePath) {
       }
     });
 
-  const flatten = (ary) => ary.reduce((a, b) => (Array.isArray(b) ? a.concat(flatten(b)) : a.concat(b)), []);
-
   const walk = async (nodePath) => {
     const work = await new Promise((resolve, reject) => {
       fs.lstat(nodePath, function (err, stats) {
@@ -129,7 +127,7 @@ exports.clearDirectory = async function (nodePath) {
         }
       });
     });
-    const slice = await Promise.all(flatten(work));
+    const slice = await Promise.all(work.flat());
     return slice;
   };
 

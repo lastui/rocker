@@ -4,7 +4,6 @@ async function patchCwd(argv) {
     const exists = await require("./io.js").directoryExists(requested);
     if (exists) {
       process.env.INIT_CWD = requested;
-      return;
     }
   }
   if (!process.env.INIT_CWD) {
