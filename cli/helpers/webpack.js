@@ -89,7 +89,6 @@ async function propagateProgressOption() {
       return;
     }
   } catch (err) {}
-
   try {
     const progress = await execShellCommand("yarn config get progress");
     if (progress === "false") {
@@ -189,11 +188,11 @@ exports.setup = async function (options, packageName) {
   }
 
   if (options.debug) {
+    const debugNamespaces = ["babel:*"];
     if (process.env.DEBUG) {
-      process.env.DEBUG = ["babel:*", ...process.env.DEBUG.split(",")].join(",");
-    } else {
-      process.env.DEBUG = "babel:*";
+      debugNamespaces.push(...process.env.DEBUG.split(","));
     }
+    process.env.DEBUG = debugNamespaces.join(",");
   }
 
   console.log(colors.bold(`Compiling ${packageName}...`));

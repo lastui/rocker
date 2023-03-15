@@ -7,7 +7,7 @@ exports.run = async function (options) {
     throw reason;
   });
 
-  const babelOptions = require("../../babel").env.production;
+  const babelOptions = require("../../babel").env.development;
 
   const cwd = options.cwd ? path.relative(process.env.PWD, process.env.INIT_CWD).replaceAll(`.${path.sep}`, "") : "";
 
