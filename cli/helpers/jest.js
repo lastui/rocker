@@ -1,21 +1,33 @@
 const path = require("path");
-const jest = require("jest");
 
 exports.run = async function (options) {
   process.on("unhandledRejection", (reason) => {
     throw reason;
   });
 
+  const jest = require("jest");
+
+  const config = path.resolve(__dirname, "..", "..", "jest", "index.js");
+
   await jest.run([
-    "--colors",
+    ...(process.stdout.isTTY ? ["--colors"] : []),
     "--passWithNoTests",
     "--injectGlobals",
     "--testLocationInResults",
+    `--config=${config}`,
+    ...(options.development ? ["--watchAll", "--coverage=false"] : []),
     ...(options.debug
-      ? ["--runInBand", "--detectOpenHandles", "--detectLeaks", "--logHeapUsage"]
+      ? [
+          "--debug",
+          "--errorOnDeprecated",
+          "--verbose",
+          "--runInBand",
+          "--detectOpenHandles",
+          "--detectLeaks",
+          "--logHeapUsage",
+          "--bail",
+        ]
       : ["--maxWorkers=50%", "--maxConcurency=10"]),
-    "--config",
-    path.resolve(__dirname, "..", "..", "jest", "index.js"),
-    ...(options._.length > 0 ? [options._[options._.length - 1]] : []),
+    ...options._,
   ]);
 };

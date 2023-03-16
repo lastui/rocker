@@ -1,46 +1,49 @@
-const fs = require("fs");
+const { directoryExists } = require("./io");
 const path = require("path");
-const eslint = require("eslint");
 
 exports.run = async function (options) {
   process.on("unhandledRejection", (reason) => {
     throw reason;
   });
 
-  const babelOptions = require("../../babel").env.development;
+  const eslint = require("eslint");
 
   const cwd = options.cwd ? path.relative(process.env.PWD, process.env.INIT_CWD).replaceAll(`.${path.sep}`, "") : "";
 
+  const config = {
+    env: {
+      es6: true,
+    },
+    parser: "@babel/eslint-parser",
+    parserOptions: {
+      sourceType: "module",
+      allowImportExportEverywhere: false,
+      ecmaFeatures: {
+        globalReturn: false,
+      },
+      requireConfigFile: false,
+      babelOptions: require("../../babel").env.development,
+    },
+    rules: {
+      "no-debugger": "error",
+      eqeqeq: "error",
+    },
+    plugins: options.debug ? ["log"] : [],
+  };
+
   const engine = new eslint.ESLint({
+    cwd: process.env.INIT_CWD,
     allowInlineConfig: true,
     useEslintrc: false,
     fix: options.fix,
-    baseConfig: {
-      env: {
-        es6: true,
-      },
-      parser: "@babel/eslint-parser",
-      parserOptions: {
-        sourceType: "module",
-        allowImportExportEverywhere: false,
-        ecmaFeatures: {
-          globalReturn: false,
-        },
-        requireConfigFile: false,
-        babelOptions,
-      },
-      rules: {
-        "no-debugger": "error",
-        eqeqeq: "error",
-      },
-    },
+    baseConfig: config,
   });
 
-  const results = await engine.lintFiles(
-    fs.existsSync(path.resolve(cwd, "src"))
-      ? [path.join(cwd, "src", "**", "*.{js,ts,jsx,tsx}")]
-      : [path.join(cwd, "**", "*.{js,ts,jsx,tsx}")],
-  );
+  const files = (await directoryExists(path.resolve(cwd, "src")))
+    ? [path.join(cwd, "src", "**", "*.{js,ts,jsx,tsx}")]
+    : [path.join(cwd, "**", "*.{js,ts,jsx,tsx}")];
+
+  const results = await engine.lintFiles(files);
 
   if (options.fix) {
     await eslint.ESLint.outputFixes(results);
@@ -51,8 +54,6 @@ exports.run = async function (options) {
 
   if (output) {
     console.log(output);
-  } else if (options.debug) {
-    console.log("All matched files use ESlint code style!");
   }
 
   for (const result of results) {
@@ -60,5 +61,9 @@ exports.run = async function (options) {
       process.exitCode = 1;
       return;
     }
+  }
+
+  if (!output && !options.fix && !process.exitCode) {
+    console.log("All matched files use ESlint code style!");
   }
 };
