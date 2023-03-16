@@ -187,14 +187,6 @@ exports.setup = async function (options, packageName) {
     await propagateProgressOption();
   }
 
-  if (options.debug) {
-    const debugNamespaces = ["babel:*"];
-    if (process.env.DEBUG) {
-      debugNamespaces.push(...process.env.DEBUG.split(","));
-    }
-    process.env.DEBUG = debugNamespaces.join(",");
-  }
-
   console.log(colors.bold(`Compiling ${packageName}...`));
 
   return function (err, stats) {

@@ -6,14 +6,6 @@ exports.run = async function (options) {
     throw reason;
   });
 
-  if (options.debug) {
-    const debugNamespaces = ["eslint:*"];
-    if (process.env.DEBUG) {
-      debugNamespaces.push(...process.env.DEBUG.split(","));
-    }
-    process.env.DEBUG = debugNamespaces.join(",");
-  }
-
   const eslint = require("eslint");
 
   const cwd = options.cwd ? path.relative(process.env.PWD, process.env.INIT_CWD).replaceAll(`.${path.sep}`, "") : "";
@@ -36,6 +28,7 @@ exports.run = async function (options) {
       "no-debugger": "error",
       eqeqeq: "error",
     },
+    plugins: options.debug ? ["log"] : [],
   };
 
   const engine = new eslint.ESLint({
