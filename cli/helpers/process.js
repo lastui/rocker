@@ -1,6 +1,6 @@
-async function patchCwd(argv) {
-  if (argv.cwd) {
-    const requested = require("path").resolve(argv.cwd);
+async function patchCwd(options) {
+  if (options.cwd) {
+    const requested = require("path").resolve(options.cwd);
     const exists = await require("./io.js").directoryExists(requested);
     if (exists) {
       process.env.INIT_CWD = requested;
@@ -16,8 +16,8 @@ exports.envelope = function (command) {
     command: command.command,
     describe: command.describe,
     builder: command.builder,
-    async handler(argv) {
-      await patchCwd(argv);
+    async handler(options) {
+      await patchCwd(options);
 
       const cleanupHooks = [];
 
@@ -31,8 +31,8 @@ exports.envelope = function (command) {
 
       await command.handler(
         {
-          ...argv,
-          _: argv._.filter((item) => item !== command.command),
+          ...options,
+          _: options._.filter((item) => item !== command.command),
         },
         cleanupHooks,
       );

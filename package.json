@@ -1,8 +1,8 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.34",
+  "version": "0.14.35",
   "scripts": {
-    "lint": "node ./cli/index.js lint --fix",
+    "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
     "prebuild:dependencies": "npm --prefix=dependencies ci --no-fund --no-audit",
     "build:dependencies": "npm run build:dependencies:dev && npm run build:dependencies:prod",
