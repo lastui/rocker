@@ -4,14 +4,18 @@ exports.describe = "lint sources";
 
 exports.builder = {};
 
-exports.handler = async function (argv, cleanupHooks) {
+exports.handler = async function (options, cleanupHooks) {
   const colors = require("ansi-colors");
 
-  console.log(colors.bold("Running Prettier"));
+  if (!options.quiet) {
+    console.log(colors.bold("Running Prettier"));
+  }
   const { run: prettierRun } = require("../helpers/prettier.js");
-  await prettierRun(argv);
+  await prettierRun(options);
 
-  console.log(colors.bold("Running ESlint"));
+  if (!options.quiet) {
+    console.log(colors.bold("Running ESlint"));
+  }
   const { run: eslintRun } = require("../helpers/eslint.js");
-  await eslintRun(argv);
+  await eslintRun(options);
 };

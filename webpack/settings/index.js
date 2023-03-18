@@ -38,8 +38,6 @@ exports.PROJECT_ROOT_PATH =
 
 exports.PROJECT_NAME = process.env.PROJECT_NAME || path.resolve(exports.PROJECT_ROOT_PATH).split(path.sep).pop();
 
-exports.NODE_MODULES_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "node_modules");
-
 exports.DLL_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dll");
 
 exports.PROJECT_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "build");

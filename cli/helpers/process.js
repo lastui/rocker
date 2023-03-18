@@ -17,6 +17,8 @@ exports.envelope = function (command) {
     describe: command.describe,
     builder: command.builder,
     async handler(options) {
+      process.env.FORCE_COLOR = process.stdout.isTTY ? "1" : "0";
+
       await patchCwd(options);
 
       const cleanupHooks = [];

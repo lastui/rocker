@@ -9,7 +9,7 @@ module.exports = {
     unsafeCache: false,
     preferRelative: false,
     preferAbsolute: true,
-    modules: [settings.NODE_MODULES_PATH],
+    modules: ["node_modules"],
     extensions: [".js", ".jsx", ".ts", ".tsx"],
     mainFields: ["browser", "module", "main"],
     enforceExtension: false,
@@ -44,6 +44,6 @@ module.exports = {
     type: "memory",
   },
   snapshot: {
-    managedPaths: [settings.NODE_MODULES_PATH],
+    managedPaths: [/(node_modules)[\\/]/],
   },
 };

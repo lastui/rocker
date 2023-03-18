@@ -13,7 +13,8 @@ const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
 
-const babel = require("../../../babel").env.development;
+const webpackBabel = require("../../../babel").env.production;
+const linariaBabel = require("../../../babel").env.test;
 
 const settings = require("../../settings");
 
@@ -68,21 +69,21 @@ config.module.rules.push(
         loader: "babel-loader",
         options: {
           babelrc: false,
-          presets: babel.presets.map((preset) => {
+          presets: webpackBabel.presets.map((preset) => {
             if (!Array.isArray(preset)) {
               return [preset, {}, `babel-${preset}`];
             } else {
               return [preset[0], preset[1], `babel-${preset[0]}`];
             }
           }),
-          plugins: [RegisterModuleInjectBuildId, ...babel.plugins].map((plugin) => {
+          plugins: [RegisterModuleInjectBuildId, ...webpackBabel.plugins].map((plugin) => {
             if (!Array.isArray(plugin)) {
               return [plugin, {}, `babel-${plugin.name || plugin}`];
             } else {
               return [plugin[0], plugin[1], `babel-${plugin[0].name || plugin[0]}`];
             }
           }),
-          assumptions: babel.assumptions,
+          assumptions: webpackBabel.assumptions,
           cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".babel-cache"),
           sourceMaps: true,
           sourceType: "module",
@@ -101,23 +102,21 @@ config.module.rules.push(
           classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
           babelOptions: {
             babelrc: false,
-            presets: babel.presets
-              .map((preset) => {
-                if (!Array.isArray(preset)) {
-                  return [preset, {}, `linaria-${preset}`];
-                } else {
-                  return [preset[0], preset[1], `linaria-${preset[0]}`];
-                }
-              })
-              .filter((preset) => preset[0] !== "@babel/preset-env"),
-            plugins: babel.plugins.map((plugin) => {
+            presets: linariaBabel.presets.map((preset) => {
+              if (!Array.isArray(preset)) {
+                return [preset, {}, `linaria-${preset}`];
+              } else {
+                return [preset[0], preset[1], `linaria-${preset[0]}`];
+              }
+            }),
+            plugins: linariaBabel.plugins.map((plugin) => {
               if (!Array.isArray(plugin)) {
                 return [plugin, {}, `linaria-${plugin.name || plugin}`];
               } else {
                 return [plugin[0], plugin[1], `linaria-${plugin[0].name || plugin[0]}`];
               }
             }),
-            assumptions: babel.assumptions,
+            assumptions: linariaBabel.assumptions,
             sourceMaps: true,
             sourceType: "module",
             inputSourceMap: false,
