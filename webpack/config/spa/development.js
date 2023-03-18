@@ -185,20 +185,20 @@ config.plugins.push(
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies-dev-manifest.json"),
     sourceType: "var",
-    context: settings.PROJECT_ROOT_PATH,
+    context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-dev-manifest.json"),
     sourceType: "var",
-    context: settings.PROJECT_ROOT_PATH,
+    context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
     sourceType: "var",
-    context: settings.PROJECT_ROOT_PATH,
+    context: process.env.INIT_CWD,
   }),
   new HTMLWebpackPlugin({
-    template: path.resolve(settings.PROJECT_ROOT_PATH, "static", "index.html"),
+    template: path.resolve(process.env.INIT_CWD, "static", "index.html"),
     production: false,
     publicPath: "/",
     minify: false,
@@ -228,40 +228,6 @@ config.plugins.push(
       },
     },
   ]),
-  new webpack.ProvidePlugin({
-    Buffer: ["buffer", "Buffer"],
-    process: ["process"],
-  }),
-  new webpack.DefinePlugin(
-    Object.entries(process.env).reduce(
-      (acc, [k, v]) => {
-        if (k.startsWith("npm_")) {
-          return acc;
-        }
-        if (acc[k] === undefined) {
-          switch (typeof v) {
-            case "boolean":
-            case "number": {
-              acc[`process.env.${k}`] = v;
-              break;
-            }
-            default: {
-              acc[`process.env.${k}`] = `"${v}"`;
-              break;
-            }
-          }
-        }
-        return acc;
-      },
-      {
-        process: {},
-        "process.env": {},
-        "process.env.NODE_ENV": `"development"`,
-        "process.env.NODE_DEBUG": false,
-        BUILD_ID: `"${settings.BUILD_ID}"`,
-      },
-    ),
-  ),
 );
 
 module.exports = config;

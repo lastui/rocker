@@ -173,6 +173,9 @@ exports.getStack = async function (options, packageName) {
   }
   config.infrastructureLogging.stream = process.stdout;
 
+  if (options.debug) {
+    config.stats.all = true;
+  }
   if (projectNodeModulesExists) {
     webpack = require(`${projectNodeModules}/webpack`);
     DevServer = require(`${projectNodeModules}/webpack-dev-server`);
