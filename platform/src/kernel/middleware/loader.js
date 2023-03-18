@@ -23,8 +23,8 @@ const createLoaderMiddleware = () => {
         continue;
       }
       const promise = downloadAsset(uri)
-        .then((data) => data.json())
-        .then((data) => Object.keys(data).length > 0 && { module: name, data });
+        .then(data => data.json())
+        .then(data => Object.keys(data).length > 0 && { module: name, data });
       scheduledAssets.push(promise);
     }
 
@@ -42,7 +42,7 @@ const createLoaderMiddleware = () => {
     return batch;
   };
 
-  return (store) => (next) => (action) => {
+  return store => next => action => {
     try {
       switch (action.type) {
         case constants.SET_AVAILABLE_MODULES: {
@@ -63,7 +63,7 @@ const createLoaderMiddleware = () => {
           const name = action.payload.module;
           console.debug(`module ${name} loaded`);
           const language = store.getState().shared.language;
-          return downloadBatchLocales([name], language).then((items) => {
+          return downloadBatchLocales([name], language).then(items => {
             if (items.length > 0) {
               store.dispatch({
                 type: constants.I18N_MESSAGES_BATCH,
@@ -98,7 +98,7 @@ const createLoaderMiddleware = () => {
             }
             missing.push(name);
           }
-          return downloadBatchLocales(missing, language).then((items) =>
+          return downloadBatchLocales(missing, language).then(items =>
             next({
               type: constants.I18N_MESSAGES_BATCH,
               payload: {

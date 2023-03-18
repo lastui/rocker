@@ -5,21 +5,21 @@ import moduleLoader from "../../kernel/registry/loader";
 import Module from "../Module";
 
 jest.mock("../../kernel/registry/loader", () => ({
-  loadModule: async (id) => {
+  loadModule: async id => {
     if (id === "my-feature-without-view") {
       return true;
     }
     return false;
   },
-  getLoadedModule: (id) => {
+  getLoadedModule: id => {
     if (id === "my-feature-without-view") {
       return {};
     }
     return {
-      view: (props) => <div data-testid="view-probe">{props.children}</div>,
+      view: props => <div data-testid="view-probe">{props.children}</div>,
     };
   },
-  isAvailable: (id) => {
+  isAvailable: id => {
     if (id === "my-feature-without-view") {
       return true;
     }

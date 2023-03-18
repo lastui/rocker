@@ -21,7 +21,7 @@ const createDynamicMiddlewares = () => {
     return true;
   };
 
-  const ejectMiddleware = (name) => {
+  const ejectMiddleware = name => {
     const index = keys.indexOf(name);
     if (index === -1) {
       return false;
@@ -32,7 +32,7 @@ const createDynamicMiddlewares = () => {
   };
 
   return {
-    underlying: (_store) => (next) => (action) => {
+    underlying: _store => next => action => {
       try {
         return compose.apply(null, values)(next)(action);
       } catch (error) {

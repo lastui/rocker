@@ -6,7 +6,7 @@ import Globalisation from "./Globalisation";
 
 import { BrowserRouter } from "react-router-dom";
 
-const Entrypoint = (props) => {
+const Entrypoint = props => {
   const entrypoint = useSelector(getEntrypoint);
   if (entrypoint === null) {
     return null;

@@ -16,7 +16,7 @@ describe("dynamic middleware", () => {
   describe("injectMiddleware", () => {
     it("truthy middleware", async () => {
       const store = configureStore([createDynamicMiddleware()])({});
-      await injectMiddleware("test", () => (localStore) => (next) => (action) => next(action));
+      await injectMiddleware("test", () => localStore => next => action => next(action));
     });
 
     it("falsey middleware", async () => {
@@ -26,20 +26,20 @@ describe("dynamic middleware", () => {
 
     it("async middleware", async () => {
       const store = configureStore([createDynamicMiddleware()])({});
-      await injectMiddleware("test", async () => (localStore) => (next) => (action) => next(action));
+      await injectMiddleware("test", async () => localStore => next => action => next(action));
     });
 
     it("replace middleware", async () => {
       const store = configureStore([createDynamicMiddleware()])({});
-      await injectMiddleware("test", () => (localStore) => (next) => (action) => next(action));
-      await injectMiddleware("test", () => (localStore) => (next) => (action) => next(action));
+      await injectMiddleware("test", () => localStore => next => action => next(action));
+      await injectMiddleware("test", () => localStore => next => action => next(action));
     });
   });
 
   describe("ejectMiddleware", () => {
     it("when exists", async () => {
       const store = configureStore([createDynamicMiddleware()])({});
-      await injectMiddleware("test", () => (localStore) => (next) => (action) => next(action));
+      await injectMiddleware("test", () => localStore => next => action => next(action));
       ejectMiddleware("test");
     });
 
@@ -55,7 +55,7 @@ describe("dynamic middleware", () => {
     const action = { type: "probe" };
     const middlewareAction = { type: "mw-probe" };
 
-    await injectMiddleware("test", () => (localStore) => (next) => (action) => {
+    await injectMiddleware("test", () => localStore => next => action => {
       if (action.type === "probe") {
         store.dispatch(middlewareAction);
       }
@@ -80,7 +80,7 @@ describe("dynamic middleware", () => {
 
     const action = { type: "probe" };
 
-    await injectMiddleware("test", () => (localStore) => (next) => (action) => {
+    await injectMiddleware("test", () => localStore => next => action => {
       throw "ouch";
     });
 

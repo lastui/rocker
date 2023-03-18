@@ -6,7 +6,7 @@ const Scoped = (name, preferentialStore, scope) => {
     return null;
   }
 
-  const Bridge = (props) => {
+  const Bridge = props => {
     const parentContext = useContext(ReactReduxContext);
 
     const reduxContext = useMemo(

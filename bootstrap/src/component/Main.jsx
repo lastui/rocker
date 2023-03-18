@@ -4,7 +4,7 @@ import { constants, getStore, manualCleanup } from "@lastui/rocker/platform";
 import setupStore from "../store";
 import Entrypoint from "./Entrypoint";
 
-const Main = (props) => {
+const Main = props => {
   const [_, setErrorState] = useState();
   const [ready, setReady] = useState(false);
 

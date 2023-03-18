@@ -14,7 +14,7 @@ jest.mock("../assets", () => ({
       });
     }
     if (scope.url === "/while-true.js") {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         setTimeout(
           () =>
             resolve({
@@ -90,7 +90,7 @@ describe("loader registry", () => {
 
     it("adapt middleware", async () => {
       const scope = {
-        middleware: () => (store) => (next) => (action) => next(action),
+        middleware: () => store => next => action => next(action),
       };
       const { view, cleanup } = await adaptModule("my-feature", scope);
       expect(cleanup).toBeDefined();
@@ -257,7 +257,7 @@ describe("loader registry", () => {
 
         const c = moduleLoader.loadModule("my-timeout-feature-with-props");
 
-        await moduleLoader.setAvailableModules(modules.filter((item) => item.name !== "my-timeout-feature-with-props"));
+        await moduleLoader.setAvailableModules(modules.filter(item => item.name !== "my-timeout-feature-with-props"));
 
         jest.runAllTimers();
 

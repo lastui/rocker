@@ -3,11 +3,9 @@ const { MemoryRouter } = require("react-router");
 const { Provider } = require("react-redux");
 const { createIntl, createIntlCache, RawIntlProvider } = require("react-intl");
 
-let testIntl = null;
-
-function withLocalisation(component) {
-  if (!testIntl) {
-    testIntl = createIntl(
+const lazy = {
+  get testIntl() {
+    const actual = createIntl(
       {
         locale: "en-US",
         defaultLocale: "en-US",
@@ -43,9 +41,20 @@ function withLocalisation(component) {
       },
       createIntlCache(),
     );
-  }
 
-  return React.createElement(RawIntlProvider, { value: testIntl }, component);
+    Object.defineProperty(this, "testIntl", {
+      value: actual,
+      writable: false,
+      configurable: false,
+      enumerable: false,
+    });
+
+    return actual;
+  },
+};
+
+function withLocalisation(component) {
+  return React.createElement(RawIntlProvider, { value: lazy.testIntl }, component);
 }
 
 function withRouter(component, initialEntries = ["/"]) {

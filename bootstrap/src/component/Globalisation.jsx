@@ -5,7 +5,7 @@ import { getLanguage, getI18nMessages } from "../selector";
 
 const cache = createIntlCache();
 
-const Globalisation = (props) => {
+const Globalisation = props => {
   const locale = useSelector(getLanguage);
   const messages = useSelector(getI18nMessages);
   const intl = React.useMemo(
@@ -15,7 +15,7 @@ const Globalisation = (props) => {
           locale,
           textComponent: React.Fragment,
           messages,
-          onError: (err) => {
+          onError: err => {
             if (err.code !== "MISSING_TRANSLATION" && err.code !== "MISSING_DATA") {
               throw err;
             }

@@ -2,7 +2,7 @@ const { directoryExists } = require("./io");
 const path = require("path");
 
 exports.run = async function (options) {
-  process.on("unhandledRejection", (reason) => {
+  process.on("unhandledRejection", reason => {
     throw reason;
   });
 
@@ -39,7 +39,7 @@ exports.run = async function (options) {
     baseConfig: config,
   });
 
-  const files = (await directoryExists(path.resolve(cwd, "src")))
+  const files = (await directoryExists(path.resolve(process.env.INIT_CWD, "src")))
     ? [path.join(cwd, "src", "**", "*.{js,ts,jsx,tsx}")]
     : [path.join(cwd, "**", "*.{js,ts,jsx,tsx}")];
 
@@ -52,18 +52,21 @@ exports.run = async function (options) {
   const formatter = await engine.loadFormatter("stylish");
   const output = await formatter.format(results);
 
-  if (output) {
-    console.log(output);
-  }
-
   for (const result of results) {
     if (result.errorCount > 0) {
+      if (output) {
+        console.log(output);
+      }
       process.exitCode = 1;
       return;
     }
   }
 
-  if (!output && !options.fix && !process.exitCode) {
+  if (!options.quiet && output) {
+    console.log(output);
+  }
+
+  if (!options.quiet && !output && !options.fix && !process.exitCode) {
     console.log("All matched files use ESlint code style!");
   }
 };

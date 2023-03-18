@@ -16,11 +16,11 @@ function nodeExists(nodePath, predicate) {
 }
 
 exports.fileExists = async function (nodePath) {
-  return await nodeExists(nodePath, (stats) => !stats.isDirectory());
+  return await nodeExists(nodePath, stats => !stats.isDirectory());
 };
 
 exports.directoryExists = async function (nodePath) {
-  return await nodeExists(nodePath, (stats) => stats.isDirectory());
+  return await nodeExists(nodePath, stats => stats.isDirectory());
 };
 
 exports.createSymlink = async function (source, target) {
@@ -72,25 +72,25 @@ exports.ensureDirectory = async function (nodePath) {
 };
 
 exports.clearDirectory = async function (nodePath) {
-  const unlink = (item) =>
+  const unlink = item =>
     new Promise((resolve, reject) => {
       switch (item.action) {
         case "unlink": {
-          fs.unlink(item.path, (err) => (err ? reject(err) : resolve()));
+          fs.unlink(item.path, err => (err ? reject(err) : resolve()));
           break;
         }
         case "rm": {
-          fs.rm(item.path, { force: true }, (err) => (err ? reject(err) : resolve()));
+          fs.rm(item.path, { force: true }, err => (err ? reject(err) : resolve()));
           break;
         }
         case "rmdir": {
-          fs.rm(item.path, { recursive: true, force: true }, (err) => (err ? reject(err) : resolve()));
+          fs.rm(item.path, { recursive: true, force: true }, err => (err ? reject(err) : resolve()));
           break;
         }
       }
     });
 
-  const walk = async (nodePath) => {
+  const walk = async nodePath => {
     const work = await new Promise((resolve, reject) => {
       fs.lstat(nodePath, function (err, stats) {
         if (err === null) {
@@ -99,7 +99,7 @@ exports.clearDirectory = async function (nodePath) {
               if (err) {
                 return reject(err);
               }
-              let step = files.map((node) => walk(path.join(nodePath, node)));
+              let step = files.map(node => walk(path.join(nodePath, node)));
               if (stats.isSymbolicLink()) {
                 step.push({
                   path: nodePath,
@@ -148,6 +148,6 @@ exports.clearDirectory = async function (nodePath) {
     }
     return 0;
   });
-  const work = nodes.map((item) => unlink(item));
+  const work = nodes.map(item => unlink(item));
   await Promise.all(work);
 };

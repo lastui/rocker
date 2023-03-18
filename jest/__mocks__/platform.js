@@ -10,13 +10,13 @@ const constants = new Proxy(Object, {
 let store = null;
 
 module.exports = {
-  Module: (props) =>
+  Module: props =>
     props.children
       ? React.createElement("section", { "data-testid": `module/${props.name}` }, props.children)
       : React.createElement("section", { "data-testid": `module/${props.name}` }),
   constants,
   actions: {
-    setLanguage: (language) => ({
+    setLanguage: language => ({
       type: constants.SET_LANGUAGE,
       payload: {
         language,
@@ -25,14 +25,14 @@ module.exports = {
     refresh: () => ({
       type: constants.REFRESH,
     }),
-    setGlobalShared: (data) => ({
+    setGlobalShared: data => ({
       type: constants.SET_SHARED,
       payload: {
         data,
         module: false,
       },
     }),
-    setLocalShared: (data) => ({
+    setLocalShared: data => ({
       type: constants.SET_SHARED,
       payload: {
         data,
@@ -40,15 +40,15 @@ module.exports = {
       },
     }),
   },
-  createDynamicMiddleware: () => (_store) => (next) => (action) => next(action),
-  createLoaderMiddleware: () => (_store) => (next) => (action) => next(action),
-  createSagaMiddleware: (options) => {
+  createDynamicMiddleware: () => _store => next => action => next(action),
+  createLoaderMiddleware: () => _store => next => action => next(action),
+  createSagaMiddleware: options => {
     if (options && options.context && options.context.fetchContext) {
       options.context.fetchContext();
     }
     const channel = ReduxSaga.stdChannel();
     return {
-      sagaMiddleware: (_store) => (next) => (action) => next(action),
+      sagaMiddleware: _store => next => action => next(action),
       runSaga: (preferentialStore, saga) =>
         ReduxSaga.runSaga(
           {
@@ -61,7 +61,7 @@ module.exports = {
         ),
     };
   },
-  setStore: (nextStore) => {
+  setStore: nextStore => {
     store = nextStore;
   },
   manualCleanup: () => {},

@@ -9,7 +9,7 @@ export class SequentialProgramEvaluator {
   static compiling = false;
 
   static compile(name, data) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.queue.push({
         data,
         name,
@@ -142,10 +142,10 @@ function downloadAsset(resource) {
     }
 
     work()
-      .then((response) => {
+      .then(response => {
         resolve(response);
       })
-      .catch((error) => {
+      .catch(error => {
         clearTimeout(id);
         reject(error);
       });

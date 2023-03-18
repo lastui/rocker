@@ -27,8 +27,8 @@ const handler = {
       const proxy = arguments[arguments.length - 1];
       let prevStateIsolated = {};
       let prevState = null;
-      return (name) => ({
-        dispatch: (action) => {
+      return name => ({
+        dispatch: action => {
           if (action.type === SET_SHARED) {
             return proxy.dispatch({
               type: SET_SHARED,

@@ -15,14 +15,14 @@ function formatMessage(message) {
   } else if ("message" in message) {
     lines = message["message"].split("\n");
   } else if (Array.isArray(message)) {
-    message.forEach((message) => {
+    message.forEach(message => {
       if ("message" in message) {
         lines = message["message"].split("\n");
       }
     });
   }
-  lines = lines.filter((line) => !/Module [A-z ]+\(from/.test(line));
-  lines = lines.map((line) => {
+  lines = lines.filter(line => !/Module [A-z ]+\(from/.test(line));
+  lines = lines.map(line => {
     const parsingError = /Line (\d+):(?:(\d+):)?\s*Parsing error: (.+)$/.exec(line);
     if (!parsingError) {
       return line;
@@ -187,7 +187,9 @@ exports.setup = async function (options, packageName) {
     await propagateProgressOption();
   }
 
-  console.log(colors.bold(`Compiling ${packageName}...`));
+  if (options.quiet) {
+    console.log(colors.bold(`Compiling ${packageName}...`));
+  }
 
   return function (err, stats) {
     process.exitCode = 0;
@@ -202,7 +204,7 @@ exports.setup = async function (options, packageName) {
     }
     const messages = formatWebpackMessages(stats);
     const isSuccessful = !messages.errors.length && !messages.warnings.length;
-    if (isSuccessful) {
+    if (isSuccessful && !options.quiet) {
       console.log(colors.bold("Compiled successfully!"));
     }
     if (messages.errors.length) {

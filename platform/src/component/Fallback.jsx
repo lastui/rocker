@@ -1,6 +1,6 @@
 import { createElement, useEffect, useState, isValidElement } from "react";
 
-const Fallback = (props) => {
+const Fallback = props => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
