@@ -198,7 +198,7 @@ exports.setup = async function (options, packageName) {
     await propagateProgressOption();
   }
 
-  if (options.quiet) {
+  if (!options.quiet) {
     console.log(colors.bold(`Compiling ${packageName}...`));
   }
 
