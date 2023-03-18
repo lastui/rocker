@@ -16,7 +16,7 @@ const mockStore = configureStore([])({
 
 setStore(mockStore);
 
-jest.mock("../../store", () => fetchContext => {
+jest.mock("../../store", () => (fetchContext) => {
   fetchContext();
   return mockStore;
 });

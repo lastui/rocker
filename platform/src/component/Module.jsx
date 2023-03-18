@@ -5,9 +5,9 @@ import moduleLoader from "../kernel/registry/loader";
 import Fallback from "./Fallback";
 
 const Module = forwardRef((props, ref) => {
-  const isReady = useSelector(state => Boolean(state.shared.readyModules[props.name]));
+  const isReady = useSelector((state) => Boolean(state.shared.readyModules[props.name]));
 
-  const lastUpdate = useSelector(state => state.shared.lastUpdate);
+  const lastUpdate = useSelector((state) => state.shared.lastUpdate);
 
   const [lastLocalUpdate, setLastLocalUpdate] = useState(0);
 
@@ -24,21 +24,21 @@ const Module = forwardRef((props, ref) => {
 
   /* istanbul ignore next */
   const loadModule = useCallback(
-    signal => {
+    (signal) => {
       async function work() {
         if (!props.name) {
           return false;
         }
         return await moduleLoader.loadModule(props.name);
       }
-      const abort = new Promise(resolve => {
+      const abort = new Promise((resolve) => {
         signal.onabort = function () {
           resolve(false);
         };
       });
-      Promise.race([work(), abort]).then(changed => {
+      Promise.race([work(), abort]).then((changed) => {
         if (changed) {
-          setLastLocalUpdate(tick => (tick + 1) % Number.MAX_SAFE_INTEGER);
+          setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
         }
       });
     },

@@ -15,7 +15,7 @@ describe("store", () => {
 
   it("accepts middlewares provided via bootstrap", async () => {
     const spy = jest.fn();
-    const customMiddleware = _store => next => action => {
+    const customMiddleware = (_store) => (next) => (action) => {
       spy(action);
       return next(action);
     };

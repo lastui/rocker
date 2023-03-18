@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-process.on("warning", e => console.warn(e.stack));
+process.on("warning", (e) => console.warn(e.stack));
 process.setMaxListeners(100);
 
 const { envelope } = require("./helpers/process.js");

@@ -20,7 +20,7 @@ jest.mock("../../registry/loader", () => {
 
 jest.mock("../../registry/assets", () => {
   const downloadAsset = jest.fn();
-  downloadAsset.mockImplementation(async uri => {
+  downloadAsset.mockImplementation(async (uri) => {
     if (uri === "/i18n/broken.json") {
       throw "ouch";
     }
@@ -73,7 +73,7 @@ describe("loader middleware", () => {
     };
     let counter = 0;
 
-    const next = localAction => {
+    const next = (localAction) => {
       if (++counter === 1) {
         throw "ouch";
       }

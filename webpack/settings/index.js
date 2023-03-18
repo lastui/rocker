@@ -27,7 +27,7 @@ exports.DEVELOPMENT = process.env.NODE_ENV === "development";
 
 exports.PROJECT_NAMESPACE = namespace(exports.DEVELOPMENT ? "" : process.env.PROJECT_NAMESPACE);
 
-exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US").split(",").map(locale => locale.trim());
+exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US").split(",").map((locale) => locale.trim());
 
 exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 

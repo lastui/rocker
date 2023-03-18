@@ -2,7 +2,7 @@ const { directoryExists } = require("./io");
 const path = require("path");
 
 exports.run = async function (options) {
-  process.on("unhandledRejection", reason => {
+  process.on("unhandledRejection", (reason) => {
     throw reason;
   });
 

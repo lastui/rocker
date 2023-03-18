@@ -54,9 +54,9 @@ const createModuleLoader = () => {
   const loadedModules = {};
   const loadingModules = {};
 
-  const getLoadedModule = name => loadedModules[name];
+  const getLoadedModule = (name) => loadedModules[name];
 
-  const loadModule = name => {
+  const loadModule = (name) => {
     const available = availableModules[name];
     const loaded = loadedModules[name];
     if (!available || !available.program) {
@@ -70,7 +70,7 @@ const createModuleLoader = () => {
       return loading;
     }
     const promise = downloadProgram(name, available.program)
-      .then(data => {
+      .then((data) => {
         const scope = data;
         if (available.props && scope.props) {
           scope.props = {
@@ -82,7 +82,7 @@ const createModuleLoader = () => {
         }
         return adaptModule(name, scope);
       })
-      .then(data => {
+      .then((data) => {
         if (!availableModules[name]) {
           data.cleanup();
           return true;
@@ -96,11 +96,11 @@ const createModuleLoader = () => {
         });
         return true;
       })
-      .catch(error => {
+      .catch((error) => {
         warning(`module ${name} failed to load`, error);
         return Promise.resolve(false);
       })
-      .then(changed => {
+      .then((changed) => {
         delete loadingModules[name];
         return changed;
       });
@@ -109,7 +109,7 @@ const createModuleLoader = () => {
   };
 
   const unloadModule = (name, loaded) =>
-    new Promise(resolve => {
+    new Promise((resolve) => {
       delete loadedModules[name];
       loaded.cleanup();
       getStore().dispatch({
@@ -121,7 +121,7 @@ const createModuleLoader = () => {
       return resolve(true);
     });
 
-  const setAvailableModules = async modules => {
+  const setAvailableModules = async (modules) => {
     const scheduledUnload = [];
     const newModules = {};
     for (let i = modules.length; i--; ) {
@@ -148,7 +148,7 @@ const createModuleLoader = () => {
     await Promise.allSettled(scheduledUnload);
   };
 
-  const isAvailable = name => Boolean(availableModules[name]);
+  const isAvailable = (name) => Boolean(availableModules[name]);
 
   const manualCleanup = () => {
     for (const name in availableModules) {

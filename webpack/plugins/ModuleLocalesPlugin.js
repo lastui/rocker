@@ -12,13 +12,13 @@ class ModuleLocalesPlugin {
   }
 
   apply(compiler) {
-    compiler.hooks.thisCompilation.tap(ModuleLocalesPlugin.name, compilation => {
+    compiler.hooks.thisCompilation.tap(ModuleLocalesPlugin.name, (compilation) => {
       compilation.hooks.processAssets.tap(
         {
           name: ModuleLocalesPlugin.name,
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
         },
-        _assets => {
+        (_assets) => {
           let paths = [];
 
           for (const entryPoint of compilation.entrypoints.values()) {
@@ -54,7 +54,7 @@ class ModuleLocalesPlugin {
                         resolve(true);
                       } else if (stat_err.code === "ENOENT") {
                         resolve(true);
-                        fs.mkdir(parent, mkdir_err => {
+                        fs.mkdir(parent, (mkdir_err) => {
                           if (mkdir_err) {
                             reject(mkdir_err);
                           } else {
@@ -70,13 +70,13 @@ class ModuleLocalesPlugin {
                   await fs.promises.writeFile(inputPath, content);
                   return content;
                 })
-                .then(content => {
+                .then((content) => {
                   compilation.fileDependencies.add(inputPath);
                   if (!compilation.getAsset(outputPath)) {
                     compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   console.error(error);
                 });
             }

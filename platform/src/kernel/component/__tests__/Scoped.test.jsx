@@ -33,7 +33,7 @@ describe("Scoped", () => {
 
   it("passes scope props", () => {
     const scope = {
-      component: props => <div {...props} />,
+      component: (props) => <div {...props} />,
       props: {
         "data-testid": "happy-component",
       },
@@ -48,7 +48,7 @@ describe("Scoped", () => {
 
   it("passes owned props", () => {
     const scope = {
-      component: props => <div {...props} />,
+      component: (props) => <div {...props} />,
     };
 
     const View = Scoped("my-feature", store, scope);
@@ -79,7 +79,7 @@ describe("Scoped", () => {
 
   it("passes children", () => {
     const scope = {
-      component: props => <div data-testid="happy-component">{props.children}</div>,
+      component: (props) => <div data-testid="happy-component">{props.children}</div>,
     };
 
     const ref = React.createRef();

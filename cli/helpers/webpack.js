@@ -15,14 +15,14 @@ function formatMessage(message) {
   } else if ("message" in message) {
     lines = message["message"].split("\n");
   } else if (Array.isArray(message)) {
-    message.forEach(message => {
+    message.forEach((message) => {
       if ("message" in message) {
         lines = message["message"].split("\n");
       }
     });
   }
-  lines = lines.filter(line => !/Module [A-z ]+\(from/.test(line));
-  lines = lines.map(line => {
+  lines = lines.filter((line) => !/Module [A-z ]+\(from/.test(line));
+  lines = lines.map((line) => {
     const parsingError = /Line (\d+):(?:(\d+):)?\s*Parsing error: (.+)$/.exec(line);
     if (!parsingError) {
       return line;

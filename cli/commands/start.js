@@ -27,7 +27,7 @@ exports.handler = async function (options, cleanupHooks) {
     });
   }
   const instance = new DevServer(devServerConfig, compiler);
-  instance.startCallback(err => {
+  instance.startCallback((err) => {
     if (err) {
       callback(err);
     }

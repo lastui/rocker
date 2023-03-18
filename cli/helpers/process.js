@@ -27,14 +27,14 @@ exports.envelope = function (command) {
 
       for (const signal in ["SIGINT", "SIGTERM"]) {
         process.on(signal, () => {
-          cleanupHooks.forEach(hook => hook());
+          cleanupHooks.forEach((hook) => hook());
         });
       }
 
       await command.handler(
         {
           ...options,
-          _: options._.filter(item => item !== command.command),
+          _: options._.filter((item) => item !== command.command),
         },
         cleanupHooks,
       );

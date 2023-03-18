@@ -69,14 +69,14 @@ config.module.rules.push(
         loader: "babel-loader",
         options: {
           babelrc: false,
-          presets: webpackBabel.presets.map(preset => {
+          presets: webpackBabel.presets.map((preset) => {
             if (!Array.isArray(preset)) {
               return [preset, {}, `babel-${preset}`];
             } else {
               return [preset[0], preset[1], `babel-${preset[0]}`];
             }
           }),
-          plugins: [RegisterModuleInjectBuildId, ...webpackBabel.plugins].map(plugin => {
+          plugins: [RegisterModuleInjectBuildId, ...webpackBabel.plugins].map((plugin) => {
             if (!Array.isArray(plugin)) {
               return [plugin, {}, `babel-${plugin.name || plugin}`];
             } else {
@@ -88,7 +88,7 @@ config.module.rules.push(
           sourceMaps: true,
           sourceType: "module",
           highlightCode: true,
-          shouldPrintComment: val => /license/.test(val),
+          shouldPrintComment: (val) => /license/.test(val),
           compact: false,
           inputSourceMap: false,
         },
@@ -103,14 +103,14 @@ config.module.rules.push(
           classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
           babelOptions: {
             babelrc: false,
-            presets: linariaBabel.presets.map(preset => {
+            presets: linariaBabel.presets.map((preset) => {
               if (!Array.isArray(preset)) {
                 return [preset, {}, `linaria-${preset}`];
               } else {
                 return [preset[0], preset[1], `linaria-${preset[0]}`];
               }
             }),
-            plugins: linariaBabel.plugins.map(plugin => {
+            plugins: linariaBabel.plugins.map((plugin) => {
               if (!Array.isArray(plugin)) {
                 return [plugin, {}, `linaria-${plugin.name || plugin}`];
               } else {
@@ -224,7 +224,7 @@ config.plugins.push(
     minify: false,
     inject: false,
     scriptLoading: "defer",
-    templateContent: props => {
+    templateContent: (props) => {
       let entrypoints = [];
 
       for (const entryPoint of props.compilation.entrypoints.values()) {
@@ -234,7 +234,7 @@ config.plugins.push(
       }
 
       const headTags = props.htmlWebpackPlugin.tags.headTags.filter(
-        item => !entrypoints.map(chunk => path.join(chunk.id, "main.js")).includes(item.attributes.src),
+        (item) => !entrypoints.map((chunk) => path.join(chunk.id, "main.js")).includes(item.attributes.src),
       );
 
       let manifest;
@@ -249,20 +249,20 @@ config.plugins.push(
           const dependencyGraph = {};
 
           for (const chunk of entrypoints) {
-            props.compilation.chunkGraph.getChunkModulesIterable(chunk).forEach(fragment => {
+            props.compilation.chunkGraph.getChunkModulesIterable(chunk).forEach((fragment) => {
               const matchedImports = fragment.dependencies.filter(
-                item => item.request === "@lastui/rocker/platform" && item.name === "Module",
+                (item) => item.request === "@lastui/rocker/platform" && item.name === "Module",
               );
 
               if (matchedImports.length > 0) {
-                fragment._source._sourceMapAsObject.sourcesContent.forEach(sourceCode => {
+                fragment._source._sourceMapAsObject.sourcesContent.forEach((sourceCode) => {
                   const ast = parser.parse(sourceCode, {
                     sourceType: "module",
                     plugins: ["jsx"],
                   });
 
                   traverse(ast, {
-                    CallExpression: path => {
+                    CallExpression: (path) => {
                       if (path.node.callee.type !== "MemberExpression") {
                         return;
                       }
@@ -282,7 +282,7 @@ config.plugins.push(
                         return;
                       }
 
-                      (path.node.arguments[1].properties ?? []).forEach(attribute => {
+                      (path.node.arguments[1].properties ?? []).forEach((attribute) => {
                         if (attribute.key.type === "Identifier" && attribute.key.name === "name") {
                           if (!dependencyGraph[chunk.id]) {
                             dependencyGraph[chunk.id] = [];
@@ -296,11 +296,11 @@ config.plugins.push(
                         }
                       });
                     },
-                    JSXElement: path => {
+                    JSXElement: (path) => {
                       if (path.node.openingElement.name.name !== "Module") {
                         return;
                       }
-                      (path.node.openingElement.attributes ?? []).forEach(attribute => {
+                      (path.node.openingElement.attributes ?? []).forEach((attribute) => {
                         if (attribute.name.type === "JSXIdentifier" && attribute.name.name === "name") {
                           if (!dependencyGraph[chunk.id]) {
                             dependencyGraph[chunk.id] = [];
@@ -350,7 +350,7 @@ config.plugins.push(
           entrypoint = executionOrder[executionOrder.length - 1];
         }
 
-        const available = entrypoints.map(chunk => {
+        const available = entrypoints.map((chunk) => {
           const entry = {
             name: chunk.id,
             program: {

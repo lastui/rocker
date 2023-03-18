@@ -16,7 +16,7 @@ const createSagaMiddleware = (options = {}) => {
     );
   setSagaRunner(runSaga);
   return {
-    sagaMiddleware: _store => next => action => {
+    sagaMiddleware: (_store) => (next) => (action) => {
       const result = next(action);
       channel.put(action);
       return result;
