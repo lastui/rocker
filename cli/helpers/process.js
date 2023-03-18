@@ -11,15 +11,24 @@ async function patchCwd(options) {
   }
 }
 
+async function patchColors(options) {
+  const isTTY = process.stdout.isTTY ? "1" : "0";
+  process.env.FORCE_COLOR = isTTY;
+  if (process.env.COLOR) {
+    process.env.COLOR = isTTY;
+  }
+  if (process.env.COLOR) {
+    process.env.COLOR = isTTY;
+  }
+}
+
 exports.envelope = function (command) {
   return {
     command: command.command,
     describe: command.describe,
     builder: command.builder,
     async handler(options) {
-      process.env.FORCE_COLOR = process.stdout.isTTY ? "1" : "0";
-
-      await patchCwd(options);
+      await Promise.all([patchCwd(options), patchColors(options)]);
 
       const cleanupHooks = [];
 

@@ -191,6 +191,9 @@ config.plugins.push(
   new webpack.DefinePlugin(
     Object.entries(process.env).reduce(
       (acc, [k, v]) => {
+        if (k.startsWith("npm_")) {
+          return acc;
+        }
         if (acc[k] === undefined) {
           switch (typeof v) {
             case "boolean":
@@ -215,7 +218,6 @@ config.plugins.push(
       },
     ),
   ),
-  new webpack.EnvironmentPlugin([...Object.keys(process.env), "NODE_ENV"]),
   new NormalizedModuleIdPlugin(),
 );
 
