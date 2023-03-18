@@ -23,10 +23,17 @@ const config = {
   ...require("../../internal/development.js"),
 };
 
+config.output.filename = (pathData) => (pathData.chunk.name === settings.BUILD_ID ? "[name].js" : "[name]/main.js");
+
+config.resolve.alias["react-dom$"] = "react-dom/profiling";
+config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
+config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
+
 config.devServer = {
   hot: false,
   liveReload: true,
   setupExitSignals: true,
+  server: "http",
   static: {
     publicPath: ["/"],
   },
@@ -34,7 +41,6 @@ config.devServer = {
     publicPath: "/",
     writeToDisk: false,
   },
-  https: false,
   allowedHosts: "all",
   historyApiFallback: true,
   compress: false,
@@ -43,6 +49,7 @@ config.devServer = {
   client: {
     overlay: {
       errors: true,
+      runtimeErrors: true,
       warnings: false,
     },
     logging: settings.LOG_LEVEL,
@@ -54,11 +61,12 @@ config.devServer = {
   },
 };
 
-config.output.filename = "[name]/main.js";
-
-config.resolve.alias["react-dom$"] = "react-dom/profiling";
-config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
-config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
+config.optimization = {
+  minimize: false,
+  runtimeChunk: {
+    name: settings.BUILD_ID,
+  },
+};
 
 config.module.rules.push(
   {
@@ -228,6 +236,9 @@ config.plugins.push(
 
       for (const entryPoint of props.compilation.entrypoints.values()) {
         for (const chunk of entryPoint.chunks) {
+          if (chunk.name === settings.BUILD_ID) {
+            continue;
+          }
           entrypoints.push(chunk);
         }
       }
