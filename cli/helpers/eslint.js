@@ -40,8 +40,8 @@ exports.run = async function (options) {
   });
 
   const files = (await directoryExists(path.resolve(process.env.INIT_CWD, "src")))
-    ? [path.join(cwd, "src", "**", "*.{js,ts,jsx,tsx}")]
-    : [path.join(cwd, "**", "*.{js,ts,jsx,tsx}")];
+    ? path.join("src", "**", "*.{js,ts,jsx,tsx}")
+    : path.join("**", "*.{js,ts,jsx,tsx}");
 
   const results = await engine.lintFiles(files);
 
