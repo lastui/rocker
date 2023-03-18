@@ -91,7 +91,6 @@ config.module.rules.push(
         options: {
           sourceMap: false,
           preprocessor: "stylis",
-          ignore: [/node_modules/],
           cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".linaria-cache"),
           classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
           babelOptions: {

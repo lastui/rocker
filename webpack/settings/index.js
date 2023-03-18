@@ -47,3 +47,5 @@ exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT || 8888);
 exports.PROGRESS = process.env.PROGRESS === "false" ? false : true;
 
 exports.BUILD_ID = randomUUID();
+
+exports.NODE_MODULES_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "node_modules");

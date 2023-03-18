@@ -111,7 +111,7 @@ exports.getStack = async function (options, packageName) {
 
   if (customConfigExists) {
     config = require(projectConfig);
-    const nodeModules = [];
+    const nodeModules = new Set();
     for (const entrypoint in config.entry) {
       const patchedSources = [];
       const originalSources = Array.isArray(config.entry[entrypoint])
@@ -125,15 +125,26 @@ exports.getStack = async function (options, packageName) {
         }
       }
       for (const source of patchedSources) {
-        const nodeModulesCandidate = path.resolve(source, "..", "..", "node_modules");
-        if (await directoryExists(nodeModulesCandidate)) {
-          nodeModules.push(nodeModulesCandidate);
+        const candidates = [
+          path.resolve(config.context, "node_modules"),
+          path.resolve(source, "..", "node_modules"),
+          path.resolve(source, "..", "..", "node_modules"),
+        ];
+
+        for (const nodeModulesCandidate of candidates) {
+          if (await directoryExists(nodeModulesCandidate)) {
+            nodeModules.add(nodeModulesCandidate);
+          }
         }
       }
       config.entry[entrypoint] = patchedSources;
     }
-    config.resolve.modules.push(...nodeModules);
-    config.snapshot.managedPaths.push(...nodeModules);
+
+    if (nodeModules.size > 0) {
+      config.resolve.modules.push(...nodeModules);
+    } else {
+      config.resolve.modules.push("node_modules");
+    }
   } else if (projectNodeModulesExists) {
     config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}`);
     config.entry = {};

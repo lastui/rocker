@@ -23,8 +23,8 @@ config.output.library = {
 config.module.rules.push(
   {
     test: /\.[j|t]sx?$/,
+    //exclude: /node_modules/,
     enforce: "pre",
-    exclude: /(node_modules)[\\/]/,
     use: [
       {
         loader: "babel-loader",
@@ -58,8 +58,7 @@ config.module.rules.push(
         loader: "@linaria/webpack5-loader",
         options: {
           sourceMap: false,
-          preprocessor: "stylis",
-          ignore: [/(node_modules)[\\/]/],
+          preprocessor: "none",
           cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".linaria-cache"),
           classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
           babelOptions: {
