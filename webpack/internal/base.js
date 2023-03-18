@@ -9,7 +9,7 @@ module.exports = {
     unsafeCache: false,
     preferRelative: false,
     preferAbsolute: true,
-    modules: [],
+    modules: ["node_modules"],
     extensions: [".js", ".jsx", ".ts", ".tsx"],
     mainFields: ["browser", "module", "main"],
     enforceExtension: false,

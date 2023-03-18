@@ -111,6 +111,7 @@ exports.getStack = async function (options, packageName) {
 
   if (customConfigExists) {
     config = require(projectConfig);
+    config.resolve.modules = [];
     const nodeModules = new Set();
     for (const entrypoint in config.entry) {
       const patchedSources = [];
