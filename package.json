@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.40",
+  "version": "0.14.41",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -111,14 +111,14 @@
     "pretty-format": "29.5.0",
     "redux-mock-store": "1.5.4",
     "sass": "1.59.3",
-    "sass-loader": "13.2.0",
+    "sass-loader": "13.2.1",
     "source-map": "mozilla/source-map#master",
     "style-loader": "3.3.2",
     "terser-webpack-plugin": "5.3.7",
     "util": "0.12.5",
     "weak-napi": "2.0.2",
     "webpack": "5.76.2",
-    "webpack-dev-server": "4.13.0",
+    "webpack-dev-server": "4.13.1",
     "yargs": "17.7.1"
   },
   "repository": {
