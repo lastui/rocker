@@ -1,7 +1,7 @@
 const settings = require("../settings");
 
 module.exports = {
-  context: settings.PROJECT_ROOT_PATH,
+  context: process.env.INIT_CWD,
   target: "web",
   externalsType: "var",
   mode: settings.DEVELOPMENT ? "development" : "production",
@@ -22,7 +22,7 @@ module.exports = {
       crypto: false,
     },
     alias: {},
-    roots: [settings.PROJECT_ROOT_PATH],
+    roots: [process.env.INIT_CWD],
   },
   module: {
     strictExportPresence: true,

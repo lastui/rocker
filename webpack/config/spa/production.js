@@ -153,20 +153,20 @@ config.plugins.push(
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies-prod-manifest.json"),
     sourceType: "var",
-    context: settings.PROJECT_ROOT_PATH,
+    context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-prod-manifest.json"),
     sourceType: "var",
-    context: settings.PROJECT_ROOT_PATH,
+    context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-prod-manifest.json"),
     sourceType: "var",
-    context: settings.PROJECT_ROOT_PATH,
+    context: process.env.INIT_CWD,
   }),
   new HTMLWebpackPlugin({
-    template: path.resolve(settings.PROJECT_ROOT_PATH, "static", "index.html"),
+    template: path.resolve(process.env.INIT_CWD, "static", "index.html"),
     filename: "spa/index.html",
     production: true,
     publicPath: settings.PROJECT_NAMESPACE,
@@ -188,7 +188,7 @@ config.plugins.push(
   new CopyPlugin({
     patterns: [
       {
-        from: path.resolve(settings.PROJECT_ROOT_PATH, "static"),
+        from: path.resolve(process.env.INIT_CWD, "static"),
         to: path.join(settings.PROJECT_BUILD_PATH, "spa"),
         filter: async (resourcePath) => !resourcePath.endsWith("index.html"),
       },
@@ -223,40 +223,6 @@ config.plugins.push(
       },
     },
   ]),
-  new webpack.ProvidePlugin({
-    Buffer: ["buffer", "Buffer"],
-    process: ["process"],
-  }),
-  new webpack.DefinePlugin(
-    Object.entries(process.env).reduce(
-      (acc, [k, v]) => {
-        if (k.startsWith("npm_")) {
-          return acc;
-        }
-        if (acc[k] === undefined) {
-          switch (typeof v) {
-            case "boolean":
-            case "number": {
-              acc[`process.env.${k}`] = v;
-              break;
-            }
-            default: {
-              acc[`process.env.${k}`] = `"${v}"`;
-              break;
-            }
-          }
-        }
-        return acc;
-      },
-      {
-        process: {},
-        "process.env": {},
-        "process.env.NODE_ENV": `"development"`,
-        "process.env.NODE_DEBUG": false,
-        BUILD_ID: `"${settings.BUILD_ID}"`,
-      },
-    ),
-  ),
   new NormalizedModuleIdPlugin(),
 );
 

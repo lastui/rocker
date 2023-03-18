@@ -18,7 +18,7 @@ config.plugins.push(
       "dll",
       `dependencies-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`,
     ),
-    context: settings.PROJECT_ROOT_PATH,
+    context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(
@@ -28,7 +28,7 @@ config.plugins.push(
       "dll",
       `platform-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`,
     ),
-    context: settings.PROJECT_ROOT_PATH,
+    context: process.env.INIT_CWD,
   }),
 );
 

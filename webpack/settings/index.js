@@ -21,7 +21,7 @@ function namespace(value) {
   return real;
 }
 
-exports.LOG_LEVEL = process.env.DEBUG ? "debug" : "info";
+exports.LOG_LEVEL = process.env.DEBUG ? "verbose" : "info";
 
 exports.DEVELOPMENT = process.env.NODE_ENV === "development";
 
@@ -31,19 +31,14 @@ exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US").split(","
 
 exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 
-exports.PROJECT_ROOT_PATH =
-  exports.WEBPACK_ROOT_PATH.indexOf("node_modules") !== -1
-    ? path.resolve(__dirname, "..", "..", "..", "..", "..")
-    : path.resolve(".", process.env.INIT_CWD);
+exports.PROJECT_NAME = process.env.PROJECT_NAME || path.resolve(process.env.INIT_CWD).split(path.sep).pop();
 
-exports.PROJECT_NAME = process.env.PROJECT_NAME || path.resolve(exports.PROJECT_ROOT_PATH).split(path.sep).pop();
+exports.DLL_BUILD_PATH = path.resolve(process.env.INIT_CWD, "dll");
 
-exports.DLL_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "dll");
-
-exports.PROJECT_BUILD_PATH = path.resolve(exports.PROJECT_ROOT_PATH, "build");
+exports.PROJECT_BUILD_PATH = path.resolve(process.env.INIT_CWD, "build");
 
 exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT || 8888);
 
-exports.PROGRESS = process.env.PROGRESS === "false" ? false : true;
+exports.PROGRESS = process.env.PROGRESS !== "false";
 
 exports.BUILD_ID = randomUUID();

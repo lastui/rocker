@@ -17,7 +17,7 @@ config.plugins.push(
       "dll",
       `dependencies-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`,
     ),
-    context: settings.PROJECT_ROOT_PATH,
+    context: process.env.INIT_CWD,
   }),
 );
 
