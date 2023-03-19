@@ -12,7 +12,7 @@ exports.run = async function (options) {
 
   const files = (await directoryExists(path.resolve(process.env.INIT_CWD, "src")))
     ? `(${path.join(cwd, "*")}\\.(js|ts|jsx|tsx)|(${path.join(cwd, "src", "**", "*")}\\.(js|ts|jsx|tsx)))`
-    : `(${path.join(cwd, "**", "*")}\\.(js|ts|jsx|tsx))`;
+    : `(${path.join(cwd, "*")}\\.(js|ts|jsx|tsx)|(${path.join(cwd, "**", "*")}\\.(js|ts|jsx|tsx)))`;
 
   await prettier.run([
     ...(options.debug ? ["--loglevel=log"] : []),
@@ -31,6 +31,7 @@ exports.run = async function (options) {
     "--print-width=120",
     "--trailing-comma=all",
     ...(options.fix ? ["--write"] : ["--check"]),
+    "(package.json)|(**/*package.json)",
     files,
   ]);
 

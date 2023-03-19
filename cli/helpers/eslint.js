@@ -24,11 +24,12 @@ exports.run = async function (options) {
       requireConfigFile: false,
       babelOptions: require("../../babel").env.development,
     },
+    ignorePatterns: ["*lcov-report*", "*dll.js", "*min.js"],
     rules: {
       "no-debugger": "error",
       eqeqeq: "error",
     },
-    plugins: options.debug ? ["log"] : [],
+    plugins: options.debug ? ["rockerlog"] : [],
   };
 
   const engine = new eslint.ESLint({

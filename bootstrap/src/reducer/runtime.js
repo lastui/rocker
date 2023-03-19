@@ -16,10 +16,9 @@ export default (state = initialState, action) => {
     case constants.SET_AVAILABLE_MODULES: {
       const nextAvailable = {};
       for (const item of action.payload.modules) {
-        if (!item.name) {
-          continue;
+        if (item.hasOwnProperty("name")) {
+          nextAvailable[item.name] = true;
         }
-        nextAvailable[item.name] = true;
       }
       return {
         entrypoint: state.entrypoint,
