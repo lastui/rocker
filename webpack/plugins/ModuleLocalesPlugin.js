@@ -32,6 +32,9 @@ class ModuleLocalesPlugin {
             }
 
             for (const chunk of entryPoint.chunks) {
+              if (chunk.name === settings.BUILD_ID) {
+                continue;
+              }
               paths.push({
                 input: path.resolve(this.from, entryPointOrigin, "messages"),
                 output: path.join(path.dirname(compilation.outputOptions.assetModuleFilename), chunk.name, "messages"),
@@ -53,7 +56,6 @@ class ModuleLocalesPlugin {
                       if (stat_err === null) {
                         resolve(true);
                       } else if (stat_err.code === "ENOENT") {
-                        resolve(true);
                         fs.mkdir(parent, (mkdir_err) => {
                           if (mkdir_err) {
                             reject(mkdir_err);
