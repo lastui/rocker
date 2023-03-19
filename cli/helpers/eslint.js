@@ -29,7 +29,7 @@ exports.run = async function (options) {
       "no-debugger": "error",
       eqeqeq: "error",
     },
-    plugins: options.debug ? ["log"] : [],
+    plugins: options.debug ? ["rockerlog"] : [],
   };
 
   const engine = new eslint.ESLint({

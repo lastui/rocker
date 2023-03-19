@@ -15,6 +15,19 @@ function nodeExists(nodePath, predicate) {
   });
 }
 
+exports.copyFile = async function (source, destination) {
+  const work = new Promise((resolve, reject) => {
+    fs.copyFile(source, destination, function (err, stats) {
+      if (err === null) {
+        return resolve();
+      } else {
+        return reject(err);
+      }
+    });
+  });
+  return await work;
+};
+
 exports.fileExists = async function (nodePath) {
   return await nodeExists(nodePath, (stats) => !stats.isDirectory());
 };

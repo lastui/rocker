@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.43",
+  "version": "0.14.44",
   "scripts": {
     "lint": "node ./cli/index.js lint",
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
@@ -20,7 +20,8 @@
     "postbuild:bootstrap": "node ./bootstrap/scripts/link.js",
     "test": "npm run test:platform && npm run test:bootstrap",
     "test:platform": "node ./cli/index.js test --cwd=platform",
-    "test:bootstrap": "node ./cli/index.js test --cwd=bootstrap"
+    "test:bootstrap": "node ./cli/index.js test --cwd=bootstrap",
+    "postinstall": "node ./cli/index.js setup"
   },
   "bin": {
     "rocker": "./cli/index.js"
@@ -37,10 +38,13 @@
     "cli/helpers/io.js",
     "cli/helpers/prettier.js",
     "cli/helpers/eslint.js",
+    "cli/setup/eslint/index.js",
+    "cli/setup/eslint/logger.js",
     "cli/helpers/shell.js",
     "cli/commands/start.js",
     "cli/commands/test.js",
     "cli/commands/build.js",
+    "cli/commands/setup.js",
     "cli/commands/lint.js",
     "jest/__mocks__/platform.js",
     "jest/helpers/platform.js",
@@ -100,7 +104,6 @@
     "css-loader": "6.7.3",
     "dotenv": "16.0.3",
     "eslint": "8.36.0",
-    "eslint-plugin-log": "1.2.7",
     "html-webpack-plugin": "5.5.0",
     "jest": "29.5.0",
     "jest-environment-jsdom": "29.5.0",
