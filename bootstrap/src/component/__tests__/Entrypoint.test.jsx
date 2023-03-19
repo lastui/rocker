@@ -37,6 +37,12 @@ class ErrorBoundary extends React.Component {
 }
 
 describe("<Entrypoint />", () => {
+  it("entrypoint missing", () => {
+    const store = mockStore(initialState);
+    const { container } = render(withRedux(<Entrypoint />, store));
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it("entrypoint present", () => {
     const store = mockStore({
       ...initialState,

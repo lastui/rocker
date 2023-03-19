@@ -31,6 +31,7 @@ exports.run = async function (options) {
     "--print-width=120",
     "--trailing-comma=all",
     ...(options.fix ? ["--write"] : ["--check"]),
+    "(package.json)|(**/*package.json)",
     files,
   ]);
 

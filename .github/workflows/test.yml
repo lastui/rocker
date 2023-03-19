@@ -35,14 +35,14 @@ jobs:
         working-directory: platform
         run: node ../cli/index.js test
       - name: Collect coverage for platform
-        uses: codecov/codecov-action@v1.0.13
+        uses: codecov/codecov-action@v3
         with:
           file: platform/coverage/clover.xml
       - name: Test package bootstrap
         working-directory: bootstrap
         run: node ../cli/index.js test
       - name: Collect coverage for bootstrap
-        uses: codecov/codecov-action@v1.0.13
+        uses: codecov/codecov-action@v3
         with:
           file: bootstrap/coverage/clover.xml
 

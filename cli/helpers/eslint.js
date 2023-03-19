@@ -24,6 +24,7 @@ exports.run = async function (options) {
       requireConfigFile: false,
       babelOptions: require("../../babel").env.development,
     },
+    ignorePatterns: ["*lcov-report*", "*dll.js", "*min.js"],
     rules: {
       "no-debugger": "error",
       eqeqeq: "error",
