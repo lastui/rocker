@@ -53,36 +53,6 @@ config.module.rules.push(
           inputSourceMap: false,
         },
       },
-      {
-        loader: "@linaria/webpack5-loader",
-        options: {
-          sourceMap: false,
-          preprocessor: "stylis",
-          cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".linaria-cache"),
-          classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
-          babelOptions: {
-            babelrc: false,
-            presets: linariaBabel.presets.map((preset) => {
-              if (typeof preset === "string") {
-                return [preset, {}, `linaria-${preset}`];
-              } else {
-                return [preset[0], preset[1], `linaria-${preset[0]}`];
-              }
-            }),
-            plugins: linariaBabel.plugins.map((plugin) => {
-              if (typeof plugin === "string") {
-                return [plugin, {}, `linaria-${plugin}`];
-              } else {
-                return [plugin[0], plugin[1], `linaria-${plugin[0].name || plugin[0]}`];
-              }
-            }),
-            assumptions: linariaBabel.assumptions,
-            sourceMaps: false,
-            sourceType: "module",
-            inputSourceMap: false,
-          },
-        },
-      },
     ],
   },
   {

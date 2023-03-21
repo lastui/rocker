@@ -142,6 +142,7 @@ exports.getStack = async function (options, packageName) {
     }
 
     if (nodeModules.size > 0) {
+      config.snapshot.managedPaths = Array.from(nodeModules);
       config.resolve.modules.push(...nodeModules);
     } else {
       config.resolve.modules.push("node_modules");

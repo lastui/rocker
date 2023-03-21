@@ -1,3 +1,4 @@
+const path = require("path");
 const settings = require("../settings");
 
 module.exports = {
@@ -44,6 +45,6 @@ module.exports = {
     type: "memory",
   },
   snapshot: {
-    managedPaths: [/(node_modules)[\\/]/],
+    managedPaths: [path.resolve(process.env.INIT_CWD, "node_modules")],
   },
 };
