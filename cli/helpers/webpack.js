@@ -127,7 +127,7 @@ exports.getStack = async function (options, packageName) {
       }
       for (const source of patchedSources) {
         const candidates = [
-          path.resolve(__dirname, '..', '..', '..', '..'),
+          path.resolve(__dirname, "..", "..", "..", ".."),
           path.resolve(config.context, "node_modules"),
           path.resolve(source, "..", "node_modules"),
           path.resolve(source, "..", "..", "node_modules"),
