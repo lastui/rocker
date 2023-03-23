@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const glob = require("glob");
 
 function nodeExists(nodePath, predicate) {
   return new Promise(function (resolve, reject) {
@@ -14,6 +15,44 @@ function nodeExists(nodePath, predicate) {
     });
   });
 }
+
+exports.glob = async function (pattern, options) {
+  const work = new Promise((resolve, reject) => {
+    glob(pattern, options, function (err, files) {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(files);
+    });
+  });
+  return await work;
+};
+
+exports.readFile = async function (nodePath) {
+  const work = new Promise((resolve, reject) => {
+    fs.readFile(nodePath, "utf8", function (err, data) {
+      if (err === null) {
+        return resolve(data);
+      } else {
+        return reject(err);
+      }
+    });
+  });
+  return await work;
+};
+
+exports.writeFile = async function (nodePath, data) {
+  const work = new Promise((resolve, reject) => {
+    fs.writeFile(nodePath, data, function (err, data) {
+      if (err === null) {
+        return resolve();
+      } else {
+        return reject(err);
+      }
+    });
+  });
+  await work;
+};
 
 exports.copyFile = async function (source, destination) {
   const work = new Promise((resolve, reject) => {

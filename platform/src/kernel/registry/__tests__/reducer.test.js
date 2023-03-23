@@ -13,10 +13,14 @@ describe("reducer registry", () => {
   });
 
   it("addReducer", async () => {
-    await addReducer("my-feature", { foo: (state = {}, _action) => state });
+    await addReducer("my-feature", {
+      foo: (state = {}, _action) => state,
+    });
     expect(debugSpy).toHaveBeenLastCalledWith("module my-feature introducing reducer");
 
-    await addReducer("my-feature", { foo: (state = {}, _action) => state });
+    await addReducer("my-feature", {
+      foo: (state = {}, _action) => state,
+    });
     expect(debugSpy).toHaveBeenLastCalledWith("module my-feature replacing reducer");
 
     const spy = jest.spyOn(console, "error");
@@ -31,7 +35,9 @@ describe("reducer registry", () => {
   });
 
   it("removeReducer", async () => {
-    await addReducer("my-feature", { foo: (state = {}, _action) => state });
+    await addReducer("my-feature", {
+      foo: (state = {}, _action) => state,
+    });
 
     removeReducer("my-feature");
 

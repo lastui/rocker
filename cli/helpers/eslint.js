@@ -66,8 +66,4 @@ exports.run = async function (options) {
   if (!options.quiet && output) {
     console.log(output);
   }
-
-  if (!options.quiet && !output && !options.fix && !process.exitCode) {
-    console.log("All matched files use ESlint code style!");
-  }
 };

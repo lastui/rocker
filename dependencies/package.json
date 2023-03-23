@@ -1,12 +1,22 @@
 {
   "name": "@lastui/dependencies",
   "version": "1.3.17",
+  "license": "Apache-2.0",
+  "author": "jan.cajthaml@gmail.com",
+  "homepage": "https://github.com/lastui/rocker#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lastui/rocker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lastui/rocker/issues"
+  },
   "files": [
-    "index.js",
     "dll/dependencies-dev-manifest.json",
     "dll/dependencies-prod-manifest.json",
     "dll/dependencies.dll.js",
-    "dll/dependencies.dll.min.js"
+    "dll/dependencies.dll.min.js",
+    "index.js"
   ],
   "dependencies": {
     "@linaria/core": "4.2.8",
@@ -19,15 +29,5 @@
     "redux": "4.2.1",
     "redux-saga": "1.2.3",
     "regenerator-runtime": "0.13.11"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lastui/rocker.git"
-  },
-  "author": "jan.cajthaml@gmail.com",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/lastui/rocker/issues"
-  },
-  "homepage": "https://github.com/lastui/rocker#readme"
+  }
 }

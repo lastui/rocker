@@ -235,7 +235,12 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [{ name: "my-feature", locales: { "en-US": false } }],
+          modules: [
+            {
+              name: "my-feature",
+              locales: { "en-US": false },
+            },
+          ],
         },
       };
 
@@ -410,8 +415,14 @@ describe("loader middleware", () => {
             language: "en-US",
           },
         },
-        { type: constants.MODULE_INIT, payload: { module: "my-feature" } },
-        { type: constants.MODULE_READY, payload: { module: "my-feature" } },
+        {
+          type: constants.MODULE_INIT,
+          payload: { module: "my-feature" },
+        },
+        {
+          type: constants.MODULE_READY,
+          payload: { module: "my-feature" },
+        },
       ]);
 
       const unloadAction = {
@@ -471,8 +482,14 @@ describe("loader middleware", () => {
             language: "en-US",
           },
         },
-        { type: constants.MODULE_INIT, payload: { module: "my-feature" } },
-        { type: constants.MODULE_READY, payload: { module: "my-feature" } },
+        {
+          type: constants.MODULE_INIT,
+          payload: { module: "my-feature" },
+        },
+        {
+          type: constants.MODULE_READY,
+          payload: { module: "my-feature" },
+        },
       ]);
 
       store.clearActions();
@@ -515,7 +532,10 @@ describe("loader middleware", () => {
           modules: [
             {
               name: "my-feature",
-              locales: { "en-US": "/i18n/valid.json", "fr-FR": "/i18n/valid.json" },
+              locales: {
+                "en-US": "/i18n/valid.json",
+                "fr-FR": "/i18n/valid.json",
+              },
             },
           ],
         },
