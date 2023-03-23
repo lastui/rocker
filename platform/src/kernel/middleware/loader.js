@@ -79,18 +79,8 @@ const createLoaderMiddleware = () => {
                 },
               });
             }
-            store.dispatch({
-              type: constants.MODULE_INIT,
-              payload: {
-                module: name,
-              },
-            });
-            return next({
-              type: constants.MODULE_READY,
-              payload: {
-                module: name,
-              },
-            });
+            store.dispatch({ type: constants.MODULE_INIT, payload: { module: name } });
+            return next({ type: constants.MODULE_READY, payload: { module: name } });
           });
         }
 

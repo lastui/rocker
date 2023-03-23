@@ -12,12 +12,7 @@ const lazy = {
         messages: (function () {
           const result = {};
           try {
-            const stack = [
-              {
-                path: "",
-                table: require("../../../../../messages/en-US.json"),
-              },
-            ];
+            const stack = [{ path: "", table: require("../../../../../messages/en-US.json") }];
             while (stack.length) {
               const { path, table } = stack.pop();
               for (const property in table) {
@@ -27,10 +22,7 @@ const lazy = {
                 }
                 const fullPath = `${path}.${property}`;
                 if (typeof item === "object") {
-                  stack.push({
-                    path: fullPath,
-                    table: item,
-                  });
+                  stack.push({ path: fullPath, table: item });
                 } else {
                   const id = fullPath.slice(1);
                   if (id) {

@@ -13,9 +13,7 @@ module.exports = {
   Module: (props) =>
     props.children
       ? React.createElement("section", { "data-testid": `module/${props.name}` }, props.children)
-      : React.createElement("section", {
-          "data-testid": `module/${props.name}`,
-        }),
+      : React.createElement("section", { "data-testid": `module/${props.name}` }),
   constants,
   actions: {
     setLanguage: (language) => ({

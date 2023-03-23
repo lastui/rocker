@@ -306,12 +306,7 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [
-            {
-              name: "my-feature",
-              locales: { "en-US": "/i18n/broken.json" },
-            },
-          ],
+          modules: [{ name: "my-feature", locales: { "en-US": "/i18n/broken.json" } }],
         },
       };
 
@@ -333,14 +328,8 @@ describe("loader middleware", () => {
       await new Promise(process.nextTick);
 
       expect(store.getActions()).toEqual([
-        {
-          type: constants.MODULE_INIT,
-          payload: { module: "my-feature" },
-        },
-        {
-          type: constants.MODULE_READY,
-          payload: { module: "my-feature" },
-        },
+        { type: constants.MODULE_INIT, payload: { module: "my-feature" } },
+        { type: constants.MODULE_READY, payload: { module: "my-feature" } },
       ]);
 
       const unloadAction = {
@@ -364,12 +353,7 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [
-            {
-              name: "my-feature",
-              locales: { "en-US": "/i18n/empty.json" },
-            },
-          ],
+          modules: [{ name: "my-feature", locales: { "en-US": "/i18n/empty.json" } }],
         },
       };
 
@@ -391,14 +375,8 @@ describe("loader middleware", () => {
       await new Promise(process.nextTick);
 
       expect(store.getActions()).toEqual([
-        {
-          type: constants.MODULE_INIT,
-          payload: { module: "my-feature" },
-        },
-        {
-          type: constants.MODULE_READY,
-          payload: { module: "my-feature" },
-        },
+        { type: constants.MODULE_INIT, payload: { module: "my-feature" } },
+        { type: constants.MODULE_READY, payload: { module: "my-feature" } },
       ]);
 
       const unloadAction = {
@@ -422,12 +400,7 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [
-            {
-              name: "my-feature",
-              locales: { "en-US": "/i18n/valid.json" },
-            },
-          ],
+          modules: [{ name: "my-feature", locales: { "en-US": "/i18n/valid.json" } }],
         },
       };
 
