@@ -25,7 +25,6 @@ exports.glob = async function (pattern, options) {
       return resolve(files);
     });
   });
-
   return await work;
 };
 
