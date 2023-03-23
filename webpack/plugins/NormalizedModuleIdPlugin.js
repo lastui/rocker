@@ -6,9 +6,7 @@ class NormalizedModuleIdPlugin {
           if (!item.libIdent) {
             continue;
           }
-          const id = item.libIdent({
-            context: compiler.options.context,
-          });
+          const id = item.libIdent({ context: compiler.options.context });
           if (!id) {
             continue;
           }

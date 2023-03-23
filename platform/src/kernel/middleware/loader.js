@@ -24,13 +24,7 @@ const createLoaderMiddleware = () => {
       }
       const promise = downloadAsset(uri)
         .then((data) => data.json())
-        .then(
-          (data) =>
-            Object.keys(data).length > 0 && {
-              module: name,
-              data,
-            },
-        );
+        .then((data) => Object.keys(data).length > 0 && { module: name, data });
       scheduledAssets.push(promise);
     }
 

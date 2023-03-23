@@ -113,10 +113,7 @@ describe("loader middleware", () => {
           modules: [
             { name: "my-feature-a" },
             { name: "my-feature-b", locales: {} },
-            {
-              name: "my-feature-c",
-              locales: { "en-US": {} },
-            },
+            { name: "my-feature-c", locales: { "en-US": {} } },
           ],
         },
       };
@@ -180,14 +177,8 @@ describe("loader middleware", () => {
       await new Promise(process.nextTick);
 
       expect(store.getActions()).toEqual([
-        {
-          type: constants.MODULE_INIT,
-          payload: { module: "my-feature" },
-        },
-        {
-          type: constants.MODULE_READY,
-          payload: { module: "my-feature" },
-        },
+        { type: constants.MODULE_INIT, payload: { module: "my-feature" } },
+        { type: constants.MODULE_READY, payload: { module: "my-feature" } },
       ]);
 
       const unloadAction = {
@@ -219,14 +210,8 @@ describe("loader middleware", () => {
       await new Promise(process.nextTick);
 
       expect(store.getActions()).toEqual([
-        {
-          type: constants.MODULE_INIT,
-          payload: { module: "my-feature" },
-        },
-        {
-          type: constants.MODULE_READY,
-          payload: { module: "my-feature" },
-        },
+        { type: constants.MODULE_INIT, payload: { module: "my-feature" } },
+        { type: constants.MODULE_READY, payload: { module: "my-feature" } },
       ]);
 
       const unloadAction = {
@@ -275,14 +260,8 @@ describe("loader middleware", () => {
       await new Promise(process.nextTick);
 
       expect(store.getActions()).toEqual([
-        {
-          type: constants.MODULE_INIT,
-          payload: { module: "my-feature" },
-        },
-        {
-          type: constants.MODULE_READY,
-          payload: { module: "my-feature" },
-        },
+        { type: constants.MODULE_INIT, payload: { module: "my-feature" } },
+        { type: constants.MODULE_READY, payload: { module: "my-feature" } },
       ]);
 
       const unloadAction = {
@@ -467,12 +446,7 @@ describe("loader middleware", () => {
       const setupAvailableLocalesAction = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
-          modules: [
-            {
-              name: "my-feature",
-              locales: { "en-US": "/i18n/valid.json" },
-            },
-          ],
+          modules: [{ name: "my-feature", locales: { "en-US": "/i18n/valid.json" } }],
         },
       };
 
@@ -524,14 +498,8 @@ describe("loader middleware", () => {
       await new Promise(process.nextTick);
 
       expect(store.getActions()).toEqual([
-        {
-          type: constants.MODULE_INIT,
-          payload: { module: "my-feature" },
-        },
-        {
-          type: constants.MODULE_READY,
-          payload: { module: "my-feature" },
-        },
+        { type: constants.MODULE_INIT, payload: { module: "my-feature" } },
+        { type: constants.MODULE_READY, payload: { module: "my-feature" } },
       ]);
 
       const unloadAction = {

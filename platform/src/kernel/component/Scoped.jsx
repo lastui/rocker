@@ -19,9 +19,7 @@ const Scoped = (name, preferentialStore, scope) => {
 
     const composite = useMemo(() => {
       if (props.forwardedRef) {
-        return Object.assign({}, scope.props, props.owned, {
-          ref: props.forwardedRef,
-        });
+        return Object.assign({}, scope.props, props.owned, { ref: props.forwardedRef });
       } else if (scope.props) {
         return Object.assign({}, scope.props, props.owned);
       } else if (props.owned) {
