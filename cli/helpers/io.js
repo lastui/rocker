@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const glob = require("glob");
 
 function nodeExists(nodePath, predicate) {
   return new Promise(function (resolve, reject) {
@@ -14,6 +15,19 @@ function nodeExists(nodePath, predicate) {
     });
   });
 }
+
+exports.glob = async function (pattern, options) {
+  const work = new Promise((resolve, reject) => {
+    glob(pattern, options, function (err, files) {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(files);
+    });
+  });
+
+  return await work;
+};
 
 exports.readFile = async function (nodePath) {
   const work = new Promise((resolve, reject) => {

@@ -1,5 +1,4 @@
-const { writeFile, readFile } = require("./io");
-const glob = require("glob");
+const { glob, writeFile, readFile } = require("./io");
 
 exports.run = async function (options) {
   process.on("unhandledRejection", (reason) => {
@@ -9,20 +8,9 @@ exports.run = async function (options) {
   const colors = require("ansi-colors");
   const prettier = require("prettier");
 
-  const files = await new Promise((resolve, reject) => {
-    glob(
-      "**/*.+(js|jsx|ts|tsx)",
-      {
-        cwd: process.env.INIT_CWD,
-        ignore: ["**/*node_modules/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
-      },
-      (error, files) => {
-        if (error) {
-          return reject(error);
-        }
-        return resolve(files);
-      },
-    );
+  const files = await glob("**/*.+(js|jsx|ts|tsx)", {
+    cwd: process.env.INIT_CWD,
+    ignore: ["**/*node_modules/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
   });
 
   const params = {
