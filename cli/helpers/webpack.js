@@ -74,7 +74,10 @@ function formatMessage(message) {
 function formatWebpackMessages(stats) {
   const formattedErrors = (stats.compilation.errors ?? []).map(formatMessage);
   const formattedWarnings = (stats.compilation.warnings ?? []).map(formatMessage);
-  const result = { errors: formattedErrors, warnings: formattedWarnings };
+  const result = {
+    errors: formattedErrors,
+    warnings: formattedWarnings,
+  };
   if (result.errors.some(isLikelyASyntaxError)) {
     result.errors = result.errors.filter(isLikelyASyntaxError);
   }

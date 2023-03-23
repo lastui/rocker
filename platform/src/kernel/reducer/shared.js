@@ -74,7 +74,9 @@ function createSharedReducer() {
         delete nextReadyModules[action.payload.module];
         const nextMessages = {};
         for (const locale in state.messages) {
-          nextMessages[locale] = { ...state.messages[locale] };
+          nextMessages[locale] = {
+            ...state.messages[locale],
+          };
         }
         const keys = localeMapping[action.payload.module] || {};
         for (const key in keys) {
@@ -110,7 +112,9 @@ function createSharedReducer() {
 
         const nextMessages = {};
         for (const locale in state.messages) {
-          nextMessages[locale] = { ...state.messages[locale] };
+          nextMessages[locale] = {
+            ...state.messages[locale],
+          };
         }
 
         for (const patch of action.payload.batch) {

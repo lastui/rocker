@@ -40,7 +40,11 @@ describe("runtimeReducer", () => {
       },
     };
     const nextState = runtimeReducer(undefined, firstAction);
-    expect(nextState.available).toEqual({ A: true, B: true, C: true });
+    expect(nextState.available).toEqual({
+      A: true,
+      B: true,
+      C: true,
+    });
 
     const secondAction = {
       type: constants.SET_AVAILABLE_MODULES,
@@ -57,6 +61,9 @@ describe("runtimeReducer", () => {
       },
     };
     const anotherState = runtimeReducer(nextState, secondAction);
-    expect(anotherState.available).toEqual({ A: true, C: true });
+    expect(anotherState.available).toEqual({
+      A: true,
+      C: true,
+    });
   });
 });

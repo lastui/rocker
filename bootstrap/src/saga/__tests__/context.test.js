@@ -51,7 +51,9 @@ describe("context", () => {
     });
 
     it("should fork fetchContext", () => {
-      const gen = watchFetchContext({ type: constants.FETCH_CONTEXT });
+      const gen = watchFetchContext({
+        type: constants.FETCH_CONTEXT,
+      });
       const step = gen.next();
 
       expect(step.done).toEqual(false);

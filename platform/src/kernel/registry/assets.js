@@ -136,7 +136,13 @@ function downloadAsset(resource) {
       /* istanbul ignore next */
       if (latestEtag) {
         resources.put(`${resource}_${latestEtag}`, response.clone());
-        etags.put(resource, new Response(latestEtag, { status: 200, statusText: "OK" }));
+        etags.put(
+          resource,
+          new Response(latestEtag, {
+            status: 200,
+            statusText: "OK",
+          }),
+        );
       }
       return response;
     }

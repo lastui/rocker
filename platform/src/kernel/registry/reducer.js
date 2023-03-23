@@ -26,7 +26,10 @@ async function addReducer(name, reducer) {
       ...reducer,
       shared: (_state, _action) => emptydict,
     });
-    composedReducer(undefined, { type: constants.MODULE_INIT, module: name });
+    composedReducer(undefined, {
+      type: constants.MODULE_INIT,
+      module: name,
+    });
     modulesReducers[name] = composedReducer;
   } catch (error) {
     warning(`module ${name} wanted to register invalid reducer`, error);

@@ -1,7 +1,9 @@
 const { randomUUID } = require("crypto");
 
 const path = require("path");
-const envConfig = require("dotenv").config({ debug: process.env.DEBUG });
+const envConfig = require("dotenv").config({
+  debug: process.env.DEBUG,
+});
 
 for (const k in envConfig) {
   if (k === "npm_config_argv") {

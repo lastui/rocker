@@ -15,6 +15,32 @@ function nodeExists(nodePath, predicate) {
   });
 }
 
+exports.readFile = async function (nodePath) {
+  const work = new Promise((resolve, reject) => {
+    fs.readFile(nodePath, "utf8", function (err, data) {
+      if (err === null) {
+        return resolve(data);
+      } else {
+        return reject(err);
+      }
+    });
+  });
+  return await work;
+};
+
+exports.writeFile = async function (nodePath, data) {
+  const work = new Promise((resolve, reject) => {
+    fs.writeFile(nodePath, data, function (err, data) {
+      if (err === null) {
+        return resolve();
+      } else {
+        return reject(err);
+      }
+    });
+  });
+  await work;
+};
+
 exports.copyFile = async function (source, destination) {
   const work = new Promise((resolve, reject) => {
     fs.copyFile(source, destination, function (err, stats) {

@@ -7,14 +7,14 @@ exports.run = async function (options) {
   });
 
   const colors = require("ansi-colors");
-  const prettier = require("prettier");
+  const prettier = require("prettier-package-json");
 
   const files = await new Promise((resolve, reject) => {
     glob(
-      "**/*.+(js|jsx|ts|tsx)",
+      "**/*package.json",
       {
         cwd: process.env.INIT_CWD,
-        ignore: ["**/*node_modules/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
+        ignore: ["**/*node_modules/**"],
       },
       (error, files) => {
         if (error) {
@@ -26,27 +26,20 @@ exports.run = async function (options) {
   });
 
   const params = {
-    parser: "babel",
-    bracketSameLine: true,
-    quoteProps: "as-needed",
-    embeddedLanguageFormatting: "auto",
-    endOfLine: "lf",
-    arrowParens: "always",
-    printWidth: 120,
     tabWidth: 2,
     useTabs: false,
-    trailingComma: "all",
   };
 
   async function processFile(filepath) {
     try {
       const data = await readFile(filepath);
+      const json = JSON.parse(data);
+      const formatted = prettier.format(json, params);
       if (options.fix) {
-        const formatted = prettier.format(data, params);
         await writeFile(filepath, formatted);
         return { filepath, error: null, changed: false };
       } else {
-        const formatted = prettier.check(data, params);
+        const formatted = prettier.check(json, params);
         return {
           filepath,
           error: null,

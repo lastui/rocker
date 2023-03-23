@@ -58,8 +58,14 @@ describe("saga registry", () => {
       yield take("this-is-stale");
     });
 
-    channel.put({ type: constants.MODULE_INIT, payload: { module: "my-feature" } });
-    channel.put({ type: constants.MODULE_INIT, payload: { module: "my-other-feature" } });
+    channel.put({
+      type: constants.MODULE_INIT,
+      payload: { module: "my-feature" },
+    });
+    channel.put({
+      type: constants.MODULE_INIT,
+      payload: { module: "my-other-feature" },
+    });
 
     setSagaRunner(null);
 
