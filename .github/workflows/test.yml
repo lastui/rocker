@@ -25,6 +25,8 @@ jobs:
           scope: "@lastui"
       - run: npm ci --no-fund --no-audit
       - run: npm run build:dependencies
+      - run: cat dependencies/dll/dependencies-dev-manifest.json
+      - run: cat dependencies/dll/dependencies-prod-manifest.json
       - run: npm run build:platform
       - run: npm run build:bootstrap
       - name: Test package platform
