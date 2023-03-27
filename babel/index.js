@@ -40,7 +40,7 @@ module.exports = {
           "@babel/preset-env",
           {
             corejs: 3,
-            useBuiltIns: "usage",
+            useBuiltIns: "entry",
             targets: {
               browsers: ["last 4 versions, not dead"],
             },
