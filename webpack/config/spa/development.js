@@ -7,7 +7,7 @@ setLogLevel("none");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const settings = require("../../settings");
-const webpackBabel = require("../../../babel").env.production;
+const webpackBabel = require("../../../babel").env.development;
 const linariaBabel = require("../../../babel").env.test;
 
 const config = {
