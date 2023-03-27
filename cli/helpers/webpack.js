@@ -229,12 +229,16 @@ exports.setup = async function (options, packageName) {
         messages.errors.length = 1;
       }
       console.log(colors.red("Failed to compile.\n"));
-      console.log(colors.red(messages.errors.join("\n\n")));
+      for (const error of messages.errors) {
+        console.log(colors.red(error));
+      }
       return;
     }
     if (messages.warnings.length) {
       console.log(colors.bold(colors.yellow("Compiled with warnings.\n")));
-      console.log(colors.yellow(messages.warnings.join("\n\n")));
+      for (const error of messages.warnings) {
+        console.log(colors.yellow(error));
+      }
     }
   };
 };
