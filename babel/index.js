@@ -42,7 +42,7 @@ module.exports = {
             corejs: 3,
             useBuiltIns: "usage",
             targets: {
-              browsers: ["last 10 versions"],
+              browsers: ["last 4 versions, not dead"],
             },
             debug: false,
             modules: "amd",
