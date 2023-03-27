@@ -228,7 +228,6 @@ exports.setup = async function (options, packageName) {
       if (messages.errors.length > 1) {
         messages.errors.length = 1;
       }
-      console.log(stats);
       console.log(colors.red("Failed to compile.\n"));
       console.log(colors.red(messages.errors.join("\n\n")));
       return;
