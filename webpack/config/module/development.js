@@ -13,7 +13,7 @@ const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
 
-const webpackBabel = require("../../../babel").env.production;
+const webpackBabel = require("../../../babel").env.development;
 const linariaBabel = require("../../../babel").env.test;
 
 const settings = require("../../settings");
