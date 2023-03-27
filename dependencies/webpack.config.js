@@ -4,7 +4,6 @@ config.entry = {
   dependencies: [
     // essentials
     "react",
-    "regenerator-runtime/runtime.js",
     "react/jsx-runtime",
     "react-dom",
     "react-dom/client",
@@ -18,6 +17,8 @@ config.entry = {
     // css-in-js
     "@linaria/react",
     "@linaria/core",
+    // shims
+    "regenerator-runtime/runtime.js",
   ],
 };
 

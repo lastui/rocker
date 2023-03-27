@@ -21,6 +21,16 @@ async function main() {
     path.resolve(__dirname, "..", "..", "dependencies", "node_modules"),
     path.resolve(__dirname, "..", "node_modules"),
   );
+  await rm(path.resolve(__dirname, "..", "node_modules", "core-js"));
+  await ln(
+    path.resolve(__dirname, "..", "..", "node_modules", "core-js"),
+    path.resolve(__dirname, "..", "node_modules", "core-js"),
+  );
+  await rm(path.resolve(__dirname, "..", "node_modules", "css-loader"));
+  await ln(
+    path.resolve(__dirname, "..", "..", "node_modules", "css-loader"),
+    path.resolve(__dirname, "..", "node_modules", "css-loader"),
+  );
   await rm(path.resolve(__dirname, "..", "node_modules", "@lastui"));
   await mkdir(path.resolve(__dirname, "..", "node_modules", "@lastui"));
   await mkdir(path.resolve(__dirname, "..", "node_modules", "@lastui", "rocker"));

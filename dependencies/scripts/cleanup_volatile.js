@@ -9,6 +9,9 @@ async function main() {
     if (key.startsWith("./node_modules/@babel/runtime")) {
       delete manifest.content[key];
     }
+    if (key.startsWith("./node_modules/core-js")) {
+      delete manifest.content[key];
+    }
   }
 
   await writeFile(manifestFile, JSON.stringify(manifest, null, 2));

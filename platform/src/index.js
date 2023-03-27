@@ -3,6 +3,18 @@ import { SET_LANGUAGE, REFRESH, SET_SHARED } from "./constants";
 import registerModule from "./register";
 import Module from "./component/Module";
 
+const object1 = {};
+
+Object.defineProperties(object1, {
+  property1: {
+    value: 42,
+    writable: true,
+  },
+  property2: {},
+});
+
+console.log(object1.property1);
+
 function setLanguage(language) {
   return {
     type: SET_LANGUAGE,

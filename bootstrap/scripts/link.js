@@ -41,6 +41,11 @@ async function main() {
     path.resolve(__dirname, "..", "..", "node_modules", "@redux-devtools"),
     path.resolve(__dirname, "..", "node_modules", "@redux-devtools"),
   );
+  await rm(path.resolve(__dirname, "..", "node_modules", "core-js"));
+  await ln(
+    path.resolve(__dirname, "..", "..", "node_modules", "core-js"),
+    path.resolve(__dirname, "..", "node_modules", "core-js"),
+  );
 }
 
 main()
