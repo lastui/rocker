@@ -48,7 +48,7 @@ config.module.rules.push(
               return [preset[0], preset[1], `babel-${preset[0]}`];
             }
           }),
-          plugins: [RegisterModuleInjectBuildId, ...webpackBabel.plugins].map((plugin) => {
+          plugins: webpackBabel.plugins.map((plugin) => {
             if (!Array.isArray(plugin)) {
               return [plugin, {}, `babel-${plugin.name || plugin}`];
             } else {
