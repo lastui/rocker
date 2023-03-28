@@ -5,6 +5,8 @@ describe("store", () => {
 
   afterAll(() => {
     process.env.NODE_ENV = ORIGINAL_NODE_ENV;
+    delete window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+    delete global.BUILD_ID;
   });
 
   it("initialises properly", async () => {
@@ -28,10 +30,16 @@ describe("store", () => {
     expect(spy).toHaveBeenCalledWith(action);
   });
 
-  it("contains @redux-devtools/extension in NODE_ENV=development", async () => {
+  it("contains window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ in NODE_ENV=development", async () => {
+    global.BUILD_ID = "xxx";
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ = jest.fn();
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__.mockReturnValue(() => {});
     process.env.NODE_ENV = "development";
     const fetchContext = jest.fn();
     const store = await setupStore(fetchContext, []);
     expect(store).toBeDefined();
+    expect(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "rocker-xxx" }),
+    );
   });
 });

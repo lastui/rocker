@@ -31,7 +31,11 @@ export default (fetchContext, bootstrapMiddlewares) => {
   const enhancers = [loaderMiddleware, sagaMiddleware, ...(bootstrapMiddlewares || []), dynamicMiddleware];
 
   const composer =
-    process.env.NODE_ENV === "development" ? require("@redux-devtools/extension").composeWithDevTools : compose;
+    process.env.NODE_ENV === "development" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+          name: `rocker-${BUILD_ID}`,
+        })
+      : compose;
 
   const reducer = combineReducers({
     runtime: runtimeReducer,

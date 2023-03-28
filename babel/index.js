@@ -42,9 +42,10 @@ module.exports = {
             corejs: 3,
             useBuiltIns: "entry",
             targets: {
-              browsers: ["last 4 versions, not dead"],
+              browsers: ["last 4 versions, not dead, not op_mini all"],
             },
-            debug: false,
+            debug: true,
+            bugfixes: true,
             modules: "amd",
             shippedProposals: true,
           },

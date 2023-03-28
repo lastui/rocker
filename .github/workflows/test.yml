@@ -27,6 +27,7 @@ jobs:
       - run: npm run build:dependencies
       - run: npm run build:platform
       - run: npm run build:bootstrap
+      - run: npm run postbuild
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
