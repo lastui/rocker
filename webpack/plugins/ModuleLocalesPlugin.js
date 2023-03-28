@@ -25,7 +25,7 @@ class ModuleLocalesPlugin {
             let entryPointOrigin = null;
 
             for (const origin of entryPoint.origins) {
-              if (origin.request === "core-js/stable") {
+              if (origin.request.startsWith("core-js")) {
                 continue;
               }
               if (origin.request === "regenerator-runtime/runtime") {

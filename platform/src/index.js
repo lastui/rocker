@@ -1,4 +1,3 @@
-import "core-js/stable";
 import "regenerator-runtime/runtime";
 
 import { SET_LANGUAGE, REFRESH, SET_SHARED } from "./constants";
