@@ -38,7 +38,7 @@ config.module.rules.push(
           presets: webpackBabel.presets.map((preset) => {
             if (!Array.isArray(preset)) {
               if (preset === "@babel/preset-env") {
-                return [preset, { debug: settings.LOG_LEVEL === "verbose" }, `babel-${preset}`];  
+                return [preset, { debug: settings.LOG_LEVEL === "verbose" }, `babel-${preset}`];
               }
               return [preset, {}, `babel-${preset}`];
             } else {

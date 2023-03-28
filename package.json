@@ -66,6 +66,7 @@
   ],
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
+    "postbuild": "node ./dependencies/scripts/cleanup_volatile.js && node ./platform/scripts/cleanup_volatile.js && node ./bootstrap/scripts/cleanup_volatile.js",
     "prebuild:bootstrap": "node ./bootstrap/scripts/link.js",
     "build:bootstrap": "npm run build:bootstrap:dev && npm run build:bootstrap:prod",
     "postbuild:bootstrap": "node ./bootstrap/scripts/unlink.js",
@@ -81,7 +82,6 @@
     "postbuild:platform": "node ./platform/scripts/unlink.js",
     "build:platform:dev": "node ./cli/index.js build --cwd=platform --dev",
     "build:platform:prod": "node ./cli/index.js build --cwd=platform",
-    "postbuild": "node ./dependencies/scripts/cleanup_volatile.js && node ./platform/scripts/cleanup_volatile.js && node ./bootstrap/scripts/cleanup_volatile.js",
     "postinstall": "node ./cli/index.js setup",
     "lint": "node ./cli/index.js lint",
     "test": "npm run test:platform && npm run test:bootstrap",

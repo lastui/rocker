@@ -158,7 +158,10 @@ exports.getStack = async function (options, packageName) {
     if (indexExists) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
       if (!options.development) {
-        config.entry[packageName === "spa" ? "main" : packageName].push("core-js/stable", "regenerator-runtime/runtime");
+        config.entry[packageName === "spa" ? "main" : packageName].push(
+          "core-js/stable",
+          "regenerator-runtime/runtime",
+        );
       }
     }
   } else {
@@ -169,7 +172,10 @@ exports.getStack = async function (options, packageName) {
     if (indexExists) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
       if (!options.development) {
-        config.entry[packageName === "spa" ? "main" : packageName].push("core-js/stable", "regenerator-runtime/runtime");
+        config.entry[packageName === "spa" ? "main" : packageName].push(
+          "core-js/stable",
+          "regenerator-runtime/runtime",
+        );
       }
     }
   }
