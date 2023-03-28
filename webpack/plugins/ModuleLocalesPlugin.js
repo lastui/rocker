@@ -31,7 +31,6 @@ class ModuleLocalesPlugin {
               if (origin.request === "regenerator-runtime/runtime") {
                 continue;
               }
-
               if (origin.request.indexOf("webpack") !== -1) {
                 continue;
               }
