@@ -17,6 +17,9 @@ config.entry = {
     // css-in-js
     "@linaria/react",
     "@linaria/core",
+    // shims
+    "core-js/stable",
+    "regenerator-runtime/runtime",
   ],
 };
 

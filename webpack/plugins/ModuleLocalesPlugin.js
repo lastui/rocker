@@ -25,6 +25,12 @@ class ModuleLocalesPlugin {
             let entryPointOrigin = null;
 
             for (const origin of entryPoint.origins) {
+              if (origin.request === "core-js/stable") {
+                continue;
+              }
+              if (origin.request === "regenerator-runtime/runtime") {
+                continue;
+              }
               if (origin.request.indexOf("webpack") !== -1) {
                 continue;
               }
