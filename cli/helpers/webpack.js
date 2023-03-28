@@ -139,9 +139,6 @@ exports.getStack = async function (options, packageName) {
         }
       }
       config.entry[entrypoint] = patchedSources;
-      if (!options.development) {
-        config.entry[entrypoint].push("core-js/stable", "regenerator-runtime/runtime");
-      }
     }
 
     if (nodeModules.size > 0) {
@@ -157,12 +154,6 @@ exports.getStack = async function (options, packageName) {
     const indexExists = await fileExists(indexFile);
     if (indexExists) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
-      if (!options.development) {
-        config.entry[packageName === "spa" ? "main" : packageName].push(
-          "core-js/stable",
-          "regenerator-runtime/runtime",
-        );
-      }
     }
   } else {
     config = require(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}`);
@@ -171,12 +162,6 @@ exports.getStack = async function (options, packageName) {
     const indexExists = await fileExists(indexFile);
     if (indexExists) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
-      if (!options.development) {
-        config.entry[packageName === "spa" ? "main" : packageName].push(
-          "core-js/stable",
-          "regenerator-runtime/runtime",
-        );
-      }
     }
   }
 

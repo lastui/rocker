@@ -4,7 +4,7 @@ const settings = require("../webpack/settings");
 const config = require("../webpack/config/dll");
 
 config.entry = {
-  platform: ["@lastui/rocker/platform", "@lastui/rocker/platform/kernel", "css-loader/dist/runtime/api.js"],
+  platform: ["@lastui/rocker/platform", "@lastui/rocker/platform/kernel"],
 };
 
 config.plugins.push(

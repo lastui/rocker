@@ -1,3 +1,6 @@
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+
 /* istanbul ignore file */
 import * as constants from "../constants";
 
