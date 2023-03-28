@@ -1,23 +1,11 @@
 #!/usr/bin/env node
 
 const path = require("path");
-const { clearDirectory, createSymlink, ensureDirectory } = require("../../cli/helpers/io");
-
-async function rm(target) {
-  await clearDirectory(target);
-}
-
-async function mkdir(target) {
-  await ensureDirectory(target);
-}
-
-async function ln(source, target) {
-  await createSymlink(source, target);
-}
+const { clearDirectory, createSymlink } = require("../../cli/helpers/io");
 
 async function main() {
-  await rm(path.resolve(__dirname, "..", "node_modules", "core-js"));
-  await ln(
+  await clearDirectory(path.resolve(__dirname, "..", "node_modules", "core-js"));
+  await createSymlink(
     path.resolve(__dirname, "..", "..", "node_modules", "core-js"),
     path.resolve(__dirname, "..", "node_modules", "core-js"),
   );

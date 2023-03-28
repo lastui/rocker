@@ -21,6 +21,7 @@ jobs:
       - run: npm run build:dependencies
       - run: npm run build:platform
       - run: npm run build:bootstrap
+      - run: npm run postbuild
       - run: node ./cli/index.js --cwd=platform test
       - run: node ./cli/index.js --cwd=bootstrap test
       - name: Publish @lastui/dependencies
