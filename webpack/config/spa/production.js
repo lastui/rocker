@@ -37,12 +37,18 @@ config.module.rules.push(
           babelrc: false,
           presets: webpackBabel.presets.map((preset) => {
             if (!Array.isArray(preset)) {
+              if (preset === "@babel/preset-env") {
+                return [preset, { debug: settings.LOG_LEVEL === "verbose" }, `babel-${preset}`];  
+              }
               return [preset, {}, `babel-${preset}`];
             } else {
+              if (preset[0] === "@babel/preset-env") {
+                preset[1].debug = settings.LOG_LEVEL === "verbose";
+              }
               return [preset[0], preset[1], `babel-${preset[0]}`];
             }
           }),
-          plugins: webpackBabel.plugins.map((plugin) => {
+          plugins: [RegisterModuleInjectBuildId, ...webpackBabel.plugins].map((plugin) => {
             if (!Array.isArray(plugin)) {
               return [plugin, {}, `babel-${plugin.name || plugin}`];
             } else {
