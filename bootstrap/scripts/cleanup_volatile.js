@@ -7,7 +7,7 @@ async function cleanupManifest(filename) {
   const manifest = JSON.parse(await readFile(manifestFile));
 
   for (const key in manifest.content) {
-    if (key.startsWith("./node_modules/regenerator-runtime/runtime.js")) {
+    if (key.startsWith("./node_modules/regenerator-runtime/")) {
       changed = true;
       delete manifest.content[key];
     }
@@ -16,6 +16,10 @@ async function cleanupManifest(filename) {
       delete manifest.content[key];
     }
     if (key.startsWith("./node_modules/core-js")) {
+      changed = true;
+      delete manifest.content[key];
+    }
+    if (key.endsWith("tslib/tslib.es6.js")) {
       changed = true;
       delete manifest.content[key];
     }

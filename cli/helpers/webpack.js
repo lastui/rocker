@@ -99,6 +99,11 @@ async function propagateProgressOption() {
 }
 
 exports.getStack = async function (options, packageName) {
+  if (options.debug) {
+    const oldDebug = (process.env.DEBUG || "").split(",");
+    process.env.DEBUG = ["rocker:*", ...oldDebug].join(",");
+  }
+
   const projectConfig = path.resolve(process.env.INIT_CWD, "webpack.config.js");
   const customConfigExists = await fileExists(projectConfig);
 
