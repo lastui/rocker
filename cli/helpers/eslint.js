@@ -11,7 +11,7 @@ exports.run = async function (options) {
 
   const files = await glob("**/*.+(js|jsx|ts|tsx)", {
     cwd: process.env.INIT_CWD,
-    ignore: ["**/*node_modules/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
+    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
   });
 
   const params = {
