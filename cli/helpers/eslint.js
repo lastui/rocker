@@ -1,4 +1,4 @@
-const { directoryExists } = require("./io");
+const { glob, readFile, writeFile } = require("./io");
 const path = require("path");
 
 exports.run = async function (options) {
@@ -6,11 +6,15 @@ exports.run = async function (options) {
     throw reason;
   });
 
+  const colors = require("ansi-colors");
   const eslint = require("eslint");
 
-  const cwd = options.cwd ? path.relative(process.env.PWD, process.env.INIT_CWD).replaceAll(`.${path.sep}`, "") : "";
+  const files = await glob("**/*.+(js|jsx|ts|tsx)", {
+    cwd: process.env.INIT_CWD,
+    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
+  });
 
-  const config = {
+  const params = {
     env: {
       es6: true,
     },
@@ -24,12 +28,10 @@ exports.run = async function (options) {
       requireConfigFile: false,
       babelOptions: require("../../babel").env.development,
     },
-    ignorePatterns: ["*lcov-report*", "*dll.js", "*min.js"],
     rules: {
       "no-debugger": "error",
-      eqeqeq: "error",
+      eqeqeq: ["error", "always"],
     },
-    plugins: options.debug ? ["rockerlog"] : [],
   };
 
   const engine = new eslint.ESLint({
@@ -37,33 +39,79 @@ exports.run = async function (options) {
     allowInlineConfig: true,
     useEslintrc: false,
     fix: options.fix,
-    baseConfig: config,
+    baseConfig: params,
   });
 
-  const files = (await directoryExists(path.resolve(process.env.INIT_CWD, "src")))
-    ? path.join("src", "**", "*.{js,ts,jsx,tsx}")
-    : path.join("**", "*.{js,ts,jsx,tsx}");
+  const durations = {};
 
-  const results = await engine.lintFiles(files);
+  async function processFile(filepath) {
+    const info = {
+      filepath,
+      errors: [],
+      warnings: [],
+      changed: false,
+    };
 
-  if (options.fix) {
-    await eslint.ESLint.outputFixes(results);
-  }
+    durations[filepath] = process.hrtime();
 
-  const formatter = await engine.loadFormatter("stylish");
-  const output = await formatter.format(results);
-
-  for (const result of results) {
-    if (result.errorCount > 0) {
-      if (output) {
-        console.log(output);
+    try {
+      const data = await readFile(filepath);
+      if (options.fix) {
+        const results = await engine.lintText(data, { filePath: filepath });
+        if (results[0].output) {
+          await writeFile(filepath, results[0].output);
+        }
+        info.errors.push(...results[0].messages.filter((item) => item.severity > 1));
+        info.warnings.push(...results[0].messages.filter((item) => item.severity <= 1));
+        info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
+      } else {
+        const results = await engine.lintText(data, { filePath: filepath });
+        info.errors.push(...results[0].messages.filter((item) => item.severity > 1));
+        info.warnings.push(...results[0].messages.filter((item) => item.severity <= 1));
+        info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
       }
-      process.exitCode = 1;
-      return;
+    } catch (error) {
+      info.errors.push(error);
     }
+
+    const end = process.hrtime(durations[filepath]);
+    info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+
+    return info;
   }
 
-  if (!options.quiet && output) {
-    console.log(output);
+  const results = await Promise.all(files.map(processFile));
+
+  for (const { filepath, errors, warnings, changed, duration } of results) {
+    if (errors.length > 0) {
+      process.exitCode = 1;
+      for (const item of errors) {
+        console.log(
+          colors.red("✖"),
+          colors.red(`${filepath} ${item.line}:${item.column}`),
+          colors.bold.red(item.message),
+          colors.dim(`(${duration})`),
+        );
+      }
+      continue;
+    }
+    if (!options.quiet && warnings.length > 0) {
+      for (const item of warnings) {
+        console.log(
+          colors.yellow("!"),
+          colors.yellow(`${filepath} ${item.line}:${item.column}`),
+          colors.bold.yellow(item.message),
+          colors.dim(`(${duration})`),
+        );
+      }
+      continue;
+    }
+    if (!changed && options.debug) {
+      console.log(colors.green(`✓`), colors.dim(`${filepath} (${duration})`));
+      continue;
+    }
+    if (changed && !options.quiet) {
+      console.log(colors.yellow("!"), colors.dim(`${filepath} (${duration})`));
+    }
   }
 };

@@ -10,7 +10,7 @@ exports.run = async function (options) {
 
   const files = await glob("**/*.+(js|jsx|ts|tsx)", {
     cwd: process.env.INIT_CWD,
-    ignore: ["**/*node_modules/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
+    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
   });
 
   const params = {
@@ -29,30 +29,34 @@ exports.run = async function (options) {
   const durations = {};
 
   async function processFile(filepath) {
+    const info = {
+      filepath,
+      error: null,
+      changed: false,
+    };
+
+    durations[filepath] = process.hrtime();
+
     try {
       const data = await readFile(filepath);
+
       if (options.fix) {
-        durations[filepath] = process.hrtime();
-        const formatted = prettier.format(data, params);
-        const end = process.hrtime(durations[filepath]);
-        const duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
-        await writeFile(filepath, formatted);
-        return { filepath, duration, error: null, changed: false };
+        const formatted = await prettier.format(data, params);
+        if (formatted !== data) {
+          info.changed = true;
+          await writeFile(filepath, formatted);
+        }
       } else {
-        durations[filepath] = process.hrtime();
-        const formatted = prettier.check(data, params);
-        const end = process.hrtime(durations[filepath]);
-        const duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
-        return {
-          filepath,
-          duration,
-          error: null,
-          changed: !formatted,
-        };
+        info.changed = !(await prettier.check(data, params));
       }
     } catch (error) {
-      return { filepath, duration: "? ms", error, changed: false };
+      info.error = error;
     }
+
+    const end = process.hrtime(durations[filepath]);
+    info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+
+    return info;
   }
 
   const results = await Promise.all(files.map(processFile));
@@ -60,7 +64,7 @@ exports.run = async function (options) {
   for (const { filepath, error, changed, duration } of results) {
     if (error) {
       process.exitCode = 1;
-      console.log(colors.red("✖"), colors.dim(`${filepath} ${error}`));
+      console.log(colors.red("✖"), colors.red(filepath), colors.bold.red(error), colors.dim(`(${duration})`));
       continue;
     }
     if (!changed && options.debug) {
