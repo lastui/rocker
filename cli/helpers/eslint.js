@@ -1,5 +1,4 @@
 const { glob, readFile, writeFile } = require("./io");
-const path = require("path");
 
 exports.run = async function (options) {
   process.on("unhandledRejection", (reason) => {
@@ -8,11 +7,6 @@ exports.run = async function (options) {
 
   const colors = require("ansi-colors");
   const eslint = require("eslint");
-
-  const files = await glob("**/*.+(js|jsx|ts|tsx)", {
-    cwd: process.env.INIT_CWD,
-    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
-  });
 
   const params = {
     env: {
@@ -80,7 +74,17 @@ exports.run = async function (options) {
     return info;
   }
 
-  const results = await Promise.all(files.map(processFile));
+  const stream = glob("**/*.+(js|jsx|ts|tsx)", {
+    cwd: process.env.INIT_CWD,
+    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
+  });
+
+  const work = [];
+  for await (const entry of stream) {
+    work.push(processFile(entry));
+  }
+
+  const results = await Promise.all(work);
 
   for (const { filepath, errors, warnings, changed, duration } of results) {
     if (errors.length > 0) {

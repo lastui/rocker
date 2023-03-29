@@ -8,11 +8,6 @@ exports.run = async function (options) {
   const colors = require("ansi-colors");
   const prettier = require("prettier");
 
-  const files = await glob("**/*.+(js|jsx|ts|tsx)", {
-    cwd: process.env.INIT_CWD,
-    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
-  });
-
   const params = {
     parser: "babel",
     bracketSameLine: true,
@@ -31,7 +26,8 @@ exports.run = async function (options) {
   async function processFile(filepath) {
     const info = {
       filepath,
-      error: null,
+      errors: [],
+      warnings: [],
       changed: false,
     };
 
@@ -50,7 +46,7 @@ exports.run = async function (options) {
         info.changed = !(await prettier.check(data, params));
       }
     } catch (error) {
-      info.error = error;
+      info.errors.push(error);
     }
 
     const end = process.hrtime(durations[filepath]);
@@ -59,16 +55,35 @@ exports.run = async function (options) {
     return info;
   }
 
-  const results = await Promise.all(files.map(processFile));
+  const stream = glob("**/*.+(js|jsx|ts|tsx)", {
+    cwd: process.env.INIT_CWD,
+    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
+  });
 
-  for (const { filepath, error, changed, duration } of results) {
-    if (error) {
+  const work = [];
+  for await (const entry of stream) {
+    work.push(processFile(entry));
+  }
+
+  const results = await Promise.all(work);
+
+  for (const { filepath, errors, warnings, changed, duration } of results) {
+    if (errors.length > 0) {
       process.exitCode = 1;
-      console.log(colors.red("✖"), colors.red(filepath), colors.bold.red(error), colors.dim(`(${duration})`));
+      for (const item of errors) {
+        console.log(colors.red("✖"), colors.red(filepath), colors.bold.red(item), colors.dim(`(${duration})`));
+      }
+      continue;
+    }
+    if (!options.quiet && warnings.length > 0) {
+      for (const item of warnings) {
+        console.log(colors.yellow("!"), colors.yellow(filepath), colors.bold.yellow(item), colors.dim(`(${duration})`));
+      }
       continue;
     }
     if (!changed && options.debug) {
       console.log(colors.green(`✓`), colors.dim(`${filepath} (${duration})`));
+      continue;
     }
     if (changed && !options.quiet) {
       console.log(colors.yellow("!"), colors.dim(`${filepath} (${duration})`));

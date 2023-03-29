@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const glob = require("glob");
+const glob = require("fast-glob");
 
 function nodeExists(nodePath, predicate) {
   return new Promise(function (resolve, reject) {
@@ -16,16 +16,11 @@ function nodeExists(nodePath, predicate) {
   });
 }
 
-exports.glob = async function (pattern, options) {
-  const work = new Promise((resolve, reject) => {
-    glob(pattern, options, function (err, files) {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(files);
-    });
-  });
-  return await work;
+exports.glob = async function* (pattern, options) {
+  const stream = glob.stream(pattern, options);
+  for await (const entry of stream) {
+    yield entry;
+  }
 };
 
 exports.readFile = async function (nodePath) {
