@@ -24,6 +24,7 @@ jobs:
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
       - run: npm ci --no-fund --no-audit
+      - run: npm run lint -- --debug
       - run: npm run build:dependencies
       - run: npm run build:platform
       - run: npm run build:bootstrap
