@@ -40,7 +40,5 @@ require("yargs")
   .command(envelope(require("./commands/start.js")))
   .command(envelope(require("./commands/test.js")))
   .command(envelope(require("./commands/lint.js")))
-  // private commands
-  .command(envelope(require("./commands/setup.js")))
   .demandCommand()
   .help(false).argv;

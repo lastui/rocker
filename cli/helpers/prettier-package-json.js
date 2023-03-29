@@ -21,30 +21,34 @@ exports.run = async function (options) {
   const durations = {};
 
   async function processFile(filepath) {
+    const info = {
+      filepath,
+      error: null,
+      changed: false,
+    };
+
+    durations[filepath] = process.hrtime();
+
     try {
       const data = await readFile(filepath);
-      const json = JSON.parse(data);
-
-      durations[filepath] = process.hrtime();
-      const formatted = prettier.format(json, params);
-      const end = process.hrtime(durations[filepath]);
-      const duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
 
       if (options.fix) {
-        await writeFile(filepath, formatted);
-        return { filepath, duration, error: null, changed: false };
+        const formatted = prettier.format(JSON.parse(data), params);
+        if (formatted !== data) {
+          info.changed = true;
+          await writeFile(filepath, formatted);
+        }
       } else {
-        const formatted = prettier.check(json, params);
-        return {
-          filepath,
-          duration,
-          error: null,
-          changed: !formatted,
-        };
+        info.changed = !prettier.check(JSON.parse(data), params);
       }
     } catch (error) {
-      return { filepath, duration: "? ms", error, changed: false };
+      info.error = error;
     }
+
+    const end = process.hrtime(durations[filepath]);
+    info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+
+    return info;
   }
 
   const results = await Promise.all(files.map(processFile));
@@ -52,7 +56,7 @@ exports.run = async function (options) {
   for (const { filepath, error, changed, duration } of results) {
     if (error) {
       process.exitCode = 1;
-      console.log(colors.red("✖"), colors.dim(`${filepath} ${error}`));
+      console.log(colors.red("✖"), colors.red(filepath), colors.bold.red(error), colors.dim(`(${duration})`));
       continue;
     }
     if (!changed && options.debug) {
