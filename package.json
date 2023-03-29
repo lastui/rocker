@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.66",
+  "version": "0.14.67",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -110,7 +110,7 @@
     "core-js": "3.29.1",
     "css-loader": "6.7.3",
     "dotenv": "16.0.3",
-    "eslint": "8.36.0",
+    "eslint": "8.37.0",
     "html-webpack-plugin": "5.5.0",
     "jest": "29.5.0",
     "jest-environment-jsdom": "29.5.0",
@@ -128,7 +128,7 @@
     "terser-webpack-plugin": "5.3.7",
     "util": "0.12.5",
     "weak-napi": "2.0.2",
-    "webpack": "5.76.3",
+    "webpack": "5.77.0",
     "webpack-dev-server": "4.13.1",
     "yargs": "17.7.1"
   }
