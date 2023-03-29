@@ -1,5 +1,4 @@
 const { glob, readFile, writeFile } = require("./io");
-const path = require("path");
 
 exports.run = async function (options) {
   process.on("unhandledRejection", (reason) => {
@@ -8,11 +7,6 @@ exports.run = async function (options) {
 
   const colors = require("ansi-colors");
   const eslint = require("eslint");
-
-  const files = await glob("**/*.+(js|jsx|ts|tsx)", {
-    cwd: process.env.INIT_CWD,
-    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
-  });
 
   const params = {
     env: {
@@ -42,8 +36,6 @@ exports.run = async function (options) {
     baseConfig: params,
   });
 
-  const durations = {};
-
   async function processFile(filepath) {
     const info = {
       filepath,
@@ -52,35 +44,44 @@ exports.run = async function (options) {
       changed: false,
     };
 
-    durations[filepath] = process.hrtime();
+    let start = null;
+    let end = null;
 
     try {
       const data = await readFile(filepath);
-      if (options.fix) {
-        const results = await engine.lintText(data, { filePath: filepath });
-        if (results[0].output) {
-          await writeFile(filepath, results[0].output);
-        }
-        info.errors.push(...results[0].messages.filter((item) => item.severity > 1));
-        info.warnings.push(...results[0].messages.filter((item) => item.severity <= 1));
-        info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
-      } else {
-        const results = await engine.lintText(data, { filePath: filepath });
-        info.errors.push(...results[0].messages.filter((item) => item.severity > 1));
-        info.warnings.push(...results[0].messages.filter((item) => item.severity <= 1));
-        info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
+      start = process.hrtime();
+      const results = await engine.lintText(data, { filePath: filepath });
+      end = process.hrtime(start);
+      if (options.fix && results[0].output) {
+        await writeFile(filepath, results[0].output);
       }
+      info.errors.push(...results[0].messages.filter((item) => item.severity > 1));
+      info.warnings.push(...results[0].messages.filter((item) => item.severity <= 1));
+      info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
     } catch (error) {
       info.errors.push(error);
     }
 
-    const end = process.hrtime(durations[filepath]);
-    info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+    if (end) {
+      info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+    } else {
+      info.duration = "?? ms";
+    }
 
     return info;
   }
 
-  const results = await Promise.all(files.map(processFile));
+  const stream = glob("**/*.+(js|jsx|ts|tsx)", {
+    cwd: process.env.INIT_CWD,
+    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
+  });
+
+  const work = [];
+  for await (const entry of stream) {
+    work.push(processFile(entry));
+  }
+
+  const results = await Promise.all(work);
 
   for (const { filepath, errors, warnings, changed, duration } of results) {
     if (errors.length > 0) {

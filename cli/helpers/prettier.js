@@ -8,11 +8,6 @@ exports.run = async function (options) {
   const colors = require("ansi-colors");
   const prettier = require("prettier");
 
-  const files = await glob("**/*.+(js|jsx|ts|tsx)", {
-    cwd: process.env.INIT_CWD,
-    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
-  });
-
   const params = {
     parser: "babel",
     bracketSameLine: true,
@@ -26,49 +21,74 @@ exports.run = async function (options) {
     trailingComma: "all",
   };
 
-  const durations = {};
-
   async function processFile(filepath) {
     const info = {
       filepath,
-      error: null,
+      errors: [],
+      warnings: [],
       changed: false,
     };
 
-    durations[filepath] = process.hrtime();
+    let start = null;
+    let end = null;
 
     try {
       const data = await readFile(filepath);
-
       if (options.fix) {
+        start = process.hrtime();
         const formatted = await prettier.format(data, params);
+        end = process.hrtime(start);
         if (formatted !== data) {
           info.changed = true;
           await writeFile(filepath, formatted);
         }
       } else {
+        start = process.hrtime();
         info.changed = !(await prettier.check(data, params));
+        end = process.hrtime(start);
       }
     } catch (error) {
-      info.error = error;
+      info.errors.push(error);
     }
 
-    const end = process.hrtime(durations[filepath]);
-    info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+    if (end) {
+      info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+    } else {
+      info.duration = "?? ms";
+    }
 
     return info;
   }
 
-  const results = await Promise.all(files.map(processFile));
+  const stream = glob("**/*.+(js|jsx|ts|tsx)", {
+    cwd: process.env.INIT_CWD,
+    ignore: ["**/*node_modules/**", "**/*build/**", "**/*dist/**", "**/*.min.js", "**/*lcov-report/**", "**/*.dll.js"],
+  });
 
-  for (const { filepath, error, changed, duration } of results) {
-    if (error) {
+  const work = [];
+  for await (const entry of stream) {
+    work.push(processFile(entry));
+  }
+
+  const results = await Promise.all(work);
+
+  for (const { filepath, errors, warnings, changed, duration } of results) {
+    if (errors.length > 0) {
       process.exitCode = 1;
-      console.log(colors.red("✖"), colors.red(filepath), colors.bold.red(error), colors.dim(`(${duration})`));
+      for (const item of errors) {
+        console.log(colors.red("✖"), colors.red(filepath), colors.bold.red(item), colors.dim(`(${duration})`));
+      }
+      continue;
+    }
+    if (!options.quiet && warnings.length > 0) {
+      for (const item of warnings) {
+        console.log(colors.yellow("!"), colors.yellow(filepath), colors.bold.yellow(item), colors.dim(`(${duration})`));
+      }
       continue;
     }
     if (!changed && options.debug) {
       console.log(colors.green(`✓`), colors.dim(`${filepath} (${duration})`));
+      continue;
     }
     if (changed && !options.quiet) {
       console.log(colors.yellow("!"), colors.dim(`${filepath} (${duration})`));

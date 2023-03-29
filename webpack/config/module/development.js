@@ -245,7 +245,7 @@ config.plugins.push(
       }
 
       const headTags = props.htmlWebpackPlugin.tags.headTags.filter(
-        (item) => !entrypoints.map((chunk) => path.join(chunk.id, "main.js")).includes(item.attributes.src),
+        (item) => !entrypoints.some((chunk) => chunk.files.has(item.attributes.src)),
       );
 
       let manifest;
@@ -365,7 +365,7 @@ config.plugins.push(
           const entry = {
             name: chunk.id,
             program: {
-              url: path.join(props.compilation.outputOptions.publicPath, chunk.id, "main.js"),
+              url: path.join(props.compilation.outputOptions.publicPath, Array.from(chunk.files)[0]),
             },
             locales: {},
             meta: {},
@@ -407,7 +407,7 @@ config.plugins.push(
                   const root = dom.createRoot(document.getElementById("${settings.PROJECT_NAME}"));
                 
                   root.render(react.createElement(bootstrap.Main, {
-                    fetchContext: async function() {
+                    async fetchContext() {
                       return manifest;
                     }
                   }));

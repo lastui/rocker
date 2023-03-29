@@ -38,12 +38,12 @@ class ModuleLocalesPlugin {
             }
 
             for (const chunk of entryPoint.chunks) {
-              if (chunk.name === settings.BUILD_ID) {
+              if (chunk.id === settings.BUILD_ID) {
                 continue;
               }
               paths.push({
                 input: path.resolve(this.from, entryPointOrigin, "messages"),
-                output: path.join(path.dirname(compilation.outputOptions.assetModuleFilename), chunk.name, "messages"),
+                output: path.join(path.dirname(compilation.outputOptions.assetModuleFilename), chunk.id, "messages"),
               });
             }
           }
