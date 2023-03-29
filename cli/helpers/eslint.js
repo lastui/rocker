@@ -36,8 +36,6 @@ exports.run = async function (options) {
     baseConfig: params,
   });
 
-  const durations = {};
-
   async function processFile(filepath) {
     const info = {
       filepath,
@@ -46,30 +44,29 @@ exports.run = async function (options) {
       changed: false,
     };
 
-    durations[filepath] = process.hrtime();
+    let start = null;
+    let end = null;
 
     try {
       const data = await readFile(filepath);
-      if (options.fix) {
-        const results = await engine.lintText(data, { filePath: filepath });
-        if (results[0].output) {
-          await writeFile(filepath, results[0].output);
-        }
-        info.errors.push(...results[0].messages.filter((item) => item.severity > 1));
-        info.warnings.push(...results[0].messages.filter((item) => item.severity <= 1));
-        info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
-      } else {
-        const results = await engine.lintText(data, { filePath: filepath });
-        info.errors.push(...results[0].messages.filter((item) => item.severity > 1));
-        info.warnings.push(...results[0].messages.filter((item) => item.severity <= 1));
-        info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
+      start = process.hrtime();
+      const results = await engine.lintText(data, { filePath: filepath });
+      end = process.hrtime(start);
+      if (options.fix && results[0].output) {
+        await writeFile(filepath, results[0].output);
       }
+      info.errors.push(...results[0].messages.filter((item) => item.severity > 1));
+      info.warnings.push(...results[0].messages.filter((item) => item.severity <= 1));
+      info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
     } catch (error) {
       info.errors.push(error);
     }
 
-    const end = process.hrtime(durations[filepath]);
-    info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+    if (end) {
+      info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+    } else {
+      info.duration = "?? ms";
+    }
 
     return info;
   }

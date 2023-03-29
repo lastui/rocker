@@ -21,8 +21,6 @@ exports.run = async function (options) {
     trailingComma: "all",
   };
 
-  const durations = {};
-
   async function processFile(filepath) {
     const info = {
       filepath,
@@ -31,26 +29,33 @@ exports.run = async function (options) {
       changed: false,
     };
 
-    durations[filepath] = process.hrtime();
+    let start = null;
+    let end = null;
 
     try {
       const data = await readFile(filepath);
-
       if (options.fix) {
+        start = process.hrtime();
         const formatted = await prettier.format(data, params);
+        end = process.hrtime(start);
         if (formatted !== data) {
           info.changed = true;
           await writeFile(filepath, formatted);
         }
       } else {
+        start = process.hrtime();
         info.changed = !(await prettier.check(data, params));
+        end = process.hrtime(start);
       }
     } catch (error) {
       info.errors.push(error);
     }
 
-    const end = process.hrtime(durations[filepath]);
-    info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+    if (end) {
+      info.duration = `${(end[0] * 1_000 + end[1] / 1_000_000).toFixed(2)} ms`;
+    } else {
+      info.duration = "?? ms";
+    }
 
     return info;
   }
