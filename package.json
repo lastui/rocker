@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.67",
+  "version": "0.14.68",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -79,7 +79,6 @@
     "postbuild:platform": "node ./platform/scripts/unlink.js",
     "build:platform:dev": "node ./cli/index.js build --cwd=platform --dev --debug",
     "build:platform:prod": "node ./cli/index.js build --cwd=platform --debug",
-    "postinstall": "node ./cli/index.js setup",
     "lint": "node ./cli/index.js lint",
     "test": "npm run test:platform && npm run test:bootstrap",
     "test:bootstrap": "node ./cli/index.js test --cwd=bootstrap",

@@ -28,7 +28,10 @@ class ModuleLocalesPlugin {
               if (origin.request.startsWith("core-js")) {
                 continue;
               }
-              if (origin.request === "regenerator-runtime/runtime") {
+              if (origin.request.endsWith("tslib/tslib.es6.js")) {
+                continue;
+              }
+              if (origin.request.indexOf("regenerator-runtime/runtime") !== -1) {
                 continue;
               }
               if (origin.request.indexOf("webpack") !== -1) {
