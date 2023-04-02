@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.70",
+  "version": "0.14.71",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -29,6 +29,7 @@
     "cli/helpers/eslint.js",
     "cli/helpers/io.js",
     "cli/helpers/jest.js",
+    "cli/helpers/lint-stream.js",
     "cli/helpers/prettier-package-json.js",
     "cli/helpers/prettier.js",
     "cli/helpers/process.js",
