@@ -30,7 +30,7 @@ exports.createEngine = async function (options) {
   });
 
   async function processFile(info) {
-    if (info.filepath.endsWith(".json")) {
+    if (!/\.[t|j]sx?$/.test(info.filepath)) {
       return;
     }
 
