@@ -1,21 +1,26 @@
+exports.config = {
+  parser: "babel",
+  bracketSameLine: true,
+  quoteProps: "as-needed",
+  embeddedLanguageFormatting: "auto",
+  endOfLine: "lf",
+  arrowParens: "always",
+  printWidth: 120,
+  tabWidth: 2,
+  useTabs: false,
+  semi: true,
+  trailingComma: "all",
+};
+
 exports.createEngine = async function (options) {
   const prettier = require("prettier");
 
-  const params = {
-    parser: "babel",
-    bracketSameLine: true,
-    quoteProps: "as-needed",
-    embeddedLanguageFormatting: "auto",
-    endOfLine: "lf",
-    arrowParens: "always",
-    printWidth: 120,
-    tabWidth: 2,
-    useTabs: false,
-    trailingComma: "all",
-  };
-
   async function processFile(info) {
     if (!/\.[t|j]sx?$/.test(info.filepath)) {
+      return;
+    }
+
+    if (info.data.includes("@linaria")) {
       return;
     }
 
@@ -25,7 +30,7 @@ exports.createEngine = async function (options) {
     try {
       if (options.fix) {
         start = process.hrtime();
-        const formatted = await prettier.format(info.data, params);
+        const formatted = await prettier.format(info.data, exports.config);
         end = process.hrtime(start);
         if (formatted !== info.data) {
           info.changed = true;
@@ -33,7 +38,7 @@ exports.createEngine = async function (options) {
         }
       } else {
         start = process.hrtime();
-        info.changed = info.changed || !(await prettier.check(info.data, params));
+        info.changed = info.changed || !(await prettier.check(info.data, exports.config));
         end = process.hrtime(start);
       }
     } catch (error) {

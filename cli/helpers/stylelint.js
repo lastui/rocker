@@ -1,12 +1,21 @@
+const { config: prettierConfig } = require("./prettier");
+
+exports.config = {
+  extends: ["@linaria/stylelint-config-standard-linaria"],
+};
+
 exports.createEngine = async function (options) {
   const stylelint = require("stylelint");
-
-  const params = {
-    extends: ["@linaria/stylelint-config-standard-linaria"],
-  };
+  const prettier = require("prettier");
 
   async function processFile(info) {
     if (info.filepath.endsWith(".json")) {
+      return;
+    }
+
+    const isCssInJs = /\.[t|j]sx?$/.test(info.filepath);
+
+    if (isCssInJs && !info.data.includes("@linaria")) {
       return;
     }
 
@@ -15,28 +24,42 @@ exports.createEngine = async function (options) {
 
     try {
       start = process.hrtime();
+
+      let data = info.data;
+      if (isCssInJs) {
+        data = await prettier.format(data, {
+          ...prettierConfig,
+          arrowParens: "avoid",
+        });
+      }
+
       let results = null;
       await stylelint.lint({
-        config: params,
+        config: exports.config,
         fix: options.fix,
-        code: info.data,
+        code: data,
         formatter: (stylelintResults) => {
           results = stylelintResults;
         },
       });
 
-      end = process.hrtime(start);
-      if (options.fix && results[0]._postcssResult.css !== info.data) {
-        info.changed = true;
-        info.data = results[0]._postcssResult.css;
+      if (results[0]._postcssResult.css) {
+        data = isCssInJs
+          ? await prettier.format(results[0]._postcssResult.css, prettierConfig)
+          : results[0]._postcssResult.css;
       }
+
+      end = process.hrtime(start);
+
+      if (options.fix && data !== info.data) {
+        info.changed = true;
+        info.data = data;
+      }
+
       info.errors.push(...results[0].parseErrors);
       info.warnings.push(...results[0].warnings);
       info.changed =
-        info.changed ||
-        results[0].warnings.length !== 0 ||
-        results[0].parseErrors.length !== 0 ||
-        results[0]._postcssResult.css !== info.data;
+        info.changed || results[0].warnings.length !== 0 || results[0].parseErrors.length !== 0 || data !== info.data;
     } catch (error) {
       info.errors.push(error);
     }
