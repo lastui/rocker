@@ -127,6 +127,7 @@
     "sass-loader": "13.2.2",
     "source-map": "mozilla/source-map#master",
     "style-loader": "3.3.2",
+    "stylelint": "14.16.1",
     "terser-webpack-plugin": "5.3.7",
     "util": "0.12.5",
     "weak-napi": "2.0.2",
