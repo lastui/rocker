@@ -1,32 +1,32 @@
+exports.config = {
+  env: {
+    es6: true,
+  },
+  parser: "@babel/eslint-parser",
+  parserOptions: {
+    sourceType: "module",
+    allowImportExportEverywhere: false,
+    ecmaFeatures: {
+      globalReturn: false,
+    },
+    requireConfigFile: false,
+    babelOptions: require("../../babel").env.development,
+  },
+  rules: {
+    "no-debugger": "error",
+    eqeqeq: ["error", "always"],
+  },
+};
+
 exports.createEngine = async function (options) {
   const eslint = require("eslint");
-
-  const params = {
-    env: {
-      es6: true,
-    },
-    parser: "@babel/eslint-parser",
-    parserOptions: {
-      sourceType: "module",
-      allowImportExportEverywhere: false,
-      ecmaFeatures: {
-        globalReturn: false,
-      },
-      requireConfigFile: false,
-      babelOptions: require("../../babel").env.development,
-    },
-    rules: {
-      "no-debugger": "error",
-      eqeqeq: ["error", "always"],
-    },
-  };
 
   const engine = new eslint.ESLint({
     cwd: process.env.INIT_CWD,
     allowInlineConfig: true,
     useEslintrc: false,
     fix: options.fix,
-    baseConfig: params,
+    baseConfig: exports.config,
   });
 
   async function processFile(info) {

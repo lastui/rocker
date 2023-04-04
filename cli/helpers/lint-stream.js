@@ -43,14 +43,14 @@ exports.run = async function (options) {
   const { createEngine: createEnginePrettierPackageJson } = require("./prettier-package-json");
   const processFilePrettierPackageJson = await createEnginePrettierPackageJson(options);
 
-  const { createEngine: createEnginePrettier } = require("./prettier");
-  const processFilePrettier = await createEnginePrettier(options);
-
   const { createEngine: createEngineEslint } = require("./eslint");
   const processFileEslint = await createEngineEslint(options);
 
   const { createEngine: createEngineStylelint } = require("./stylelint");
   const processFileStylelint = await createEngineStylelint(options);
+
+  const { createEngine: createEnginePrettier } = require("./prettier");
+  const processFilePrettier = await createEnginePrettier(options);
 
   async function processFile(filepath) {
     let data = await readFile(path.join(process.env.INIT_CWD, filepath));
