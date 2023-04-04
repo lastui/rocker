@@ -2,7 +2,7 @@ name: Dependency update
 
 on:
   schedule:
-    - cron:  '*/30 * * * *'
+    - cron:  '0 8 * * *'
 
 jobs:
 
@@ -14,6 +14,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+          registry-url: https://registry.npmjs.org
       - name: Install npm-check-updates
         run: npm install -g npm-check-updates
       - name: Update @lastui/rocker
