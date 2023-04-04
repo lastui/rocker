@@ -30,6 +30,7 @@ exports.createEngine = async function (options) {
         data = await prettier.format(data, {
           ...prettierConfig,
           arrowParens: "avoid",
+          embeddedLanguageFormatting: "auto",
         });
       }
 
