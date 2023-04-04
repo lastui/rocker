@@ -2,7 +2,7 @@ exports.config = {
   parser: "babel",
   bracketSameLine: true,
   quoteProps: "as-needed",
-  embeddedLanguageFormatting: "off",
+  embeddedLanguageFormatting: "auto",
   endOfLine: "lf",
   arrowParens: "always",
   printWidth: 120,
