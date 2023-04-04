@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.72",
+  "version": "0.14.73",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -34,6 +34,7 @@
     "cli/helpers/prettier.js",
     "cli/helpers/process.js",
     "cli/helpers/shell.js",
+    "cli/helpers/stylelint.js",
     "cli/helpers/webpack.js",
     "cli/index.js",
     "jest/__mocks__/platform.js",
@@ -97,6 +98,7 @@
     "@babel/preset-typescript": "7.21.4",
     "@babel/register": "7.21.0",
     "@linaria/shaker": "4.2.9",
+    "@linaria/stylelint-config-standard-linaria": "4.1.5",
     "@linaria/webpack5-loader": "4.1.15",
     "@testing-library/dom": "9.2.0",
     "@testing-library/jest-dom": "5.16.5",

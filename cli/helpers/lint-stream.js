@@ -13,7 +13,7 @@ exports.run = async function (options) {
   const fileStream = new Readable({ objectMode: true });
 
   glob(
-    "**/*.+(js|jsx|ts|tsx|json)",
+    "**/*.+(js|jsx|ts|tsx|json|scss|css)",
     {
       cwd: process.env.INIT_CWD,
       ignore: [
@@ -49,6 +49,9 @@ exports.run = async function (options) {
   const { createEngine: createEngineEslint } = require("./eslint");
   const processFileEslint = await createEngineEslint(options);
 
+  const { createEngine: createEngineStylelint } = require("./stylelint");
+  const processFileStylelint = await createEngineStylelint(options);
+
   async function processFile(filepath) {
     let data = await readFile(path.join(process.env.INIT_CWD, filepath));
 
@@ -62,8 +65,9 @@ exports.run = async function (options) {
     };
 
     await processFilePrettierPackageJson(info);
-    await processFilePrettier(info);
+    await processFileStylelint(info);
     await processFileEslint(info);
+    await processFilePrettier(info);
 
     if (info.trace.length > 0) {
       const duration = `(${info.trace.reduce((acc, trace) => acc + trace.duration, 0).toFixed(2)} ms)`;
