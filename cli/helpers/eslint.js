@@ -30,7 +30,7 @@ exports.createEngine = async function (options) {
   });
 
   async function processFile(info) {
-    if (!/\.[t|j]sx?$/.test(info.filepath)) {
+    if (!/\.[t|j]sx?$/.test(info.filePath)) {
       return;
     }
 
@@ -39,27 +39,30 @@ exports.createEngine = async function (options) {
 
     try {
       start = process.hrtime();
-      const results = await engine.lintText(info.data, { filePath: info.filepath });
+      const results = await engine.lintText(info.data, { filePath: info.filePath });
       end = process.hrtime(start);
       if (options.fix && results[0].output) {
         info.changed = true;
         info.data = results[0].output;
       }
-      info.errors.push(...results[0].messages.filter((item) => item.severity > 1));
-      info.warnings.push(...results[0].messages.filter((item) => item.severity <= 1));
+      info.issues.push(...results[0].messages.map((item) => ({ engineId: "eslint", ...item })));
       info.changed = info.changed || results[0].messages.length !== 0 || Boolean(results[0].output);
     } catch (error) {
-      info.errors.push(error);
+      info.errors.push({
+        engineId: "eslint",
+        message: error,
+        severity: 3,
+      });
     }
 
     if (end) {
-      info.trace.push({
-        name: "eslint",
+      info.timing.push({
+        engineId: "eslint",
         duration: end[0] * 1_000 + end[1] / 1_000_000,
       });
     } else {
-      info.trace.push({
-        name: "eslint",
+      info.timing.push({
+        engineId: "eslint",
         duration: 0,
       });
     }

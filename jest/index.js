@@ -22,7 +22,7 @@ module.exports = {
   verbose: true,
   collectCoverage: true,
   testEnvironment: "jsdom",
-  coverageDirectory: "<rootDir>/coverage",
+  coverageDirectory: "<rootDir>/reports",
   coverageReporters: ["text", "json", "lcov", "clover"],
   collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
   moduleFileExtensions: ["js", "ts", "jsx", "tsx"],
