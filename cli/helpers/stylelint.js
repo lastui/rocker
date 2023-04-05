@@ -60,12 +60,14 @@ exports.createEngine = async function (options) {
         ...results[0].parseErrors.map((item) => ({
           engineId: "stylelint",
           ...item,
+          severity: 2,
         })),
       );
       info.issues.push(
         ...results[0].warnings.map((item) => ({
           engineId: "stylelint",
           ...item,
+          severity: 1,
         })),
       );
       info.changed =

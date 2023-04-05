@@ -45,23 +45,7 @@ exports.createEngine = async function (options) {
         info.changed = true;
         info.data = results[0].output;
       }
-
-      info.issues.push(
-        ...results[0].messages
-          .filter((item) => item.severity > 1)
-          .map((item) => ({
-            engineId: "eslint",
-            ...item,
-          })),
-      );
-      info.issues.push(
-        ...results[0].messages
-          .filter((item) => item.severity <= 1)
-          .map((item) => ({
-            engineId: "eslint",
-            ...item,
-          })),
-      );
+      info.issues.push(...results[0].messages.map((item) => ({ engineId: "eslint", ...item })));
       info.changed = info.changed || results[0].messages.length !== 0 || Boolean(results[0].output);
     } catch (error) {
       info.errors.push({
