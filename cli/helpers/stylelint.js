@@ -9,11 +9,11 @@ exports.createEngine = async function (options) {
   const prettier = require("prettier");
 
   async function processFile(info) {
-    if (info.filepath.endsWith(".json")) {
+    if (info.filePath.endsWith(".json")) {
       return;
     }
 
-    const isCssInJs = /\.[t|j]sx?$/.test(info.filepath);
+    const isCssInJs = /\.[t|j]sx?$/.test(info.filePath);
 
     if (isCssInJs && !info.data.includes("@linaria")) {
       return;
@@ -56,22 +56,36 @@ exports.createEngine = async function (options) {
         info.data = data;
       }
 
-      info.errors.push(...results[0].parseErrors);
-      info.warnings.push(...results[0].warnings);
+      info.issues.push(
+        ...results[0].parseErrors.map((item) => ({
+          engineId: "stylelint",
+          ...item,
+        })),
+      );
+      info.issues.push(
+        ...results[0].warnings.map((item) => ({
+          engineId: "stylelint",
+          ...item,
+        })),
+      );
       info.changed =
         info.changed || results[0].warnings.length !== 0 || results[0].parseErrors.length !== 0 || data !== info.data;
     } catch (error) {
-      info.errors.push(error);
+      info.issues.push({
+        engineId: "stylelint",
+        message: error,
+        severity: 3,
+      });
     }
 
     if (end) {
-      info.trace.push({
-        name: "stylelint",
+      info.timing.push({
+        engineId: "stylelint",
         duration: end[0] * 1_000 + end[1] / 1_000_000,
       });
     } else {
-      info.trace.push({
-        name: "stylelint",
+      info.timing.push({
+        engineId: "stylelint",
         duration: 0,
       });
     }

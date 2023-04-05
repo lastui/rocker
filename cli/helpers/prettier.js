@@ -16,7 +16,7 @@ exports.createEngine = async function (options) {
   const prettier = require("prettier");
 
   async function processFile(info) {
-    if (!/\.[t|j]sx?$/.test(info.filepath)) {
+    if (!/\.[t|j]sx?$/.test(info.filePath)) {
       return;
     }
 
@@ -42,17 +42,21 @@ exports.createEngine = async function (options) {
         end = process.hrtime(start);
       }
     } catch (error) {
-      info.errors.push({ message: error });
+      info.issues.push({
+        engineId: "prettier",
+        message: error,
+        severity: 3,
+      });
     }
 
     if (end) {
-      info.trace.push({
-        name: "prettier",
+      info.timing.push({
+        engineId: "prettier",
         duration: end[0] * 1_000 + end[1] / 1_000_000,
       });
     } else {
-      info.trace.push({
-        name: "prettier",
+      info.timing.push({
+        engineId: "prettier",
         duration: 0,
       });
     }

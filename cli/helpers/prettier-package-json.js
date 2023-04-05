@@ -9,7 +9,7 @@ exports.createEngine = async function (options) {
   const prettier = require("prettier-package-json");
 
   async function processFile(info) {
-    if (!info.filepath.endsWith("package.json")) {
+    if (!info.filePath.endsWith("package.json")) {
       return;
     }
 
@@ -31,17 +31,21 @@ exports.createEngine = async function (options) {
         end = process.hrtime(start);
       }
     } catch (error) {
-      info.errors.push({ message: error });
+      info.issues.push({
+        engineId: "prettier-package-json",
+        message: error,
+        severity: 3,
+      });
     }
 
     if (end) {
-      info.trace.push({
-        name: "prettier-package-json",
+      info.timing.push({
+        engineId: "prettier-package-json",
         duration: end[0] * 1_000 + end[1] / 1_000_000,
       });
     } else {
-      info.trace.push({
-        name: "prettier-package-json",
+      info.timing.push({
+        engineId: "prettier-package-json",
         duration: 0,
       });
     }
