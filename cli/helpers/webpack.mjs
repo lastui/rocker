@@ -200,7 +200,6 @@ export async function getStack(options, packageName) {
 
 export async function setup(options, packageName) {
   process.env.NODE_ENV = options.development ? "development" : "production";
-
   process.env.BABEL_ENV = process.env.NODE_ENV;
 
   if (options.quiet) {
