@@ -1,13 +1,14 @@
-const path = require("path");
+import process from 'node:process';
+import { fileURLToPath } from 'node:url';
+import jest from "jest";
+import path from 'node:path';
 
-exports.run = async function (options) {
+export async function run(options) {
   process.on("unhandledRejection", (reason) => {
     throw reason;
   });
 
-  const jest = require("jest");
-
-  const config = path.resolve(__dirname, "..", "..", "jest", "index.js");
+  const config = path.resolve(fileURLToPath(import.meta.url), "..", "..", "..", "jest", "index.js");
 
   await jest.run([
     ...(process.stdout.isTTY ? ["--colors"] : []),

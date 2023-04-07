@@ -1,4 +1,9 @@
-exports.config = {
+import process from 'node:process';
+import eslint from "eslint";
+
+import babelConfig from "../../babel/index.js";
+
+export const config = {
   env: {
     es6: true,
   },
@@ -10,7 +15,7 @@ exports.config = {
       globalReturn: false,
     },
     requireConfigFile: false,
-    babelOptions: require("../../babel").env.development,
+    babelOptions: babelConfig.env.development,
   },
   rules: {
     "no-debugger": "error",
@@ -18,15 +23,14 @@ exports.config = {
   },
 };
 
-exports.createEngine = async function (options) {
-  const eslint = require("eslint");
+export async function createEngine(options) {
 
   const engine = new eslint.ESLint({
     cwd: process.env.INIT_CWD,
     allowInlineConfig: true,
     useEslintrc: false,
     fix: options.fix,
-    baseConfig: exports.config,
+    baseConfig: config,
   });
 
   async function processFile(info) {

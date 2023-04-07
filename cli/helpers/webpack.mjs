@@ -1,7 +1,8 @@
-const path = require("path");
-const colors = require("ansi-colors");
-const { execShellCommand } = require("./shell.js");
-const { fileExists, directoryExists } = require("./io.js");
+import process from "node:process";
+import path from "node:path";
+import colors from "ansi-colors";
+import { execShellCommand } from "./shell.mjs"
+import { fileExists, directoryExists } from "./io.mjs";
 
 function isLikelyASyntaxError(message) {
   return message.indexOf("Syntax error:") !== -1;
@@ -98,7 +99,7 @@ async function propagateProgressOption() {
   } catch (err) {}
 }
 
-exports.getStack = async function (options, packageName) {
+export async function getStack(options, packageName) {
   if (options.debug) {
     const oldDebug = (process.env.DEBUG || "").split(",");
     process.env.DEBUG = ["rocker:*", ...oldDebug].join(",");
@@ -115,7 +116,7 @@ exports.getStack = async function (options, packageName) {
   let DevServer = null;
 
   if (customConfigExists) {
-    config = require(projectConfig);
+    config = (await import(projectConfig)).default;
     config.resolve.modules = [];
     const nodeModules = new Set();
     for (const entrypoint in config.entry) {
@@ -153,7 +154,7 @@ exports.getStack = async function (options, packageName) {
       config.resolve.modules.push("node_modules");
     }
   } else if (projectNodeModulesExists) {
-    config = require(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}`);
+    config = await import(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}`);
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
     const indexExists = await fileExists(indexFile);
@@ -161,7 +162,7 @@ exports.getStack = async function (options, packageName) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
   } else {
-    config = require(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}`);
+    config = await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}`);
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
     const indexExists = await fileExists(indexFile);
@@ -183,11 +184,11 @@ exports.getStack = async function (options, packageName) {
     config.stats.all = true;
   }
   if (projectNodeModulesExists) {
-    webpack = require(`${projectNodeModules}/webpack`);
-    DevServer = require(`${projectNodeModules}/webpack-dev-server`);
+    webpack = (await import(`${projectNodeModules}/webpack`)).default;
+    DevServer = (await import(`${projectNodeModules}/webpack-dev-server`)).default;
   } else {
-    webpack = require("webpack");
-    DevServer = require("webpack-dev-server");
+    webpack = (await import("webpack")).default;
+    DevServer = (await import("webpack-dev-server")).default;
   }
 
   return {
@@ -197,7 +198,7 @@ exports.getStack = async function (options, packageName) {
   };
 };
 
-exports.setup = async function (options, packageName) {
+export async function setup(options, packageName) {
   process.env.NODE_ENV = options.development ? "development" : "production";
 
   process.env.BABEL_ENV = process.env.NODE_ENV;
