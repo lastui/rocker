@@ -10,10 +10,6 @@ import { createEngine as createEngineStylelint } from "./stylelint.mjs";
 import { createEngine as createEnginePrettier } from "./prettier.mjs";
 
 export async function run(options) {
-  process.on("unhandledRejection", (reason) => {
-    throw reason;
-  });
-
   const fileStream = new Readable({ objectMode: true });
 
   glob(

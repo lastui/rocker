@@ -4,10 +4,6 @@ import jest from "jest";
 import path from 'node:path';
 
 export async function run(options) {
-  process.on("unhandledRejection", (reason) => {
-    throw reason;
-  });
-
   const config = path.resolve(fileURLToPath(import.meta.url), "..", "..", "..", "jest", "index.js");
 
   await jest.run([
