@@ -28,7 +28,9 @@ export async function createEngine(options) {
         }
       } else {
         start = process.hrtime();
-        info.changed = info.changed || !(await prettier.check(JSON.parse(info.data), config));
+        if (!info.changed) {
+          info.changed = !(await prettier.check(JSON.parse(info.data), config));
+        }
         end = process.hrtime(start);
       }
     } catch (error) {

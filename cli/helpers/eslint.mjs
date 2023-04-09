@@ -50,7 +50,9 @@ export async function createEngine(options) {
         info.data = results[0].output;
       }
       info.issues.push(...results[0].messages.map((item) => ({ engineId: "eslint", ...item })));
-      info.changed = info.changed || results[0].messages.length !== 0 || Boolean(results[0].output);
+      if (!info.changed) {
+        info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
+      }
     } catch (error) {
       info.errors.push({
         engineId: "eslint",
