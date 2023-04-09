@@ -72,8 +72,9 @@ export async function createEngine(options) {
           severity: 1,
         })),
       );
-      info.changed =
-        info.changed || results[0].warnings.length !== 0 || results[0].parseErrors.length !== 0 || data !== info.data;
+      if (!info.changed) {
+        info.changed = results[0].warnings.length !== 0 || results[0].parseErrors.length !== 0 || data !== info.data;
+      }
     } catch (error) {
       info.issues.push({
         engineId: "stylelint",
