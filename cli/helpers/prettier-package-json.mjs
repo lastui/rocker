@@ -1,12 +1,13 @@
-const { config: prettierConfig } = require("./prettier");
+import process from "node:process";
+import prettier from "prettier-package-json";
+import { config as prettierConfig } from "./prettier.mjs";
 
-exports.config = {
+export const config = {
   tabWidth: prettierConfig.tabWidth,
   useTabs: Boolean(prettierConfig.useTabs),
 };
 
-exports.createEngine = async function (options) {
-  const prettier = require("prettier-package-json");
+export async function createEngine(options) {
 
   async function processFile(info) {
     if (!info.filePath.endsWith("package.json")) {
@@ -19,7 +20,7 @@ exports.createEngine = async function (options) {
     try {
       if (options.fix) {
         start = process.hrtime();
-        const formatted = await prettier.format(JSON.parse(info.data), exports.config);
+        const formatted = await prettier.format(JSON.parse(info.data), config);
         end = process.hrtime(start);
         if (formatted !== info.data) {
           info.changed = true;
@@ -27,7 +28,7 @@ exports.createEngine = async function (options) {
         }
       } else {
         start = process.hrtime();
-        info.changed = info.changed || !(await prettier.check(JSON.parse(info.data), exports.config));
+        info.changed = info.changed || !(await prettier.check(JSON.parse(info.data), config));
         end = process.hrtime(start);
       }
     } catch (error) {

@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 const path = require("path");
-const { clearDirectory } = require("../../cli/helpers/io");
 
 async function main() {
+  const { clearDirectory } = await import("../../cli/helpers/io.mjs");
+
   await clearDirectory(path.resolve(__dirname, "..", "node_modules", "core-js"));
 }
 

@@ -1,7 +1,8 @@
 const path = require("path");
-const { readFile, writeFile } = require("../../cli/helpers/io");
 
 async function cleanupManifest(filename) {
+  const { readFile, writeFile } = await import("../../cli/helpers/io.mjs");
+
   let changed = false;
   const manifestFile = path.resolve(__dirname, "..", "dll", filename);
   const manifest = JSON.parse(await readFile(manifestFile));

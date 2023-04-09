@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 const path = require("path");
-const { clearDirectory, createSymlink } = require("../../cli/helpers/io");
 
 async function main() {
+  const { clearDirectory, createSymlink } = await import("../../cli/helpers/io.mjs");
+
   await clearDirectory(path.resolve(__dirname, "..", "node_modules", "core-js"));
   await createSymlink(
     path.resolve(__dirname, "..", "..", "node_modules", "core-js"),

@@ -1,11 +1,13 @@
-#!/usr/bin/env node
+import process from 'node:process';
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+
+import { envelope } from "./helpers/process.mjs";
 
 process.on("warning", (e) => console.warn(e.stack));
 process.setMaxListeners(100);
 
-const { envelope } = require("./helpers/process.js");
-
-require("yargs")
+yargs(hideBin(process.argv))
   .parserConfiguration({
     "unknown-options-as-args": true,
     "populate--": false,
@@ -36,9 +38,9 @@ require("yargs")
   })
   .conflicts("quiet", "debug")
   // public commands
-  .command(envelope(require("./commands/build.js")))
-  .command(envelope(require("./commands/start.js")))
-  .command(envelope(require("./commands/test.js")))
-  .command(envelope(require("./commands/lint.js")))
+  .command(envelope(await import("./commands/build.mjs")))
+  .command(envelope(await import("./commands/start.mjs")))
+  .command(envelope(await import("./commands/test.mjs")))
+  .command(envelope(await import("./commands/lint.mjs")))
   .demandCommand()
   .help(false).argv;

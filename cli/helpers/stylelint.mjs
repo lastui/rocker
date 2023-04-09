@@ -1,12 +1,14 @@
-const { config: prettierConfig } = require("./prettier");
+import process from "node:process";
+import stylelint from "stylelint";
+import prettier from "prettier";
 
-exports.config = {
+import { config as prettierConfig } from "./prettier.mjs"
+
+export const config = {
   extends: ["@linaria/stylelint-config-standard-linaria"],
 };
 
-exports.createEngine = async function (options) {
-  const stylelint = require("stylelint");
-  const prettier = require("prettier");
+export async function createEngine(options) {
 
   async function processFile(info) {
     if (info.filePath.endsWith(".json")) {
@@ -35,7 +37,7 @@ exports.createEngine = async function (options) {
 
       let results = null;
       await stylelint.lint({
-        config: exports.config,
+        config: config,
         fix: options.fix,
         code: data,
         formatter: (stylelintResults) => {
