@@ -26,7 +26,7 @@
     "cli/commands/lint.js",
     "cli/commands/start.js",
     "cli/commands/test.js",
-    "cli/helpers/eslint.js",
+    "cli/helpers/eslint.mjs",
     "cli/helpers/io.mjs",
     "cli/helpers/jest.mjs",
     "cli/helpers/lint-stream.mjs",
