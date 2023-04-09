@@ -1,16 +1,14 @@
-import process from "node:process";
-import path from "node:path";
-import colors from "ansi-colors";
-import { setup, getStack } from "../helpers/webpack.mjs";
+exports.command = "start";
 
-export const command = "start";
+exports.describe = "develop package";
 
-export const describe = "develop package";
+exports.builder = {};
 
-export const builder = {};
+exports.handler = async function (options, cleanupHooks) {
+  const path = await import("node:path");
+  const colors = await import("ansi-colors");
+  const { setup, getStack } = await import("../helpers/webpack.mjs");
 
-export async function handler(options, cleanupHooks) {
-  
   const packageName = path.basename(process.env.INIT_CWD);
   const callback = await setup(
     {
