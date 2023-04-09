@@ -29,8 +29,7 @@ function envelope(command) {
       if (options.cwd) {
         const { directoryExists } = await import("./helpers/io.mjs");
         const requested = path.resolve(options.cwd);
-        const exists = await directoryExists(requested);
-        if (exists) {
+        if (await directoryExists(requested)) {
           process.env.INIT_CWD = requested;
         }
       }
@@ -89,7 +88,6 @@ require("yargs")
     describe: "Override working directory",
   })
   .conflicts("quiet", "debug")
-  // public commands
   .command(envelope(require("./commands/build.js")))
   .command(envelope(require("./commands/start.js")))
   .command(envelope(require("./commands/test.js")))
