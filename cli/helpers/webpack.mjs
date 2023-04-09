@@ -154,7 +154,7 @@ export async function getStack(options, packageName) {
       config.resolve.modules.push("node_modules");
     }
   } else if (projectNodeModulesExists) {
-    config = await import(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}`);
+    config = (await import(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
     const indexExists = await fileExists(indexFile);
@@ -162,7 +162,7 @@ export async function getStack(options, packageName) {
       config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
     }
   } else {
-    config = await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}`);
+    config = (await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
     config.entry = {};
     const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
     const indexExists = await fileExists(indexFile);
@@ -184,8 +184,8 @@ export async function getStack(options, packageName) {
     config.stats.all = true;
   }
   if (projectNodeModulesExists) {
-    webpack = (await import(`${projectNodeModules}/webpack`)).default;
-    DevServer = (await import(`${projectNodeModules}/webpack-dev-server`)).default;
+    webpack = (await import(`${projectNodeModules}/webpack/lib/index.js`)).default;
+    DevServer = (await import(`${projectNodeModules}/webpack-dev-server/lib/Server.js`)).default;
   } else {
     webpack = (await import("webpack")).default;
     DevServer = (await import("webpack-dev-server")).default;
