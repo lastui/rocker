@@ -31,14 +31,14 @@ jobs:
       - run: npm run postbuild
       - name: Test package platform
         working-directory: platform
-        run: node ../cli/index.js test
+        run: node ../cli/index.mjs test
       - name: Collect coverage for platform
         uses: codecov/codecov-action@v3
         with:
           file: platform/coverage/clover.xml
       - name: Test package bootstrap
         working-directory: bootstrap
-        run: node ../cli/index.js test
+        run: node ../cli/index.mjs test
       - name: Collect coverage for bootstrap
         uses: codecov/codecov-action@v3
         with:

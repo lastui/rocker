@@ -1,7 +1,11 @@
+import process from "node:process";
+import path from "node:path";
+import { directoryExists } from "./io.mjs";
+
 async function patchCwd(options) {
   if (options.cwd) {
-    const requested = require("path").resolve(options.cwd);
-    const exists = await require("./io.js").directoryExists(requested);
+    const requested = path.resolve(options.cwd);
+    const exists = await directoryExists(requested);
     if (exists) {
       process.env.INIT_CWD = requested;
     }
@@ -22,7 +26,7 @@ async function patchColors(options) {
   }
 }
 
-exports.envelope = function (command) {
+export function envelope(command) {
   return {
     command: command.command,
     describe: command.describe,

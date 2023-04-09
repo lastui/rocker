@@ -1,4 +1,7 @@
-exports.config = {
+import prettier from "prettier";
+import process from "node:process";
+
+export const config = {
   parser: "babel",
   bracketSameLine: true,
   quoteProps: "as-needed",
@@ -12,11 +15,10 @@ exports.config = {
   trailingComma: "all",
 };
 
-exports.createEngine = async function (options) {
-  const prettier = require("prettier");
+export async function createEngine(options) {
 
   async function processFile(info) {
-    if (!/\.[t|j]sx?$/.test(info.filePath)) {
+    if (!/\.[t|j|m]sx?$/.test(info.filePath)) {
       return;
     }
 
@@ -30,7 +32,7 @@ exports.createEngine = async function (options) {
     try {
       if (options.fix) {
         start = process.hrtime();
-        const formatted = await prettier.format(info.data, exports.config);
+        const formatted = await prettier.format(info.data, config);
         end = process.hrtime(start);
         if (formatted !== info.data) {
           info.changed = true;
@@ -38,7 +40,7 @@ exports.createEngine = async function (options) {
         }
       } else {
         start = process.hrtime();
-        info.changed = info.changed || !(await prettier.check(info.data, exports.config));
+        info.changed = info.changed || !(await prettier.check(info.data, config));
         end = process.hrtime(start);
       }
     } catch (error) {

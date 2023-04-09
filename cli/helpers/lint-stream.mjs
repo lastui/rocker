@@ -1,19 +1,23 @@
-const path = require("path");
-const glob = require("glob");
-const { Readable } = require("stream");
-const { ensureDirectory, writeFile, readFile } = require("./io");
+import process from "node:process";
+import path from "node:path";
+import { Readable } from "node:stream";
+import colors from "ansi-colors";
+import glob from "glob"
+import { ensureDirectory, writeFile, readFile } from "./io.mjs";
+import { createEngine as createEnginePrettierPackageJson } from "./prettier-package-json.mjs";
+import { createEngine as createEngineEslint } from "./eslint.mjs";
+import { createEngine as createEngineStylelint } from "./stylelint.mjs";
+import { createEngine as createEnginePrettier } from "./prettier.mjs";
 
-exports.run = async function (options) {
+export async function run(options) {
   process.on("unhandledRejection", (reason) => {
     throw reason;
   });
 
-  const colors = require("ansi-colors");
-
   const fileStream = new Readable({ objectMode: true });
 
   glob(
-    "**/*.+(js|jsx|ts|tsx|json|scss|css)",
+    "**/*.+(js|jsx|ts|tsx|mjs|json|scss|css)",
     {
       cwd: process.env.INIT_CWD,
       ignore: [
@@ -25,9 +29,9 @@ exports.run = async function (options) {
         "**/*.dll.js",
       ],
     },
-    (err, files) => {
-      if (err) {
-        fileStream.emit("error", err);
+    (error, files) => {
+      if (error) {
+        fileStream.emit("error", error);
         return;
       }
       files.forEach((file) => {
@@ -39,16 +43,9 @@ exports.run = async function (options) {
 
   fileStream._read = () => {};
 
-  const { createEngine: createEnginePrettierPackageJson } = require("./prettier-package-json");
   const processFilePrettierPackageJson = await createEnginePrettierPackageJson(options);
-
-  const { createEngine: createEngineEslint } = require("./eslint");
   const processFileEslint = await createEngineEslint(options);
-
-  const { createEngine: createEngineStylelint } = require("./stylelint");
   const processFileStylelint = await createEngineStylelint(options);
-
-  const { createEngine: createEnginePrettier } = require("./prettier");
   const processFilePrettier = await createEnginePrettier(options);
 
   async function processFile(filePath) {
@@ -139,7 +136,6 @@ exports.run = async function (options) {
       return issues;
     }, []);
 
-    await ensureDirectory(path.resolve(process.env.INIT_CWD, "reports"));
     await writeFile(
       path.resolve(process.env.INIT_CWD, "reports", "lint-final.json"),
       JSON.stringify({ issues: formattedResults }, null, 2),
@@ -156,4 +152,5 @@ exports.run = async function (options) {
       console.log(colors.bold(`Checked ${numberTotal} files`));
     }
   }
+
 };
