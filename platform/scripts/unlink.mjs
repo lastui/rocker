@@ -5,13 +5,13 @@ import path from "node:path";
 const thisFile = fileURLToPath(import.meta.url)
 
 async function ulinkDependenciesModules() {
-  const targetPath = path.resolve(thisFile, "..", "..", "node_modules");
-  await fs.unlink(targetPath)
+  const targetPath = path.resolve(thisFile, "..", "..", "node_modules", "@lastui");
+  await fs.rm(targetPath, { recursive: true, force: true })
+  await fs.unlink(path.dirname(targetPath))
 }
 
 async function unlinkDLL(...nodePath) {
-  const targetPath = path.resolve(thisFile, "..", "..", "node_modules", "@lastui", ...nodePath, "dll");
-  await fs.unlink(targetPath);
+  await unlinkModule("@lastui", ...nodePath, "dll")
 }
 
 async function unlinkModule(...nodePath) {
@@ -19,13 +19,7 @@ async function unlinkModule(...nodePath) {
   await fs.unlink(targetPath);
 }
 
-async function ulinkSelfAsModule() {
-  const targetPath = path.resolve(thisFile, "..", "..", "node_modules", "@lastui", "rocker", "platform");
-  await fs.unlink(targetPath);
-  await fs.rm(path.dirname(path.dirname(targetPath)), { recursive: true, force: true });
-}
-
 await unlinkModule("core-js");
+await unlinkModule("@lastui", "rocker", "platform");
 await unlinkDLL("dependencies");
-await ulinkSelfAsModule();
 await ulinkDependenciesModules();
