@@ -11,6 +11,7 @@ import { createEngine as createEnginePrettier } from "./prettier.mjs";
 
 export async function run(options) {
   const fileStream = new Readable({ objectMode: true });
+  fileStream._read = () => {};
 
   glob(
     "**/*.+(js|jsx|ts|tsx|mjs|json|scss|css)",
@@ -37,12 +38,12 @@ export async function run(options) {
     },
   );
 
-  fileStream._read = () => {};
-
-  const processFilePrettierPackageJson = await createEnginePrettierPackageJson(options);
-  const processFileEslint = await createEngineEslint(options);
-  const processFileStylelint = await createEngineStylelint(options);
-  const processFilePrettier = await createEnginePrettier(options);
+  const engines = await Promise.all([
+    createEnginePrettierPackageJson(options),
+    createEngineStylelint(options),
+    createEngineEslint(options),
+    createEnginePrettier(options),
+  ]);
 
   async function processFile(filePath) {
     let data = await readFile(path.join(process.env.INIT_CWD, filePath));
@@ -55,10 +56,9 @@ export async function run(options) {
       changed: false,
     };
 
-    await processFilePrettierPackageJson(info);
-    await processFileStylelint(info);
-    await processFileEslint(info);
-    await processFilePrettier(info);
+    for (const engine of engines) {
+      await engine(info);
+    }
 
     if (info.timing.length > 0) {
       const duration = `(${info.timing.reduce((acc, trace) => acc + trace.duration, 0).toFixed(2)} ms)`;
