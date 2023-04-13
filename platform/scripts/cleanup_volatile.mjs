@@ -1,11 +1,12 @@
-const path = require("path");
+import { fileURLToPath } from 'node:url';
+import fs from 'node:fs/promises';
+import path from "node:path";
 
 async function cleanupManifest(filename) {
-  const { readFile, writeFile } = await import("../../cli/helpers/io.mjs");
-
   let changed = false;
-  const manifestFile = path.resolve(__dirname, "..", "dll", filename);
-  const manifest = JSON.parse(await readFile(manifestFile));
+
+  const manifestFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", "dll", filename);
+  const manifest = JSON.parse(await fs.readFile(manifestFile, { encoding: 'utf8' }));
 
   for (const key in manifest.content) {
     if (key.startsWith("./node_modules/regenerator-runtime/")) {
@@ -26,17 +27,8 @@ async function cleanupManifest(filename) {
     }
   }
   if (changed) {
-    await writeFile(manifestFile, JSON.stringify(manifest, null, 2));
+    await fs.writeFile(manifestFile, JSON.stringify(manifest, null, 2));
   }
 }
 
-async function main(filename) {
-  await cleanupManifest("platform-prod-manifest.json");
-}
-
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+await cleanupManifest("platform-prod-manifest.json");
