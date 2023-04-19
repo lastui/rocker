@@ -244,9 +244,14 @@ config.plugins.push(
         }
       }
 
-      const headTags = props.htmlWebpackPlugin.tags.headTags.filter(
-        (item) => !entrypoints.some((chunk) => chunk.files.has(item.attributes.src)),
-      );
+      const headTags = props.htmlWebpackPlugin.tags.headTags
+        .filter((item) => !entrypoints.some((chunk) => chunk.files.has(item.attributes.src)))
+        .map((item) => {
+          if (item.attributes.src === `${settings.BUILD_ID}.js`) {
+            item.attributes.src = `/${item.attributes.src}`;
+          }
+          return item;
+        });
 
       let manifest;
       try {
