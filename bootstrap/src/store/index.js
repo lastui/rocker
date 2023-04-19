@@ -17,7 +17,7 @@ export default (fetchContext, bootstrapMiddlewares) => {
   const loaderMiddleware = createLoaderMiddleware();
   const { sagaMiddleware, runSaga } = createSagaMiddleware({
     context: {
-      fetchContext: async () => {
+      async fetchContext() {
         const ctx = await fetchContext();
         return {
           entrypoint: ctx?.entrypoint || null,
@@ -32,9 +32,7 @@ export default (fetchContext, bootstrapMiddlewares) => {
 
   const composer =
     process.env.NODE_ENV === "development" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-          name: `rocker-${BUILD_ID}`,
-        })
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ name: `rocker-${BUILD_ID}` })
       : compose;
 
   const reducer = combineReducers({

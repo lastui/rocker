@@ -10,11 +10,12 @@ class NormalizedModuleIdPlugin {
           if (!id) {
             continue;
           }
-          if (id.startsWith("./node_modules/@lastui/rocker")) {
-            compilation.chunkGraph.setModuleId(item, id.replace(/.\/node_modules\/@lastui\/rocker/g, "@rocker"));
-          } else {
-            compilation.chunkGraph.setModuleId(item, id.replace(/\/(dist|esm?|cjs|lib|unpkg)\//g, "/"));
-          }
+          compilation.chunkGraph.setModuleId(
+            item,
+            id.startsWith("./node_modules/@lastui/rocker")
+              ? id.replace(/.\/node_modules\/@lastui\/rocker/g, "@rocker")
+              : id.replace(/\/(dist|esm?|cjs|lib|unpkg)\//g, "/").replace(/\.m?js$/g, ".js"),
+          );
         }
       });
     });
