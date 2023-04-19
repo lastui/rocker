@@ -14,7 +14,10 @@ class NormalizedModuleIdPlugin {
             item,
             id.startsWith("./node_modules/@lastui/rocker")
               ? id.replace(/.\/node_modules\/@lastui\/rocker/g, "@rocker")
-              : id.replace(/\/(dist|esm?|cjs|lib|unpkg)\//g, "/").replace(/\.m?js$/g, ".js"),
+              : id
+                  .replace(/\/(dist|esm?|cjs|lib|unpkg)\//g, "/")
+                  .replace(/\.(esm|cjs)\.js$/g, ".js")
+                  .replace(/\.m?js$/g, ".js"),
           );
         }
       });
