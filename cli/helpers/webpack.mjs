@@ -72,14 +72,19 @@ function formatMessage(message) {
   return message.trim();
 }
 
-function formatWebpackMessages(stats) {
-  const formattedErrors = (stats.compilation.errors ?? []).map(formatMessage);
-  const formattedWarnings = (stats.compilation.warnings ?? []).map(formatMessage);
-  const result = { errors: formattedErrors, warnings: formattedWarnings };
-  if (result.errors.some(isLikelyASyntaxError)) {
-    result.errors = result.errors.filter(isLikelyASyntaxError);
+function formatWebpackMessages(multiStats) {
+  const errors = [];
+  const warnings = [];
+  for (const stats of multiStats) {
+    let formattedErrors = (stats.compilation.errors ?? []).map(formatMessage);
+    const formattedWarnings = (stats.compilation.warnings ?? []).map(formatMessage);
+    if (formattedErrors.some(isLikelyASyntaxError)) {
+      formattedErrors = formattedErrors.filter(isLikelyASyntaxError)
+    }
+    errors.push(...formattedErrors)
+    warnings.push(...formattedWarnings)
   }
-  return result;
+  return { errors, warnings };  
 }
 
 async function propagateProgressOption() {
@@ -111,78 +116,95 @@ export async function getStack(options, packageName) {
   const projectNodeModules = path.resolve(process.env.INIT_CWD, "node_modules");
   const projectNodeModulesExists = await directoryExists(`${projectNodeModules}/webpack`);
 
-  let config = null;
+  let configs = [];
   let webpack = null;
   let DevServer = null;
 
   if (customConfigExists) {
-    config = (await import(projectConfig)).default;
-    config.resolve.modules = [];
-    const nodeModules = new Set();
-    for (const entrypoint in config.entry) {
-      const patchedSources = [];
-      const originalSources = Array.isArray(config.entry[entrypoint])
-        ? config.entry[entrypoint]
-        : [config.entry[entrypoint]];
-      for (const source of originalSources) {
-        if (source.startsWith(".")) {
-          patchedSources.push(path.resolve(process.env.INIT_CWD, source));
-        } else {
-          patchedSources.push(source);
-        }
-      }
-      for (const source of patchedSources) {
-        const candidates = [
-          path.resolve(config.context, "node_modules"),
-          path.resolve(source, "..", "node_modules"),
-          path.resolve(source, "..", "..", "node_modules"),
-        ];
-
-        for (const nodeModulesCandidate of candidates) {
-          if (await directoryExists(nodeModulesCandidate)) {
-            nodeModules.add(nodeModulesCandidate);
+    configs = (await import(projectConfig)).default;
+    if (!Array.isArray(configs)) {
+      configs = [configs];
+    }
+    for (const idx in configs) {
+      configs[idx].resolve.modules = [];
+      const nodeModules = new Set();
+      for (const entrypoint in configs[idx].entry) {
+        const patchedSources = [];
+        const originalSources = Array.isArray(configs[idx].entry[entrypoint])
+          ? configs[idx].entry[entrypoint]
+          : [configs[idx].entry[entrypoint]];
+        for (const source of originalSources) {
+          if (source.startsWith(".")) {
+            patchedSources.push(path.resolve(process.env.INIT_CWD, source));
+          } else {
+            patchedSources.push(source);
           }
         }
-      }
-      config.entry[entrypoint] = patchedSources;
-    }
+        for (const source of patchedSources) {
+          const candidates = [
+            path.resolve(configs[idx].context, "node_modules"),
+            path.resolve(source, "..", "node_modules"),
+            path.resolve(source, "..", "..", "node_modules"),
+          ];
 
-    if (nodeModules.size > 0) {
-      config.snapshot.managedPaths = Array.from(nodeModules);
-      config.resolve.modules.push(...nodeModules);
-    } else {
-      config.resolve.modules.push("node_modules");
+          for (const nodeModulesCandidate of candidates) {
+            if (await directoryExists(nodeModulesCandidate)) {
+              nodeModules.add(nodeModulesCandidate);
+            }
+          }
+        }
+        configs[idx].entry[entrypoint] = patchedSources;
+      }
+
+      if (nodeModules.size > 0) {
+        configs[idx].snapshot.managedPaths = Array.from(nodeModules);
+        configs[idx].resolve.modules.push(...nodeModules);
+      } else {
+        configs[idx].resolve.modules.push("node_modules");
+      }
     }
   } else if (projectNodeModulesExists) {
-    config = (await import(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
-    config.entry = {};
-    const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
-    const indexExists = await fileExists(indexFile);
-    if (indexExists) {
-      config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
+    configs = (await import(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
+    if (!Array.isArray(configs)) {
+      configs = [configs];
+    }
+    for (const idx in configs) {
+      configs[idx].entry = {};
+      const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
+      const indexExists = await fileExists(indexFile);
+      if (indexExists) {
+        configs[idx].entry[packageName === "spa" ? "main" : packageName] = [indexFile];
+      }
     }
   } else {
-    config = (await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
-    config.entry = {};
-    const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
-    const indexExists = await fileExists(indexFile);
-    if (indexExists) {
-      config.entry[packageName === "spa" ? "main" : packageName] = [indexFile];
+    configs = (await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
+    if (!Array.isArray(configs)) {
+      configs = [configs];
+    }
+    for (const idx in configs) {
+      configs[idx].entry = {};
+      const indexFile = path.resolve(process.env.INIT_CWD, "src", "index.js");
+      const indexExists = await fileExists(indexFile);
+      if (indexExists) {
+        configs[idx].entry[packageName === "spa" ? "main" : packageName] = [indexFile];
+      }
     }
   }
 
-  if (!config.infrastructureLogging) {
-    config.infrastructureLogging = {
-      appendOnly: options.debug,
-      level: options.debug ? "verbose" : "info",
-      colors: process.stdout.isTTY,
-    };
+  for (const idx in configs) {
+    if (!configs[idx].infrastructureLogging) {
+      configs[idx].infrastructureLogging = {
+        appendOnly: options.debug,
+        level: options.debug ? "verbose" : "info",
+        colors: process.stdout.isTTY,
+      };
+    }
+    configs[idx].infrastructureLogging.stream = process.stdout;
+    if (options.debug) {
+      configs[idx].stats.all = true;
+    }
   }
-  config.infrastructureLogging.stream = process.stdout;
 
-  if (options.debug) {
-    config.stats.all = true;
-  }
   if (projectNodeModulesExists) {
     webpack = (await import(`${projectNodeModules}/webpack/lib/index.js`)).default;
     DevServer = (await import(`${projectNodeModules}/webpack-dev-server/lib/Server.js`)).default;
@@ -192,7 +214,7 @@ export async function getStack(options, packageName) {
   }
 
   return {
-    config,
+    config: configs,
     webpack,
     DevServer,
   };
@@ -223,7 +245,7 @@ export async function setup(options, packageName) {
     if (!stats) {
       return;
     }
-    const messages = formatWebpackMessages(stats);
+    const messages = formatWebpackMessages(stats.stats ?? [stats]);
     const isSuccessful = !messages.errors.length && !messages.warnings.length;
     if (isSuccessful && !options.quiet) {
       console.log(colors.bold("Compiled successfully!"));
