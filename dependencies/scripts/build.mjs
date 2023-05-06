@@ -35,17 +35,41 @@ for (const leaf in nodeMapping) {
 	nodeMapping[leaf].provides = Object.keys((await import(`../dll/${leaf}-dev-manifest.json`, { assert: { type: 'json' } })).default.content);
 };
 
-const dependencyGraph = {};
+const provisionGraph = {};
 
 for (const leaf in nodeMapping) {
 	for (const provision of nodeMapping[leaf].provides) {
-		if (!dependencyGraph[provision]) {
-        	dependencyGraph[provision] = [];
+		if (!provisionGraph[provision]) {
+        	provisionGraph[provision] = [];
       	}
-      	if (!dependencyGraph[provision].includes(nodeMapping[leaf].entry)) {
-        	dependencyGraph[provision].push(nodeMapping[leaf].entry);
+      	if (!provisionGraph[provision].includes(nodeMapping[leaf].entry)) {
+        	provisionGraph[provision].push(nodeMapping[leaf].entry);
       	}
 	}
 }
 
-console.log('dependencyGraph', dependencyGraph);
+console.log('provisionGraph', provisionGraph)
+
+//const dependencyGraph = {};
+//
+//for (const leaf in nodeMapping) {
+//
+//	for (const provision of nodeMapping[leaf].provides) {
+//		const requirements = provisionGraph[provision];
+//
+//		for (const requirement of requirements) {
+//			if (!dependencyGraph[requirement]) {
+//				dependencyGraph[requirement] = []
+//			}
+//			if (requirement === nodeMapping[leaf].entry) {
+//				continue
+//			}
+//			if (!dependencyGraph[requirement].includes(nodeMapping[leaf].entry)) {
+//        		dependencyGraph[requirement].push(nodeMapping[leaf].entry);
+//      		}
+//		}
+//	}
+//
+//}
+
+
