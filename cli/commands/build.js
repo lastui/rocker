@@ -13,5 +13,10 @@ exports.handler = async function (options, cleanupHooks) {
   const callback = await setup(options, packageName);
   const { config, webpack } = await getStack(options, packageName);
 
-  webpack(config).run(callback);
+  await new Promise((resolve, reject) => {
+    webpack(config).run((err, stats) => {
+      callback(err, stats);
+      resolve();
+    });
+  });
 };

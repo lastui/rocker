@@ -116,14 +116,16 @@ export async function getStack(options, packageName) {
   const projectNodeModules = path.resolve(process.env.INIT_CWD, "node_modules");
   const projectNodeModulesExists = await directoryExists(`${projectNodeModules}/webpack`);
 
-  let configs = [];
+  const configs = [];
   let webpack = null;
   let DevServer = null;
 
   if (customConfigExists) {
-    configs = (await import(projectConfig)).default;
-    if (!Array.isArray(configs)) {
-      configs = [configs];
+    const resolvedConfigs = (await import(`${projectConfig}?t=${process.hrtime()[0]}`)).default;
+    if (!Array.isArray(resolvedConfigs)) {
+      configs.push(resolvedConfigs);
+    } else {
+      config.push(...resolvedConfigs)
     }
     for (const idx in configs) {
       configs[idx].resolve.modules = [];
@@ -164,9 +166,11 @@ export async function getStack(options, packageName) {
       }
     }
   } else if (projectNodeModulesExists) {
-    configs = (await import(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
-    if (!Array.isArray(configs)) {
-      configs = [configs];
+    const resolvedConfigs = (await import(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
+    if (!Array.isArray(resolvedConfigs)) {
+      configs.push(resolvedConfigs);
+    } else {
+      config.push(...resolvedConfigs)
     }
     for (const idx in configs) {
       configs[idx].entry = {};
@@ -177,9 +181,11 @@ export async function getStack(options, packageName) {
       }
     }
   } else {
-    configs = (await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
-    if (!Array.isArray(configs)) {
-      configs = [configs];
+    const resolvedConfigs = (await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
+    if (!Array.isArray(resolvedConfigs)) {
+      configs.push(resolvedConfigs);
+    } else {
+      config.push(...resolvedConfigs)
     }
     for (const idx in configs) {
       configs[idx].entry = {};
