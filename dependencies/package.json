@@ -11,6 +11,13 @@
   "bugs": {
     "url": "https://github.com/lastui/rocker/issues"
   },
+  "scripts": {
+    "prebuild": "npm ci --no-fund --no-audit && node ./scripts/link.mjs",
+    "postbuild": "node ./scripts/unlink.mjs",
+    "build": "node ./scripts/build.mjs",
+    "build:dev": "node ../cli/index.js build --cwd=dependencies --dev --debug",
+    "build:prod": "node ../cli/index.js build --cwd=dependencies --debug"
+  },
   "files": [
     "dll/dependencies-dev-manifest.json",
     "dll/dependencies-prod-manifest.json",
