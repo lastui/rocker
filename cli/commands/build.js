@@ -11,10 +11,10 @@ exports.handler = async function (options, cleanupHooks) {
   const packageName = path.basename(process.env.INIT_CWD);
 
   const callback = await setup(options, packageName);
-  const { config, webpack } = await getStack(options, packageName);
+  const { configs, webpack } = await getStack(options, packageName);
 
   await new Promise((resolve, reject) => {
-    webpack(config).run((err, stats) => {
+    webpack(configs).run((err, stats) => {
       callback(err, stats);
       resolve();
     });

@@ -17,22 +17,24 @@ exports.handler = async function (options, cleanupHooks) {
     },
     packageName,
   );
-  const { config, webpack, DevServer } = await getStack(options, packageName);
+  const { configs, webpack, DevServer } = await getStack(options, packageName);
 
-  const devServerConfig = config.devServer;
-  delete config.devServer;
+  for (const config of configs) {
+    const devServerConfig = config.devServer;
+    delete config.devServer;
 
-  const compiler = webpack(config, callback);
-  if (!options.quiet) {
-    compiler.hooks.invalid.tap("invalid", () => {
-      console.log(colors.bold(`Compiling ${packageName}...`));
-    });
-  }
-  const instance = new DevServer(devServerConfig, compiler);
-  instance.startCallback((err) => {
-    if (err) {
-      callback(err);
+    const compiler = webpack(config, callback);
+    if (!options.quiet) {
+      compiler.hooks.invalid.tap("invalid", () => {
+        console.log(colors.bold(`Compiling ${packageName}...`));
+      });
     }
-  });
-  cleanupHooks.push(() => instance.close());
+    const instance = new DevServer(devServerConfig, compiler);
+    instance.startCallback((err) => {
+      if (err) {
+        callback(err);
+      }
+    });
+    cleanupHooks.push(() => instance.close());
+  }
 };
