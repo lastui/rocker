@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.14.99",
+  "version": "0.14.100",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -114,7 +114,7 @@
     "babel-loader": "9.1.2",
     "buffer": "6.0.3",
     "copy-webpack-plugin": "11.0.0",
-    "core-js": "3.30.1",
+    "core-js": "3.30.2",
     "css-loader": "6.7.3",
     "dotenv": "16.0.3",
     "eslint": "8.40.0",
@@ -133,11 +133,11 @@
     "source-map": "mozilla/source-map#master",
     "style-loader": "3.3.2",
     "stylelint": "15.6.1",
-    "terser-webpack-plugin": "5.3.7",
+    "terser-webpack-plugin": "5.3.8",
     "util": "0.12.5",
     "weak-napi": "2.0.2",
     "webpack": "5.82.0",
-    "webpack-dev-server": "4.13.3",
+    "webpack-dev-server": "4.14.0",
     "yargs": "17.7.2"
   }
 }
