@@ -220,7 +220,7 @@ export async function getStack(options, packageName) {
   }
 
   return {
-    config: configs,
+    configs,
     webpack,
     DevServer,
   };
