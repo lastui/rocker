@@ -2,7 +2,6 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fs from "node:fs/promises";
 import webpack from "webpack";
-
 import parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import generate from "@babel/generator";
@@ -10,10 +9,10 @@ import types from "@babel/types";
 
 process.env.INIT_CWD = path.resolve(fileURLToPath(import.meta.url), "..", "..");
 
+const development = process.env.NODE_ENV === "development";
+
 const dllConfig = (await import("../../webpack/config/dll/index.js")).default;
-
 const config = (await import("../webpack.config.js")).default;
-
 const command = await import("../../cli/commands/build.js");
 
 function toCacheKey(chunk, item) {
@@ -29,17 +28,18 @@ function generateDllConfig(name, provides, references, sourceType) {
           "..",
           "..",
           "dll",
-          `${reference}-${process.env.NODE_ENV === "development" ? "dev" : "prod"}-manifest.json`,
+          `${reference}-${development ? "dev" : "prod"}-manifest.json`,
         ),
         sourceType: "umd",
         context: process.env.INIT_CWD,
       }),
   );
 
-  return Object.assign({}, dllConfig, {
-    entry: { [name]: provides },
+  return {
+    ...dllConfig,
     name,
-    dependencies: references,
+    dependencies: [...(dllConfig.dependencies ?? []), ...references],
+    entry: { [name]: provides },
     output: {
       ...dllConfig.output,
       library: {
@@ -48,7 +48,7 @@ function generateDllConfig(name, provides, references, sourceType) {
       },
     },
     plugins: [...dllConfig.plugins, ...plugins],
-  });
+  };
 }
 
 const allDlls = [];
@@ -73,7 +73,7 @@ for (const chunk in config.entry) {
 
   const leafsConfig = Object.assign({}, dllConfig, { entry: leafsMultiEntry });
 
-  await command.handler({ development: process.env.NODE_ENV === "development", config: leafsConfig }, []);
+  await command.handler({ development, config: leafsConfig }, []);
 
   for (const leaf in nodeMapping) {
     nodeMapping[leaf].provides = Object.keys(
@@ -84,7 +84,7 @@ for (const chunk in config.entry) {
             "..",
             "..",
             "dll",
-            `${leaf}-${process.env.NODE_ENV === "development" ? "dev" : "prod"}-manifest.json`,
+            `${leaf}-${development ? "dev" : "prod"}-manifest.json`,
           ),
           { encoding: "utf8" },
         ),
@@ -103,18 +103,12 @@ for (const chunk in config.entry) {
         "..",
         "..",
         "dll",
-        `${leaf}-${process.env.NODE_ENV === "development" ? "dev" : "prod"}-manifest.json`,
+        `${leaf}-${development ? "dev" : "prod"}-manifest.json`,
       ),
       { recursive: false, force: true },
     );
     await fs.rm(
-      path.resolve(
-        fileURLToPath(import.meta.url),
-        "..",
-        "..",
-        "dll",
-        `${leaf}.dll${process.env.NODE_ENV === "development" ? "" : ".min"}.js`,
-      ),
+      path.resolve(fileURLToPath(import.meta.url), "..", "..", "dll", `${leaf}.dll${development ? "" : ".min"}.js`),
       { recursive: false, force: true },
     );
   }
@@ -212,7 +206,7 @@ for (const chunk in config.entry) {
     ),
   ];
 
-  await command.handler({ development: process.env.NODE_ENV === "development", config: strategy }, []);
+  await command.handler({ development, config: strategy }, []);
 
   for (const entry of compilationOrder) {
     const item = {
@@ -238,7 +232,7 @@ const ast = parser.parse(indexSource, { sourceType: "module" });
 
 const modifiedIndexFile = traverse.default(ast, {
   IfStatement(path) {
-    if (process.env.NODE_ENV === "development") {
+    if (development) {
       path.replaceWith(
         types.ifStatement(
           path.node.test,
@@ -261,7 +255,6 @@ const modifiedIndexFile = traverse.default(ast, {
           path.node.alternate,
         ),
       );
-      path.stop();
     } else {
       path.replaceWith(
         types.ifStatement(
@@ -285,8 +278,8 @@ const modifiedIndexFile = traverse.default(ast, {
           ]),
         ),
       );
-      path.stop();
     }
+    path.stop();
   },
 });
 
