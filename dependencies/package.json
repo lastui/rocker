@@ -11,13 +11,6 @@
   "bugs": {
     "url": "https://github.com/lastui/rocker/issues"
   },
-  "scripts": {
-    "prebuild": "npm ci --no-fund --no-audit && node ./scripts/link.mjs",
-    "postbuild": "node ./scripts/unlink.mjs",
-    "build": "node ./scripts/build.mjs",
-    "build:dev": "node ../cli/index.js build --cwd=dependencies --dev --debug",
-    "build:prod": "node ../cli/index.js build --cwd=dependencies --debug"
-  },
   "files": [
     "dll/dependencies-dev-manifest.json",
     "dll/dependencies-prod-manifest.json",
@@ -25,6 +18,13 @@
     "dll/dependencies.dll.min.js",
     "index.js"
   ],
+  "scripts": {
+    "prebuild": "npm ci --no-fund --no-audit && node ./scripts/link.mjs",
+    "build": "node ./scripts/build.mjs",
+    "postbuild": "node ./scripts/unlink.mjs",
+    "build:dev": "node ../cli/index.js build --cwd=dependencies --dev --debug",
+    "build:prod": "node ../cli/index.js build --cwd=dependencies --debug"
+  },
   "dependencies": {
     "@linaria/core": "4.2.10",
     "@linaria/logger": "4.0.0",

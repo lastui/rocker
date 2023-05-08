@@ -15,12 +15,12 @@ const nodeMapping = {};
 
 const leafsMultiEntry = {}
 
+const entryPoints = [];
+
 for (const chunk in config.entry) {
 	for (const entry of config.entry[chunk]) {
-		const cacheKey = `${chunk}_${entry.replaceAll("/", "-").replaceAll("-", "_").replaceAll("@", "")}`;
-
+		const cacheKey = `${entry.replaceAll("/", "-").replaceAll("-", "_").replaceAll("@", "")}`;
 		nodeMapping[cacheKey] = {
-			chunk,
 			entry,
 		}
 		leafsMultiEntry[cacheKey] = [entry]
@@ -32,44 +32,68 @@ const leafsConfig = Object.assign({}, dllConfig, { entry: leafsMultiEntry });
 await command.handler({ development: process.env.NODE_ENV === 'development', config: leafsConfig }, []);
 
 for (const leaf in nodeMapping) {
-	nodeMapping[leaf].provides = Object.keys((await import(`../dll/${leaf}-dev-manifest.json`, { assert: { type: 'json' } })).default.content);
+	nodeMapping[leaf].provides = Object.keys(JSON.parse(await fs.readFile(path.resolve(fileURLToPath(import.meta.url), "..", "..", 'dll', `${leaf}-dev-manifest.json`), { encoding: 'utf8' })).content);
 };
 
-const provisionGraph = {};
+const dependencyGraph = {};
+
+let entries = Object.values(leafsMultiEntry).flat();
 
 for (const leaf in nodeMapping) {
 	for (const provision of nodeMapping[leaf].provides) {
-		if (!provisionGraph[provision]) {
-        	provisionGraph[provision] = [];
-      	}
-      	if (!provisionGraph[provision].includes(nodeMapping[leaf].entry)) {
-        	provisionGraph[provision].push(nodeMapping[leaf].entry);
-      	}
+		let packageName = provision.replaceAll("./node_modules/", '');
+		let candidate = '';
+		for (const entry of entries) {
+			if (packageName.startsWith(`${entry}/`) && entry.length > candidate) {
+				candidate = entry;
+			}
+		}
+		if (candidate.length === 0) {
+			candidate = packageName.split('/')[0]
+		}
+		packageName = candidate;
+		if (!dependencyGraph[nodeMapping[leaf].entry]) {
+    	dependencyGraph[nodeMapping[leaf].entry] = [];
+  	}
+  	if (!dependencyGraph[packageName]) {
+    	dependencyGraph[packageName] = [];
+  	}
+  	if (!dependencyGraph[nodeMapping[leaf].entry].includes(packageName) && nodeMapping[leaf].entry !== packageName) {
+    	dependencyGraph[nodeMapping[leaf].entry].push(packageName);
+  	}
 	}
 }
 
-console.log('provisionGraph', provisionGraph)
+const provisionMap = {};
 
-//const dependencyGraph = {};
-//
-//for (const leaf in nodeMapping) {
-//
-//	for (const provision of nodeMapping[leaf].provides) {
-//		const requirements = provisionGraph[provision];
-//
-//		for (const requirement of requirements) {
-//			if (!dependencyGraph[requirement]) {
-//				dependencyGraph[requirement] = []
-//			}
-//			if (requirement === nodeMapping[leaf].entry) {
-//				continue
-//			}
-//			if (!dependencyGraph[requirement].includes(nodeMapping[leaf].entry)) {
-//        		dependencyGraph[requirement].push(nodeMapping[leaf].entry);
-//      		}
-//		}
-//	}
-//
-//}
+entries = Object.keys(dependencyGraph);
 
+for (const cacheKey in nodeMapping) {
+	for (const provision of nodeMapping[cacheKey].provides) {
+
+		let packageName = provision.replaceAll("./node_modules/", '');
+		let candidate = '';
+		for (const entry of entries) {
+			if (packageName.startsWith(`${entry}/`) && entry.length > candidate) {
+				candidate = entry;
+			}
+		}
+		if (candidate.length === 0) {
+			candidate = packageName.split('/')[0]
+		}
+		packageName = candidate;
+
+		if (!provisionMap[packageName]) {
+    	provisionMap[packageName] = [];
+  	}
+  	if (!provisionMap[packageName].includes(provision)) {
+    	provisionMap[packageName].push(provision);
+  	}
+	}
+}
+
+
+console.log('dependencyGraph', dependencyGraph)
+
+console.log('provisionMap', provisionMap)
 
