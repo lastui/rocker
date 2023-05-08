@@ -16,8 +16,8 @@ const config = {
 config.output.path = settings.DLL_BUILD_PATH;
 config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;
 config.output.library = {
-  name: "[name]_dll",
-  type: "umd",
+  name: "rocker_so_[name]",
+  type: "var",
 };
 
 config.module.rules.push(
@@ -73,7 +73,7 @@ config.plugins.push(
     format: true,
     context: process.env.INIT_CWD,
     path: path.join(settings.DLL_BUILD_PATH, `[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`),
-    name: "[name]_dll",
+    name: "rocker_so_[name]",
   }),
   new NormalizedModuleIdPlugin(),
 );

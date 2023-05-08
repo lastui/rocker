@@ -30,7 +30,7 @@ function generateDllConfig(name, provides, references, sourceType) {
           "dll",
           `${reference}-${development ? "dev" : "prod"}-manifest.json`,
         ),
-        sourceType: "umd",
+        sourceType: "var",
         context: process.env.INIT_CWD,
       }),
   );
@@ -195,14 +195,14 @@ for (const chunk in config.entry) {
         toCacheKey(chunk, entry),
         provisionMap[entry],
         dependencyGraph[entry].map((item) => toCacheKey(chunk, item)),
-        "umd",
+        "var",
       ),
     ),
     generateDllConfig(
       chunk,
       allProvisions,
       compilationOrder.map((item) => toCacheKey(chunk, item)),
-      "umd",
+      "var",
     ),
   ];
 
@@ -211,7 +211,7 @@ for (const chunk in config.entry) {
   for (const entry of compilationOrder) {
     const item = {
       name: toCacheKey(chunk, entry),
-      type: "umd",
+      type: "var",
     };
     if (!allDlls.includes(item)) {
       allDlls.push(item);
@@ -220,7 +220,7 @@ for (const chunk in config.entry) {
 
   allDlls.push({
     name: chunk,
-    type: "umd",
+    type: "var",
   });
 }
 

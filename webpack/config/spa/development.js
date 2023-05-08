@@ -195,12 +195,12 @@ config.plugins.push(
   ),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-dev-manifest.json"),
-    sourceType: "umd",
+    sourceType: "var",
     context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
-    sourceType: "umd",
+    sourceType: "var",
     context: process.env.INIT_CWD,
   }),
   new HTMLWebpackPlugin({

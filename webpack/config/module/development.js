@@ -220,12 +220,12 @@ config.plugins.push(
   ),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-dev-manifest.json"),
-    sourceType: "umd",
+    sourceType: "var",
     context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
-    sourceType: "umd",
+    sourceType: "var",
     context: process.env.INIT_CWD,
   }),
   new ModuleLocalesPlugin({
@@ -410,9 +410,9 @@ config.plugins.push(
                 const manifest = ${manifest.trim()};
 
                 window.addEventListener("DOMContentLoaded", function() {
-                  const react = dependencies_dll("./node_modules/react/index.js");
-                  const dom = dependencies_dll("./node_modules/react-dom/client.js");
-                  const bootstrap = bootstrap_dll("@rocker/bootstrap/index.js");
+                  const react = rocker_so_dependencies("./node_modules/react/index.js");
+                  const dom = rocker_so_dependencies("./node_modules/react-dom/client.js");
+                  const bootstrap = rocker_so_bootstrap("@rocker/bootstrap/index.js");
 
                   const root = dom.createRoot(document.getElementById("${settings.PROJECT_NAME}"));
                 
