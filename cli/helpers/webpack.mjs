@@ -139,6 +139,7 @@ export async function getStack(options, packageName) {
         const originalSources = Array.isArray(configs[idx].entry[entrypoint])
           ? configs[idx].entry[entrypoint]
           : [configs[idx].entry[entrypoint]];
+
         for (const source of originalSources) {
           if (source.startsWith(".")) {
             patchedSources.push(path.resolve(process.env.INIT_CWD, source));

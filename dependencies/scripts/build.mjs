@@ -56,24 +56,81 @@ const allDlls = [];
 for (const chunk in config.entry) {
   const nodeMapping = {};
 
-  const allProvisions = [];
+  await (async function () {
+    const directEntries = {};
 
-  const leafsMultiEntry = {};
+    for (const entry of config.entry[chunk]) {
+      const cacheKey = toCacheKey(chunk, entry);
+      nodeMapping[cacheKey] = {
+        entry,
+        chunk,
+      };
+      directEntries[cacheKey] = [entry];
+    }
 
-  const entryPoints = [];
+    await command.handler({ development, config: Object.assign({}, dllConfig, { entry: directEntries }) }, []);
+  })();
 
-  for (const entry of config.entry[chunk]) {
-    const cacheKey = toCacheKey(chunk, entry);
-    nodeMapping[cacheKey] = {
-      entry,
-      chunk,
-    };
-    leafsMultiEntry[cacheKey] = [entry];
+  for (const leaf in nodeMapping) {
+    nodeMapping[leaf].provides = Object.keys(
+      JSON.parse(
+        await fs.readFile(
+          path.resolve(
+            fileURLToPath(import.meta.url),
+            "..",
+            "..",
+            "dll",
+            `${leaf}-${development ? "dev" : "prod"}-manifest.json`,
+          ),
+          { encoding: "utf8" },
+        ),
+      ).content,
+    );
   }
 
-  const leafsConfig = Object.assign({}, dllConfig, { entry: leafsMultiEntry });
+  const entries = config.entry[chunk].map((entry) => toCacheKey(chunk, entry)).flat();
 
-  await command.handler({ development, config: leafsConfig }, []);
+  const allUsedPackages = {};
+
+  for (const cacheKey in nodeMapping) {
+    for (const provision of nodeMapping[cacheKey].provides) {
+      let candidate = "";
+      for (const entry of entries) {
+        if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
+          candidate = entry;
+        }
+      }
+      if (candidate.length === 0) {
+        candidate = provision.split("/")[2];
+      }
+      const packageName = candidate;
+
+      if (!allUsedPackages[packageName]) {
+        allUsedPackages[packageName] = [];
+      }
+
+      if (!allUsedPackages[packageName].includes(provision)) {
+        allUsedPackages[packageName].push(provision);
+      }
+    }
+  }
+
+  await (async function () {
+    const transitiveEntries = {};
+
+    for (const entry in allUsedPackages) {
+      const cacheKey = toCacheKey(chunk, entry);
+      if (!nodeMapping[cacheKey]) {
+        nodeMapping[cacheKey] = {
+          entry,
+          chunk,
+        };
+      }
+      transitiveEntries[cacheKey] = allUsedPackages[entry];
+    }
+
+    await command.handler({ development, config: Object.assign({}, dllConfig, { entry: transitiveEntries }) }, []);
+  })();
 
   for (const leaf in nodeMapping) {
     nodeMapping[leaf].provides = Object.keys(
@@ -91,12 +148,6 @@ for (const chunk in config.entry) {
       ).content,
     );
 
-    for (const provision of nodeMapping[leaf].provides) {
-      if (!allProvisions.includes(provision)) {
-        allProvisions.push(provision);
-      }
-    }
-
     await fs.rm(
       path.resolve(
         fileURLToPath(import.meta.url),
@@ -113,9 +164,31 @@ for (const chunk in config.entry) {
     );
   }
 
-  const dependencyGraph = {};
+  const provisionMap = {};
 
-  let entries = Object.values(leafsMultiEntry).flat();
+  for (const cacheKey in nodeMapping) {
+    for (const provision of nodeMapping[cacheKey].provides) {
+      let candidate = "";
+      for (const entry of entries) {
+        if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
+          candidate = entry;
+        }
+      }
+      if (candidate.length === 0) {
+        candidate = provision.split("/")[2];
+      }
+      const packageName = candidate;
+
+      if (!provisionMap[packageName]) {
+        provisionMap[packageName] = [];
+      }
+      if (!provisionMap[packageName].includes(provision)) {
+        provisionMap[packageName].push(provision);
+      }
+    }
+  }
+
+  const dependencyGraph = {};
 
   for (const leaf in nodeMapping) {
     for (const provision of nodeMapping[leaf].provides) {
@@ -141,28 +214,51 @@ for (const chunk in config.entry) {
     }
   }
 
-  const provisionMap = {};
+  //const packagesMarkedForMerge = {}
+  const packagesToMerge = [];
 
-  entries = Object.keys(dependencyGraph);
+  for (const item in dependencyGraph) {
+    for (const requirement of dependencyGraph[item]) {
+      if (dependencyGraph[requirement].includes(item)) {
+        packagesToMerge.push([item, requirement]);
+      }
+    }
+  }
 
-  for (const cacheKey in nodeMapping) {
-    for (const provision of nodeMapping[cacheKey].provides) {
-      let candidate = "";
-      for (const entry of entries) {
-        if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
-          candidate = entry;
+  for (const toMerge of packagesToMerge) {
+    if (!dependencyGraph[toMerge[0]]) {
+      continue;
+    }
+
+    const union = [];
+
+    for (const addition of dependencyGraph[toMerge[0]]) {
+      if (addition === toMerge[0]) {
+        continue;
+      }
+      if (addition === toMerge[1]) {
+        continue;
+      }
+      if (!union.includes(addition)) {
+        union.push(addition);
+      }
+    }
+
+    dependencyGraph[toMerge[0]] = union;
+    delete dependencyGraph[toMerge[1]];
+
+    for (const provision of provisionMap[toMerge[1]]) {
+      if (!provisionMap[toMerge[0]].includes(provision)) {
+        provisionMap[toMerge[0]].push(provision);
+      }
+    }
+
+    for (const item in dependencyGraph) {
+      if (dependencyGraph[item].includes(toMerge[1])) {
+        dependencyGraph[item] = dependencyGraph[item].filter((dependency) => dependency !== toMerge[1]);
+        if (!dependencyGraph[item].includes(toMerge[0])) {
+          dependencyGraph[item].push(toMerge[0]);
         }
-      }
-      if (candidate.length === 0) {
-        candidate = provision.split("/")[2];
-      }
-      const packageName = candidate;
-
-      if (!provisionMap[packageName]) {
-        provisionMap[packageName] = [];
-      }
-      if (!provisionMap[packageName].includes(provision)) {
-        provisionMap[packageName].push(provision);
       }
     }
   }
@@ -200,7 +296,7 @@ for (const chunk in config.entry) {
     ),
     generateDllConfig(
       chunk,
-      allProvisions,
+      [...new Set(Object.values(allUsedPackages).flat())],
       compilationOrder.map((item) => toCacheKey(chunk, item)),
       "var",
     ),
