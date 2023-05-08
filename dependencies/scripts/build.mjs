@@ -4,7 +4,6 @@ import fs from 'node:fs/promises';
 import webpack from 'webpack';
 
 process.env.INIT_CWD = path.resolve(fileURLToPath(import.meta.url), "..", "..");
-//process.env.NODE_ENV = 'development';
 
 const dllConfig = (await import("../../webpack/config/dll/index.js")).default;
 
@@ -17,10 +16,10 @@ function toCacheKey(chunk, item) {
 	return `${chunk}_${item.replaceAll("/", "-").replaceAll("@", "-").replaceAll("-", "_")}`;
 }
 
-function generateDllConfig(name, provides, references) {
+function generateDllConfig(name, provides, references, sourceType) {
 	const plugins = references.map((reference) => new webpack.DllReferencePlugin({
     	manifest: path.resolve(fileURLToPath(import.meta.url), "..", "..", 'dll', `${reference}-${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}-manifest.json`),
-    	sourceType: "var",
+    	sourceType: 'umd',
     	context: process.env.INIT_CWD,
  	}));
 
@@ -29,6 +28,15 @@ function generateDllConfig(name, provides, references) {
 		dllConfig,
 		{
 			entry: { [name]: provides },
+			name,
+			dependencies: references,
+			output: {
+				...dllConfig.output,
+				library: {
+					...dllConfig.output.library,
+					type: sourceType,
+				}
+			},
 			plugins: [
 				...dllConfig.plugins,
 				...plugins,
@@ -150,13 +158,10 @@ for (const chunk in config.entry) {
 	}())
 
 
-	for (const entry of compilationOrder) {
-		const chunkDLLConfig = generateDllConfig(toCacheKey(chunk, entry), provisionMap[entry], dependencyGraph[entry].map((item) => toCacheKey(chunk, item)));
-		await command.handler({ development: process.env.NODE_ENV === 'development', config: chunkDLLConfig }, []);
-	}
+	const strategy = [
+		...compilationOrder.map((entry) => generateDllConfig(toCacheKey(chunk, entry), provisionMap[entry], dependencyGraph[entry].map((item) => toCacheKey(chunk, item)), 'umd')),
+		generateDllConfig(chunk, allProvisions, compilationOrder.map((item) => toCacheKey(chunk, item)), 'var'),
+	]
 
-	const finalDllConfig = generateDllConfig(chunk, allProvisions, compilationOrder.map((item) => toCacheKey(chunk, item)));
-
-	await command.handler({ development: process.env.NODE_ENV === 'development', config: finalDllConfig }, []);
-
+	await command.handler({ development: process.env.NODE_ENV === 'development', config: strategy }, []);
 }

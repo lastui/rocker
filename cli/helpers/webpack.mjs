@@ -126,11 +126,10 @@ export async function getStack(options, packageName) {
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      config.push(...resolvedConfigs);
+      configs.push(...resolvedConfigs)
     }
 
     for (const idx in configs) {
-
       configs[idx].resolve.modules = [];
       const nodeModules = new Set();
       for (const entrypoint in configs[idx].entry) {
@@ -177,7 +176,7 @@ export async function getStack(options, packageName) {
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      config.push(...resolvedConfigs);
+      configs.push(...resolvedConfigs)
     }
     for (const idx in configs) {
       configs[idx].entry = {};
@@ -194,7 +193,7 @@ export async function getStack(options, packageName) {
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      config.push(...resolvedConfigs);
+      configs.push(...resolvedConfigs)
     }
     for (const idx in configs) {
       configs[idx].entry = {};
