@@ -21,7 +21,7 @@
   "scripts": {
     "prebuild": "npm ci --no-fund --no-audit && node ./scripts/link.mjs",
     "build": "npm run build:dev && npm run build:prod",
-    "postbuild": "node ./scripts/unlink.mjs",
+    "postbuild": "node ./scripts/unlink.mjs && node ../cli/index.js lint --fix",
     "build:dev": "NODE_ENV=development node ./scripts/build.mjs",
     "build:prod": "NODE_ENV=production node ./scripts/build.mjs"
   },

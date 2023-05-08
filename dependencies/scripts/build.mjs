@@ -3,6 +3,11 @@ import path from "node:path";
 import fs from 'node:fs/promises';
 import webpack from 'webpack';
 
+import parser from "@babel/parser";
+import traverse from "@babel/traverse";
+import generate from "@babel/generator";
+import types from "@babel/types";
+
 process.env.INIT_CWD = path.resolve(fileURLToPath(import.meta.url), "..", "..");
 
 const dllConfig = (await import("../../webpack/config/dll/index.js")).default;
@@ -44,6 +49,8 @@ function generateDllConfig(name, provides, references, sourceType) {
 		}
 	);
 }
+
+const allDlls = [];
 
 for (const chunk in config.entry) {
 
@@ -164,4 +171,73 @@ for (const chunk in config.entry) {
 	]
 
 	await command.handler({ development: process.env.NODE_ENV === 'development', config: strategy }, []);
+
+	for (const entry of compilationOrder) {
+		const item = {
+			name: toCacheKey(chunk, entry),
+			type: 'umd',
+		};
+		if (!allDlls.includes(item)) {
+			allDlls.push(item);
+		}
+	}
+
+	allDlls.push({
+		name: chunk,
+		type: 'var',
+	});
 }
+
+const indexFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", 'index.js')
+
+const indexSource = await fs.readFile(indexFile, { encoding: 'utf8' });
+
+const ast = parser.parse(indexSource, { sourceType: "module" });
+
+const modifiedIndexFile = traverse.default(ast, {
+	IfStatement (path) {
+        if (process.env.NODE_ENV === 'development') {
+        	path.replaceWith(
+        		types.ifStatement(
+        			path.node.test,
+        			types.blockStatement([
+        				types.expressionStatement(
+        					types.assignmentExpression(path.node.consequent.body[0].expression.operator,
+				    			path.node.consequent.body[0].expression.left,
+				    			types.arrayExpression(allDlls.map((entry) => types.objectExpression([
+			    					types.objectProperty(types.identifier("name"), types.stringLiteral(entry.name)),
+			    					types.objectProperty(types.identifier("type"), types.stringLiteral(entry.type))
+			    				])))
+				    		)
+        				)
+        			]),
+        			path.node.alternate
+        		)
+        	)
+        	path.stop();
+        } else {
+        	path.replaceWith(
+        		types.ifStatement(
+        			path.node.test,
+        			path.node.consequent,
+        			types.blockStatement([
+        				types.expressionStatement(
+        					types.assignmentExpression(path.node.alternate.body[0].expression.operator,
+				    			path.node.alternate.body[0].expression.left,
+				    			types.arrayExpression(allDlls.map((entry) => types.objectExpression([
+			    					types.objectProperty(types.identifier("name"), types.stringLiteral(entry.name)),
+			    					types.objectProperty(types.identifier("type"), types.stringLiteral(entry.type))
+			    				])))
+				    		)
+        				)
+        			]),
+        			
+        		)
+        	)
+        	path.stop();
+        }
+		
+	}
+});
+
+await fs.writeFile(indexFile, generate.default(ast, { compact: false, concise: true }, indexSource).code);
