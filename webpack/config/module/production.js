@@ -5,6 +5,8 @@ const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
 
+const dependenciesDlls = require("@lastui/dependencies");
+
 const settings = require("../../settings");
 
 const webpackBabel = require("../../../babel").env.production;
@@ -176,11 +178,23 @@ config.plugins.push(
   new ModuleLocalesPlugin({
     from: process.env.INIT_CWD,
   }),
-  new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies-prod-manifest.json"),
-    sourceType: "var",
-    context: process.env.INIT_CWD,
-  }),
+  ...dependenciesDlls.map(
+    (item) =>
+      new webpack.DllReferencePlugin({
+        manifest: path.resolve(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "..",
+          "dependencies",
+          "dll",
+          `${item.name}-prod-manifest.json`,
+        ),
+        sourceType: item.type,
+        context: process.env.INIT_CWD,
+      }),
+  ),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-prod-manifest.json"),
     sourceType: "var",
