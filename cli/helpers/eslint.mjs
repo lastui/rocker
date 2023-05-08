@@ -1,4 +1,4 @@
-import process from 'node:process';
+import process from "node:process";
 import eslint from "eslint";
 
 import babelConfig from "../../babel/index.js";
@@ -24,7 +24,6 @@ export const config = {
 };
 
 export async function createEngine(options) {
-
   const engine = new eslint.ESLint({
     cwd: process.env.INIT_CWD,
     allowInlineConfig: true,
@@ -75,4 +74,4 @@ export async function createEngine(options) {
   }
 
   return processFile;
-};
+}

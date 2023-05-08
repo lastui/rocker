@@ -1,17 +1,17 @@
-import { fileURLToPath } from 'node:url';
-import fs from 'node:fs/promises';
+import { fileURLToPath } from "node:url";
+import fs from "node:fs/promises";
 import path from "node:path";
 
-const thisFile = fileURLToPath(import.meta.url)
+const thisFile = fileURLToPath(import.meta.url);
 
 async function ulinkDependenciesModules() {
   const targetPath = path.resolve(thisFile, "..", "..", "node_modules", "@lastui");
-  await fs.rm(targetPath, { recursive: true, force: true })
-  await fs.unlink(path.dirname(targetPath))
+  await fs.rm(targetPath, { recursive: true, force: true });
+  await fs.unlink(path.dirname(targetPath));
 }
 
 async function unlinkDLL(...nodePath) {
-  await unlinkModule("@lastui", ...nodePath, "dll")
+  await unlinkModule("@lastui", ...nodePath, "dll");
 }
 
 async function unlinkModule(...nodePath) {

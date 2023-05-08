@@ -2,7 +2,7 @@ import process from "node:process";
 import path from "node:path";
 import { Readable } from "node:stream";
 import colors from "ansi-colors";
-import glob from "glob"
+import glob from "glob";
 import { ensureDirectory, writeFile, readFile } from "./io.mjs";
 import { createEngine as createEnginePrettierPackageJson } from "./prettier-package-json.mjs";
 import { createEngine as createEngineEslint } from "./eslint.mjs";
@@ -148,5 +148,4 @@ export async function run(options) {
       console.log(colors.bold(`Checked ${numberTotal} files`));
     }
   }
-
-};
+}

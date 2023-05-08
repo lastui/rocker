@@ -11,4 +11,4 @@ export async function execShellCommand(cmd) {
       }
     });
   });
-};
+}

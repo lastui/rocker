@@ -18,7 +18,7 @@ export const config = {
 export async function createEngine(options) {
 
   async function processFile(info) {
-    if (!/\.[t|j|m]sx?$/.test(info.filePath)) {
+    if (!/\.m?[t|j]sx?$/.test(info.filePath)) {
       return;
     }
 

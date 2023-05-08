@@ -8,7 +8,6 @@ export const config = {
 };
 
 export async function createEngine(options) {
-
   async function processFile(info) {
     if (!info.filePath.endsWith("package.json")) {
       return;
@@ -55,4 +54,4 @@ export async function createEngine(options) {
   }
 
   return processFile;
-};
+}

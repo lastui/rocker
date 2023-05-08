@@ -1,25 +1,25 @@
-import fs from 'node:fs/promises';
+import fs from "node:fs/promises";
 import path from "node:path";
 
 export async function readFile(nodePath) {
-  return await fs.readFile(nodePath, { encoding: 'utf8' });
-};
+  return await fs.readFile(nodePath, { encoding: "utf8" });
+}
 
 export async function writeFile(nodePath, data) {
   try {
     await fs.writeFile(nodePath, data);
-  } catch(error) {
-    if (error.code !== 'ENOENT') {
-      throw error
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      throw error;
     }
     await ensureDirectory(path.dirname(nodePath));
     await fs.writeFile(nodePath, data);
   }
-};
+}
 
 export async function copyFile(source, destination) {
-  await fs.copyFile(source, destination, constants.COPYFILE_FICLONE)
-};
+  await fs.copyFile(source, destination, constants.COPYFILE_FICLONE);
+}
 
 export async function fileExists(nodePath) {
   try {
@@ -28,7 +28,7 @@ export async function fileExists(nodePath) {
   } catch (_error) {
     return false;
   }
-};
+}
 
 export async function directoryExists(nodePath) {
   try {
@@ -37,17 +37,17 @@ export async function directoryExists(nodePath) {
   } catch (_error) {
     return false;
   }
-};
+}
 
 export async function createSymlink(source, target) {
   await fs.symlink(source, target);
-};
+}
 
 export async function ensureDirectory(nodePath) {
   await fs.mkdir(nodePath, { recursive: true });
-};
+}
 
-export async function clearDirectory(nodePath) {  
+export async function clearDirectory(nodePath) {
   const clear = async (item) => {
     switch (item.action) {
       case "unlink": {
@@ -63,7 +63,7 @@ export async function clearDirectory(nodePath) {
         break;
       }
     }
-  }
+  };
 
   const nodes = [];
 
@@ -74,13 +74,13 @@ export async function clearDirectory(nodePath) {
         nodes.push({
           path: currentPath,
           action: "unlink",
-        })
+        });
         return;
       }
 
       const files = await fs.readdir(currentPath);
 
-      await Promise.all(files.map((childPath) => walk(path.join(currentPath, childPath))))
+      await Promise.all(files.map((childPath) => walk(path.join(currentPath, childPath))));
 
       if (stats.isSymbolicLink()) {
         nodes.push({
@@ -92,7 +92,7 @@ export async function clearDirectory(nodePath) {
         path: currentPath,
         action: "rmdir",
       });
-    } catch(error) {
+    } catch (error) {
       if (error.code !== "ENOENT") {
         throw error;
       }
@@ -119,4 +119,4 @@ export async function clearDirectory(nodePath) {
   });
 
   await Promise.all(nodes.map(clear));
-};
+}

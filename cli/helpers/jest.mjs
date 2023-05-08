@@ -1,7 +1,7 @@
-import process from 'node:process';
-import { fileURLToPath } from 'node:url';
+import process from "node:process";
+import { fileURLToPath } from "node:url";
 import jest from "jest";
-import path from 'node:path';
+import path from "node:path";
 
 export async function run(options) {
   const config = path.resolve(fileURLToPath(import.meta.url), "..", "..", "..", "jest", "index.js");
@@ -27,4 +27,4 @@ export async function run(options) {
       : ["--maxWorkers=50%", "--maxConcurency=10"]),
     ...options._,
   ]);
-};
+}
