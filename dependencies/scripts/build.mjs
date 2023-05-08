@@ -11,6 +11,11 @@ const config = (await import("../webpack.config.js")).default;
 
 const command = await import("../../cli/commands/build.js");
 
+
+function toCacheKey(item) {
+	return `${item.replaceAll("/", "-").replaceAll("@", "-").replaceAll("-", "_")}`;
+}
+
 const nodeMapping = {};
 
 const leafsMultiEntry = {}
@@ -19,7 +24,7 @@ const entryPoints = [];
 
 for (const chunk in config.entry) {
 	for (const entry of config.entry[chunk]) {
-		const cacheKey = `${entry.replaceAll("/", "-").replaceAll("-", "_").replaceAll("@", "_")}`;
+		const cacheKey = toCacheKey(entry);
 		nodeMapping[cacheKey] = {
 			entry,
 		}
@@ -32,7 +37,6 @@ const leafsConfig = Object.assign({}, dllConfig, { entry: leafsMultiEntry });
 await command.handler({ development: process.env.NODE_ENV === 'development', config: leafsConfig }, []);
 
 for (const leaf in nodeMapping) {
-
 	nodeMapping[leaf].provides = Object.keys(JSON.parse(await fs.readFile(path.resolve(fileURLToPath(import.meta.url), "..", "..", 'dll', `${leaf}-${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}-manifest.json`), { encoding: 'utf8' })).content);
 
 	await fs.rm(path.resolve(fileURLToPath(import.meta.url), "..", "..", 'dll', `${leaf}-${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}-manifest.json`), { recursive: false, force: true })
@@ -94,7 +98,29 @@ for (const cacheKey in nodeMapping) {
 }
 
 
-console.log('package dependencies map', dependencyGraph)
+const compilationOrder = (function() {
+	const result = [];
+	const visited = {};
 
-console.log('package provisions map', provisionMap)
+	for (const packageName in dependencyGraph) {
+		if (!visited[packageName]) {
+	    walk(packageName, dependencyGraph[packageName]);
+	  }
+	}
 
+	function walk(packageName, requires) {
+	  visited[packageName] = true;
+	  for (const dependency of requires) {
+	    if (!visited[dependency]) {
+	      walk(dependency, dependencyGraph[dependency]);
+	    } 
+	  };
+	  result.push(packageName);
+	}
+	return result.filter((item) => Boolean(provisionMap[item]))
+}())
+
+
+for (const entry of compilationOrder) {
+	console.log('compile', toCacheKey(entry), 'with entrypoints', provisionMap[entry], 'and references', dependencyGraph[entry].map(toCacheKey))
+}
