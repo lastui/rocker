@@ -19,7 +19,7 @@ const entryPoints = [];
 
 for (const chunk in config.entry) {
 	for (const entry of config.entry[chunk]) {
-		const cacheKey = `${entry.replaceAll("/", "-").replaceAll("-", "_").replaceAll("@", "")}`;
+		const cacheKey = `${entry.replaceAll("/", "-").replaceAll("-", "_").replaceAll("@", "_")}`;
 		nodeMapping[cacheKey] = {
 			entry,
 		}
@@ -93,7 +93,7 @@ for (const cacheKey in nodeMapping) {
 }
 
 
-console.log('dependencyGraph', dependencyGraph)
+console.log('package dependencies map', dependencyGraph)
 
-console.log('provisionMap', provisionMap)
+console.log('package provisions map', provisionMap)
 
