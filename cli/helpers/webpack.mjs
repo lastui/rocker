@@ -266,14 +266,11 @@ export async function setup(options, packageName) {
       console.log(colors.bold("Compiled successfully!"));
     }
     if (messages.errors.length) {
-      if (messages.errors.length > 1) {
-        messages.errors.length = 1;
-      }
+      process.exitCode = 1;
       console.log(colors.red("Failed to compile.\n"));
       for (const error of messages.errors) {
         console.log(colors.red(error));
       }
-      process.exitCode = 1;
       return;
     }
     if (messages.warnings.length) {
