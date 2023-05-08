@@ -20,10 +20,10 @@
   ],
   "scripts": {
     "prebuild": "npm ci --no-fund --no-audit && node ./scripts/link.mjs",
-    "build": "node ./scripts/build.mjs",
+    "build": "npm run build:dev && npm run build:prod",
     "postbuild": "node ./scripts/unlink.mjs",
-    "build:dev": "node ../cli/index.js build --cwd=dependencies --dev --debug",
-    "build:prod": "node ../cli/index.js build --cwd=dependencies --debug"
+    "build:dev": "NODE_ENV=development node ./scripts/build.mjs",
+    "build:prod": "NODE_ENV=production node ./scripts/build.mjs"
   },
   "dependencies": {
     "@linaria/core": "4.2.10",
