@@ -121,12 +121,14 @@ export async function getStack(options, packageName) {
   let DevServer = null;
 
   if (options.config || customConfigExists) {
-    const resolvedConfigs = options.config ? options.config : (await import(`${projectConfig}?t=${process.hrtime()[0]}`)).default;
+    const resolvedConfigs = options.config
+      ? options.config
+      : (await import(`${projectConfig}?t=${process.hrtime()[0]}`)).default;
 
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      configs.push(...resolvedConfigs)
+      configs.push(...resolvedConfigs);
     }
 
     for (const idx in configs) {
@@ -176,7 +178,7 @@ export async function getStack(options, packageName) {
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      configs.push(...resolvedConfigs)
+      configs.push(...resolvedConfigs);
     }
     for (const idx in configs) {
       configs[idx].entry = {};
@@ -193,7 +195,7 @@ export async function getStack(options, packageName) {
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      configs.push(...resolvedConfigs)
+      configs.push(...resolvedConfigs);
     }
     for (const idx in configs) {
       configs[idx].entry = {};

@@ -1,7 +1,7 @@
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath } from "node:url";
 import path from "node:path";
-import fs from 'node:fs/promises';
-import webpack from 'webpack';
+import fs from "node:fs/promises";
+import webpack from "webpack";
 
 import parser from "@babel/parser";
 import traverse from "@babel/traverse";
@@ -16,228 +16,278 @@ const config = (await import("../webpack.config.js")).default;
 
 const command = await import("../../cli/commands/build.js");
 
-
 function toCacheKey(chunk, item) {
-	return `${chunk}_${item.replaceAll("/", "-").replaceAll("@", "-").replaceAll("-", "_")}`;
+  return `${chunk}_${item.replaceAll("/", "-").replaceAll("@", "-").replaceAll("-", "_")}`;
 }
 
 function generateDllConfig(name, provides, references, sourceType) {
-	const plugins = references.map((reference) => new webpack.DllReferencePlugin({
-    	manifest: path.resolve(fileURLToPath(import.meta.url), "..", "..", 'dll', `${reference}-${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}-manifest.json`),
-    	sourceType: 'umd',
-    	context: process.env.INIT_CWD,
- 	}));
+  const plugins = references.map(
+    (reference) =>
+      new webpack.DllReferencePlugin({
+        manifest: path.resolve(
+          fileURLToPath(import.meta.url),
+          "..",
+          "..",
+          "dll",
+          `${reference}-${process.env.NODE_ENV === "development" ? "dev" : "prod"}-manifest.json`,
+        ),
+        sourceType: "umd",
+        context: process.env.INIT_CWD,
+      }),
+  );
 
-	return Object.assign(
-		{},
-		dllConfig,
-		{
-			entry: { [name]: provides },
-			name,
-			dependencies: references,
-			output: {
-				...dllConfig.output,
-				library: {
-					...dllConfig.output.library,
-					type: sourceType,
-				}
-			},
-			plugins: [
-				...dllConfig.plugins,
-				...plugins,
-			],
-		}
-	);
+  return Object.assign({}, dllConfig, {
+    entry: { [name]: provides },
+    name,
+    dependencies: references,
+    output: {
+      ...dllConfig.output,
+      library: {
+        ...dllConfig.output.library,
+        type: sourceType,
+      },
+    },
+    plugins: [...dllConfig.plugins, ...plugins],
+  });
 }
 
 const allDlls = [];
 
 for (const chunk in config.entry) {
+  const nodeMapping = {};
 
-	const nodeMapping = {};
+  const allProvisions = [];
 
-	const allProvisions = [];
+  const leafsMultiEntry = {};
 
-	const leafsMultiEntry = {}
+  const entryPoints = [];
 
-	const entryPoints = [];
+  for (const entry of config.entry[chunk]) {
+    const cacheKey = toCacheKey(chunk, entry);
+    nodeMapping[cacheKey] = {
+      entry,
+      chunk,
+    };
+    leafsMultiEntry[cacheKey] = [entry];
+  }
 
-	for (const entry of config.entry[chunk]) {
-		const cacheKey = toCacheKey(chunk, entry);
-		nodeMapping[cacheKey] = {
-			entry,
-			chunk,
-		}
-		leafsMultiEntry[cacheKey] = [entry]
-	}
+  const leafsConfig = Object.assign({}, dllConfig, { entry: leafsMultiEntry });
 
-	const leafsConfig = Object.assign({}, dllConfig, { entry: leafsMultiEntry });
+  await command.handler({ development: process.env.NODE_ENV === "development", config: leafsConfig }, []);
 
-	await command.handler({ development: process.env.NODE_ENV === 'development', config: leafsConfig }, []);
+  for (const leaf in nodeMapping) {
+    nodeMapping[leaf].provides = Object.keys(
+      JSON.parse(
+        await fs.readFile(
+          path.resolve(
+            fileURLToPath(import.meta.url),
+            "..",
+            "..",
+            "dll",
+            `${leaf}-${process.env.NODE_ENV === "development" ? "dev" : "prod"}-manifest.json`,
+          ),
+          { encoding: "utf8" },
+        ),
+      ).content,
+    );
 
-	for (const leaf in nodeMapping) {
-		nodeMapping[leaf].provides = Object.keys(JSON.parse(await fs.readFile(path.resolve(fileURLToPath(import.meta.url), "..", "..", 'dll', `${leaf}-${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}-manifest.json`), { encoding: 'utf8' })).content);
-		
-		for (const provision of nodeMapping[leaf].provides) {
-			if (!allProvisions.includes(provision)) {
-		    	allProvisions.push(provision);
-		  	}
-		}
+    for (const provision of nodeMapping[leaf].provides) {
+      if (!allProvisions.includes(provision)) {
+        allProvisions.push(provision);
+      }
+    }
 
-		await fs.rm(path.resolve(fileURLToPath(import.meta.url), "..", "..", 'dll', `${leaf}-${process.env.NODE_ENV === 'development' ? 'dev' : 'prod'}-manifest.json`), { recursive: false, force: true })
-		await fs.rm(path.resolve(fileURLToPath(import.meta.url), "..", "..", 'dll', `${leaf}.dll${process.env.NODE_ENV === 'development' ? '' : '.min'}.js`), { recursive: false, force: true })
-	};
+    await fs.rm(
+      path.resolve(
+        fileURLToPath(import.meta.url),
+        "..",
+        "..",
+        "dll",
+        `${leaf}-${process.env.NODE_ENV === "development" ? "dev" : "prod"}-manifest.json`,
+      ),
+      { recursive: false, force: true },
+    );
+    await fs.rm(
+      path.resolve(
+        fileURLToPath(import.meta.url),
+        "..",
+        "..",
+        "dll",
+        `${leaf}.dll${process.env.NODE_ENV === "development" ? "" : ".min"}.js`,
+      ),
+      { recursive: false, force: true },
+    );
+  }
 
-	const dependencyGraph = {};
+  const dependencyGraph = {};
 
-	let entries = Object.values(leafsMultiEntry).flat();
+  let entries = Object.values(leafsMultiEntry).flat();
 
-	for (const leaf in nodeMapping) {
-		for (const provision of nodeMapping[leaf].provides) {
-			let candidate = '';
-			for (const entry of entries) {
-				if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
-					candidate = entry;
-				}
-			}
-			if (candidate.length === 0) {
-				candidate = provision.split('/')[2]
-			}
-			const packageName = candidate;
-			if (!dependencyGraph[nodeMapping[leaf].entry]) {
-	    		dependencyGraph[nodeMapping[leaf].entry] = [];
-	  		}
-		  	if (!dependencyGraph[packageName]) {
-		    	dependencyGraph[packageName] = [];
-		  	}
-		  	if (!dependencyGraph[nodeMapping[leaf].entry].includes(packageName) && nodeMapping[leaf].entry !== packageName) {
-		    	dependencyGraph[nodeMapping[leaf].entry].push(packageName);
-		  	}
-		}
-	}
+  for (const leaf in nodeMapping) {
+    for (const provision of nodeMapping[leaf].provides) {
+      let candidate = "";
+      for (const entry of entries) {
+        if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
+          candidate = entry;
+        }
+      }
+      if (candidate.length === 0) {
+        candidate = provision.split("/")[2];
+      }
+      const packageName = candidate;
+      if (!dependencyGraph[nodeMapping[leaf].entry]) {
+        dependencyGraph[nodeMapping[leaf].entry] = [];
+      }
+      if (!dependencyGraph[packageName]) {
+        dependencyGraph[packageName] = [];
+      }
+      if (!dependencyGraph[nodeMapping[leaf].entry].includes(packageName) && nodeMapping[leaf].entry !== packageName) {
+        dependencyGraph[nodeMapping[leaf].entry].push(packageName);
+      }
+    }
+  }
 
-	const provisionMap = {};
+  const provisionMap = {};
 
-	entries = Object.keys(dependencyGraph);
+  entries = Object.keys(dependencyGraph);
 
-	for (const cacheKey in nodeMapping) {
-		for (const provision of nodeMapping[cacheKey].provides) {
-			let candidate = '';
-			for (const entry of entries) {
-				if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
-					candidate = entry;
-				}
-			}
-			if (candidate.length === 0) {
-				candidate = provision.split('/')[2]
-			}
-			const packageName = candidate;
+  for (const cacheKey in nodeMapping) {
+    for (const provision of nodeMapping[cacheKey].provides) {
+      let candidate = "";
+      for (const entry of entries) {
+        if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
+          candidate = entry;
+        }
+      }
+      if (candidate.length === 0) {
+        candidate = provision.split("/")[2];
+      }
+      const packageName = candidate;
 
-			if (!provisionMap[packageName]) {
-		    	provisionMap[packageName] = [];
-		  	}
-		  	if (!provisionMap[packageName].includes(provision)) {
-		    	provisionMap[packageName].push(provision);
-		  	}
-		}
-	}
+      if (!provisionMap[packageName]) {
+        provisionMap[packageName] = [];
+      }
+      if (!provisionMap[packageName].includes(provision)) {
+        provisionMap[packageName].push(provision);
+      }
+    }
+  }
 
-	const compilationOrder = (function() {
-		const result = [];
-		const visited = {};
+  const compilationOrder = (function () {
+    const result = [];
+    const visited = {};
 
-		for (const packageName in dependencyGraph) {
-			if (!visited[packageName]) {
-		    walk(packageName, dependencyGraph[packageName]);
-		  }
-		}
+    for (const packageName in dependencyGraph) {
+      if (!visited[packageName]) {
+        walk(packageName, dependencyGraph[packageName]);
+      }
+    }
 
-		function walk(packageName, requires) {
-		  visited[packageName] = true;
-		  for (const dependency of requires) {
-		    if (!visited[dependency]) {
-		      walk(dependency, dependencyGraph[dependency]);
-		    } 
-		  };
-		  result.push(packageName);
-		}
-		return result.filter((item) => Boolean(provisionMap[item]))
-	}())
+    function walk(packageName, requires) {
+      visited[packageName] = true;
+      for (const dependency of requires) {
+        if (!visited[dependency]) {
+          walk(dependency, dependencyGraph[dependency]);
+        }
+      }
+      result.push(packageName);
+    }
+    return result.filter((item) => Boolean(provisionMap[item]));
+  })();
 
+  const strategy = [
+    ...compilationOrder.map((entry) =>
+      generateDllConfig(
+        toCacheKey(chunk, entry),
+        provisionMap[entry],
+        dependencyGraph[entry].map((item) => toCacheKey(chunk, item)),
+        "umd",
+      ),
+    ),
+    generateDllConfig(
+      chunk,
+      allProvisions,
+      compilationOrder.map((item) => toCacheKey(chunk, item)),
+      "var",
+    ),
+  ];
 
-	const strategy = [
-		...compilationOrder.map((entry) => generateDllConfig(toCacheKey(chunk, entry), provisionMap[entry], dependencyGraph[entry].map((item) => toCacheKey(chunk, item)), 'umd')),
-		generateDllConfig(chunk, allProvisions, compilationOrder.map((item) => toCacheKey(chunk, item)), 'var'),
-	]
+  await command.handler({ development: process.env.NODE_ENV === "development", config: strategy }, []);
 
-	await command.handler({ development: process.env.NODE_ENV === 'development', config: strategy }, []);
+  for (const entry of compilationOrder) {
+    const item = {
+      name: toCacheKey(chunk, entry),
+      type: "umd",
+    };
+    if (!allDlls.includes(item)) {
+      allDlls.push(item);
+    }
+  }
 
-	for (const entry of compilationOrder) {
-		const item = {
-			name: toCacheKey(chunk, entry),
-			type: 'umd',
-		};
-		if (!allDlls.includes(item)) {
-			allDlls.push(item);
-		}
-	}
-
-	allDlls.push({
-		name: chunk,
-		type: 'var',
-	});
+  allDlls.push({
+    name: chunk,
+    type: "var",
+  });
 }
 
-const indexFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", 'index.js')
+const indexFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", "index.js");
 
-const indexSource = await fs.readFile(indexFile, { encoding: 'utf8' });
+const indexSource = await fs.readFile(indexFile, { encoding: "utf8" });
 
 const ast = parser.parse(indexSource, { sourceType: "module" });
 
 const modifiedIndexFile = traverse.default(ast, {
-	IfStatement (path) {
-        if (process.env.NODE_ENV === 'development') {
-        	path.replaceWith(
-        		types.ifStatement(
-        			path.node.test,
-        			types.blockStatement([
-        				types.expressionStatement(
-        					types.assignmentExpression(path.node.consequent.body[0].expression.operator,
-				    			path.node.consequent.body[0].expression.left,
-				    			types.arrayExpression(allDlls.map((entry) => types.objectExpression([
-			    					types.objectProperty(types.identifier("name"), types.stringLiteral(entry.name)),
-			    					types.objectProperty(types.identifier("type"), types.stringLiteral(entry.type))
-			    				])))
-				    		)
-        				)
-        			]),
-        			path.node.alternate
-        		)
-        	)
-        	path.stop();
-        } else {
-        	path.replaceWith(
-        		types.ifStatement(
-        			path.node.test,
-        			path.node.consequent,
-        			types.blockStatement([
-        				types.expressionStatement(
-        					types.assignmentExpression(path.node.alternate.body[0].expression.operator,
-				    			path.node.alternate.body[0].expression.left,
-				    			types.arrayExpression(allDlls.map((entry) => types.objectExpression([
-			    					types.objectProperty(types.identifier("name"), types.stringLiteral(entry.name)),
-			    					types.objectProperty(types.identifier("type"), types.stringLiteral(entry.type))
-			    				])))
-				    		)
-        				)
-        			]),
-        			
-        		)
-        	)
-        	path.stop();
-        }
-		
-	}
+  IfStatement(path) {
+    if (process.env.NODE_ENV === "development") {
+      path.replaceWith(
+        types.ifStatement(
+          path.node.test,
+          types.blockStatement([
+            types.expressionStatement(
+              types.assignmentExpression(
+                path.node.consequent.body[0].expression.operator,
+                path.node.consequent.body[0].expression.left,
+                types.arrayExpression(
+                  allDlls.map((entry) =>
+                    types.objectExpression([
+                      types.objectProperty(types.identifier("name"), types.stringLiteral(entry.name)),
+                      types.objectProperty(types.identifier("type"), types.stringLiteral(entry.type)),
+                    ]),
+                  ),
+                ),
+              ),
+            ),
+          ]),
+          path.node.alternate,
+        ),
+      );
+      path.stop();
+    } else {
+      path.replaceWith(
+        types.ifStatement(
+          path.node.test,
+          path.node.consequent,
+          types.blockStatement([
+            types.expressionStatement(
+              types.assignmentExpression(
+                path.node.alternate.body[0].expression.operator,
+                path.node.alternate.body[0].expression.left,
+                types.arrayExpression(
+                  allDlls.map((entry) =>
+                    types.objectExpression([
+                      types.objectProperty(types.identifier("name"), types.stringLiteral(entry.name)),
+                      types.objectProperty(types.identifier("type"), types.stringLiteral(entry.type)),
+                    ]),
+                  ),
+                ),
+              ),
+            ),
+          ]),
+        ),
+      );
+      path.stop();
+    }
+  },
 });
 
 await fs.writeFile(indexFile, generate.default(ast, { compact: false, concise: true }, indexSource).code);
