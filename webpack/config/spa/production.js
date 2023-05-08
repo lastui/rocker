@@ -6,6 +6,9 @@ const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
+
+const dependenciesDlls = require("@lastui/dependencies");
+
 const settings = require("../../settings");
 const webpackBabel = require("../../../babel").env.production;
 const linariaBabel = require("../../../babel").env.test;
@@ -156,11 +159,14 @@ config.plugins.push(
     linkType: "text/css",
     ignoreOrder: false,
   }),
-  new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies-prod-manifest.json"),
-    sourceType: "var",
-    context: process.env.INIT_CWD,
-  }),
+  ...dependenciesDlls.map(
+    (item) =>
+      new webpack.DllReferencePlugin({
+        manifest: path.resolve(require.resolve("@lastui/dependencies"), "dll", `${item.name}-prod-manifest.json`),
+        sourceType: item.type,
+        context: process.env.INIT_CWD,
+      }),
+  ),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-prod-manifest.json"),
     sourceType: "var",
@@ -201,15 +207,15 @@ config.plugins.push(
     ],
   }),
   new AddAssetHtmlPlugin([
-    {
-      filepath: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies.dll.min.js"),
+    ...dependenciesDlls.map((item) => ({
+      filepath: path.resolve(require.resolve("@lastui/dependencies"), "dll", `${item.name}.dll.min.js`),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
-    },
+    })),
     {
       filepath: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform.dll.min.js"),
       outputPath: "spa",

@@ -120,13 +120,17 @@ export async function getStack(options, packageName) {
   let webpack = null;
   let DevServer = null;
 
-  if (customConfigExists) {
-    const resolvedConfigs = (await import(`${projectConfig}?t=${process.hrtime()[0]}`)).default;
+  if (options.config || customConfigExists) {
+    const resolvedConfigs = options.config
+      ? options.config
+      : (await import(`${projectConfig}?t=${process.hrtime()[0]}`)).default;
+
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      config.push(...resolvedConfigs);
+      configs.push(...resolvedConfigs);
     }
+
     for (const idx in configs) {
       configs[idx].resolve.modules = [];
       const nodeModules = new Set();
@@ -174,7 +178,7 @@ export async function getStack(options, packageName) {
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      config.push(...resolvedConfigs);
+      configs.push(...resolvedConfigs);
     }
     for (const idx in configs) {
       configs[idx].entry = {};
@@ -191,7 +195,7 @@ export async function getStack(options, packageName) {
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      config.push(...resolvedConfigs);
+      configs.push(...resolvedConfigs);
     }
     for (const idx in configs) {
       configs[idx].entry = {};
@@ -247,7 +251,6 @@ export async function setup(options, packageName) {
   }
 
   return function (err, stats) {
-    process.exitCode = 0;
     if (err) {
       console.log(colors.red("Failed to compile.\n"));
       console.log(err);
@@ -264,9 +267,6 @@ export async function setup(options, packageName) {
     }
     if (messages.errors.length) {
       process.exitCode = 1;
-      if (messages.errors.length > 1) {
-        messages.errors.length = 1;
-      }
       console.log(colors.red("Failed to compile.\n"));
       for (const error of messages.errors) {
         console.log(colors.red(error));
@@ -279,5 +279,6 @@ export async function setup(options, packageName) {
         console.log(colors.yellow(error));
       }
     }
+    return;
   };
 }

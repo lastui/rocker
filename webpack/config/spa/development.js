@@ -6,6 +6,9 @@ setLogLevel("none");
 
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
+
+const dependenciesDlls = require("@lastui/dependencies");
+
 const settings = require("../../settings");
 const webpackBabel = require("../../../babel").env.development;
 const linariaBabel = require("../../../babel").env.test;
@@ -182,11 +185,14 @@ config.module.rules.push(
 );
 
 config.plugins.push(
-  new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies-dev-manifest.json"),
-    sourceType: "var",
-    context: process.env.INIT_CWD,
-  }),
+  ...dependenciesDlls.map(
+    (item) =>
+      new webpack.DllReferencePlugin({
+        manifest: path.resolve(require.resolve("@lastui/dependencies"), "dll", `${item.name}-dev-manifest.json`),
+        sourceType: item.type,
+        context: process.env.INIT_CWD,
+      }),
+  ),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-dev-manifest.json"),
     sourceType: "var",
@@ -206,13 +212,13 @@ config.plugins.push(
     scriptLoading: "defer",
   }),
   new AddAssetHtmlPlugin([
-    {
-      filepath: path.resolve(__dirname, "..", "..", "..", "..", "dependencies", "dll", "dependencies.dll.js"),
+    ...dependenciesDlls.map((item) => ({
+      filepath: path.resolve(require.resolve("@lastui/dependencies"), "dll", `${item.name}.dll.js`),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
-    },
+    })),
     {
       filepath: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform.dll.js"),
       typeOfAsset: "js",
