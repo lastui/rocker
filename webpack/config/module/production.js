@@ -181,7 +181,7 @@ config.plugins.push(
   ...dependenciesDlls.map(
     (item) =>
       new webpack.DllReferencePlugin({
-        manifest: path.resolve(require.resolve("@lastui/dependencies"), "dll", `${item.name}-prod-manifest.json`),
+        manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item.name}-prod-manifest.json`),
         sourceType: item.type,
         context: process.env.INIT_CWD,
       }),
