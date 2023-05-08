@@ -202,7 +202,7 @@ for (const chunk in config.entry) {
       chunk,
       allProvisions,
       compilationOrder.map((item) => toCacheKey(chunk, item)),
-      "var",
+      "umd",
     ),
   ];
 
@@ -220,7 +220,7 @@ for (const chunk in config.entry) {
 
   allDlls.push({
     name: chunk,
-    type: "var",
+    type: "umd",
   });
 }
 
