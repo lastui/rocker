@@ -1,15 +1,15 @@
-import { fileURLToPath } from 'node:url';
-import fs from 'node:fs/promises';
+import { fileURLToPath } from "node:url";
+import fs from "node:fs/promises";
 import path from "node:path";
 
-const thisFile = fileURLToPath(import.meta.url)
+const thisFile = fileURLToPath(import.meta.url);
 
 async function linkDependenciesModules() {
   const sourcePath = path.resolve(thisFile, "..", "..", "..", "dependencies", "node_modules");
   const targetPath = path.resolve(thisFile, "..", "..", "node_modules");
   try {
     await fs.unlink(targetPath);
-  } catch(_error) {
+  } catch (_error) {
     await fs.rm(targetPath, { recursive: true, force: true });
   }
   await fs.symlink(sourcePath, targetPath);
@@ -20,7 +20,7 @@ async function linkDevModule(...nodePath) {
   const targetPath = path.resolve(thisFile, "..", "..", "node_modules", ...nodePath);
   try {
     await fs.unlink(targetPath);
-  } catch(_error) {
+  } catch (_error) {
     await fs.rm(targetPath, { recursive: true, force: true });
   }
   await fs.symlink(sourcePath, targetPath);
@@ -31,12 +31,12 @@ async function linkDLL(...nodePath) {
   const targetPath = path.resolve(thisFile, "..", "..", "node_modules", "@lastui", ...nodePath, "dll");
   try {
     await fs.unlink(targetPath);
-  } catch(_error) {
+  } catch (_error) {
     await fs.rm(targetPath, { recursive: true, force: true });
   }
   await fs.mkdir(path.dirname(targetPath), { recursive: true });
   await fs.symlink(sourcePath, targetPath);
-  await fs.writeFile(path.resolve(path.dirname(targetPath), 'index.js'), '');
+  await fs.writeFile(path.resolve(path.dirname(targetPath), "index.js"), "");
 }
 
 async function linkSelfAsModule() {
@@ -44,7 +44,7 @@ async function linkSelfAsModule() {
   const targetPath = path.resolve(thisFile, "..", "..", "node_modules", "@lastui", "rocker", "platform");
   try {
     await fs.unlink(targetPath);
-  } catch(_error) {
+  } catch (_error) {
     await fs.rm(targetPath, { recursive: true, force: true });
   }
   await fs.mkdir(path.dirname(targetPath), { recursive: true });

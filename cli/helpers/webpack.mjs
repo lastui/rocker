@@ -1,7 +1,7 @@
 import process from "node:process";
 import path from "node:path";
 import colors from "ansi-colors";
-import { execShellCommand } from "./shell.mjs"
+import { execShellCommand } from "./shell.mjs";
 import { fileExists, directoryExists } from "./io.mjs";
 
 function isLikelyASyntaxError(message) {
@@ -79,12 +79,12 @@ function formatWebpackMessages(multiStats) {
     let formattedErrors = (stats.compilation.errors ?? []).map(formatMessage);
     const formattedWarnings = (stats.compilation.warnings ?? []).map(formatMessage);
     if (formattedErrors.some(isLikelyASyntaxError)) {
-      formattedErrors = formattedErrors.filter(isLikelyASyntaxError)
+      formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
     }
-    errors.push(...formattedErrors)
-    warnings.push(...formattedWarnings)
+    errors.push(...formattedErrors);
+    warnings.push(...formattedWarnings);
   }
-  return { errors, warnings };  
+  return { errors, warnings };
 }
 
 async function propagateProgressOption() {
@@ -125,7 +125,7 @@ export async function getStack(options, packageName) {
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      config.push(...resolvedConfigs)
+      config.push(...resolvedConfigs);
     }
     for (const idx in configs) {
       configs[idx].resolve.modules = [];
@@ -166,11 +166,15 @@ export async function getStack(options, packageName) {
       }
     }
   } else if (projectNodeModulesExists) {
-    const resolvedConfigs = (await import(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
+    const resolvedConfigs = (
+      await import(
+        `${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`
+      )
+    ).default;
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      config.push(...resolvedConfigs)
+      config.push(...resolvedConfigs);
     }
     for (const idx in configs) {
       configs[idx].entry = {};
@@ -181,11 +185,13 @@ export async function getStack(options, packageName) {
       }
     }
   } else {
-    const resolvedConfigs = (await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)).default;
+    const resolvedConfigs = (
+      await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)
+    ).default;
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {
-      config.push(...resolvedConfigs)
+      config.push(...resolvedConfigs);
     }
     for (const idx in configs) {
       configs[idx].entry = {};
@@ -224,7 +230,7 @@ export async function getStack(options, packageName) {
     webpack,
     DevServer,
   };
-};
+}
 
 export async function setup(options, packageName) {
   process.env.NODE_ENV = options.development ? "development" : "production";
@@ -274,4 +280,4 @@ export async function setup(options, packageName) {
       }
     }
   };
-};
+}
