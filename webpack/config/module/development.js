@@ -220,12 +220,12 @@ config.plugins.push(
   ),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-dev-manifest.json"),
-    sourceType: "var",
+    sourceType: "umd",
     context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
     manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
-    sourceType: "var",
+    sourceType: "umd",
     context: process.env.INIT_CWD,
   }),
   new ModuleLocalesPlugin({

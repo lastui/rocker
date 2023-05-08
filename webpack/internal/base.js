@@ -4,7 +4,7 @@ const settings = require("../settings");
 module.exports = {
   context: process.env.INIT_CWD,
   target: "web",
-  externalsType: "var",
+  externalsType: "umd",
   mode: settings.DEVELOPMENT ? "development" : "production",
   resolve: {
     unsafeCache: false,

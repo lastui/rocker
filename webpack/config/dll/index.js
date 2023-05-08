@@ -17,7 +17,7 @@ config.output.path = settings.DLL_BUILD_PATH;
 config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;
 config.output.library = {
   name: "[name]_dll",
-  type: "var",
+  type: "umd",
 };
 
 config.module.rules.push(
