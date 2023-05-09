@@ -188,8 +188,8 @@ config.plugins.push(
   ...dependenciesDlls.map(
     (item) =>
       new webpack.DllReferencePlugin({
-        manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item.name}-dev-manifest.json`),
-        sourceType: item.type,
+        manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item}-dev-manifest.json`),
+        sourceType: "var",
         context: process.env.INIT_CWD,
       }),
   ),
@@ -213,7 +213,7 @@ config.plugins.push(
   }),
   new AddAssetHtmlPlugin([
     ...dependenciesDlls.map((item) => ({
-      filepath: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item.name}.dll.js`),
+      filepath: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item}.dll.js`),
       typeOfAsset: "js",
       attributes: {
         defer: true,

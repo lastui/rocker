@@ -11,30 +11,30 @@ process.env.INIT_CWD = path.resolve(fileURLToPath(import.meta.url), "..", "..");
 
 const development = process.env.NODE_ENV === "development";
 
-const dllConfig = (await import("../../webpack/config/dll/index.js")).default;
 const config = (await import("../webpack.config.js")).default;
+const dllConfig = (await import("../../webpack/config/dll/index.js")).default;
 const command = await import("../../cli/commands/build.js");
 
-function toCacheKey(chunk, item) {
-  return `${chunk}_${item.replaceAll("/", "-").replaceAll("@", "-").replaceAll("-", "_")}`;
+function inferPackageFromImport(knownPackages, importPath) {
+  let result = "";
+  for (const knownPackage of knownPackages) {
+    if (importPath.startsWith(`./node_modules/${knownPackage}/`) && knownPackage.length > result) {
+      result = knownPackage;
+    }
+  }
+  if (result.length > 0) {
+    return result;
+  }
+  return importPath.split("/")[2];
 }
 
-function generateDllConfig(name, provides, references, sourceType) {
-  const plugins = references.map(
-    (reference) =>
-      new webpack.DllReferencePlugin({
-        manifest: path.resolve(
-          fileURLToPath(import.meta.url),
-          "..",
-          "..",
-          "dll",
-          `${reference}-${development ? "dev" : "prod"}-manifest.json`,
-        ),
-        sourceType: "var",
-        context: process.env.INIT_CWD,
-      }),
-  );
+function cacheKeyFactory(chunk) {
+  return function (item) {
+    return `${chunk}_${item.replaceAll("/", "-").replaceAll("@", "-").replaceAll("-", "_")}`;
+  };
+}
 
+function generateDllConfig(name, provides, references) {
   return {
     ...dllConfig,
     name,
@@ -44,27 +44,45 @@ function generateDllConfig(name, provides, references, sourceType) {
       ...dllConfig.output,
       library: {
         ...dllConfig.output.library,
-        type: sourceType,
+        type: "var",
       },
     },
-    plugins: [...dllConfig.plugins, ...plugins],
+    plugins: [
+      ...dllConfig.plugins,
+      ...references.map(
+        (reference) =>
+          new webpack.DllReferencePlugin({
+            manifest: path.resolve(
+              fileURLToPath(import.meta.url),
+              "..",
+              "..",
+              "dll",
+              `${reference}-${development ? "dev" : "prod"}-manifest.json`,
+            ),
+            sourceType: "var",
+            context: process.env.INIT_CWD,
+          }),
+      ),
+    ],
   };
 }
 
 const allDlls = [];
 
 for (const chunk in config.entry) {
+  const toCacheKey = cacheKeyFactory(chunk);
+
+  const entries = config.entry[chunk].map(toCacheKey).flat();
+
+  // INFO compile all the entries mentioned in chunk into their own DLLs
   const nodeMapping = {};
 
   await (async function () {
     const directEntries = {};
 
     for (const entry of config.entry[chunk]) {
-      const cacheKey = toCacheKey(chunk, entry);
-      nodeMapping[cacheKey] = {
-        entry,
-        chunk,
-      };
+      const cacheKey = toCacheKey(entry);
+      nodeMapping[cacheKey] = { entry };
       directEntries[cacheKey] = [entry];
     }
 
@@ -72,43 +90,26 @@ for (const chunk in config.entry) {
   })();
 
   for (const leaf in nodeMapping) {
-    nodeMapping[leaf].provides = Object.keys(
-      JSON.parse(
-        await fs.readFile(
-          path.resolve(
-            fileURLToPath(import.meta.url),
-            "..",
-            "..",
-            "dll",
-            `${leaf}-${development ? "dev" : "prod"}-manifest.json`,
-          ),
-          { encoding: "utf8" },
-        ),
-      ).content,
+    const manifestFile = path.resolve(
+      fileURLToPath(import.meta.url),
+      "..",
+      "..",
+      "dll",
+      `${leaf}-${development ? "dev" : "prod"}-manifest.json`,
     );
+
+    nodeMapping[leaf].provides = Object.keys(JSON.parse(await fs.readFile(manifestFile, { encoding: "utf8" })).content);
   }
 
-  const entries = config.entry[chunk].map((entry) => toCacheKey(chunk, entry)).flat();
-
+  // INFO compile all the entries used directly or transitively in chunk into their own DLLs
   const allUsedPackages = {};
 
   for (const cacheKey in nodeMapping) {
     for (const provision of nodeMapping[cacheKey].provides) {
-      let candidate = "";
-      for (const entry of entries) {
-        if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
-          candidate = entry;
-        }
-      }
-      if (candidate.length === 0) {
-        candidate = provision.split("/")[2];
-      }
-      const packageName = candidate;
-
+      const packageName = inferPackageFromImport(entries, provision);
       if (!allUsedPackages[packageName]) {
         allUsedPackages[packageName] = [];
       }
-
       if (!allUsedPackages[packageName].includes(provision)) {
         allUsedPackages[packageName].push(provision);
       }
@@ -119,12 +120,9 @@ for (const chunk in config.entry) {
     const transitiveEntries = {};
 
     for (const entry in allUsedPackages) {
-      const cacheKey = toCacheKey(chunk, entry);
+      const cacheKey = toCacheKey(entry);
       if (!nodeMapping[cacheKey]) {
-        nodeMapping[cacheKey] = {
-          entry,
-          chunk,
-        };
+        nodeMapping[cacheKey] = { entry };
       }
       transitiveEntries[cacheKey] = allUsedPackages[entry];
     }
@@ -132,137 +130,125 @@ for (const chunk in config.entry) {
     await command.handler({ development, config: Object.assign({}, dllConfig, { entry: transitiveEntries }) }, []);
   })();
 
+  // INFO clean all intermediate DLLs and their manifests
   for (const leaf in nodeMapping) {
-    nodeMapping[leaf].provides = Object.keys(
-      JSON.parse(
-        await fs.readFile(
-          path.resolve(
-            fileURLToPath(import.meta.url),
-            "..",
-            "..",
-            "dll",
-            `${leaf}-${development ? "dev" : "prod"}-manifest.json`,
-          ),
-          { encoding: "utf8" },
-        ),
-      ).content,
+    const manifestFile = path.resolve(
+      fileURLToPath(import.meta.url),
+      "..",
+      "..",
+      "dll",
+      `${leaf}-${development ? "dev" : "prod"}-manifest.json`,
+    );
+    const dllFile = path.resolve(
+      fileURLToPath(import.meta.url),
+      "..",
+      "..",
+      "dll",
+      `${leaf}.dll${development ? "" : ".min"}.js`,
     );
 
-    await fs.rm(
-      path.resolve(
-        fileURLToPath(import.meta.url),
-        "..",
-        "..",
-        "dll",
-        `${leaf}-${development ? "dev" : "prod"}-manifest.json`,
-      ),
-      { recursive: false, force: true },
-    );
-    await fs.rm(
-      path.resolve(fileURLToPath(import.meta.url), "..", "..", "dll", `${leaf}.dll${development ? "" : ".min"}.js`),
-      { recursive: false, force: true },
-    );
+    nodeMapping[leaf].provides = Object.keys(JSON.parse(await fs.readFile(manifestFile, { encoding: "utf8" })).content);
+
+    await fs.rm(manifestFile, { recursive: false, force: true });
+    await fs.rm(dllFile, { recursive: false, force: true });
   }
 
-  const provisionMap = {};
-
-  for (const cacheKey in nodeMapping) {
-    for (const provision of nodeMapping[cacheKey].provides) {
-      let candidate = "";
-      for (const entry of entries) {
-        if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
-          candidate = entry;
+  // INFO generate map of package to import provisions
+  const provisionMap = (function () {
+    const result = {};
+    for (const cacheKey in nodeMapping) {
+      for (const provision of nodeMapping[cacheKey].provides) {
+        const packageName = inferPackageFromImport(entries, provision);
+        if (!result[packageName]) {
+          result[packageName] = [];
+        }
+        if (!result[packageName].includes(provision)) {
+          result[packageName].push(provision);
         }
       }
-      if (candidate.length === 0) {
-        candidate = provision.split("/")[2];
-      }
-      const packageName = candidate;
-
-      if (!provisionMap[packageName]) {
-        provisionMap[packageName] = [];
-      }
-      if (!provisionMap[packageName].includes(provision)) {
-        provisionMap[packageName].push(provision);
-      }
     }
-  }
+    return result;
+  })();
 
-  const dependencyGraph = {};
-
-  for (const leaf in nodeMapping) {
-    for (const provision of nodeMapping[leaf].provides) {
-      let candidate = "";
-      for (const entry of entries) {
-        if (provision.startsWith(`./node_modules/${entry}/`) && entry.length > candidate) {
-          candidate = entry;
+  // INFO generate dependency graph of packages, merge circular dependencies into one package
+  const dependencyGraph = (function () {
+    const result = {};
+    for (const leaf in nodeMapping) {
+      for (const provision of nodeMapping[leaf].provides) {
+        const packageName = inferPackageFromImport(entries, provision);
+        if (!result[nodeMapping[leaf].entry]) {
+          result[nodeMapping[leaf].entry] = [];
+        }
+        if (!result[packageName]) {
+          result[packageName] = [];
+        }
+        if (!result[nodeMapping[leaf].entry].includes(packageName) && nodeMapping[leaf].entry !== packageName) {
+          result[nodeMapping[leaf].entry].push(packageName);
         }
       }
-      if (candidate.length === 0) {
-        candidate = provision.split("/")[2];
-      }
-      const packageName = candidate;
-      if (!dependencyGraph[nodeMapping[leaf].entry]) {
-        dependencyGraph[nodeMapping[leaf].entry] = [];
-      }
-      if (!dependencyGraph[packageName]) {
-        dependencyGraph[packageName] = [];
-      }
-      if (!dependencyGraph[nodeMapping[leaf].entry].includes(packageName) && nodeMapping[leaf].entry !== packageName) {
-        dependencyGraph[nodeMapping[leaf].entry].push(packageName);
-      }
-    }
-  }
-
-  //const packagesMarkedForMerge = {}
-  const packagesToMerge = [];
-
-  for (const item in dependencyGraph) {
-    for (const requirement of dependencyGraph[item]) {
-      if (dependencyGraph[requirement].includes(item)) {
-        packagesToMerge.push([item, requirement]);
-      }
-    }
-  }
-
-  for (const toMerge of packagesToMerge) {
-    if (!dependencyGraph[toMerge[0]]) {
-      continue;
     }
 
-    const union = [];
+    const packagesToMerge = [];
 
-    for (const addition of dependencyGraph[toMerge[0]]) {
-      if (addition === toMerge[0]) {
+    for (const item in result) {
+      for (const requirement of result[item]) {
+        if (result[requirement].includes(item)) {
+          packagesToMerge.push([item, requirement]);
+        }
+      }
+    }
+
+    const packagesToDelete = [];
+
+    for (const [left, right] of packagesToMerge) {
+      if (packagesToDelete.includes(left)) {
         continue;
       }
-      if (addition === toMerge[1]) {
-        continue;
-      }
-      if (!union.includes(addition)) {
-        union.push(addition);
-      }
-    }
 
-    dependencyGraph[toMerge[0]] = union;
-    delete dependencyGraph[toMerge[1]];
+      const union = [];
 
-    for (const provision of provisionMap[toMerge[1]]) {
-      if (!provisionMap[toMerge[0]].includes(provision)) {
-        provisionMap[toMerge[0]].push(provision);
+      for (const addition of result[left]) {
+        if (addition === left) {
+          continue;
+        }
+        if (addition === right) {
+          continue;
+        }
+        if (!union.includes(addition)) {
+          union.push(addition);
+        }
       }
-    }
 
-    for (const item in dependencyGraph) {
-      if (dependencyGraph[item].includes(toMerge[1])) {
-        dependencyGraph[item] = dependencyGraph[item].filter((dependency) => dependency !== toMerge[1]);
-        if (!dependencyGraph[item].includes(toMerge[0])) {
-          dependencyGraph[item].push(toMerge[0]);
+      result[left] = union;
+
+      if (!packagesToDelete.includes(right)) {
+        packagesToDelete.push(right);
+      }
+
+      for (const provision of provisionMap[right]) {
+        if (!provisionMap[left].includes(provision)) {
+          provisionMap[left].push(provision);
+        }
+      }
+
+      for (const item in result) {
+        if (result[item].includes(right)) {
+          result[item] = result[item].filter((dependency) => dependency !== right);
+          if (!result[item].includes(left)) {
+            result[item].push(left);
+          }
         }
       }
     }
-  }
 
+    for (const deletion of packagesToDelete) {
+      delete result[deletion];
+    }
+
+    return result;
+  })();
+
+  // INFO generate order of DLL compilation
   const compilationOrder = (function () {
     const result = [];
     const visited = {};
@@ -285,98 +271,72 @@ for (const chunk in config.entry) {
     return result.filter((item) => Boolean(provisionMap[item]));
   })();
 
+  // INFO generate multiconfig compilation for webpack
   const strategy = [
     ...compilationOrder.map((entry) =>
-      generateDllConfig(
-        toCacheKey(chunk, entry),
-        provisionMap[entry],
-        dependencyGraph[entry].map((item) => toCacheKey(chunk, item)),
-        "var",
-      ),
+      generateDllConfig(toCacheKey(entry), provisionMap[entry], dependencyGraph[entry].map(toCacheKey)),
     ),
-    generateDllConfig(
-      chunk,
-      [...new Set(Object.values(allUsedPackages).flat())],
-      compilationOrder.map((item) => toCacheKey(chunk, item)),
-      "var",
-    ),
+    generateDllConfig(chunk, [...new Set(Object.values(allUsedPackages).flat())], compilationOrder.map(toCacheKey)),
   ];
 
   await command.handler({ development, config: strategy }, []);
 
   for (const entry of compilationOrder) {
-    const item = {
-      name: toCacheKey(chunk, entry),
-      type: "var",
-    };
+    const item = toCacheKey(entry);
     if (!allDlls.includes(item)) {
       allDlls.push(item);
     }
   }
 
-  allDlls.push({
-    name: chunk,
-    type: "var",
-  });
+  allDlls.push(chunk);
 }
 
-const indexFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", "index.js");
+// INFO patch branch in index.js to export all DLLs inorder for synchronous requirement in webpack configurations
+await (async function () {
+  const indexFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", "index.js");
 
-const indexSource = await fs.readFile(indexFile, { encoding: "utf8" });
+  const indexSource = await fs.readFile(indexFile, { encoding: "utf8" });
 
-const ast = parser.parse(indexSource, { sourceType: "module" });
+  const ast = parser.parse(indexSource, { sourceType: "module" });
 
-const modifiedIndexFile = traverse.default(ast, {
-  IfStatement(path) {
-    if (development) {
-      path.replaceWith(
-        types.ifStatement(
-          path.node.test,
-          types.blockStatement([
-            types.expressionStatement(
-              types.assignmentExpression(
-                path.node.consequent.body[0].expression.operator,
-                path.node.consequent.body[0].expression.left,
-                types.arrayExpression(
-                  allDlls.map((entry) =>
-                    types.objectExpression([
-                      types.objectProperty(types.identifier("name"), types.stringLiteral(entry.name)),
-                      types.objectProperty(types.identifier("type"), types.stringLiteral(entry.type)),
-                    ]),
-                  ),
+  const modifiedIndexFile = traverse.default(ast, {
+    IfStatement(path) {
+      if (development) {
+        path.replaceWith(
+          types.ifStatement(
+            path.node.test,
+            types.blockStatement([
+              types.expressionStatement(
+                types.assignmentExpression(
+                  path.node.consequent.body[0].expression.operator,
+                  path.node.consequent.body[0].expression.left,
+                  types.arrayExpression(allDlls.map(types.stringLiteral)),
                 ),
               ),
-            ),
-          ]),
-          path.node.alternate,
-        ),
-      );
-    } else {
-      path.replaceWith(
-        types.ifStatement(
-          path.node.test,
-          path.node.consequent,
-          types.blockStatement([
-            types.expressionStatement(
-              types.assignmentExpression(
-                path.node.alternate.body[0].expression.operator,
-                path.node.alternate.body[0].expression.left,
-                types.arrayExpression(
-                  allDlls.map((entry) =>
-                    types.objectExpression([
-                      types.objectProperty(types.identifier("name"), types.stringLiteral(entry.name)),
-                      types.objectProperty(types.identifier("type"), types.stringLiteral(entry.type)),
-                    ]),
-                  ),
+            ]),
+            path.node.alternate,
+          ),
+        );
+      } else {
+        path.replaceWith(
+          types.ifStatement(
+            path.node.test,
+            path.node.consequent,
+            types.blockStatement([
+              types.expressionStatement(
+                types.assignmentExpression(
+                  path.node.alternate.body[0].expression.operator,
+                  path.node.alternate.body[0].expression.left,
+                  types.arrayExpression(allDlls.map(types.stringLiteral)),
                 ),
               ),
-            ),
-          ]),
-        ),
-      );
-    }
-    path.stop();
-  },
-});
+            ]),
+          ),
+        );
+      }
+      path.stop();
+    },
+  });
 
-await fs.writeFile(indexFile, generate.default(ast, { compact: false, concise: true }, indexSource).code);
+  await fs.writeFile(indexFile, generate.default(ast, { compact: false, concise: true }, indexSource).code);
+})();
