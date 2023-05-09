@@ -105,6 +105,10 @@ async function propagateProgressOption() {
 }
 
 export async function getStack(options, packageName) {
+  if (!options.quiet) {
+    console.log(colors.bold(`Compiling ${packageName}...`));
+  }
+
   if (options.debug) {
     const oldDebug = (process.env.DEBUG || "").split(",");
     process.env.DEBUG = ["rocker:*", ...oldDebug].join(",");
@@ -237,7 +241,7 @@ export async function getStack(options, packageName) {
   };
 }
 
-export async function setup(options, packageName) {
+export async function setup(options) {
   process.env.NODE_ENV = options.development ? "development" : "production";
   process.env.BABEL_ENV = process.env.NODE_ENV;
 
@@ -245,10 +249,6 @@ export async function setup(options, packageName) {
     process.env.PROGRESS === "false";
   } else {
     await propagateProgressOption();
-  }
-
-  if (!options.quiet) {
-    console.log(colors.bold(`Compiling ${packageName}...`));
   }
 
   return function (err, stats) {

@@ -10,13 +10,7 @@ exports.handler = async function (options, cleanupHooks) {
   const { setup, getStack } = await import("../helpers/webpack.mjs");
 
   const packageName = path.basename(process.env.INIT_CWD);
-  const callback = await setup(
-    {
-      ...options,
-      development: true,
-    },
-    packageName,
-  );
+  const callback = await setup({ ...options, development: true });
   const { configs, webpack, DevServer } = await getStack(options, packageName);
 
   for (const config of configs) {
