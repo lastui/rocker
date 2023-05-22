@@ -6,7 +6,7 @@ exports.builder = {};
 
 exports.handler = async function (options, cleanupHooks) {
   const path = await import("node:path");
-  const colors = await import("ansi-colors");
+  const colors = (await import("ansi-colors")).default;
   const { setup, getStack } = await import("../helpers/webpack.mjs");
 
   const packageName = path.basename(process.env.INIT_CWD);
