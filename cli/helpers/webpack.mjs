@@ -18,10 +18,11 @@ function formatMessage(message) {
   } else if (Array.isArray(message)) {
     message.forEach((message) => {
       if ("message" in message) {
-        lines = message["message"].split("\n");
+        lines.push(...message["message"].split("\n"));
       }
     });
   }
+
   lines = lines.filter((line) => !/Module [A-z ]+\(from/.test(line));
   lines = lines.map((line) => {
     const parsingError = /Line (\d+):(?:(\d+):)?\s*Parsing error: (.+)$/.exec(line);
@@ -255,6 +256,7 @@ export async function setup(options) {
     if (err) {
       console.log(colors.red("Failed to compile.\n"));
       console.log(err);
+      console.log();
       process.exitCode = 1;
       return;
     }
@@ -272,6 +274,7 @@ export async function setup(options) {
       for (const error of messages.errors) {
         console.log(colors.red(error));
       }
+      console.log();
       return;
     }
     if (messages.warnings.length) {
@@ -279,6 +282,7 @@ export async function setup(options) {
       for (const error of messages.warnings) {
         console.log(colors.yellow(error));
       }
+      console.log();
     }
     return;
   };
