@@ -69,6 +69,7 @@ describe("<Entrypoint />", () => {
   });
 
   describe("routing", () => {
+
     it("matches properly", async () => {
       const store = mockStore({
         ...initialState,
@@ -159,6 +160,7 @@ describe("<Entrypoint />", () => {
     });
   });
 
+  // TODO move to Globalisation tests
   describe("localisation", () => {
     it("is supported", () => {
       const store = mockStore({
