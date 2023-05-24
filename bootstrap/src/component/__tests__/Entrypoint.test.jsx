@@ -38,14 +38,13 @@ class ErrorBoundary extends React.Component {
 }
 
 const BrokenComponent = () => {
-  throw new Error('failure');
-}
+  throw new Error("failure");
+};
 
 describe("<Entrypoint />", () => {
-
   beforeEach(() => {
-    window.history.pushState({}, '', '/');
-  })
+    window.history.pushState({}, "", "/");
+  });
 
   it("entrypoint missing", () => {
     const store = mockStore(initialState);
@@ -72,10 +71,8 @@ describe("<Entrypoint />", () => {
   });
 
   describe("routing", () => {
-
     it("matches properly", async () => {
-
-      window.history.pushState({}, '', '/grand/parent/child')
+      window.history.pushState({}, "", "/grand/parent/child");
 
       const store = mockStore({
         ...initialState,
@@ -110,7 +107,7 @@ describe("<Entrypoint />", () => {
       const spy = jest.spyOn(console, "error");
       spy.mockImplementation(() => {});
 
-      window.history.pushState({}, '', '/parent/child')
+      window.history.pushState({}, "", "/parent/child");
 
       const store = mockStore({
         ...initialState,
@@ -140,7 +137,7 @@ describe("<Entrypoint />", () => {
 
       spy.mockRestore();
     });
-  })
+  });
 
   describe("localisation", () => {
     it("is supported", () => {
