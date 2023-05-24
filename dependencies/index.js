@@ -1,49 +1,5 @@
 if (process.env.NODE_ENV === "development") {
-  module.exports = [
-    "dependencies_react",
-    "dependencies_scheduler",
-    "dependencies_react_dom",
-    "dependencies_tslib",
-    "dependencies__formatjs",
-    "dependencies_react_is",
-    "dependencies_hoist_non_react_statics",
-    "dependencies_react_intl",
-    "dependencies__babel",
-    "dependencies_use_sync_external_store",
-    "dependencies_react_redux",
-    "dependencies_redux",
-    "dependencies__redux_saga",
-    "dependencies_redux_saga",
-    "dependencies__remix_run",
-    "dependencies_react_router",
-    "dependencies_react_router_dom",
-    "dependencies__emotion",
-    "dependencies__linaria",
-    "dependencies_regenerator_runtime",
-    "dependencies",
-  ];
+  module.exports = [];
 } else {
-  module.exports = [
-    "dependencies_react",
-    "dependencies_scheduler",
-    "dependencies_react_dom",
-    "dependencies_tslib",
-    "dependencies__formatjs",
-    "dependencies_react_is",
-    "dependencies_hoist_non_react_statics",
-    "dependencies_react_intl",
-    "dependencies__babel",
-    "dependencies_use_sync_external_store",
-    "dependencies_react_redux",
-    "dependencies_redux",
-    "dependencies__redux_saga",
-    "dependencies_redux_saga",
-    "dependencies__remix_run",
-    "dependencies_react_router",
-    "dependencies_react_router_dom",
-    "dependencies__emotion",
-    "dependencies__linaria",
-    "dependencies_regenerator_runtime",
-    "dependencies",
-  ];
+  module.exports = [];
 }
