@@ -61,108 +61,110 @@ describe("<Entrypoint />", () => {
     expect(container.innerHTML).toBe("");
   });
 
-  it("localisation is supported", () => {
-    const store = mockStore({
-      ...initialState,
-      runtime: {
-        entrypoint: "entrypoint",
-      },
-      shared: {
-        ...initialState.shared,
-        messages: {
-          "en-US": {
-            existant: "message with key {key} and value {value}",
+  describe("localisation", () => {
+    it("is supported", () => {
+      const store = mockStore({
+        ...initialState,
+        runtime: {
+          entrypoint: "entrypoint",
+        },
+        shared: {
+          ...initialState.shared,
+          messages: {
+            "en-US": {
+              existant: "message with key {key} and value {value}",
+            },
           },
         },
-      },
-    });
+      });
 
-    render(
-      withRedux(
-        <Entrypoint>
-          <FormattedMessage id="existant" values={{ key: "K", value: "V" }} />
-        </Entrypoint>,
-        store,
-      ),
-    );
-
-    expect(screen.getByText("message with key K and value V")).toBeDefined();
-  });
-
-  it("MISSING_TRANSLATION intl error is silenced", () => {
-    const store = mockStore({
-      ...initialState,
-      runtime: {
-        entrypoint: "entrypoint",
-      },
-    });
-    render(
-      withRedux(
-        <Entrypoint>
-          <FormattedMessage id="non-existant" />
-        </Entrypoint>,
-        store,
-      ),
-    );
-    expect(screen.getByTestId("module/entrypoint")).toBeDefined();
-  });
-
-  it("MISSING_DATA intl error is silenced", () => {
-    const store = mockStore({
-      ...initialState,
-      runtime: {
-        entrypoint: "entrypoint",
-      },
-      shared: {
-        ...initialState.shared,
-        language: "boo",
-      },
-    });
-    render(
-      withRedux(
-        <Entrypoint>
-          <FormattedMessage id="non-existant" />
-        </Entrypoint>,
-        store,
-      ),
-    );
-    expect(screen.getByTestId("module/entrypoint")).toBeDefined();
-  });
-
-  it("other intl errors not silenced", async () => {
-    const spy = jest.spyOn(console, "error");
-    spy.mockImplementation(() => {});
-
-    const store = mockStore({
-      ...initialState,
-      runtime: {
-        entrypoint: "entrypoint",
-      },
-      shared: {
-        ...initialState.shared,
-        messages: {
-          "en-US": {
-            existant: "message with key {key and value {value}",
-          },
-        },
-      },
-    });
-
-    render(
-      withRedux(
-        <ErrorBoundary>
+      render(
+        withRedux(
           <Entrypoint>
             <FormattedMessage id="existant" values={{ key: "K", value: "V" }} />
-          </Entrypoint>
-        </ErrorBoundary>,
-        store,
-      ),
-    );
+          </Entrypoint>,
+          store,
+        ),
+      );
 
-    await waitFor(() => {
-      expect(screen.getByTestId("EntrypointErrorBoundaries")).toBeDefined();
+      expect(screen.getByText("message with key K and value V")).toBeDefined();
     });
 
-    spy.mockRestore();
+    it("MISSING_TRANSLATION intl error is silenced", () => {
+      const store = mockStore({
+        ...initialState,
+        runtime: {
+          entrypoint: "entrypoint",
+        },
+      });
+      render(
+        withRedux(
+          <Entrypoint>
+            <FormattedMessage id="non-existant" />
+          </Entrypoint>,
+          store,
+        ),
+      );
+      expect(screen.getByTestId("module/entrypoint")).toBeDefined();
+    });
+
+    it("MISSING_DATA intl error is silenced", () => {
+      const store = mockStore({
+        ...initialState,
+        runtime: {
+          entrypoint: "entrypoint",
+        },
+        shared: {
+          ...initialState.shared,
+          language: "boo",
+        },
+      });
+      render(
+        withRedux(
+          <Entrypoint>
+            <FormattedMessage id="non-existant" />
+          </Entrypoint>,
+          store,
+        ),
+      );
+      expect(screen.getByTestId("module/entrypoint")).toBeDefined();
+    });
+
+    it("other intl errors not silenced", async () => {
+      const spy = jest.spyOn(console, "error");
+      spy.mockImplementation(() => {});
+
+      const store = mockStore({
+        ...initialState,
+        runtime: {
+          entrypoint: "entrypoint",
+        },
+        shared: {
+          ...initialState.shared,
+          messages: {
+            "en-US": {
+              existant: "message with key {key and value {value}",
+            },
+          },
+        },
+      });
+
+      render(
+        withRedux(
+          <ErrorBoundary>
+            <Entrypoint>
+              <FormattedMessage id="existant" values={{ key: "K", value: "V" }} />
+            </Entrypoint>
+          </ErrorBoundary>,
+          store,
+        ),
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId("EntrypointErrorBoundaries")).toBeDefined();
+      });
+
+      spy.mockRestore();
+    });
   });
 });
