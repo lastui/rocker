@@ -48,7 +48,7 @@ describe("<Main />", () => {
     render(<Main contextRefreshInterval={10} fetchContext={fetchContext} />);
     await waitFor(() => {
       const entrypointModule = screen.getByTestId("module/some-entrypoint");
-      expect(entrypointModule).toBeDefined();
+      expect(entrypointModule).toBeInTheDocument();
       expect(fetchContext).toHaveBeenCalled();
       const actions = mockStore.getActions();
       expect(actions.length).toEqual(1);
@@ -72,7 +72,7 @@ describe("<Main />", () => {
 
     await waitFor(() => {
       expect(fetchContext).toHaveBeenCalled();
-      expect(screen.getByTestId("MainErrorBoundaries")).toBeDefined();
+      expect(screen.getByTestId("MainErrorBoundaries")).toBeInTheDocument();
     });
 
     spy.mockRestore();
