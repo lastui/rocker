@@ -1,10 +1,9 @@
 import { useMemo, Fragment } from "react";
 import { useSelector } from "react-redux";
+import { RouterProvider, createBrowserRouter, useRouteError } from "react-router-dom";
 import { Module } from "@lastui/rocker/platform";
 import { getEntrypoint } from "../selector";
 import Globalisation from "./Globalisation";
-
-import { createBrowserRouter, RouterProvider, useRouteError } from "react-router-dom";
 
 const BubbleError = () => {
   const error = useRouteError();
