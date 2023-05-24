@@ -1,30 +1,27 @@
-import { useMemo } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { RouterProvider, createBrowserRouter, useRouteError } from "react-router-dom";
 import { Module } from "@lastui/rocker/platform";
 import { getEntrypoint } from "../selector";
 import Globalisation from "./Globalisation";
 
-const BubbleError = () => {
+const Hatch = createContext({});
+
+const Yank = () => {
   const error = useRouteError();
   throw error;
 };
 
+const Sink = (props) => {
+  const { children, entrypoint } = useContext(Hatch);
+
+  return <Module name={entrypoint}>{children}</Module>;
+};
+
+const router = createBrowserRouter([{ path: "*", element: <Sink />, errorElement: <Yank /> }], { basename: "/" });
+
 const Entrypoint = (props) => {
   const entrypoint = useSelector(getEntrypoint);
-
-  const router = useMemo(() => {
-    if (entrypoint === null) {
-      return null;
-    }
-    return createBrowserRouter([
-      {
-        path: "*",
-        element: <Module name={entrypoint}>{props.children}</Module>,
-        errorElement: <BubbleError />,
-      },
-    ]);
-  }, [entrypoint, Boolean(props.children)]);
 
   if (entrypoint === null) {
     return null;
@@ -32,7 +29,9 @@ const Entrypoint = (props) => {
 
   return (
     <Globalisation>
-      <RouterProvider router={router} />
+      <Hatch.Provider value={{ entrypoint, children: props.children }}>
+        <RouterProvider router={router} />
+      </Hatch.Provider>
     </Globalisation>
   );
 };
