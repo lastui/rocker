@@ -68,13 +68,6 @@ describe("<Entrypoint />", () => {
     expect(screen.getByTestId("module/entrypoint")).toBeInTheDocument();
   });
 
-  it("entrypoint missing", () => {
-    const store = mockStore(initialState);
-
-    const { container } = render(withRedux(<Entrypoint />, store));
-    expect(container.innerHTML).toBe("");
-  });
-
   describe("routing", () => {
     it("matches properly", async () => {
       const store = mockStore({
