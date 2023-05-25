@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { RouterProvider, createBrowserRouter, useRouteError } from "react-router-dom";
 import { Module } from "@lastui/rocker/platform";
 import { getEntrypoint } from "../selector";
-import Globalisation from "./Globalisation";
 
 const Hatch = createContext({});
 
@@ -28,11 +27,9 @@ const Entrypoint = (props) => {
   }
 
   return (
-    <Globalisation>
-      <Hatch.Provider value={{ entrypoint, children: props.children }}>
-        <RouterProvider router={router} />
-      </Hatch.Provider>
-    </Globalisation>
+    <Hatch.Provider value={{ entrypoint, children: props.children }}>
+      <RouterProvider router={router} />
+    </Hatch.Provider>
   );
 };
 
