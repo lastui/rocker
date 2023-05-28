@@ -16,3 +16,18 @@ jest.mock("@linaria/react", () => {
 jest.mock("@linaria/core", () => ({
   css: jest.fn(() => ""),
 }));
+
+if (!globalThis.fetch) {
+  globalThis.fetch = jest.fn();
+  globalThis.Request = jest.fn();
+  globalThis.Response = jest.fn();
+}
+
+if (!globalThis.AbortController) {
+  globalThis.AbortController = jest.fn();
+}
+
+if (!globalThis.TextEncoder || !globalThis.TextDecoder) {
+  globalThis.TextEncoder = jest.fn();
+  globalThis.TextDecoder = jest.fn();
+}

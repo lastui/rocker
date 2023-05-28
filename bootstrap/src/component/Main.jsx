@@ -3,6 +3,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { constants, getStore, manualCleanup } from "@lastui/rocker/platform";
 import setupStore from "../store";
 import Entrypoint from "./Entrypoint";
+import Globalisation from "./Globalisation";
 
 const Main = (props) => {
   const [_, setErrorState] = useState();
@@ -40,7 +41,9 @@ const Main = (props) => {
   return (
     <StrictMode>
       <ReduxProvider store={getStore()}>
-        <Entrypoint />
+        <Globalisation>
+          <Entrypoint />
+        </Globalisation>
       </ReduxProvider>
     </StrictMode>
   );
