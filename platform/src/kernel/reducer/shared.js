@@ -3,7 +3,7 @@ import * as constants from "../../constants";
 export const initialState = {
   global: {},
   local: {},
-  language: "en-US",
+  language: null,
   messages: {},
   readyModules: {},
   lastUpdate: 0,
@@ -95,17 +95,7 @@ function createSharedReducer() {
       }
       case constants.I18N_MESSAGES_BATCH: {
         if (action.payload.batch.length === 0) {
-          if (action.payload.language === state.language) {
-            return state;
-          }
-          return {
-            global: state.global,
-            local: state.local,
-            language: action.payload.language,
-            messages: state.messages,
-            lastUpdate: state.lastUpdate,
-            readyModules: state.readyModules,
-          };
+          return state;
         }
 
         const nextMessages = {};
@@ -141,7 +131,7 @@ function createSharedReducer() {
         return {
           global: state.global,
           local: state.local,
-          language: action.payload.language,
+          language: state.language,
           messages: nextMessages,
           lastUpdate: state.lastUpdate,
           readyModules: state.readyModules,

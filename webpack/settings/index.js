@@ -27,8 +27,6 @@ exports.DEVELOPMENT = process.env.NODE_ENV === "development";
 
 exports.PROJECT_NAMESPACE = namespace(exports.DEVELOPMENT ? "" : process.env.PROJECT_NAMESPACE);
 
-exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US").split(",").map((locale) => locale.trim());
-
 exports.WEBPACK_ROOT_PATH = path.resolve(__dirname, "..");
 
 exports.PROJECT_NAME = process.env.PROJECT_NAME || path.resolve(process.env.INIT_CWD).split(path.sep).pop();
@@ -42,3 +40,9 @@ exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT || 8888);
 exports.PROGRESS = process.env.PROGRESS !== "false";
 
 exports.BUILD_ID = randomUUID();
+
+exports.DEFAULT_LOCALE = process.env.DEFAULT_LOCALE || "en-US";
+
+exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || exports.DEFAULT_LOCALE)
+  .split(",")
+  .map((locale) => locale.trim());
