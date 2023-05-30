@@ -164,6 +164,11 @@ describe("shared reducer", () => {
     });
 
     it("purges localisation messages owned by this module", () => {
+      const state = {
+        ...initialState,
+        language: "en-US",
+      };
+
       const addMessagesAction = {
         type: constants.I18N_MESSAGES_BATCH,
         payload: {
@@ -185,16 +190,16 @@ describe("shared reducer", () => {
           module: "my-feature",
         },
       };
-      const state = reducer(initialState, addMessagesAction);
-      expect(state.messages["en-US"]["message.key"]).toEqual("message.value");
+      const nextState = reducer(state, addMessagesAction);
+      expect(nextState.messages["en-US"]["message.key"]).toEqual("message.value");
       const expectedState = {
-        ...initialState,
+        ...state,
         messages: {
           "en-US": {},
         },
         lastUpdate: 1,
       };
-      expect(reducer(state, action)).toEqual(expectedState);
+      expect(reducer(nextState, action)).toEqual(expectedState);
     });
 
     it("marks module as no longer ready", () => {
@@ -224,24 +229,12 @@ describe("shared reducer", () => {
   });
 
   describe("I18N_MESSAGES_BATCH", () => {
-    it("empty batch different language", () => {
-      const action = {
-        type: constants.I18N_MESSAGES_BATCH,
-        payload: {
-          batch: [],
-          language: "fr-FR",
-        },
-      };
-      const state = { ...initialState };
-      const expectedState = {
+    it("empty batch", () => {
+      const state = {
         ...initialState,
-        language: "fr-FR",
+        language: "en-US",
       };
 
-      expect(reducer(state, action)).toEqual(expectedState);
-    });
-
-    it("empty batch same language", () => {
       const action = {
         type: constants.I18N_MESSAGES_BATCH,
         payload: {
@@ -249,7 +242,7 @@ describe("shared reducer", () => {
           language: "en-US",
         },
       };
-      expect(reducer(initialState, action)).toEqual(initialState);
+      expect(reducer(state, action)).toEqual(state);
     });
 
     it("non empty batch same language", () => {
@@ -322,7 +315,6 @@ describe("shared reducer", () => {
       };
       const expectedState = {
         ...initialState,
-        language: "fr-FR",
         messages: {
           "en-US": {
             existing: "old",

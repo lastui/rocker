@@ -31,3 +31,5 @@ if (!globalThis.TextEncoder || !globalThis.TextDecoder) {
   globalThis.TextEncoder = jest.fn();
   globalThis.TextDecoder = jest.fn();
 }
+
+globalThis.DEFAULT_LOCALE = "en-US";

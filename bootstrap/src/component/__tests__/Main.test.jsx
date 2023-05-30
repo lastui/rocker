@@ -43,18 +43,37 @@ class ErrorBoundary extends React.Component {
 }
 
 describe("<Main />", () => {
+  beforeEach(() => {
+    mockStore.clearActions();
+  });
+
   it("should bootstrap", async () => {
     const fetchContext = jest.fn();
     render(<Main contextRefreshInterval={10} fetchContext={fetchContext} />);
     await waitFor(() => {
-      const entrypointModule = screen.getByTestId("module/some-entrypoint");
-      expect(entrypointModule).toBeInTheDocument();
+      expect(screen.getByTestId("module/some-entrypoint")).toBeInTheDocument();
       expect(fetchContext).toHaveBeenCalled();
-      const actions = mockStore.getActions();
-      expect(actions.length).toEqual(1);
-      expect(actions[0].type).toEqual(constants.INIT);
-      expect(actions[0].payload.contextRefreshInterval).toEqual(10);
     });
+
+    const actions = mockStore.getActions();
+    expect(actions).toHaveLength(2);
+    expect(actions[0].type).toEqual(constants.SET_LANGUAGE);
+    expect(actions[0].payload.language).toEqual("en-US");
+    expect(actions[1].type).toEqual(constants.INIT);
+    expect(actions[1].payload.contextRefreshInterval).toEqual(10);
+  });
+
+  it("should use provided default locale", async () => {
+    const fetchContext = jest.fn();
+    render(<Main contextRefreshInterval={10} defaultLocale="fr-FR" fetchContext={fetchContext} />);
+    await waitFor(() => {
+      expect(screen.getByTestId("module/some-entrypoint")).toBeInTheDocument();
+    });
+
+    const actions = mockStore.getActions();
+    expect(actions).toHaveLength(2);
+    expect(actions[0].type).toEqual(constants.SET_LANGUAGE);
+    expect(actions[0].payload.language).toEqual("fr-FR");
   });
 
   it("should propagate bootstrap failure to error boundaries", async () => {

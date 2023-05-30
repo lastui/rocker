@@ -13,6 +13,12 @@ const Main = (props) => {
     try {
       const store = setupStore(props.fetchContext, props.reduxMiddlewares);
       store.dispatch({
+        type: constants.SET_LANGUAGE,
+        payload: {
+          language: props.defaultLocale ?? DEFAULT_LOCALE,
+        },
+      });
+      store.dispatch({
         type: constants.INIT,
         payload: {
           contextRefreshInterval: props.contextRefreshInterval,
