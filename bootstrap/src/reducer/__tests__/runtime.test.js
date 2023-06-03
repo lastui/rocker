@@ -8,7 +8,19 @@ describe("runtimeReducer", () => {
     expect(initialState).toEqual({
       entrypoint: null,
       available: {},
+      initialized: false,
     });
+  });
+
+  it("INIT", () => {
+    const action = {
+      type: constants.INIT,
+      payload: {
+        contextRefreshInterval: 0,
+      },
+    };
+    const nextState = runtimeReducer(undefined, action);
+    expect(nextState.initialized).toEqual(true);
   });
 
   it("SET_ENTRYPOINT_MODULE", () => {

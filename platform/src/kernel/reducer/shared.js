@@ -95,7 +95,17 @@ function createSharedReducer() {
       }
       case constants.I18N_MESSAGES_BATCH: {
         if (action.payload.batch.length === 0) {
-          return state;
+          if (action.payload.language === state.language) {
+            return state;
+          }
+          return {
+            global: state.global,
+            local: state.local,
+            language: action.payload.language,
+            messages: state.messages,
+            lastUpdate: state.lastUpdate,
+            readyModules: state.readyModules,
+          };
         }
 
         const nextMessages = {};
@@ -131,7 +141,7 @@ function createSharedReducer() {
         return {
           global: state.global,
           local: state.local,
-          language: state.language,
+          language: action.payload.language,
           messages: nextMessages,
           lastUpdate: state.lastUpdate,
           readyModules: state.readyModules,
