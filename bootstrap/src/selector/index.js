@@ -1,5 +1,7 @@
 const emptydict = {};
 
+export const getIsInitialized = (state) => state.runtime.initialized;
+
 export const getEntrypoint = (state) => state.runtime.entrypoint;
 
 export const getLanguage = (state) => state.shared.language;

@@ -4,14 +4,43 @@ import { constants, setStore } from "@lastui/rocker/platform";
 
 import configureStore from "redux-mock-store";
 
-const mockStore = configureStore([])({
+const initialState = {
   runtime: {
     entrypoint: "some-entrypoint",
+    initialized: false,
   },
   shared: {
-    language: "en-US",
+    language: null,
     messages: {},
   },
+};
+
+const mockStore = configureStore([])((actions) => {
+  let state = initialState;
+  for (const action of actions) {
+    if (action.type === constants.INIT) {
+      state = {
+        runtime: {
+          ...state.runtime,
+          initialized: true,
+        },
+        shared: {
+          ...state.shared,
+        },
+      };
+    } else if (action.type === constants.SET_LANGUAGE) {
+      state = {
+        runtime: {
+          ...state.runtime,
+        },
+        shared: {
+          ...state.shared,
+          language: action.payload.language,
+        },
+      };
+    }
+  }
+  return state;
 });
 
 setStore(mockStore);
@@ -50,6 +79,7 @@ describe("<Main />", () => {
   it("should bootstrap", async () => {
     const fetchContext = jest.fn();
     render(<Main contextRefreshInterval={10} fetchContext={fetchContext} />);
+
     await waitFor(() => {
       expect(screen.getByTestId("module/some-entrypoint")).toBeInTheDocument();
       expect(fetchContext).toHaveBeenCalled();
