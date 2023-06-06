@@ -71,7 +71,7 @@ describe("assets registry", () => {
 
       jest.runAllTimers();
 
-      await expect(promise).rejects.toThrow('timeout');
+      await expect(promise).rejects.toThrow("timeout");
     });
 
     it("aborted (saga CANCEL) path", async () => {
@@ -88,7 +88,7 @@ describe("assets registry", () => {
 
       promise[CANCEL]();
 
-      await expect(promise).rejects.toThrow('Saga canceled.');
+      await expect(promise).rejects.toThrow("Saga canceled.");
     });
 
     it("aborted (parent abort) path", async () => {

@@ -76,7 +76,7 @@ function downloadAsset(resource, parentController) {
     error.name = "AbortError";
     fetchController.abort(error);
   }, CLIENT_TIMEOUT);
-  
+
   if (parentController) {
     function parentAbort() {
       clearTimeout(id);
@@ -158,11 +158,10 @@ function downloadAsset(resource, parentController) {
     return response;
   }
 
-  const request = Promise.race([aborter, fetcher()])
-    .catch((error) => {
-      clearTimeout(id);
-      return Promise.reject(error)
-    });
+  const request = Promise.race([aborter, fetcher()]).catch((error) => {
+    clearTimeout(id);
+    return Promise.reject(error);
+  });
 
   request[CANCEL] = () => {
     clearTimeout(id);

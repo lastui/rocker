@@ -17,10 +17,13 @@ const Module = forwardRef((props, ref) => {
       owned,
       ref,
       isReady,
-      lastUpdate,
       lastLocalUpdate,
     };
-  }, [ref, props, isReady, lastUpdate, lastLocalUpdate]);
+  }, [ref, props, isReady, lastLocalUpdate]);
+
+  useEffect(() => {
+    setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
+  }, [setLastLocalUpdate, lastUpdate]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -36,9 +39,11 @@ const Module = forwardRef((props, ref) => {
     });
 
     return () => {
-      controller.abort();
+      const error = new Error(`Module(${props.name}) unmount`);
+      error.name = "AbortError";
+      controller.abort(error);
     };
-  }, [setLastLocalUpdate, props.name, lastUpdate]);
+  }, [setLastLocalUpdate, props.name]);
 
   const available = moduleLoader.isAvailable(props.name);
 

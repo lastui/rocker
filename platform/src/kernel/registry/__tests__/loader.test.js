@@ -17,7 +17,7 @@ jest.mock("../assets", () => ({
       return new Promise((_resolve, reject) => {
         const error = new Error("Testing");
         error.name = "AbortError";
-        reject(error)
+        reject(error);
       });
     }
     if (scope.url === "/while-true.js") {
