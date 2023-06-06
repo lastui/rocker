@@ -53,7 +53,7 @@ A: Yes, but you need to contain them into a single chunk (module) that you will 
 
 Q: What does the name mean?
 
-A: Rocker like [D]ocker for [R]eact UIs
+A: Rocker like [D]ocker for [R]eactive UIs
 
 ## Badges
 
