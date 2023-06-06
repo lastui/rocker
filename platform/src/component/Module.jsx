@@ -22,36 +22,23 @@ const Module = forwardRef((props, ref) => {
     };
   }, [ref, props, isReady, lastUpdate, lastLocalUpdate]);
 
-  /* istanbul ignore next */
-  const loadModule = useCallback(
-    (signal) => {
-      async function work() {
-        if (!props.name) {
-          return false;
-        }
-        return await moduleLoader.loadModule(props.name);
-      }
-      const abort = new Promise((resolve) => {
-        signal.onabort = function () {
-          resolve(false);
-        };
-      });
-      Promise.race([work(), abort]).then((changed) => {
-        if (changed) {
-          setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
-        }
-      });
-    },
-    [props.name, lastUpdate],
-  );
-
   useEffect(() => {
     const controller = new AbortController();
-    loadModule(controller.signal);
+
+    /* istanbul ignore next */
+    moduleLoader.loadModule(props.name, controller).then((changed) => {
+      if (controller.signal.aborted) {
+        return;
+      }
+      if (changed) {
+        setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
+      }
+    });
+
     return () => {
       controller.abort();
     };
-  }, [loadModule]);
+  }, [setLastLocalUpdate, props.name, lastUpdate]);
 
   const available = moduleLoader.isAvailable(props.name);
 

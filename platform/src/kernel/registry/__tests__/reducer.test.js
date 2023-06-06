@@ -28,10 +28,10 @@ describe("reducer registry", () => {
 
     await addReducer("my-feature", {
       bar: (_state, _action) => {
-        throw "ouch";
+        throw new Error("ouch");
       },
     });
-    expect(spy).toHaveBeenCalledWith("module my-feature wanted to register invalid reducer", "ouch");
+    expect(spy).toHaveBeenCalledWith("module my-feature wanted to register invalid reducer", new Error("ouch"));
   });
 
   it("removeReducer", async () => {

@@ -9,8 +9,15 @@ import { setStore } from "../store";
 jest.mock("../assets", () => ({
   downloadProgram: (name, scope) => {
     if (scope.url === "/my-broken-program.js") {
-      return new Promise(() => {
-        throw "ouch";
+      return new Promise((_resolve, reject) => {
+        reject(new Error("ouch"));
+      });
+    }
+    if (scope.url === "/my-aborted-program.js") {
+      return new Promise((_resolve, reject) => {
+        const error = new Error("Testing");
+        error.name = "AbortError";
+        reject(error)
       });
     }
     if (scope.url === "/while-true.js") {
@@ -205,6 +212,10 @@ describe("loader registry", () => {
         jest.useRealTimers();
       });
 
+      it("no name provided", async () => {
+        expect(await moduleLoader.loadModule()).toEqual(false);
+      });
+
       it("not available to load", async () => {
         const modules = [
           {
@@ -280,7 +291,26 @@ describe("loader registry", () => {
         await moduleLoader.setAvailableModules(modules);
         expect(await moduleLoader.loadModule("my-feature")).toEqual(false);
 
-        expect(spy).toHaveBeenCalledWith("module my-feature failed to load", "ouch");
+        expect(spy).toHaveBeenCalledWith("module my-feature failed to load", new Error("ouch"));
+      });
+
+      it("silences AbortError", async () => {
+        const spy = jest.spyOn(console, "error");
+        spy.mockImplementation(() => {});
+        spy.mockClear();
+
+        const modules = [
+          {
+            name: "my-feature",
+            program: {
+              url: "/my-aborted-program.js",
+            },
+          },
+        ];
+        await moduleLoader.setAvailableModules(modules);
+        expect(await moduleLoader.loadModule("my-feature")).toEqual(false);
+
+        expect(spy).not.toHaveBeenCalled();
       });
     });
 
