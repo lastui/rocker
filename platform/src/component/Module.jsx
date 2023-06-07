@@ -35,7 +35,7 @@ const Module = forwardRef((props, ref) => {
     });
 
     return () => {
-      const error = new Error(`Module(${props.name}) unmount`);
+      const error = new Error(`Module(${props.name}) hook`);
       error.name = "AbortError";
       controller.abort(error);
     };
