@@ -16,14 +16,10 @@ const Module = forwardRef((props, ref) => {
     return {
       owned,
       ref,
-      isReady,
-      lastLocalUpdate,
     };
-  }, [ref, props, isReady, lastLocalUpdate]);
+  }, [ref, props]);
 
-  useEffect(() => {
-    setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
-  }, [setLastLocalUpdate, lastUpdate]);
+  const available = useMemo(() => moduleLoader.isAvailable(props.name), [props.name, lastLocalUpdate, lastUpdate]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -43,9 +39,7 @@ const Module = forwardRef((props, ref) => {
       error.name = "AbortError";
       controller.abort(error);
     };
-  }, [setLastLocalUpdate, props.name]);
-
-  const available = moduleLoader.isAvailable(props.name);
+  }, [setLastLocalUpdate, props.name, available]);
 
   if (!props.name || !available) {
     return null;
