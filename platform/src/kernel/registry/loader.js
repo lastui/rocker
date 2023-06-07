@@ -100,7 +100,7 @@ const createModuleLoader = () => {
         return true;
       })
       .catch((error) => {
-        if (error?.name !== "AbortError") {
+        if (error.name !== "AbortError") {
           warning(`module ${name} failed to load`, error);
         }
         return Promise.resolve(false);
