@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.15.8",
+  "version": "0.15.9",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -124,7 +124,7 @@
     "prettier-package-json": "2.8.0",
     "pretty-format": "29.5.0",
     "redux-mock-store": "1.5.4",
-    "sass": "1.62.1",
+    "sass": "1.63.2",
     "sass-loader": "13.3.1",
     "source-map": "mozilla/source-map#master",
     "style-loader": "3.3.3",
@@ -132,7 +132,7 @@
     "terser-webpack-plugin": "5.3.9",
     "util": "0.12.5",
     "weak-napi": "2.0.2",
-    "webpack": "5.85.1",
+    "webpack": "5.86.0",
     "webpack-dev-server": "4.15.0",
     "yargs": "17.7.2"
   }
