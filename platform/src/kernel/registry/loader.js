@@ -72,11 +72,11 @@ const createModuleLoader = () => {
     if (loading) {
       return loading;
     }
-    function promiseDrop() {
+    function promiseRefDrop() {
       delete loadingModules[name];
-      controller.signal.removeEventListener("abort", promiseDrop);
+      controller.signal.removeEventListener("abort", promiseRefDrop);
     }
-    controller.signal.addEventListener("abort", promiseDrop);
+    controller.signal.addEventListener("abort", promiseRefDrop);
     const promise = downloadProgram(name, available.program, controller)
       .then((data) => {
         const scope = data;
@@ -111,7 +111,7 @@ const createModuleLoader = () => {
         return Promise.resolve(false);
       })
       .then((changed) => {
-        delete loadingModules[name];
+        promiseRefDrop();
         return changed;
       });
     loadingModules[name] = promise;
