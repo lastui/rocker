@@ -62,7 +62,7 @@ describe("assets registry", () => {
         (uri, options) =>
           new Promise((resolve, reject) => {
             options.signal.onabort = function () {
-              reject("aborted");
+              reject(new Error("Mocked Abort!"));
             };
           }),
       );
@@ -71,12 +71,7 @@ describe("assets registry", () => {
 
       jest.runAllTimers();
 
-      try {
-        await promise;
-        throw new Error("request was not aborted");
-      } catch (err) {
-        expect(err).toEqual("aborted");
-      }
+      await expect(promise).rejects.toThrow("timeout");
     });
 
     it("aborted (saga CANCEL) path", async () => {
@@ -84,7 +79,7 @@ describe("assets registry", () => {
         (uri, options) =>
           new Promise((resolve, reject) => {
             options.signal.onabort = function () {
-              reject("aborted");
+              reject(new Error("Mocked Abort!"));
             };
           }),
       );
@@ -93,12 +88,26 @@ describe("assets registry", () => {
 
       promise[CANCEL]();
 
-      try {
-        await promise;
-        throw new Error("request was not aborted");
-      } catch (err) {
-        expect(err).toEqual("aborted");
-      }
+      await expect(promise).rejects.toThrow("Saga canceled.");
+    });
+
+    it("aborted (parent abort) path", async () => {
+      global.fetch.mockImplementationOnce(
+        (uri, options) =>
+          new Promise((resolve, reject) => {
+            options.signal.onabort = function () {
+              reject(new Error("Mocked Abort!"));
+            };
+          }),
+      );
+
+      const controller = new AbortController();
+
+      const promise = downloadAsset("/path/data.json", controller);
+
+      controller.abort(new Error("Parent abortion reasons."));
+
+      await expect(promise).rejects.toThrow("Parent abortion reasons.");
     });
   });
 

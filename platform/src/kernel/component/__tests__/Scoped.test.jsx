@@ -102,7 +102,7 @@ describe("Scoped", () => {
   it("has error boundaries", () => {
     const scope = {
       component: () => {
-        throw "ouch";
+        throw new Error("ouch");
       },
     };
 
@@ -116,7 +116,7 @@ describe("Scoped", () => {
   it("has error boundaries with custom component", () => {
     const scope = {
       component: () => {
-        throw "ouch";
+        throw new Error("ouch");
       },
       fallback: () => <div data-testid="sad-component" />,
     };

@@ -16,44 +16,30 @@ const Module = forwardRef((props, ref) => {
     return {
       owned,
       ref,
-      isReady,
-      lastUpdate,
-      lastLocalUpdate,
     };
-  }, [ref, props, isReady, lastUpdate, lastLocalUpdate]);
+  }, [ref, props]);
 
-  /* istanbul ignore next */
-  const loadModule = useCallback(
-    (signal) => {
-      async function work() {
-        if (!props.name) {
-          return false;
-        }
-        return await moduleLoader.loadModule(props.name);
-      }
-      const abort = new Promise((resolve) => {
-        signal.onabort = function () {
-          resolve(false);
-        };
-      });
-      Promise.race([work(), abort]).then((changed) => {
-        if (changed) {
-          setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
-        }
-      });
-    },
-    [props.name, lastUpdate],
-  );
+  const available = useMemo(() => moduleLoader.isAvailable(props.name), [props.name, lastLocalUpdate, lastUpdate]);
 
   useEffect(() => {
     const controller = new AbortController();
-    loadModule(controller.signal);
-    return () => {
-      controller.abort();
-    };
-  }, [loadModule]);
 
-  const available = moduleLoader.isAvailable(props.name);
+    /* istanbul ignore next */
+    moduleLoader.loadModule(props.name, controller).then((changed) => {
+      if (controller.signal.aborted) {
+        return;
+      }
+      if (changed) {
+        setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
+      }
+    });
+
+    return () => {
+      const error = new Error(`Module(${props.name}) hook`);
+      error.name = "AbortError";
+      controller.abort(error);
+    };
+  }, [setLastLocalUpdate, props.name, available]);
 
   if (!props.name || !available) {
     return null;

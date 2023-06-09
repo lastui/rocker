@@ -62,7 +62,7 @@ describe("modules reducer", () => {
         type: "non-handled",
       };
       modulesReducers["my-feature-broken"] = (_localState, _action) => {
-        throw "ouch";
+        throw new Error("ouch");
       };
       modulesReducers["my-feature-fine"] = (localState = {}, _action) => ({
         ...localState,
@@ -83,13 +83,13 @@ describe("modules reducer", () => {
       expect(reducer(state, action)).toEqual(expectedState);
       expect(spyError).toHaveBeenCalledWith(
         "module my-feature-broken reducer failed to reduce on action non-handled",
-        "ouch",
+        new Error("ouch"),
       );
 
       expect(reducer(state, action)).toEqual(expectedState);
       expect(spyError).toHaveBeenCalledWith(
         "module my-feature-broken reducer failed to reduce on action non-handled",
-        "ouch",
+        new Error("ouch"),
       );
     });
   });
@@ -212,14 +212,14 @@ describe("modules reducer", () => {
         },
       };
       modulesReducers["my-feature"] = (_localState, _action) => {
-        throw "ouch";
+        throw new Error("ouch");
       };
       expect(reducer(initialState, action)).toEqual(initialState);
 
       expect(spyDebug).toHaveBeenCalledWith("module my-feature initialized");
       expect(spyError).toHaveBeenCalledWith(
         "module my-feature reducer failed to reduce on action @@modules/INIT",
-        "ouch",
+        new Error("ouch"),
       );
     });
   });

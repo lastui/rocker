@@ -69,101 +69,115 @@ async function clientCache(name) {
   }
 }
 
-function downloadAsset(resource) {
-  const controller = new AbortController();
+function downloadAsset(resource, parentController) {
+  const fetchController = new AbortController();
   const id = setTimeout(() => {
-    controller.abort();
+    const error = new Error("Client timeout.");
+    error.name = "AbortError";
+    fetchController.abort(error);
   }, CLIENT_TIMEOUT);
 
-  const fetchController = new AbortController();
+  if (parentController) {
+    function parentAbort() {
+      clearTimeout(id);
+      parentController.signal.removeEventListener("abort", parentAbort);
+      fetchController.abort(parentController.signal.reason);
+    }
+    parentController.signal.addEventListener("abort", parentAbort);
+    /* istanbul ignore next */
+    if (parentController.signal.aborted) {
+      parentAbort();
+    }
+  }
+
   const aborter = new Promise((resolve, reject) => {
-    controller.signal.onabort = function () {
-      fetchController.abort();
-      reject("aborted");
-    };
+    function timeoutAbort() {
+      fetchController.signal.removeEventListener("abort", timeoutAbort);
+      reject(fetchController.signal.reason);
+    }
+    fetchController.signal.addEventListener("abort", timeoutAbort);
+    /* istanbul ignore next */
+    if (fetchController.signal.aborted) {
+      timeoutAbort();
+    }
   });
 
-  const fetcher = new Promise((resolve, reject) => {
-    async function work() {
-      const etags = await clientCache("etags");
-      const etagEntry = await etags.match(resource);
-      /* istanbul ignore next */
-      const currentEtag = etagEntry ? await etagEntry.clone().text() : null;
+  async function fetcher() {
+    const etags = await clientCache("etags");
+    const etagEntry = await etags.match(resource);
+    /* istanbul ignore next */
+    const currentEtag = etagEntry ? await etagEntry.clone().text() : null;
 
-      const options = {
-        signal: fetchController.signal,
-        referrerPolicy: "no-referrer",
-        cache: "no-cache",
-        mode: "cors",
-        credentials: "same-origin",
-        headers: new Headers(),
-      };
+    const options = {
+      signal: fetchController.signal,
+      referrerPolicy: "no-referrer",
+      cache: "no-cache",
+      mode: "cors",
+      credentials: "same-origin",
+      headers: new Headers(),
+    };
 
-      /* istanbul ignore next */
+    /* istanbul ignore next */
+    if (currentEtag) {
+      options.headers.set("If-None-Match", currentEtag);
+    }
+    const response = await fetch(resource, options);
+    clearTimeout(id);
+
+    const resources = await clientCache("assets");
+
+    /* istanbul ignore next */
+    if (response.status === 304) {
       if (currentEtag) {
-        options.headers.set("If-None-Match", currentEtag);
-      }
-
-      const response = await fetch(resource, options);
-      clearTimeout(id);
-
-      const resources = await clientCache("assets");
-
-      /* istanbul ignore next */
-      if (response.status === 304) {
-        if (currentEtag) {
-          const assetEntry = await resources.match(`${resource}_${currentEtag}`);
-          if (assetEntry) {
-            return assetEntry.clone();
-          }
-          resources.delete(`${resource}_${currentEtag}`);
+        const assetEntry = await resources.match(`${resource}_${currentEtag}`);
+        if (assetEntry) {
+          return assetEntry.clone();
         }
-        etags.delete(resource);
-        const bounced = await work();
-        return bounced;
-      }
-
-      if (!response.ok) {
-        throw new Error(String(response.status));
-      }
-
-      /* istanbul ignore next */
-      if (currentEtag) {
-        etags.delete(resource);
         resources.delete(`${resource}_${currentEtag}`);
       }
-      const latestEtag = response.headers.get("Etag");
-      /* istanbul ignore next */
-      if (latestEtag) {
-        resources.put(`${resource}_${latestEtag}`, response.clone());
-        etags.put(resource, new Response(latestEtag, { status: 200, statusText: "OK" }));
-      }
-      return response;
+      etags.delete(resource);
+      const bounced = await work();
+      return bounced;
     }
 
-    work()
-      .then((response) => {
-        resolve(response);
-      })
-      .catch((error) => {
-        clearTimeout(id);
-        reject(error);
-      });
+    if (!response.ok) {
+      throw new Error(String(response.status));
+    }
+
+    /* istanbul ignore next */
+    if (currentEtag) {
+      etags.delete(resource);
+      resources.delete(`${resource}_${currentEtag}`);
+    }
+    const latestEtag = response.headers.get("Etag");
+    /* istanbul ignore next */
+    if (latestEtag) {
+      resources.put(`${resource}_${latestEtag}`, response.clone());
+      etags.put(resource, new Response(latestEtag, { status: 200, statusText: "OK" }));
+    }
+    return response;
+  }
+
+  const request = Promise.race([aborter, fetcher()]).catch((error) => {
+    clearTimeout(id);
+    return Promise.reject(error);
   });
 
-  const request = Promise.race([aborter, fetcher]);
   request[CANCEL] = () => {
     clearTimeout(id);
-    controller.abort();
+    const error = new Error("Saga canceled.");
+    error.name = "AbortError";
+    fetchController.abort(error);
   };
+
   return request;
 }
 
-async function downloadProgram(name, program) {
+async function downloadProgram(name, program, controller) {
   if (!program) {
     return {};
   }
-  const data = await downloadAsset(program.url);
+  const data = await downloadAsset(program.url, controller);
   const content = await data.text();
   return SequentialProgramEvaluator.compile(name, content);
 }

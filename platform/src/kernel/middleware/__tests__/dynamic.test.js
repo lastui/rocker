@@ -81,12 +81,12 @@ describe("dynamic middleware", () => {
     const action = { type: "probe" };
 
     await injectMiddleware("test", () => (localStore) => (next) => (action) => {
-      throw "ouch";
+      throw new Error("ouch");
     });
 
     store.dispatch(action);
     expect(store.getActions()).toEqual([action]);
 
-    expect(spy).toHaveBeenCalledWith("dynamic middleware errored", "ouch");
+    expect(spy).toHaveBeenCalledWith("dynamic middleware errored", new Error("ouch"));
   });
 });

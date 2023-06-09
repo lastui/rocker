@@ -56,7 +56,10 @@ const createModuleLoader = () => {
 
   const getLoadedModule = (name) => loadedModules[name];
 
-  const loadModule = (name) => {
+  const loadModule = (name, controller) => {
+    if (!name) {
+      return Promise.resolve(false);
+    }
     const available = availableModules[name];
     const loaded = loadedModules[name];
     if (!available || !available.program) {
@@ -69,7 +72,7 @@ const createModuleLoader = () => {
     if (loading) {
       return loading;
     }
-    const promise = downloadProgram(name, available.program)
+    const promise = downloadProgram(name, available.program, controller)
       .then((data) => {
         const scope = data;
         if (available.props && scope.props) {
@@ -97,7 +100,9 @@ const createModuleLoader = () => {
         return true;
       })
       .catch((error) => {
-        warning(`module ${name} failed to load`, error);
+        if (error.name !== "AbortError") {
+          warning(`module ${name} failed to load`, error);
+        }
         return Promise.resolve(false);
       })
       .then((changed) => {

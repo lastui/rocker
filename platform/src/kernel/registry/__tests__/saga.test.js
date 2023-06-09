@@ -49,10 +49,10 @@ describe("saga registry", () => {
     expect(debugSpy).toHaveBeenCalledWith("module my-feature introducing saga");
 
     await addSaga("my-feature", store, function* () {
-      throw "ouch";
+      throw new Error("ouch");
     });
     expect(debugSpy).toHaveBeenCalledWith("module my-feature replacing saga");
-    expect(spy).toHaveBeenCalledWith("module my-feature saga crashed", "ouch");
+    expect(spy).toHaveBeenCalledWith("module my-feature saga crashed", new Error("ouch"));
 
     await addSaga("my-other-feature", store, function* () {
       yield take("this-is-stale");
@@ -64,7 +64,7 @@ describe("saga registry", () => {
     setSagaRunner(null);
 
     await addSaga("my-other-feature", store, function* () {
-      throw "unused";
+      throw new Error("unused");
     });
 
     expect(spy).toHaveBeenCalledWith("Sagas runnner is not provided!");

@@ -22,7 +22,7 @@ jest.mock("../../registry/assets", () => {
   const downloadAsset = jest.fn();
   downloadAsset.mockImplementation(async (uri) => {
     if (uri === "/i18n/broken.json") {
-      throw "ouch";
+      throw new Error("ouch");
     }
 
     return {
@@ -75,7 +75,7 @@ describe("loader middleware", () => {
 
     const next = (localAction) => {
       if (++counter === 1) {
-        throw "ouch";
+        throw new Error("ouch");
       }
       return localAction;
     };
@@ -83,7 +83,7 @@ describe("loader middleware", () => {
     const actual = createLoaderMiddleware()()(next)(action);
     expect(actual).toEqual(action);
 
-    expect(spy).toHaveBeenLastCalledWith("dynamic middleware errored", "ouch");
+    expect(spy).toHaveBeenLastCalledWith("dynamic middleware errored", new Error("ouch"));
   });
 
   describe("SET_AVAILABLE_MODULES", () => {
