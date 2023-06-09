@@ -41,6 +41,8 @@ describe("loader registry", () => {
   const debugSpy = jest.spyOn(console, "debug");
   debugSpy.mockImplementation(() => {});
 
+  const controller = new AbortController();
+
   beforeEach(() => {
     const channel = stdChannel();
     const storeRef = configureStore([])({
@@ -182,8 +184,8 @@ describe("loader registry", () => {
         expect(moduleLoader.getLoadedModule("a")).not.toBeDefined();
         expect(moduleLoader.getLoadedModule("b")).not.toBeDefined();
 
-        await moduleLoader.loadModule("a");
-        await moduleLoader.loadModule("b");
+        await moduleLoader.loadModule("a", controller);
+        await moduleLoader.loadModule("b", controller);
 
         expect(moduleLoader.getLoadedModule("a")).toBeDefined();
         expect(moduleLoader.getLoadedModule("b")).toBeDefined();
@@ -213,7 +215,7 @@ describe("loader registry", () => {
       });
 
       it("no name provided", async () => {
-        expect(await moduleLoader.loadModule()).toEqual(false);
+        expect(await moduleLoader.loadModule(undefined, controller)).toEqual(false);
       });
 
       it("not available to load", async () => {
@@ -223,8 +225,8 @@ describe("loader registry", () => {
           },
         ];
         await moduleLoader.setAvailableModules(modules);
-        expect(await moduleLoader.loadModule("my-feature")).toEqual(false);
-        expect(await moduleLoader.loadModule("my-other-feature")).toEqual(false);
+        expect(await moduleLoader.loadModule("my-feature", controller)).toEqual(false);
+        expect(await moduleLoader.loadModule("my-other-feature", controller)).toEqual(false);
       });
 
       it("available to load", async () => {
@@ -255,18 +257,18 @@ describe("loader registry", () => {
           },
         ];
         await moduleLoader.setAvailableModules(modules);
-        expect(await moduleLoader.loadModule("my-feature")).toEqual(true);
-        expect(await moduleLoader.loadModule("my-feature")).toEqual(false);
+        expect(await moduleLoader.loadModule("my-feature", controller)).toEqual(true);
+        expect(await moduleLoader.loadModule("my-feature", controller)).toEqual(false);
 
-        const a = moduleLoader.loadModule("my-timeout-feature");
-        const b = moduleLoader.loadModule("my-timeout-feature");
+        const a = moduleLoader.loadModule("my-timeout-feature", controller);
+        const b = moduleLoader.loadModule("my-timeout-feature", controller);
 
         jest.runAllTimers();
 
         expect(await a).toEqual(true);
         expect(await b).toEqual(true);
 
-        const c = moduleLoader.loadModule("my-timeout-feature-with-props");
+        const c = moduleLoader.loadModule("my-timeout-feature-with-props", controller);
 
         await moduleLoader.setAvailableModules(modules.filter((item) => item.name !== "my-timeout-feature-with-props"));
 
@@ -289,7 +291,7 @@ describe("loader registry", () => {
           },
         ];
         await moduleLoader.setAvailableModules(modules);
-        expect(await moduleLoader.loadModule("my-feature")).toEqual(false);
+        expect(await moduleLoader.loadModule("my-feature", controller)).toEqual(false);
 
         expect(spy).toHaveBeenCalledWith("module my-feature failed to load", new Error("ouch"));
       });
@@ -308,7 +310,7 @@ describe("loader registry", () => {
           },
         ];
         await moduleLoader.setAvailableModules(modules);
-        expect(await moduleLoader.loadModule("my-feature")).toEqual(false);
+        expect(await moduleLoader.loadModule("my-feature", controller)).toEqual(false);
 
         expect(spy).not.toHaveBeenCalled();
       });
@@ -337,7 +339,7 @@ describe("loader registry", () => {
         },
       ]);
       expect(moduleLoader.isAvailable("a")).toEqual(true);
-      await moduleLoader.loadModule("a");
+      await moduleLoader.loadModule("a", controller);
       expect(moduleLoader.getLoadedModule("a")).toBeDefined();
       manualCleanup();
       expect(moduleLoader.getLoadedModule("a")).not.toBeDefined();
