@@ -140,7 +140,7 @@ describe("loader middleware", () => {
       store.dispatch(action);
       await new Promise(process.nextTick);
 
-      expect(loader.loadModule).toHaveBeenCalledWith("my-feature");
+      expect(loader.loadModule).toHaveBeenCalledWith("my-feature", expect.anything());
       expect(store.getActions()).toEqual([action]);
     });
   });

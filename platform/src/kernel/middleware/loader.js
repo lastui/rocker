@@ -56,7 +56,7 @@ const createLoaderMiddleware = () => {
         }
 
         case constants.SET_ENTRYPOINT_MODULE: {
-          return loader.loadModule(action.payload.entrypoint).then(() => next(action));
+          return loader.loadModule(action.payload.entrypoint, new AbortController()).then(() => next(action));
         }
 
         case constants.MODULE_LOADED: {
