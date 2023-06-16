@@ -122,8 +122,6 @@ function downloadAsset(resource, parentController) {
       options.headers.set("If-None-Match", currentEtag);
     }
     const response = await fetch(resource, options);
-    clearTimeout(id);
-
     const resources = await clientCache("assets");
 
     /* istanbul ignore next */
@@ -136,9 +134,11 @@ function downloadAsset(resource, parentController) {
         resources.delete(`${resource}_${currentEtag}`);
       }
       etags.delete(resource);
-      const bounced = await work();
+      const bounced = await fetcher();
       return bounced;
     }
+
+    clearTimeout(id);
 
     if (!response.ok) {
       throw new Error(String(response.status));
