@@ -6,6 +6,13 @@ import { config as prettierConfig } from "./prettier.mjs"
 
 export const config = {
   extends: ["@linaria/stylelint-config-standard-linaria"],
+  rules: {
+    'value-list-comma-newline-after': null,
+    'declaration-empty-line-before': null,
+    'selector-pseudo-class-no-unknown': {
+      ignorePseudoClasses: [':global'],
+    },
+  },
 };
 
 export async function createEngine(options) {
@@ -36,7 +43,7 @@ export async function createEngine(options) {
       }
 
       let results = null;
-      await stylelint.lint({
+      const result = await stylelint.lint({
         config: config,
         fix: options.fix,
         code: data,
@@ -45,10 +52,10 @@ export async function createEngine(options) {
         },
       });
 
-      if (results[0]._postcssResult.css) {
+      if (result.output) {
         data = isCssInJs
-          ? await prettier.format(results[0]._postcssResult.css, prettierConfig)
-          : results[0]._postcssResult.css;
+          ? await prettier.format(result.output, prettierConfig)
+          : result.output;
       }
 
       end = process.hrtime(start);
@@ -61,6 +68,8 @@ export async function createEngine(options) {
       info.issues.push(
         ...results[0].parseErrors.map((item) => ({
           engineId: "stylelint",
+          message: item.text,
+          ruleId: item.rule,
           ...item,
           severity: 2,
         })),
@@ -68,13 +77,12 @@ export async function createEngine(options) {
       info.issues.push(
         ...results[0].warnings.map((item) => ({
           engineId: "stylelint",
+          message: item.text,
+          ruleId: item.rule,
           ...item,
           severity: 1,
         })),
       );
-      if (!info.changed) {
-        info.changed = results[0].warnings.length !== 0 || results[0].parseErrors.length !== 0 || data !== info.data;
-      }
     } catch (error) {
       info.issues.push({
         engineId: "stylelint",

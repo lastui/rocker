@@ -13,30 +13,41 @@ export async function run(options) {
   const fileStream = new Readable({ objectMode: true });
   fileStream._read = () => {};
 
-  glob(
-    "**/*.+(js|jsx|ts|tsx|mjs|json|scss|css)",
-    {
-      cwd: process.env.INIT_CWD,
-      ignore: [
-        "**/*node_modules/**",
-        "**/*build/**",
-        "**/*dist/**",
-        "**/*lcov-report/**",
-        "**/*.min.js",
-        "**/*.dll.js",
-      ],
-    },
-    (error, files) => {
-      if (error) {
-        fileStream.emit("error", error);
-        return;
-      }
-      files.forEach((file) => {
+  if (options._.length) {
+    const pattern = new RegExp(".+\.(js|jsx|ts|tsx|mjs|json|scss|css)$");
+    for (const file of options._) {
+      pattern.lastIndex = 0;
+      if (pattern.test(file)) {
         fileStream.push(file);
-      });
-      fileStream.push(null);
-    },
-  );
+      }
+    }
+    fileStream.push(null);
+  } else {
+    glob(
+      "**/*.+(js|jsx|ts|tsx|mjs|json|scss|css)",
+      {
+        cwd: process.env.INIT_CWD,
+        ignore: [
+          "**/*node_modules/**",
+          "**/*build/**",
+          "**/*dist/**",
+          "**/*lcov-report/**",
+          "**/*.min.js",
+          "**/*.dll.js",
+        ],
+      },
+      (error, files) => {
+        if (error) {
+          fileStream.emit("error", error);
+          return;
+        }
+        files.forEach((file) => {
+          fileStream.push(file);
+        });
+        fileStream.push(null);
+      },
+    );
+  }
 
   const engines = await Promise.all([
     createEnginePrettierPackageJson(options),
