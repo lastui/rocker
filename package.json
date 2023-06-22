@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.16.9",
+  "version": "0.16.10",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -135,5 +135,9 @@
     "webpack": "5.87.0",
     "webpack-dev-server": "4.15.1",
     "yargs": "17.7.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
   }
 }

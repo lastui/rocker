@@ -14,7 +14,7 @@ export async function run(options) {
   fileStream._read = () => {};
 
   if (options._.length) {
-    const pattern = new RegExp(".+\.(js|jsx|ts|tsx|mjs|json|scss|css)$");
+    const pattern = new RegExp(".+[.](js|jsx|ts|tsx|mjs|json|scss|css)$");
     for (const file of options._) {
       pattern.lastIndex = 0;
       if (pattern.test(file)) {
