@@ -147,7 +147,7 @@ config.module.rules.push(
     ],
   },
   {
-    test: /\.(woff|woff2|svg|eot|otf|ttf|png|jpe?g|gif)(\?.*$|$)/,
+    test: /\.(mp3|woff|woff2|svg|eot|otf|ttf|png|jpe?g|gif)(\?.*$|$)/,
     type: "asset/resource",
   },
 );
