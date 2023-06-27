@@ -1,8 +1,10 @@
-import React from "react";
 import { render, screen, waitFor, act } from "@testing-library/react";
+import React from "react";
+import configureStore from "redux-mock-store";
+
 import { constants, setStore } from "@lastui/rocker/platform";
 
-import configureStore from "redux-mock-store";
+import Main from "../Main";
 
 const initialState = {
   runtime: {
@@ -49,8 +51,6 @@ jest.mock("../../store", () => (fetchContext) => {
   fetchContext();
   return mockStore;
 });
-
-import Main from "../Main";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

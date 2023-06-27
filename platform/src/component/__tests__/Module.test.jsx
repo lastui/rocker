@@ -1,6 +1,8 @@
 import { render, screen, cleanup, act } from "@testing-library/react";
 import configureStore from "redux-mock-store";
+
 import { withRedux } from "@lastui/rocker/test";
+
 import moduleLoader from "../../kernel/registry/loader";
 import Module from "../Module";
 
@@ -15,6 +17,9 @@ jest.mock("../../kernel/registry/loader", () => ({
     if (id === "my-feature-without-view") {
       return {};
     }
+    if (id === "my-loading-feature") {
+      return undefined;
+    }
     return {
       view: (props) => <div data-testid="view-probe">{props.children}</div>,
     };
@@ -23,7 +28,16 @@ jest.mock("../../kernel/registry/loader", () => ({
     if (id === "my-feature-without-view") {
       return true;
     }
+    if (id === "my-loading-feature") {
+      return true;
+    }
     if (id === "my-feature") {
+      return true;
+    }
+    return false;
+  },
+  isModuleLoading: (id) => {
+    if (id === "my-loading-feature") {
       return true;
     }
     return false;
@@ -130,20 +144,22 @@ describe("<Module />", () => {
     const store = configureStore([])({
       shared: {
         readyModules: {
-          "my-feature": false,
+          "my-loading-feature": false,
         },
       },
     });
 
     const { unmount } = render(
-      withRedux(<Module name="my-feature" fallback={() => <div data-testid="pending-fallback" />} />, store),
+      withRedux(<Module name="my-loading-feature" fallback={<div data-testid="progress-probe" />} />, store),
     );
+
+    expect(screen.queryByTestId("progress-probe")).not.toBeInTheDocument();
 
     act(() => {
       jest.runAllTimers();
     });
 
-    expect(screen.getByTestId("pending-fallback")).toBeInTheDocument();
+    expect(screen.getByTestId("progress-probe")).toBeInTheDocument();
 
     unmount();
   });

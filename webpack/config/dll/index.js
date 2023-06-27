@@ -1,12 +1,10 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
-
-const settings = require("../../settings");
-
 const webpackBabel = require("../../../babel").env[settings.DEVELOPMENT ? "development" : "production"];
 const linariaBabel = require("../../../babel").env.test;
+const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
+const settings = require("../../settings");
 
 const config = {
   ...require("../../internal/base.js"),

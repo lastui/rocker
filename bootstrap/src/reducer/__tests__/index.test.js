@@ -1,4 +1,4 @@
-import * as reducerShape from "../";
+import * as reducerShape from "..";
 
 describe("reducer", () => {
   it("exposes runtimeReducer", () => {

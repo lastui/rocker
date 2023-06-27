@@ -1,4 +1,4 @@
-import * as sagas from "../";
+import * as sagas from "..";
 
 describe("saga", () => {
   it("exposes watchBootstrap", () => {

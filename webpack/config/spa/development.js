@@ -1,22 +1,21 @@
+const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
-
 const { setLogLevel } = require("webpack/hot/log");
-setLogLevel("none");
-
-const HTMLWebpackPlugin = require("html-webpack-plugin");
-const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 
 const dependenciesDlls = require("@lastui/dependencies");
 
-const settings = require("../../settings");
 const webpackBabel = require("../../../babel").env.development;
 const linariaBabel = require("../../../babel").env.test;
+const settings = require("../../settings");
 
 const config = {
   ...require("../../internal/base.js"),
   ...require("../../internal/development.js"),
 };
+
+setLogLevel("none");
 
 config.devServer = {
   hot: true,

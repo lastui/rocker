@@ -1,7 +1,8 @@
 const path = require("path");
 const webpack = require("webpack");
-const settings = require("../webpack/settings");
+
 const config = require("../webpack/config/dll");
+const settings = require("../webpack/settings");
 
 config.entry = {
   bootstrap: ["@lastui/rocker/bootstrap"],

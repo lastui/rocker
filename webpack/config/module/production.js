@@ -1,16 +1,14 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
-const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
-const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
-
 const dependenciesDlls = require("@lastui/dependencies");
-
-const settings = require("../../settings");
 
 const webpackBabel = require("../../../babel").env.production;
 const linariaBabel = require("../../../babel").env.test;
+const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
+const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
+const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
+const settings = require("../../settings");
 
 const config = {
   ...require("../../internal/base.js"),

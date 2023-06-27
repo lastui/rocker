@@ -1,7 +1,7 @@
 const React = require("react");
-const { MemoryRouter } = require("react-router");
-const { Provider } = require("react-redux");
 const { createIntl, createIntlCache, RawIntlProvider } = require("react-intl");
+const { Provider } = require("react-redux");
+const { MemoryRouter } = require("react-router");
 
 const lazy = {
   get testIntl() {

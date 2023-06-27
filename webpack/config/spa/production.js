@@ -1,17 +1,16 @@
+const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 const webpack = require("webpack");
 
-const HTMLWebpackPlugin = require("html-webpack-plugin");
-const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
-
 const dependenciesDlls = require("@lastui/dependencies");
 
-const settings = require("../../settings");
-const webpackBabel = require("../../../babel").env.production;
 const linariaBabel = require("../../../babel").env.test;
+const webpackBabel = require("../../../babel").env.production;
+const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
+const settings = require("../../settings");
 
 const config = {
   ...require("../../internal/base.js"),

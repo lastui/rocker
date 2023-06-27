@@ -1,5 +1,6 @@
-import { watchRefresh, watchFetchContext, refreshContext, fetchContext } from "../context";
 import { constants } from "@lastui/rocker/platform";
+
+import { watchRefresh, watchFetchContext, refreshContext, fetchContext } from "../context";
 
 describe("context", () => {
   const consoleDebug = console.warn;

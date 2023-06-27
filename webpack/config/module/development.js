@@ -1,24 +1,21 @@
-const path = require("path");
-const fs = require("fs");
-const webpack = require("webpack");
-
 const parser = require("@babel/parser");
 const traverse = require("@babel/traverse").default;
-
-const { setLogLevel } = require("webpack/hot/log");
-setLogLevel("none");
-
-const HTMLWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
-const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
-const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
+const fs = require("fs");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+const webpack = require("webpack");
+const { setLogLevel } = require("webpack/hot/log");
 
 const dependenciesDlls = require("@lastui/dependencies");
 
 const webpackBabel = require("../../../babel").env.development;
 const linariaBabel = require("../../../babel").env.test;
-
+const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
+const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const settings = require("../../settings");
+
+setLogLevel("none");
 
 const config = {
   ...require("../../internal/base.js"),

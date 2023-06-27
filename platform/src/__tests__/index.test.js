@@ -1,4 +1,4 @@
-import * as all from "../";
+import * as all from "..";
 
 describe("safe module exports", () => {
   it("should expose fixed number of things", () => {

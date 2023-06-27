@@ -1,9 +1,11 @@
-import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import Globalisation from "../Globalisation";
-import { withRedux } from "@lastui/rocker/test";
-import configureStore from "redux-mock-store";
+import React from "react";
 import { FormattedMessage } from "react-intl";
+import configureStore from "redux-mock-store";
+
+import { withRedux } from "@lastui/rocker/test";
+
+import Globalisation from "../Globalisation";
 
 const initialState = {
   shared: {
