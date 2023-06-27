@@ -1,7 +1,8 @@
 import { render, screen, cleanup } from "@testing-library/react";
 import React from "react";
-import { withRedux } from "@lastui/rocker/test";
 import configureStore from "redux-mock-store";
+
+import { withRedux } from "@lastui/rocker/test";
 
 import Scoped from "../Scoped";
 

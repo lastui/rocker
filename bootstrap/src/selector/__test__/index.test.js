@@ -1,4 +1,4 @@
-import * as selectors from "../";
+import * as selectors from "..";
 
 describe("selector", () => {
   const state = {

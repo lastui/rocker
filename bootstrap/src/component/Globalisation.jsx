@@ -1,6 +1,7 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
+import { useSelector } from "react-redux";
+
 import { getLanguage, getI18nMessages } from "../selector";
 
 const cache = createIntlCache();

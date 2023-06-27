@@ -1,6 +1,7 @@
 import * as constants from "../../constants";
 import { warning } from "../../utils";
 import Scoped from "../component/Scoped";
+
 import { downloadProgram } from "./assets";
 import { addStyles, removeStyles } from "./css";
 import { addMiddleware, removeMiddleware } from "./middleware";
@@ -55,6 +56,7 @@ const createModuleLoader = () => {
   const loadingModules = {};
 
   const getLoadedModule = (name) => loadedModules[name];
+  const isModuleLoading = (name) => Boolean(loadingModules[name]);
 
   const loadModule = (name, controller) => {
     if (!name) {
@@ -175,6 +177,7 @@ const createModuleLoader = () => {
   return {
     setAvailableModules,
     isAvailable,
+    isModuleLoading,
     loadModule,
     getLoadedModule,
     manualCleanup,

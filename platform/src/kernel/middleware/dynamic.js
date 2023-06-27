@@ -1,4 +1,5 @@
 import { compose } from "redux";
+
 import { warning } from "../../utils";
 import { getStore } from "../registry/store";
 

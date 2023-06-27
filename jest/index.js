@@ -1,5 +1,6 @@
-const path = require("path");
 const fs = require("fs");
+const path = require("path");
+
 const babelConfig = require("../babel").env.test;
 
 process.env.TZ = "UTC";

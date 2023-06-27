@@ -1,5 +1,6 @@
-import runtimeReducer from "../runtime";
 import { constants } from "@lastui/rocker/platform";
+
+import runtimeReducer from "../runtime";
 
 describe("runtimeReducer", () => {
   it("initial state", () => {

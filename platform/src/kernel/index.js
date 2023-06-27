@@ -1,19 +1,17 @@
 import "regenerator-runtime/runtime";
 
 /* istanbul ignore file */
+import Module from "../component/Module";
 import * as constants from "../constants";
-
 import registerModule from "../register";
 
+import createDynamicMiddleware from "./middleware/dynamic";
 import createLoaderMiddleware from "./middleware/loader";
 import createSagaMiddleware from "./middleware/saga";
-import createDynamicMiddleware from "./middleware/dynamic";
-import { getStore, setStore } from "./registry/store";
-import { manualCleanup } from "./registry/loader";
-import sharedReducer from "./reducer/shared";
 import modulesReducer from "./reducer/modules";
-
-import Module from "../component/Module";
+import sharedReducer from "./reducer/shared";
+import { manualCleanup } from "./registry/loader";
+import { getStore, setStore } from "./registry/store";
 
 export {
   Module,

@@ -1,5 +1,6 @@
-import { watchBootstrap, runRefresher } from "../bootstrap";
 import { constants } from "@lastui/rocker/platform";
+
+import { watchBootstrap, runRefresher } from "../bootstrap";
 
 describe("context", () => {
   const consoleDebug = console.warn;

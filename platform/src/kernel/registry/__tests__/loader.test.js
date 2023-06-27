@@ -326,6 +326,17 @@ describe("loader registry", () => {
         expect(available).toEqual(false);
       });
     });
+
+    describe(".isModuleLoading", () => {
+      beforeEach(async () => {
+        await moduleLoader.setAvailableModules([]);
+      });
+
+      it("checks is module is loading", async () => {
+        const loading = moduleLoader.isModuleLoading("my-feature");
+        expect(loading).toEqual(false);
+      });
+    });
   });
 
   describe("manualCleanup", () => {

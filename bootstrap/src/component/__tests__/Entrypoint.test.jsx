@@ -1,11 +1,13 @@
-import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
-import Entrypoint from "../Entrypoint";
-import { withRedux } from "@lastui/rocker/test";
-import configureStore from "redux-mock-store";
+import userEvent from "@testing-library/user-event";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 import { Routes, Route, Link } from "react-router-dom";
-import userEvent from "@testing-library/user-event";
+import configureStore from "redux-mock-store";
+
+import { withRedux } from "@lastui/rocker/test";
+
+import Entrypoint from "../Entrypoint";
 
 const initialState = {
   runtime: {

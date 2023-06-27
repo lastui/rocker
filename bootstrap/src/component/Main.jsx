@@ -1,8 +1,11 @@
 import { Children, StrictMode, useState, useCallback, useEffect } from "react";
 import { Provider as ReduxProvider, useSelector } from "react-redux";
-import { getIsInitialized, getLanguage } from "../selector";
+
 import { constants, getStore, manualCleanup } from "@lastui/rocker/platform";
+
+import { getIsInitialized, getLanguage } from "../selector";
 import setupStore from "../store";
+
 import Entrypoint from "./Entrypoint";
 import Globalisation from "./Globalisation";
 

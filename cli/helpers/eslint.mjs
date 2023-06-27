@@ -17,9 +17,43 @@ export const config = {
     requireConfigFile: false,
     babelOptions: babelConfig.env.development,
   },
+  plugins: ["import"],
   rules: {
     "no-debugger": "error",
     eqeqeq: ["error", "always"],
+    "import/first": "error",
+    "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
+    "import/default": "warn",
+    "import/named": "warn",
+    "import/namespace": "warn",
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+    "import/no-amd": "error",
+    "import/no-mutable-exports": "error",
+    "import/no-named-as-default-member": "warn",
+    "import/no-useless-path-segments": "warn",
+    "import/no-self-import": "error",
+    "import/no-webpack-loader-syntax": "error",
+    "import/order": [
+      "warn",
+      {
+        "newlines-between": "always",
+        alphabetize: {
+          order: "asc",
+          caseInsensitive: true,
+        },
+        pathGroups: [
+          {
+            pattern: "@lastui/**",
+            group: "internal",
+            position: "before",
+          },
+        ],
+        pathGroupsExcludedImportTypes: ["@lastui/**"],
+        groups: [["builtin", "external"], "internal", "parent", ["sibling", "index"], ["object", "type"]],
+        distinctGroup: false,
+      },
+    ],
   },
 };
 
@@ -49,11 +83,8 @@ export async function createEngine(options) {
         info.data = results[0].output;
       }
       info.issues.push(...results[0].messages.map((item) => ({ engineId: "eslint", ...item })));
-      if (!info.changed) {
-        info.changed = results[0].messages.length !== 0 || Boolean(results[0].output);
-      }
     } catch (error) {
-      info.errors.push({
+      info.issues.push({
         engineId: "eslint",
         message: error,
         severity: 3,

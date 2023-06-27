@@ -1,9 +1,8 @@
 import "regenerator-runtime/runtime";
 
-import { SET_LANGUAGE, REFRESH, SET_SHARED } from "./constants";
-
-import registerModule from "./register";
 import Module from "./component/Module";
+import { SET_LANGUAGE, REFRESH, SET_SHARED } from "./constants";
+import registerModule from "./register";
 
 function setLanguage(language) {
   return {
