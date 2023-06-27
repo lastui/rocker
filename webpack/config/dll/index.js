@@ -1,8 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 
-const webpackBabel = require("../../../babel").env[settings.DEVELOPMENT ? "development" : "production"];
-const linariaBabel = require("../../../babel").env.test;
+const babel = require("../../../babel");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
 const settings = require("../../settings");
 
@@ -10,6 +9,9 @@ const config = {
   ...require("../../internal/base.js"),
   ...require("../../internal/build.js"),
 };
+
+const webpackBabel = babel.env[settings.DEVELOPMENT ? "development" : "production"];
+const linariaBabel = babel.env.test;
 
 config.output.path = settings.DLL_BUILD_PATH;
 config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;

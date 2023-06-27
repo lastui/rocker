@@ -6,8 +6,7 @@ const { setLogLevel } = require("webpack/hot/log");
 
 const dependenciesDlls = require("@lastui/dependencies");
 
-const webpackBabel = require("../../../babel").env.development;
-const linariaBabel = require("../../../babel").env.test;
+const babel = require("../../../babel");
 const settings = require("../../settings");
 
 const config = {
@@ -16,6 +15,9 @@ const config = {
 };
 
 setLogLevel("none");
+
+const webpackBabel = babel.env.development;
+const linariaBabel = babel.env.test;
 
 config.devServer = {
   hot: true,

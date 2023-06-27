@@ -3,8 +3,7 @@ const webpack = require("webpack");
 
 const dependenciesDlls = require("@lastui/dependencies");
 
-const webpackBabel = require("../../../babel").env.production;
-const linariaBabel = require("../../../babel").env.test;
+const babel = require("../../../babel");
 const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
 const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
@@ -14,6 +13,9 @@ const config = {
   ...require("../../internal/base.js"),
   ...require("../../internal/build.js"),
 };
+
+const webpackBabel = babel.env.production;
+const linariaBabel = babel.env.test;
 
 config.output.clean = {
   keep(asset) {
