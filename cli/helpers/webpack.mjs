@@ -113,6 +113,7 @@ export async function getStack(options, packageName) {
   if (options.debug) {
     const oldDebug = (process.env.DEBUG || "").split(",");
     process.env.DEBUG = ["rocker:*", ...oldDebug].join(",");
+    process.env.LINARIA_LOG = "debug";
   }
 
   const projectConfig = path.resolve(process.env.INIT_CWD, "webpack.config.js");
