@@ -43,7 +43,7 @@ module.exports = {
   createDynamicMiddleware: () => (_store) => (next) => (action) => next(action),
   createLoaderMiddleware: () => (_store) => (next) => (action) => next(action),
   createSagaMiddleware: (options) => {
-    if (options && options.context && options.context.fetchContext) {
+    if (options?.context?.fetchContext) {
       options.context.fetchContext();
     }
     const channel = ReduxSaga.stdChannel();
