@@ -35,13 +35,13 @@ A: Docker (or for example Mesos) are bottom-up approaches of functionality compo
 
 Q: Do I need something like this?
 
-A: Probably not if you have a single SPA that compiles into one monolith. But if your "SPA" is starting to grow out of control so that changes are painful, blocking, linear and volatile, and you want to split that into, let's say, 100 or 1000 distinct features, get rid of hardcoded business logic, and enable parallelism in your development and deployment. Then yup, you should try this (check examples repo for some usual scenarios).
+A: Probably not if you have a single SPA that compiles into one monolith. But if your "SPA" is starting to grow out of control so that changes are painful, blocking, coupled and volatile, and you want to split that into, let's say, 100 or 1000 distinct features, get rid of hardcoded business logic, and enable parallelism in your development and deployment. Then yup, you should try this (check examples repo for some synthetic scenarios).
 
 ---
 
 Q: What about "DLL hell" when introducing modularity?
 
-A: Yes that's a valid concern, if you compile your module at one time, make incompatible changes to your runtime or dependencies and try to run the code it will gracefully crash at the level of a module. You need to keep this in mind. These updates (of dependencies or runtime) are usually planned and downstream recompilation could be automated. It's a similar use case as you compiling `.apk` with android v1 and then trying to run it on android `vx`. If it's incompatible, you need to recompile your module to match the runtime. Recompilation of runtime by itself does not break the contract between runtime and modules. But for example, changing ES5 exports and behavior change does.
+A: Yes that's a valid concern, if you compile your module at one time, make incompatible changes to your runtime or dependencies and try to run the code it will gracefully crash at the level of a module. You need to keep this in mind. These updates (of dependencies or runtime) are usually planned and downstream recompilation could be automated. It's a similar use case as you compiling `.apk` with android v1 and then trying to run it on android `vx`. If it's incompatible, you need to recompile your module to match the runtime. Recompilation of runtime by itself does not break the contract between runtime and modules. But for example, changing ESM exports and behavior change does.
 
 ---
 
