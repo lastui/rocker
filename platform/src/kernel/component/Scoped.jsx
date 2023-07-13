@@ -9,14 +9,6 @@ const Scoped = (name, preferentialStore, scope) => {
   const Bridge = (props) => {
     const parentContext = useContext(ReactReduxContext);
 
-    const reduxContext = useMemo(
-      () => ({
-        store: preferentialStore,
-        subscription: parentContext.subscription,
-      }),
-      [parentContext.subscription],
-    );
-
     const composite = useMemo(() => {
       if (props.forwardedRef) {
         return Object.assign({}, scope.props, props.owned, { ref: props.forwardedRef });
@@ -30,7 +22,12 @@ const Scoped = (name, preferentialStore, scope) => {
     }, [props.forwardedRef, props.owned]);
 
     return (
-      <ReactReduxContext.Provider value={reduxContext}>
+      <ReactReduxContext.Provider
+        value={{
+          store: preferentialStore,
+          subscription: parentContext.subscription,
+        }}
+      >
         {props.children
           ? createElement(scope.component, composite, props.children)
           : createElement(scope.component, composite)}
