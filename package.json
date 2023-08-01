@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.16.29",
+  "version": "0.16.30",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -125,7 +125,7 @@
     "prettier-package-json": "2.8.0",
     "pretty-format": "29.6.2",
     "redux-mock-store": "1.5.4",
-    "sass": "1.64.1",
+    "sass": "1.64.2",
     "sass-loader": "13.3.2",
     "source-map": "mozilla/source-map#master",
     "style-loader": "3.3.3",
