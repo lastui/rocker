@@ -34,6 +34,55 @@ function cacheKeyFactory(chunk) {
   };
 }
 
+async function patchIndex(allExports) {
+  const indexFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", "index.js");
+
+  const indexSource = await fs.readFile(indexFile, { encoding: "utf8" });
+
+  const ast = parser.parse(indexSource, { sourceType: "module" });
+
+  const modifiedIndexFile = traverse.default(ast, {
+    IfStatement(path) {
+      if (development) {
+        path.replaceWith(
+          types.ifStatement(
+            path.node.test,
+            types.blockStatement([
+              types.expressionStatement(
+                types.assignmentExpression(
+                  path.node.consequent.body[0].expression.operator,
+                  path.node.consequent.body[0].expression.left,
+                  types.arrayExpression(allExports.map(types.stringLiteral)),
+                ),
+              ),
+            ]),
+            path.node.alternate,
+          ),
+        );
+      } else {
+        path.replaceWith(
+          types.ifStatement(
+            path.node.test,
+            path.node.consequent,
+            types.blockStatement([
+              types.expressionStatement(
+                types.assignmentExpression(
+                  path.node.alternate.body[0].expression.operator,
+                  path.node.alternate.body[0].expression.left,
+                  types.arrayExpression(allExports.map(types.stringLiteral)),
+                ),
+              ),
+            ]),
+          ),
+        );
+      }
+      path.stop();
+    },
+  });
+
+  await fs.writeFile(indexFile, generate.default(ast, { compact: false, concise: true }, indexSource).code);
+}
+
 function generateDllConfig(name, provides, references) {
   return {
     ...dllConfig,
@@ -67,9 +116,9 @@ function generateDllConfig(name, provides, references) {
   };
 }
 
-const allDlls = [];
+async function processChunk(chunk) {
+  const resultingDlls = [];
 
-for (const chunk in config.entry) {
   const toCacheKey = cacheKeyFactory(chunk);
 
   const entries = config.entry[chunk].map(toCacheKey).flat();
@@ -77,17 +126,15 @@ for (const chunk in config.entry) {
   // INFO compile all the entries mentioned in chunk into their own DLLs
   const nodeMapping = {};
 
-  await (async function () {
-    const directEntries = {};
+  const directEntries = {};
 
-    for (const entry of config.entry[chunk]) {
-      const cacheKey = toCacheKey(entry);
-      nodeMapping[cacheKey] = { entry };
-      directEntries[cacheKey] = [entry];
-    }
+  for (const entry of config.entry[chunk]) {
+    const cacheKey = toCacheKey(entry);
+    nodeMapping[cacheKey] = { entry };
+    directEntries[cacheKey] = [entry];
+  }
 
-    await command.handler({ development, config: Object.assign({}, dllConfig, { entry: directEntries }) }, []);
-  })();
+  await command.handler({ development, config: Object.assign({}, dllConfig, { entry: directEntries }) }, []);
 
   for (const leaf in nodeMapping) {
     const manifestFile = path.resolve(
@@ -116,19 +163,17 @@ for (const chunk in config.entry) {
     }
   }
 
-  await (async function () {
-    const transitiveEntries = {};
+  const transitiveEntries = {};
 
-    for (const entry in allUsedPackages) {
-      const cacheKey = toCacheKey(entry);
-      if (!nodeMapping[cacheKey]) {
-        nodeMapping[cacheKey] = { entry };
-      }
-      transitiveEntries[cacheKey] = allUsedPackages[entry];
+  for (const entry in allUsedPackages) {
+    const cacheKey = toCacheKey(entry);
+    if (!nodeMapping[cacheKey]) {
+      nodeMapping[cacheKey] = { entry };
     }
+    transitiveEntries[cacheKey] = allUsedPackages[entry];
+  }
 
-    await command.handler({ development, config: Object.assign({}, dllConfig, { entry: transitiveEntries }) }, []);
-  })();
+  await command.handler({ development, config: Object.assign({}, dllConfig, { entry: transitiveEntries }) }, []);
 
   // INFO clean all intermediate DLLs and their manifests
   for (const leaf in nodeMapping) {
@@ -283,60 +328,27 @@ for (const chunk in config.entry) {
 
   for (const entry of compilationOrder) {
     const item = toCacheKey(entry);
-    if (!allDlls.includes(item)) {
-      allDlls.push(item);
+    if (!resultingDlls.includes(item)) {
+      resultingDlls.push(item);
     }
   }
 
-  allDlls.push(chunk);
+  resultingDlls.push(chunk);
+
+  return resultingDlls;
+}
+
+const allDlls = [];
+
+// INFO for all chunks generate DLLs
+for (const chunk in config.entry) {
+  const result = await processChunk(chunk);
+  for (const generatedDll of result) {
+    if (!allDlls.includes(generatedDll)) {
+      allDlls.push(generatedDll);
+    }
+  }
 }
 
 // INFO patch branch in index.js to export all DLLs inorder for synchronous requirement in webpack configurations
-await (async function () {
-  const indexFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", "index.js");
-
-  const indexSource = await fs.readFile(indexFile, { encoding: "utf8" });
-
-  const ast = parser.parse(indexSource, { sourceType: "module" });
-
-  const modifiedIndexFile = traverse.default(ast, {
-    IfStatement(path) {
-      if (development) {
-        path.replaceWith(
-          types.ifStatement(
-            path.node.test,
-            types.blockStatement([
-              types.expressionStatement(
-                types.assignmentExpression(
-                  path.node.consequent.body[0].expression.operator,
-                  path.node.consequent.body[0].expression.left,
-                  types.arrayExpression(allDlls.map(types.stringLiteral)),
-                ),
-              ),
-            ]),
-            path.node.alternate,
-          ),
-        );
-      } else {
-        path.replaceWith(
-          types.ifStatement(
-            path.node.test,
-            path.node.consequent,
-            types.blockStatement([
-              types.expressionStatement(
-                types.assignmentExpression(
-                  path.node.alternate.body[0].expression.operator,
-                  path.node.alternate.body[0].expression.left,
-                  types.arrayExpression(allDlls.map(types.stringLiteral)),
-                ),
-              ),
-            ]),
-          ),
-        );
-      }
-      path.stop();
-    },
-  });
-
-  await fs.writeFile(indexFile, generate.default(ast, { compact: false, concise: true }, indexSource).code);
-})();
+await patchIndex(allDlls);
