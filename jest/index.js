@@ -44,11 +44,11 @@ module.exports = {
   transformIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   testPathIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   setupFilesAfterEnv: [
-    "@testing-library/jest-dom/extend-expect",
-    path.resolve(__dirname, "setupTests.js"),
+    "<rootDir>/node_modules/@testing-library/jest-dom/extend-expect",
     ...(fs.existsSync(path.resolve(process.env.INIT_CWD, "src", "setupTests.js"))
       ? ["<rootDir>/src/setupTests.js"]
       : []),
+    path.resolve(__dirname, "setupTests.js"),
   ],
   coverageThreshold: {
     global: {
