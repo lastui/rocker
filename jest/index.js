@@ -5,6 +5,7 @@ const babelConfig = require("../babel").env.test;
 
 process.env.TZ = "UTC";
 process.env.NODE_ENV = "test";
+process.env.BABEL_ENV = "test";
 
 const node_modules =
   path.dirname(process.env.INIT_CWD) === path.resolve(__dirname, "..")
@@ -44,11 +45,10 @@ module.exports = {
   transformIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   testPathIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   setupFilesAfterEnv: [
-    "@testing-library/jest-dom/extend-expect",
-    path.resolve(__dirname, "setupTests.js"),
     ...(fs.existsSync(path.resolve(process.env.INIT_CWD, "src", "setupTests.js"))
       ? ["<rootDir>/src/setupTests.js"]
       : []),
+    path.resolve(__dirname, "setupTests.js"),
   ],
   coverageThreshold: {
     global: {

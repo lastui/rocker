@@ -24,7 +24,7 @@ jobs:
           npm install
       - name: Check if there are changes in @lastui/rocker
         id: changes-rocker
-        run: echo ::set-output name=modified::$([ -z "`git diff --exit-code package.json`" ] && echo "false" || echo "true")
+        run: echo modified=$([ -z "`git diff --exit-code package.json`" ] && echo "false" || echo "true") >> $GITHUB_OUTPUT
       - name: Bump version patch @lastui/rocker
         if: ${{ (steps.changes-dependencies.outputs.modified == 'true') || (steps.changes-rocker.outputs.modified == 'true') }}
         run: npm version patch --no-git-tag-version
@@ -36,14 +36,14 @@ jobs:
           npm install
       - name: Check if there are changes in @lastui/dependencies
         id: changes-dependencies
-        run: echo ::set-output name=modified::$([ -z "`git diff --exit-code dependencies/package.json`" ] && echo "false" || echo "true")
+        run: echo modified=$([ -z "`git diff --exit-code dependencies/package.json`" ] && echo "false" || echo "true") >> $GITHUB_OUTPUT
       - name: Bump version patch @lastui/dependencies
         if: ${{ (steps.changes-dependencies.outputs.modified == 'true') }}
         working-directory: dependencies
         run: npm version patch --no-git-tag-version
       - name: Create PR
         if: ${{ (steps.changes-dependencies.outputs.modified == 'true') || (steps.changes-rocker.outputs.modified == 'true') }}
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           delete-branch: true
