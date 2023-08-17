@@ -5,16 +5,17 @@ Separate your UI into functional domains and reuse precompiled code in different
 What it can do?
 
 - lazy declarative runtime
-- bottom-up composition (not top-down code splitting)
-- inject / eject features and views based on context
+- CSR only with no hidden/delegated complexities on server
+- eliminates coupling with bottom-up composition (not top-down code splitting)
+- inject / eject features and views based on context in runtime
 - enable parallel streams working on black-boxed feature sets
 - hot swap in production
 - perform A/B tests based on telemetries
-- ditch static linking and dependency hell
+- ditch static linking and cascades of updates
 - test your golden assets and ship them without the need to rebundle
 - navigate and pivot without loss of state
 - perform routines in the background without the need for user interaction
-- inductive (JIT / declarative) runtime routing 
+- the routing that inspired Remixjs and Nextjs framework's
 
 ### Q&A
 
@@ -33,6 +34,12 @@ A: Docker (or for example Mesos) are bottom-up approaches of functionality compo
 
 ---
 
+Q: How are features versioned?
+
+A: With latent versioning at context level (like for example docker) there is no consumer - producer version constrains to prevent coupling or cascade of updates caused by leaky interfaces.
+
+---
+
 Q: Do I need something like this?
 
 A: Probably not if you have a single SPA that compiles into one monolith. But if your "SPA" is starting to grow out of control so that changes are painful, blocking, coupled and volatile, and you want to split that into, let's say, 100 or 1000 distinct features, get rid of hardcoded business logic, and enable parallelism in your development and deployment. Then yup, you should try this (check examples repo for some synthetic scenarios).
@@ -42,6 +49,12 @@ A: Probably not if you have a single SPA that compiles into one monolith. But if
 Q: What about "DLL hell" when introducing modularity?
 
 A: Yes that's a valid concern, if you compile your module at one time, make incompatible changes to your runtime or dependencies and try to run the code it will gracefully crash at the level of a module. You need to keep this in mind. These updates (of dependencies or runtime) are usually planned and downstream recompilation could be automated. It's a similar use case as you compiling `.apk` with android v1 and then trying to run it on android `vx`. If it's incompatible, you need to recompile your module to match the runtime. Recompilation of runtime by itself does not break the contract between runtime and modules. But for example, changing ESM exports and behavior change does.
+
+---
+
+Q: Does this support SSR/RSC/SSG?
+
+A: No this is CSR only distributed system. Coupling your features with server is coupling, if you are afraid of initial render speeds there are other solutions to mitigate this other than moving rendering to server (caches, service workers, static page doing 307 programatically on first visit, ...).
 
 ---
 
