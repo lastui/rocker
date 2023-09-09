@@ -1,4 +1,4 @@
-import * as matchers from "@testing-library/jest-dom/matchers";
+import matchers from "@testing-library/jest-dom/matchers";
 
 global.IS_REACT_ACT_ENVIRONMENT = true;
 
