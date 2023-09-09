@@ -1,8 +1,8 @@
-import * as matchers from '@testing-library/jest-dom/matchers'
+import * as matchers from "@testing-library/jest-dom/matchers";
 
 global.IS_REACT_ACT_ENVIRONMENT = true;
 
-global.expect.extend(matchers)
+global.expect.extend(matchers);
 
 jest.mock("@linaria/react", () => {
   function styled(tag) {
