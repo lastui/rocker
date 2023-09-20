@@ -67,7 +67,7 @@ class ModuleLocalesPlugin {
                         resolve(true);
                       } else if (stat_err.code === "ENOENT") {
                         fs.mkdir(parent, (mkdir_err) => {
-                          if (mkdir_err) {
+                          if (mkdir_err && mkdir_err.code !== "EEXIST") {
                             reject(mkdir_err);
                           } else {
                             resolve(true);
