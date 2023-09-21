@@ -62,7 +62,7 @@ const Main = (props) => {
     <StrictMode>
       <ReduxProvider store={getStore()}>
         <FullyInitializedGate>
-          <Globalisation>
+          <Globalisation defaultLocale={props.defaultLocale ?? DEFAULT_LOCALE}>
             <Entrypoint />
           </Globalisation>
         </FullyInitializedGate>
