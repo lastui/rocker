@@ -11,19 +11,20 @@ const Globalisation = (props) => {
   const messages = useSelector(getI18nMessages);
 
   const intl = useMemo(
-    () => createIntl(
-      {
-        locale,
-        textComponent: Fragment,
-        messages,
-        onError: (err) => {
-          if (err.code !== "MISSING_TRANSLATION" && err.code !== "MISSING_DATA") {
-            throw err;
-          }
+    () =>
+      createIntl(
+        {
+          locale,
+          textComponent: Fragment,
+          messages,
+          onError: (err) => {
+            if (err.code !== "MISSING_TRANSLATION" && err.code !== "MISSING_DATA") {
+              throw err;
+            }
+          },
         },
-      },
-      cache,
-    ),
+        cache,
+      ),
     [locale, messages],
   );
 

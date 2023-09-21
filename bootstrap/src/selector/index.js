@@ -1,6 +1,8 @@
+const emptydict = {};
+
 const memoizedMessages = new Proxy(
   {
-    messages: {},
+    messages: emptydict,
     descriptor: undefined,
   },
   {
@@ -14,15 +16,13 @@ const memoizedMessages = new Proxy(
       let next = undefined;
       if (locale in messages) {
         next = messages[locale];
-      } else {
-        next = undefined;
       }
       if (next) {
         ref.descriptor = { configurable: true, enumerable: true };
         ref.messages = next;
       } else {
         ref.descriptor = undefined;
-        ref.messages = {};
+        ref.messages = emptydict;
       }
       return true;
     },
@@ -30,9 +30,9 @@ const memoizedMessages = new Proxy(
 );
 
 export const getI18nMessages = (state) => {
-	memoizedMessages[state.shared.language] = state.shared.messages;
-	return memoizedMessages;
-}
+  memoizedMessages[state.shared.language] = state.shared.messages;
+  return memoizedMessages;
+};
 
 export const getIsInitialized = (state) => state.runtime.initialized;
 
