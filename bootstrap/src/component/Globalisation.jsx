@@ -1,4 +1,4 @@
-import { useMemo, useEffect, Fragment } from "react";
+import { useMemo, Fragment } from "react";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { useSelector } from "react-redux";
 
