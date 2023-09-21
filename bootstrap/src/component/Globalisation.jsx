@@ -1,4 +1,4 @@
-import React from "react";
+import { useMemo, useEffect, Fragment } from "react";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { useSelector } from "react-redux";
 
@@ -9,21 +9,21 @@ const cache = createIntlCache();
 const Globalisation = (props) => {
   const locale = useSelector(getLanguage);
   const messages = useSelector(getI18nMessages);
-  const intl = React.useMemo(
-    () =>
-      createIntl(
-        {
-          locale,
-          textComponent: React.Fragment,
-          messages,
-          onError: (err) => {
-            if (err.code !== "MISSING_TRANSLATION" && err.code !== "MISSING_DATA") {
-              throw err;
-            }
-          },
+
+  const intl = useMemo(
+    () => createIntl(
+      {
+        locale,
+        textComponent: Fragment,
+        messages,
+        onError: (err) => {
+          if (err.code !== "MISSING_TRANSLATION" && err.code !== "MISSING_DATA") {
+            throw err;
+          }
         },
-        cache,
-      ),
+      },
+      cache,
+    ),
     [locale, messages],
   );
 
