@@ -28,20 +28,10 @@ describe("selector", () => {
   });
 
   describe(".getI18nMessages", () => {
-    it("should return i18n messages (exists for currently selected language)", () => {
-      expect(selectors.getI18nMessages(state)).toEqual(state.shared.messages["en-US"]);
-    });
-    it("should return same empty object (does not exists for currently selected language)", () => {
-      const nextState = {
-        ...state,
-        shared: {
-          ...state.shared,
-          language: "cs-CZ",
-        },
-      };
-      const messages = selectors.getI18nMessages(nextState);
-      expect(messages).toMatchObject({});
-      expect(selectors.getI18nMessages(nextState)).toEqual(messages);
+    it("should return a structure supporting getting i18n keys", () => {
+      const messages = selectors.getI18nMessages(state);
+      expect(messages.foo).toEqual(state.shared.messages["en-US"].foo);
+      expect(messages.miss).not.toBeDefined();
     });
   });
 });
