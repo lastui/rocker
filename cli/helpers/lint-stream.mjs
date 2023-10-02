@@ -34,6 +34,8 @@ export async function run(options) {
           "**/*lcov-report/**",
           "**/*.min.js",
           "**/*.dll.js",
+          "**/*-lock.json",
+          "**/lint-final.json",
         ],
       },
       (error, files) => {
@@ -124,6 +126,7 @@ export async function run(options) {
       for (const issue of item.issues) {
         issues.push({
           ruleId: issue.ruleId || "formatting",
+          engineId: issue.engineId,
           severity: ["INFO", "MINOR", "CRITICAL", "BLOCKER"][issue.severity],
           type: issue.severity > 1 ? "BUG" : "CODE_SMELL",
           primaryLocation: {
@@ -132,9 +135,9 @@ export async function run(options) {
             textRange: issue.line
               ? {
                   startLine: issue.line,
-                  startColumn: issue.column,
                   endLine: issue.endLine,
-                  endColumn: issue.endColumn,
+                  startColumn: issue.column - 1,
+                  endColumn: issue.endColumn - 1,
                 }
               : undefined,
           },
