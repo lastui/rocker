@@ -120,21 +120,18 @@ const createModuleLoader = () => {
     return promise;
   };
 
-  const unloadModule = (name, loaded) =>
-    new Promise((resolve) => {
-      delete loadedModules[name];
-      loaded.cleanup();
-      getStore().dispatch({
-        type: constants.MODULE_UNLOADED,
-        payload: {
-          module: name,
-        },
-      });
-      return resolve(true);
+  const unloadModule = (name, loaded) => {
+    delete loadedModules[name];
+    loaded.cleanup();
+    getStore().dispatch({
+      type: constants.MODULE_UNLOADED,
+      payload: {
+        module: name,
+      },
     });
+  };
 
   const setAvailableModules = async (modules) => {
-    const scheduledUnload = [];
     const newModules = {};
     for (let i = modules.length; i--; ) {
       const item = modules[i];
@@ -148,16 +145,22 @@ const createModuleLoader = () => {
       const item = newModules[existing];
       if (!item) {
         obsoleteModules.push(existing);
-        const loaded = loadedModules[existing];
-        if (loaded) {
-          scheduledUnload.push(unloadModule(existing, loaded));
-        }
       }
     }
     for (let i = obsoleteModules.length; i--; ) {
       delete availableModules[obsoleteModules[i]];
     }
-    await Promise.allSettled(scheduledUnload);
+    for (let i = obsoleteModules.length; i--; ) {
+      const name = obsoleteModules[i];
+      const loaded = loadedModules[name];
+      if (loaded) {
+        try {
+          unloadModule(name, loaded);
+        } catch (error) {
+          warning(`module ${name} failed to unload`, error);
+        }
+      }
+    }
   };
 
   const isAvailable = (name) => Boolean(availableModules[name]);

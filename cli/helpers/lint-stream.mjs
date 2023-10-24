@@ -105,33 +105,41 @@ export async function run(options) {
     return info;
   }
 
-  const processingWork = [];
-
-  for await (const filePath of fileStream) {
-    processingWork.push(processFile(filePath));
-  }
-
-  const results = await Promise.all(processingWork);
+  let numberTotal = 0;
+  let numberFixed = 0;
 
   if (options.fix) {
-    const fileUpdates = [];
-    for (const { issues, changed, filePath, data } of results) {
+    for await (const filePath of fileStream) {
+      const { issues, changed, data, timing } = await processFile(filePath);
+      if (timing.length > 0) {
+        numberTotal++;
+      }
+      if (changed > 0) {
+        numberFixed++;
+      }
       if (changed) {
-        fileUpdates.push(writeFile(path.join(process.env.INIT_CWD, filePath), data));
+        await writeFile(path.join(process.env.INIT_CWD, filePath), data);
       }
     }
-    await Promise.all(fileUpdates);
   } else {
-    const formattedResults = results.reduce((issues, item) => {
-      for (const issue of item.issues) {
-        issues.push({
+    const formattedResults = [];
+
+    for await (const filePath of fileStream) {
+      const { timing, issues } = await processFile(filePath);
+
+      if (timing.length > 0) {
+        numberTotal++;
+      }
+
+      for (const issue of issues) {
+        formattedResults.push({
           ruleId: issue.ruleId || "formatting",
           engineId: issue.engineId,
           severity: ["INFO", "MINOR", "CRITICAL", "BLOCKER"][issue.severity],
           type: issue.severity > 1 ? "BUG" : "CODE_SMELL",
           primaryLocation: {
             message: issue.message,
-            filePath: item.filePath,
+            filePath: filePath,
             textRange: issue.line
               ? {
                   startLine: issue.line,
@@ -143,8 +151,7 @@ export async function run(options) {
           },
         });
       }
-      return issues;
-    }, []);
+    }
 
     await writeFile(
       path.resolve(process.env.INIT_CWD, "reports", "lint-final.json"),
@@ -153,9 +160,6 @@ export async function run(options) {
   }
 
   if (!options.quiet) {
-    const numberTotal = results.reduce((acc, item) => (item.timing.length > 0 ? acc + 1 : acc), 0);
-    const numberFixed = results.reduce((acc, item) => (item.changed ? acc + 1 : acc), 0);
-
     if (options.fix && numberFixed > 0) {
       console.log(colors.bold(`Checked ${numberTotal} files of those ${numberFixed} automatically fixed`));
     } else {
