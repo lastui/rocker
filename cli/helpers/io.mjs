@@ -80,7 +80,9 @@ export async function clearDirectory(nodePath) {
 
       const files = await fs.readdir(currentPath);
 
-      await Promise.all(files.map((childPath) => walk(path.join(currentPath, childPath))));
+      for (const childPath of files) {
+        await walk(path.join(currentPath, childPath));
+      }
 
       if (stats.isSymbolicLink()) {
         nodes.push({
@@ -118,5 +120,7 @@ export async function clearDirectory(nodePath) {
     return 0;
   });
 
-  await Promise.all(nodes.map(clear));
+  for (const node of nodes) {
+    await clear(node);
+  }
 }

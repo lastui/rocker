@@ -30,21 +30,17 @@ export async function createEngine(options) {
     let end = null;
 
     try {
+      start = process.hrtime();
       if (options.fix) {
-        start = process.hrtime();
         const formatted = await prettier.format(info.data, config);
-        end = process.hrtime(start);
         if (formatted !== info.data) {
           info.changed = true;
           info.data = formatted;
         }
-      } else {
-        start = process.hrtime();
-        if (!info.changed) {
-          info.changed = !(await prettier.check(info.data, config));
-        }
-        end = process.hrtime(start);
+      } else if (!info.changed) {
+        info.changed = !(await prettier.check(info.data, config));
       }
+      end = process.hrtime(start);
     } catch (error) {
       info.issues.push({
         engineId: "prettier",
