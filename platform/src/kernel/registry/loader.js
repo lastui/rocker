@@ -157,6 +157,7 @@ const createModuleLoader = () => {
         try {
           unloadModule(name, loaded);
         } catch (error) {
+          /* istanbul ignore next */
           warning(`module ${name} failed to unload`, error);
         }
       }
