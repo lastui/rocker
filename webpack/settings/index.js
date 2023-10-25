@@ -34,7 +34,7 @@ exports.DLL_BUILD_PATH = path.resolve(process.env.INIT_CWD, "dll");
 
 exports.PROJECT_BUILD_PATH = path.resolve(process.env.INIT_CWD, "build");
 
-exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT || 8888);
+exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT ?? 0);
 
 exports.PROGRESS = process.env.PROGRESS !== "false";
 
