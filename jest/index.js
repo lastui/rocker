@@ -45,9 +45,7 @@ module.exports = {
   transformIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   testPathIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   setupFilesAfterEnv: [
-    ...(fs.existsSync(path.resolve(process.env.INIT_CWD, "src", "setupTests.js"))
-      ? ["<rootDir>/src/setupTests.js"]
-      : []),
+    ...(fs.existsSync(path.resolve(process.env.INIT_CWD, "src", "setupTests.js")) ? ["<rootDir>/src/setupTests.js"] : []),
     path.resolve(__dirname, "setupTests.js"),
   ],
   coverageThreshold: {

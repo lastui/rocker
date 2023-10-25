@@ -80,12 +80,7 @@ export async function run(options) {
         for (const issue of info.issues) {
           if (issue.severity > 1) {
             process.exitCode = 1;
-            console.log(
-              colors.red("✖"),
-              colors.red(info.filePath),
-              colors.bold.red(issue.message),
-              colors.dim(duration),
-            );
+            console.log(colors.red("✖"), colors.red(info.filePath), colors.bold.red(issue.message), colors.dim(duration));
           } else if (!options.quiet) {
             console.log(
               colors.yellow("!"),

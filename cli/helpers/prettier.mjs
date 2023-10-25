@@ -8,7 +8,7 @@ export const config = {
   embeddedLanguageFormatting: "auto",
   endOfLine: "lf",
   arrowParens: "always",
-  printWidth: 120,
+  printWidth: 130,
   tabWidth: 2,
   useTabs: false,
   semi: true,

@@ -6,6 +6,7 @@ module.exports = {
   context: process.env.INIT_CWD,
   target: "web",
   externalsType: "var",
+  parallelism: 200,
   mode: settings.DEVELOPMENT ? "development" : "production",
   resolve: {
     unsafeCache: false,

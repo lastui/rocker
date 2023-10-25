@@ -379,7 +379,7 @@ config.plugins.push(
               url: path.join(props.compilation.outputOptions.publicPath, Array.from(chunk.files)[0]),
             },
             locales: {},
-            meta: {},
+            props: {},
           };
           for (const language of settings.SUPPORTED_LOCALES) {
             entry.locales[language] = path.join(
