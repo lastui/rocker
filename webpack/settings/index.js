@@ -42,6 +42,4 @@ exports.BUILD_ID = randomUUID();
 
 exports.DEFAULT_LOCALE = process.env.DEFAULT_LOCALE || "en-US";
 
-exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || exports.DEFAULT_LOCALE)
-  .split(",")
-  .map((locale) => locale.trim());
+exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || exports.DEFAULT_LOCALE).split(",").map((locale) => locale.trim());

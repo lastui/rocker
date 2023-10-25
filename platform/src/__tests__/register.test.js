@@ -61,9 +61,7 @@ describe("register", () => {
 
       register(scope);
       expect(window.__SANDBOX_SCOPE__.component).not.toBeDefined();
-      expect(spy).toHaveBeenLastCalledWith(
-        `attribute "component" provided in registerModule is not function or React.Component`,
-      );
+      expect(spy).toHaveBeenLastCalledWith(`attribute "component" provided in registerModule is not function or React.Component`);
     });
 
     it("accepts React Component", () => {
@@ -91,9 +89,7 @@ describe("register", () => {
 
       register(scope);
       expect(window.__SANDBOX_SCOPE__.fallback).not.toBeDefined();
-      expect(spy).toHaveBeenLastCalledWith(
-        `attribute "fallback" provided in registerModule is not function or React.Component`,
-      );
+      expect(spy).toHaveBeenLastCalledWith(`attribute "fallback" provided in registerModule is not function or React.Component`);
     });
 
     it("accepts React Component", () => {

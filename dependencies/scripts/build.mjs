@@ -184,13 +184,7 @@ async function processChunk(chunk) {
       "dll",
       `${leaf}-${development ? "dev" : "prod"}-manifest.json`,
     );
-    const dllFile = path.resolve(
-      fileURLToPath(import.meta.url),
-      "..",
-      "..",
-      "dll",
-      `${leaf}.dll${development ? "" : ".min"}.js`,
-    );
+    const dllFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", "dll", `${leaf}.dll${development ? "" : ".min"}.js`);
 
     nodeMapping[leaf].provides = Object.keys(JSON.parse(await fs.readFile(manifestFile, { encoding: "utf8" })).content);
 

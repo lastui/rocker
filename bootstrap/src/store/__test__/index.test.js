@@ -38,8 +38,6 @@ describe("store", () => {
     const fetchContext = jest.fn();
     const store = await setupStore(fetchContext, []);
     expect(store).toBeDefined();
-    expect(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "rocker-xxx" }),
-    );
+    expect(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__).toHaveBeenCalledWith(expect.objectContaining({ name: "rocker-xxx" }));
   });
 });

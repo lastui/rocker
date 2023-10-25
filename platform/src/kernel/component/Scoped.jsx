@@ -31,9 +31,7 @@ const Scoped = (name, preferentialStore, scope) => {
 
     return (
       <ReactReduxContext.Provider value={reduxContext}>
-        {props.children
-          ? createElement(scope.component, composite, props.children)
-          : createElement(scope.component, composite)}
+        {props.children ? createElement(scope.component, composite, props.children) : createElement(scope.component, composite)}
       </ReactReduxContext.Provider>
     );
   };
@@ -49,9 +47,7 @@ const Scoped = (name, preferentialStore, scope) => {
 
     render() {
       if (this.state.error === null) {
-        return this.props.children
-          ? createElement(Bridge, this.props, this.props.children)
-          : createElement(Bridge, this.props);
+        return this.props.children ? createElement(Bridge, this.props, this.props.children) : createElement(Bridge, this.props);
       }
       if (scope.fallback) {
         return createElement(scope.fallback, this.state);

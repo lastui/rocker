@@ -52,10 +52,7 @@ function formatMessage(message) {
   }
   lines[0] = lines[0].replace(/^(.*) \d+:\d+-\d+$/, "$1");
   if (lines[1] && lines[1].indexOf("Module not found: ") === 0) {
-    lines = [
-      lines[0],
-      lines[1].replace("Error: ", "").replace("Module not found: Cannot find file:", "Cannot find file:"),
-    ];
+    lines = [lines[0], lines[1].replace("Error: ", "").replace("Module not found: Cannot find file:", "Cannot find file:")];
   }
   if (lines[1] && lines[1].match(/Cannot find module.+sass/)) {
     lines[1] = "To import Sass files, you first need to install sass.\n";
@@ -66,9 +63,7 @@ function formatMessage(message) {
   message = message.replace(/^\s*at\s((?!webpack:).)*:\d+:\d+[\s)]*(\n|$)/gm, "");
   message = message.replace(/^\s*at\s<anonymous>(\n|$)/gm, "");
   lines = message.split("\n");
-  lines = lines.filter(
-    (line, index, arr) => index === 0 || line.trim() !== "" || line.trim() !== arr[index - 1].trim(),
-  );
+  lines = lines.filter((line, index, arr) => index === 0 || line.trim() !== "" || line.trim() !== arr[index - 1].trim());
   message = lines.join("\n");
   return message.trim();
 }
@@ -127,9 +122,7 @@ export async function getStack(options, packageName) {
   let DevServer = null;
 
   if (options.config || customConfigExists) {
-    const resolvedConfigs = options.config
-      ? options.config
-      : (await import(`${projectConfig}?t=${process.hrtime()[0]}`)).default;
+    const resolvedConfigs = options.config ? options.config : (await import(`${projectConfig}?t=${process.hrtime()[0]}`)).default;
 
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
@@ -178,9 +171,7 @@ export async function getStack(options, packageName) {
     }
   } else if (projectNodeModulesExists) {
     const resolvedConfigs = (
-      await import(
-        `${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`
-      )
+      await import(`${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)
     ).default;
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
@@ -196,9 +187,8 @@ export async function getStack(options, packageName) {
       }
     }
   } else {
-    const resolvedConfigs = (
-      await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)
-    ).default;
+    const resolvedConfigs = (await import(`@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`))
+      .default;
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
     } else {

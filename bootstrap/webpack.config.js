@@ -22,13 +22,7 @@ config.plugins.push(
     context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(
-      __dirname,
-      "..",
-      "platform",
-      "dll",
-      `platform-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`,
-    ),
+    manifest: path.resolve(__dirname, "..", "platform", "dll", `platform-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`),
     context: process.env.INIT_CWD,
   }),
 );

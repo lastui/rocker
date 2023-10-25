@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.16.54",
+  "version": "0.16.55",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -48,7 +48,6 @@
     "platform/dll/platform.dll.min.js",
     "platform/index.js",
     "webpack/config/dll/index.js",
-    "webpack/config/library/index.js",
     "webpack/config/module/development.js",
     "webpack/config/module/index.js",
     "webpack/config/module/production.js",
