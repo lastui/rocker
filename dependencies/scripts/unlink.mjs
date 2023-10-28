@@ -10,3 +10,5 @@ async function unlinkModule(...nodePath) {
 }
 
 await unlinkModule("core-js");
+await unlinkModule("buffer");
+await unlinkModule("ieee754");
