@@ -21,6 +21,7 @@ module.exports = {
       process: false,
       path: require.resolve("path-browserify"),
       util: require.resolve("util/"),
+      buffer: require.resolve("buffer/"),
       fs: false,
       crypto: false,
     },
