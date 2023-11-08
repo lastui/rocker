@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.17.2",
+  "version": "0.17.3",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -102,7 +102,7 @@
     "@linaria/webpack5-loader": "5.0.3",
     "@testing-library/dom": "9.3.3",
     "@testing-library/jest-dom": "6.1.4",
-    "@testing-library/react": "14.0.0",
+    "@testing-library/react": "14.1.0",
     "@testing-library/user-event": "14.5.1",
     "add-asset-html-webpack-plugin": "6.0.0",
     "ansi-colors": "4.1.3",
