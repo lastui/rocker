@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.17.5",
+  "version": "0.17.6",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -120,7 +120,7 @@
     "json5-loader": "4.0.1",
     "mini-css-extract-plugin": "2.7.6",
     "path-browserify": "1.0.1",
-    "prettier": "3.0.3",
+    "prettier": "3.1.0",
     "prettier-package-json": "2.8.0",
     "pretty-format": "29.7.0",
     "redux-mock-store": "1.5.4",
