@@ -23,14 +23,7 @@ describe("assets registry", () => {
 
   describe("downloadAsset", () => {
     it("happy path", async () => {
-      global.fetch.mockImplementationOnce(async () => ({
-        ok: true,
-        status: 200,
-        text: async () => "data",
-        headers: {
-          get() {},
-        },
-      }));
+      global.fetch.mockImplementationOnce(async () => new Response("data", { status: 200, statusText: "OK" }));
 
       const result = await downloadAsset("/path/data.json");
 
@@ -49,10 +42,7 @@ describe("assets registry", () => {
     });
 
     it("error path", async () => {
-      global.fetch.mockImplementationOnce(async () => ({
-        ok: false,
-        status: 404,
-      }));
+      global.fetch.mockImplementationOnce(async () => new Response(null, { status: 404, statusText: "Not Found" }));
 
       await expect(downloadAsset("/path/data.json")).rejects.toThrow("404");
     });
@@ -118,16 +108,10 @@ describe("assets registry", () => {
     });
 
     it("compiles program", async () => {
-      global.fetch.mockImplementationOnce(async () => ({
-        ok: true,
-        status: 200,
-        text: async () => `!function(){
-          window.__SANDBOX_SCOPE__.component = () => 'main'
-        }();`,
-        headers: {
-          get() {},
-        },
-      }));
+      global.fetch.mockImplementationOnce(
+        async () =>
+          new Response(`!function(){ window.__SANDBOX_SCOPE__.component = () => 'main' }();`, { status: 200, statusText: "OK" }),
+      );
 
       const result = await downloadProgram("my-feature", {
         url: "/service/program.js",
@@ -141,16 +125,9 @@ describe("assets registry", () => {
       spy.mockImplementation(() => {});
       spy.mockClear();
 
-      global.fetch.mockImplementationOnce(async () => ({
-        ok: true,
-        status: 200,
-        text: async () => `
-          window.__SANDBOX_SCOPE__.component = () => 'main';
-        `,
-        headers: {
-          get() {},
-        },
-      }));
+      global.fetch.mockImplementationOnce(
+        async () => new Response(`window.__SANDBOX_SCOPE__.component = () => 'main';`, { status: 200, statusText: "OK" }),
+      );
 
       const result = await downloadProgram("my-feature", {
         url: "/service/program.js",
@@ -166,16 +143,9 @@ describe("assets registry", () => {
       spy.mockImplementation(() => {});
       spy.mockClear();
 
-      global.fetch.mockImplementationOnce(async () => ({
-        ok: true,
-        status: 200,
-        text: async () => `!function(){
-          throw new Error('ouch');
-        }();`,
-        headers: {
-          get() {},
-        },
-      }));
+      global.fetch.mockImplementationOnce(
+        async () => new Response(`!function(){ throw new Error('ouch'); }();`, { status: 200, statusText: "OK" }),
+      );
 
       const result = await downloadProgram("my-feature", {
         url: "/service/program.js",
