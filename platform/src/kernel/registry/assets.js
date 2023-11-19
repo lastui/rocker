@@ -127,9 +127,13 @@ function downloadAsset(resource, parentController) {
     /* istanbul ignore next */
     if (response.status === 304) {
       if (currentEtag) {
-        const assetEntry = await resources.match(`${resource}_${currentEtag}`);
-        if (assetEntry) {
-          return assetEntry.clone();
+        try {
+          const assetEntry = await resources.match(`${resource}_${currentEtag}`);
+          if (assetEntry) {
+            return assetEntry.clone();
+          }
+        } catch (error) {
+          /* silence the cache error */
         }
         resources.delete(`${resource}_${currentEtag}`);
       }
@@ -150,12 +154,14 @@ function downloadAsset(resource, parentController) {
       resources.delete(`${resource}_${currentEtag}`);
     }
     const latestEtag = response.headers.get("Etag");
+    const blob = await response.blob();
+    const cleaned = new Response(blob, { status: 200, statusText: "OK" });
     /* istanbul ignore next */
     if (latestEtag) {
-      resources.put(`${resource}_${latestEtag}`, response.clone());
+      resources.put(`${resource}_${latestEtag}`, cleaned.clone());
       etags.put(resource, new Response(latestEtag, { status: 200, statusText: "OK" }));
     }
-    return response;
+    return cleaned;
   }
 
   const request = Promise.race([aborter, fetcher()]).catch((error) => {
