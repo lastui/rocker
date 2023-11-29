@@ -399,11 +399,11 @@ config.plugins.push(
       }
 
       return `
-        <html>
+        <html style="margin: 0; width: 100%; height: 100%;">
           <head>
             ${headTags}
           </head>
-          <body>
+          <body style="margin: 0; width: 100%; height: 100%;">
             <script defer>
               (function() {
                 "use strict";
@@ -425,7 +425,7 @@ config.plugins.push(
                 })
               }())
             </script>
-            <div id="${settings.PROJECT_NAME}" />
+            <div id="${settings.PROJECT_NAME}" style="width: 100%; height: 100%;" />
           </body>
         </html>
       `;
