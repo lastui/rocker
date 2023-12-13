@@ -1,6 +1,6 @@
 {
   "name": "@lastui/dependencies",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -32,7 +32,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-intl": "6.5.5",
-    "react-redux": "9.0.3",
+    "react-redux": "9.0.4",
     "react-router-dom": "6.20.1",
     "redux": "5.0.0",
     "redux-saga": "1.2.3",
