@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.18.4",
+  "version": "0.18.5",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -134,7 +134,7 @@
     "weak-napi": "2.0.2",
     "webpack": "5.89.0",
     "webpack-dev-server": "4.15.1",
-    "whatwg-fetch": "3.6.19",
+    "whatwg-fetch": "3.6.20",
     "yargs": "17.7.2"
   },
   "engines": {
