@@ -1,6 +1,6 @@
 {
   "name": "@lastui/dependencies",
-  "version": "1.4.9",
+  "version": "1.4.10",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -36,6 +36,6 @@
     "react-router-dom": "6.21.0",
     "redux": "5.0.0",
     "redux-saga": "1.2.3",
-    "regenerator-runtime": "0.14.0"
+    "regenerator-runtime": "0.14.1"
   }
 }
