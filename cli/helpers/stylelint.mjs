@@ -48,14 +48,21 @@ export async function createEngine(options) {
         fix: options.fix,
         code: data,
         formatter: (stylelintResults) => {
-          results = stylelintResults;
+          results = stylelintResults[0];
+          const output = stylelintResults[0]._postcssResult.css;
+          if (output !== data) {
+            return output
+          }
+          return undefined;
         },
       });
 
-      if (result.output) {
+      if (result.report) {
         data = isCssInJs
-          ? await prettier.format(result.output, prettierConfig)
-          : result.output;
+          ? await prettier.format(result.report, prettierConfig)
+          : result.report;
+      } else if (isCssInJs) {
+        data = await prettier.format(info.data, prettierConfig);
       }
 
       end = process.hrtime(start);
@@ -66,7 +73,7 @@ export async function createEngine(options) {
       }
 
       info.issues.push(
-        ...results[0].parseErrors.map((item) => ({
+        ...results.parseErrors.map((item) => ({
           engineId: "stylelint",
           message: item.text,
           ruleId: item.rule,
@@ -75,7 +82,7 @@ export async function createEngine(options) {
         })),
       );
       info.issues.push(
-        ...results[0].warnings.map((item) => ({
+        ...results.warnings.map((item) => ({
           engineId: "stylelint",
           message: item.text,
           ruleId: item.rule,
