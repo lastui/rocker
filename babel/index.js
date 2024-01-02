@@ -54,7 +54,10 @@ module.exports = {
       assumptions,
     },
     test: {
-      presets,
+      presets: [
+        ...presets,
+        "@wyw-in-js",
+      ],
       plugins: [
         ...plugins,
         [
