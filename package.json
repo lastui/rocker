@@ -102,7 +102,6 @@
     "@testing-library/jest-dom": "6.1.6",
     "@testing-library/react": "14.1.2",
     "@testing-library/user-event": "14.5.2",
-    "@wyw-in-js/babel-preset": "0.2.2",
     "@wyw-in-js/webpack-loader": "0.2.2",
     "add-asset-html-webpack-plugin": "6.0.0",
     "ansi-colors": "4.1.3",
