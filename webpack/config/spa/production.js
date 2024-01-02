@@ -102,6 +102,7 @@ config.module.rules.push(
             sourceType: "module",
             inputSourceMap: false,
           },
+        },
       },
     ],
   },
