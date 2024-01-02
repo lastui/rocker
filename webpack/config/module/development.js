@@ -112,7 +112,8 @@ config.module.rules.push(
           displayName: false,
           ignore: [/node_modules/],
           classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
-          variableNameSlug: (context) => `${settings.PROJECT_NAME}-${context.componentName}-${context.valueSlug}-${context.index}`,
+          variableNameSlug: (context) =>
+            `${settings.PROJECT_NAME}-${context.componentName}-${context.valueSlug}-${context.index}`,
           babelOptions: {
             babelrc: false,
             presets: linariaBabel.presets.map((preset) => {
