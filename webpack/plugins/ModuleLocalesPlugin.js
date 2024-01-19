@@ -14,7 +14,7 @@ class ModuleLocalesPlugin {
 
   apply(compiler) {
     compiler.hooks.thisCompilation.tap(ModuleLocalesPlugin.name, (compilation) => {
-      compilation.hooks.processAssets.tap(
+      compilation.hooks.processAssets.tapPromise(
         {
           name: ModuleLocalesPlugin.name,
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
@@ -51,13 +51,14 @@ class ModuleLocalesPlugin {
               });
             }
           }
-
+          // TODO better
+          const promises = [];
           for (const asset of this.paths_to_watch) {
             for (const chunk of paths) {
               const inputPath = path.resolve(chunk.input, asset);
               const outputPath = path.join(chunk.output, asset);
 
-              fs.promises
+              promises.push(fs.promises
                 .readFile(inputPath, "utf8")
                 .catch(async () => {
                   await new Promise((resolve, reject) => {
@@ -90,9 +91,10 @@ class ModuleLocalesPlugin {
                 })
                 .catch((error) => {
                   console.error(error);
-                });
+                }));
             }
           }
+          return Promise.all(promises);
         },
       );
     });
