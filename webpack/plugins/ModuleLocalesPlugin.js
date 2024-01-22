@@ -58,40 +58,42 @@ class ModuleLocalesPlugin {
               const inputPath = path.resolve(chunk.input, asset);
               const outputPath = path.join(chunk.output, asset);
 
-              promises.push(fs.promises
-                .readFile(inputPath, "utf8")
-                .catch(async () => {
-                  await new Promise((resolve, reject) => {
-                    const parent = path.dirname(inputPath);
-                    fs.stat(parent, (stat_err, _stat) => {
-                      if (stat_err === null) {
-                        resolve(true);
-                      } else if (stat_err.code === "ENOENT") {
-                        fs.mkdir(parent, (mkdir_err) => {
-                          if (mkdir_err && mkdir_err.code !== "EEXIST") {
-                            reject(mkdir_err);
-                          } else {
-                            resolve(true);
-                          }
-                        });
-                      } else {
-                        reject(stat_err);
-                      }
+              promises.push(
+                fs.promises
+                  .readFile(inputPath, "utf8")
+                  .catch(async () => {
+                    await new Promise((resolve, reject) => {
+                      const parent = path.dirname(inputPath);
+                      fs.stat(parent, (stat_err, _stat) => {
+                        if (stat_err === null) {
+                          resolve(true);
+                        } else if (stat_err.code === "ENOENT") {
+                          fs.mkdir(parent, (mkdir_err) => {
+                            if (mkdir_err && mkdir_err.code !== "EEXIST") {
+                              reject(mkdir_err);
+                            } else {
+                              resolve(true);
+                            }
+                          });
+                        } else {
+                          reject(stat_err);
+                        }
+                      });
                     });
-                  });
-                  const content = "{}";
-                  await fs.promises.writeFile(inputPath, content);
-                  return content;
-                })
-                .then((content) => {
-                  compilation.fileDependencies.add(inputPath);
-                  if (!compilation.getAsset(outputPath)) {
-                    compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
-                  }
-                })
-                .catch((error) => {
-                  console.error(error);
-                }));
+                    const content = "{}";
+                    await fs.promises.writeFile(inputPath, content);
+                    return content;
+                  })
+                  .then((content) => {
+                    compilation.fileDependencies.add(inputPath);
+                    if (!compilation.getAsset(outputPath)) {
+                      compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  }),
+              );
             }
           }
           return Promise.all(promises);
