@@ -12,9 +12,37 @@ class ModuleLocalesPlugin {
     }
   }
 
+  async processPath(inputPath) {
+    try {
+      return await fs.promises.readFile(inputPath, "utf8");
+    } catch (_error) {}
+
+    await new Promise((resolve, reject) => {
+      const parent = path.dirname(inputPath);
+      fs.stat(parent, (stat_err, _stat) => {
+        if (stat_err === null) {
+          resolve(true);
+        } else if (stat_err.code === "ENOENT") {
+          fs.mkdir(parent, (mkdir_err) => {
+            if (mkdir_err && mkdir_err.code !== "EEXIST") {
+              reject(mkdir_err);
+            } else {
+              resolve(true);
+            }
+          });
+        } else {
+          reject(stat_err);
+        }
+      });
+    });
+    const content = "{}";
+    await fs.promises.writeFile(inputPath, content);
+    return content;
+  }
+
   apply(compiler) {
     compiler.hooks.thisCompilation.tap(ModuleLocalesPlugin.name, (compilation) => {
-      compilation.hooks.processAssets.tap(
+      compilation.hooks.processAssets.tapPromise(
         {
           name: ModuleLocalesPlugin.name,
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
@@ -52,47 +80,27 @@ class ModuleLocalesPlugin {
             }
           }
 
+          const promises = [];
           for (const asset of this.paths_to_watch) {
             for (const chunk of paths) {
               const inputPath = path.resolve(chunk.input, asset);
               const outputPath = path.join(chunk.output, asset);
 
-              fs.promises
-                .readFile(inputPath, "utf8")
-                .catch(async () => {
-                  await new Promise((resolve, reject) => {
-                    const parent = path.dirname(inputPath);
-                    fs.stat(parent, (stat_err, _stat) => {
-                      if (stat_err === null) {
-                        resolve(true);
-                      } else if (stat_err.code === "ENOENT") {
-                        fs.mkdir(parent, (mkdir_err) => {
-                          if (mkdir_err && mkdir_err.code !== "EEXIST") {
-                            reject(mkdir_err);
-                          } else {
-                            resolve(true);
-                          }
-                        });
-                      } else {
-                        reject(stat_err);
-                      }
-                    });
-                  });
-                  const content = "{}";
-                  await fs.promises.writeFile(inputPath, content);
-                  return content;
-                })
-                .then((content) => {
-                  compilation.fileDependencies.add(inputPath);
-                  if (!compilation.getAsset(outputPath)) {
-                    compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
-                  }
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
+              promises.push(
+                this.processPath(inputPath)
+                  .then((content) => {
+                    compilation.fileDependencies.add(inputPath);
+                    if (!compilation.getAsset(outputPath)) {
+                      compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  }),
+              );
             }
           }
+          return Promise.all(promises);
         },
       );
     });
