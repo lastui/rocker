@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.19.1",
+  "version": "0.19.2",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -110,7 +110,7 @@
     "copy-webpack-plugin": "12.0.2",
     "core-js": "3.35.1",
     "css-loader": "6.9.1",
-    "dotenv": "16.3.2",
+    "dotenv": "16.4.0",
     "eslint": "8.56.0",
     "eslint-plugin-import": "2.29.1",
     "html-webpack-plugin": "5.6.0",
