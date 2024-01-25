@@ -16,7 +16,6 @@ class ModuleLocalesPlugin {
     try {
       return await fs.promises.readFile(filename, "utf8");
     } catch (_error) {
-      // TODO simplify
       await new Promise((resolve, reject) => {
         const parent = path.dirname(filename);
         fs.stat(parent, (stat_err, _stat) => {
@@ -84,7 +83,6 @@ class ModuleLocalesPlugin {
                 }
 
                 const inputPath = path.resolve(entryPointOrigin, asset);
-                console.log(compiler.webpack.sources.RawSource);
                 try {
                   const content = await this.ensureAsset(inputPath);
                   compilation.fileDependencies.add(inputPath);
