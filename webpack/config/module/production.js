@@ -179,9 +179,7 @@ config.module.rules.push(
 );
 
 config.plugins.push(
-  new ModuleLocalesPlugin({
-    from: process.env.INIT_CWD,
-  }),
+  new ModuleLocalesPlugin(),
   ...dependenciesDlls.map(
     (item) =>
       new webpack.DllReferencePlugin({

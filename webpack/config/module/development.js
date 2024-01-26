@@ -231,9 +231,7 @@ config.plugins.push(
     sourceType: "var",
     context: process.env.INIT_CWD,
   }),
-  new ModuleLocalesPlugin({
-    from: process.env.INIT_CWD,
-  }),
+  new ModuleLocalesPlugin(),
   new HTMLWebpackPlugin({
     production: false,
     publicPath: "",

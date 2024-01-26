@@ -12,32 +12,31 @@ class ModuleLocalesPlugin {
     }
   }
 
-  async processPath(inputPath) {
+  async ensureAsset(filename) {
     try {
-      return await fs.promises.readFile(inputPath, "utf8");
-    } catch (_error) {}
-
-    await new Promise((resolve, reject) => {
-      const parent = path.dirname(inputPath);
-      fs.stat(parent, (stat_err, _stat) => {
-        if (stat_err === null) {
-          resolve(true);
-        } else if (stat_err.code === "ENOENT") {
-          fs.mkdir(parent, (mkdir_err) => {
-            if (mkdir_err && mkdir_err.code !== "EEXIST") {
-              reject(mkdir_err);
-            } else {
-              resolve(true);
-            }
-          });
-        } else {
-          reject(stat_err);
-        }
+      return await fs.promises.readFile(filename, "utf8");
+    } catch (_error) {
+      await new Promise((resolve, reject) => {
+        const parent = path.dirname(filename);
+        fs.stat(parent, (stat_err, _stat) => {
+          if (stat_err === null) {
+            resolve(true);
+          } else if (stat_err.code === "ENOENT") {
+            fs.mkdir(parent, (mkdir_err) => {
+              if (mkdir_err && mkdir_err.code !== "EEXIST") {
+                reject(mkdir_err);
+              } else {
+                resolve(true);
+              }
+            });
+          } else {
+            reject(stat_err);
+          }
+        });
       });
-    });
-    const content = "{}";
-    await fs.promises.writeFile(inputPath, content);
-    return content;
+      await fs.promises.writeFile(filename, "{}");
+      return "{}";
+    }
   }
 
   apply(compiler) {
@@ -47,60 +46,53 @@ class ModuleLocalesPlugin {
           name: ModuleLocalesPlugin.name,
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
         },
-        (_assets) => {
-          let paths = [];
+        async (_assets) => {
+          const assetOutputDirectory = path.dirname(compilation.outputOptions.assetModuleFilename);
 
           for (const entryPoint of compilation.entrypoints.values()) {
             let entryPointOrigin = null;
 
             for (const origin of entryPoint.origins) {
-              if (origin.request.startsWith("core-js")) {
+              if (origin.request.indexOf("core-js/") !== -1) {
                 continue;
               }
               if (origin.request.endsWith("tslib/tslib.es6.js")) {
                 continue;
               }
-              if (origin.request.indexOf("regenerator-runtime/runtime") !== -1) {
+              if (origin.request.indexOf("regenerator-runtime/") !== -1) {
                 continue;
               }
               if (origin.request.indexOf("webpack") !== -1) {
                 continue;
               }
-              entryPointOrigin = path.resolve(origin.request.split("src")[0]);
+              entryPointOrigin = path.extname(origin.request)
+                ? path.resolve(origin.request, "..", "..", "messages")
+                : path.resolve(origin.request, "..", "messages");
+              break;
             }
 
             for (const chunk of entryPoint.chunks) {
-              if (chunk.id === settings.BUILD_ID) {
+              if (chunk.id === chunk.runtime) {
                 continue;
               }
-              paths.push({
-                input: path.resolve(this.from, entryPointOrigin, "messages"),
-                output: path.join(path.dirname(compilation.outputOptions.assetModuleFilename), chunk.id, "messages"),
-              });
+
+              for (const asset of this.paths_to_watch) {
+                const outputPath = path.join(assetOutputDirectory, chunk.id, "messages", asset);
+                if (compilation.getAsset(outputPath)) {
+                  continue;
+                }
+
+                const inputPath = path.resolve(entryPointOrigin, asset);
+                try {
+                  const content = await this.ensureAsset(inputPath);
+                  compilation.fileDependencies.add(inputPath);
+                  compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
+                } catch (error) {
+                  console.error("Failed to process locale asset", inputPath, "with error", error);
+                }
+              }
             }
           }
-
-          const promises = [];
-          for (const asset of this.paths_to_watch) {
-            for (const chunk of paths) {
-              const inputPath = path.resolve(chunk.input, asset);
-              const outputPath = path.join(chunk.output, asset);
-
-              promises.push(
-                this.processPath(inputPath)
-                  .then((content) => {
-                    compilation.fileDependencies.add(inputPath);
-                    if (!compilation.getAsset(outputPath)) {
-                      compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
-                    }
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                  }),
-              );
-            }
-          }
-          return Promise.all(promises);
         },
       );
     });
