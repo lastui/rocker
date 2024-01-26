@@ -10,10 +10,10 @@ jobs:
     name: Run npm check update and recompile dlls
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20.6.1
+          node-version: 20.11.0
           registry-url: https://registry.npmjs.org
       - name: Install npm-check-updates
         run: npm install -g npm-check-updates
@@ -47,8 +47,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           delete-branch: true
-          commit-message: Update dependencies and recompile dlls
+          commit-message: Update dependencies and recompile DLLs
           title: Update dependencies
           labels: |
             dependencies
+          base: main
           branch: update-dependencies

@@ -17,10 +17,10 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20.6.1
+          node-version: 20.11.0
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
       - run: npm ci --no-fund --no-audit
