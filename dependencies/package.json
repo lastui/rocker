@@ -1,6 +1,6 @@
 {
   "name": "@lastui/dependencies",
-  "version": "1.4.15",
+  "version": "1.4.16",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -24,9 +24,9 @@
     "build:prod": "NODE_ENV=production node ./scripts/build.mjs"
   },
   "dependencies": {
-    "@linaria/core": "6.0.0",
+    "@linaria/core": "6.1.0",
     "@linaria/logger": "5.0.0",
-    "@linaria/react": "6.0.0",
+    "@linaria/react": "6.1.0",
     "@linaria/tags": "5.0.2",
     "@linaria/utils": "5.0.2",
     "react": "18.2.0",
