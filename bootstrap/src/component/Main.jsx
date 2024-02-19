@@ -1,3 +1,5 @@
+/* global DEFAULT_LOCALE */
+
 import { Children, StrictMode, useState, useCallback, useEffect } from "react";
 import { Provider as ReduxProvider, useSelector } from "react-redux";
 
