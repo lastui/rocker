@@ -22,4 +22,4 @@ jest.mock("@linaria/core", () => ({
   css: jest.fn(() => ""),
 }));
 
-globalThis.DEFAULT_LOCALE = "en-US";
+global.DEFAULT_LOCALE = "en-US";

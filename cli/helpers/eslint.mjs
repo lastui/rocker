@@ -6,6 +6,9 @@ import babelConfig from "../../babel/index.js";
 export const config = {
   env: {
     es6: true,
+    browser: true,
+    node: true,
+    jest: true,
   },
   parser: "@babel/eslint-parser",
   parserOptions: {
@@ -20,6 +23,7 @@ export const config = {
   plugins: ["import"],
   rules: {
     "no-debugger": "error",
+    "no-undef": "error",
     eqeqeq: ["error", "always"],
     "import/first": "error",
     "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
