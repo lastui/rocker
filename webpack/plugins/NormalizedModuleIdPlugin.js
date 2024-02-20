@@ -1,4 +1,9 @@
 class NormalizedModuleIdPlugin {
+  constructor() {
+    this.volatileDir = new RegExp(/\/(dist|esm?|cjs|lib|unpkg)\//);
+    this.volatileExt = new RegExp(/\.(esm\.|cjs\.|m)js$/);
+  }
+
   apply(compiler) {
     compiler.hooks.compilation.tap(NormalizedModuleIdPlugin.name, (compilation) => {
       compilation.hooks.beforeModuleIds.tap(NormalizedModuleIdPlugin.name, (modules) => {
@@ -6,18 +11,17 @@ class NormalizedModuleIdPlugin {
           if (!item.libIdent) {
             continue;
           }
+
           const id = item.libIdent({ context: compiler.options.context });
-          if (!id) {
+          if (!id || id.startsWith("dll-reference")) {
             continue;
           }
+
           compilation.chunkGraph.setModuleId(
             item,
-            id.startsWith("./node_modules/@lastui/rocker")
-              ? id.replace(/.\/node_modules\/@lastui\/rocker/g, "@rocker")
-              : id
-                  .replace(/\/(dist|esm?|cjs|lib|unpkg)\//g, "/")
-                  .replace(/\.(esm|cjs)\.js$/g, ".js")
-                  .replace(/\.m?js$/g, ".js"),
+            id.startsWith("./node_modules/@lastui/rocker/")
+              ? "@" + id.substr(23)
+              : id.replace(this.volatileDir, "/").replace(this.volatileExt, ".js"),
           );
         }
       });

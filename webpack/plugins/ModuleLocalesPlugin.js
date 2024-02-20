@@ -3,39 +3,29 @@ const path = require("path");
 
 const settings = require("../settings");
 
+async function ensureFile(filename, reject, resolve) {
+  fs.stat(filename, (stat_err, _stat) => {
+    if (stat_err === null) {
+      resolve(true);
+    } else if (stat_err.code === "ENOENT") {
+      fs.mkdir(path.dirname(filename), (mkdir_err) => {
+        if (mkdir_err && mkdir_err.code !== "EEXIST") {
+          reject(mkdir_err);
+        } else {
+          resolve(true);
+        }
+      });
+    } else {
+      reject(stat_err);
+    }
+  });
+}
+
 class ModuleLocalesPlugin {
-  constructor(options) {
-    this.from = options.from;
+  constructor() {
     this.paths_to_watch = [];
     for (const language of settings.SUPPORTED_LOCALES) {
       this.paths_to_watch.push(`${language}.json`);
-    }
-  }
-
-  async ensureAsset(filename) {
-    try {
-      return await fs.promises.readFile(filename, "utf8");
-    } catch (_error) {
-      await new Promise((resolve, reject) => {
-        const parent = path.dirname(filename);
-        fs.stat(parent, (stat_err, _stat) => {
-          if (stat_err === null) {
-            resolve(true);
-          } else if (stat_err.code === "ENOENT") {
-            fs.mkdir(parent, (mkdir_err) => {
-              if (mkdir_err && mkdir_err.code !== "EEXIST") {
-                reject(mkdir_err);
-              } else {
-                resolve(true);
-              }
-            });
-          } else {
-            reject(stat_err);
-          }
-        });
-      });
-      await fs.promises.writeFile(filename, "{}");
-      return "{}";
     }
   }
 
@@ -48,6 +38,8 @@ class ModuleLocalesPlugin {
         },
         async (_assets) => {
           const assetOutputDirectory = path.dirname(compilation.outputOptions.assetModuleFilename);
+
+          const assetsToWatch = [];
 
           for (const entryPoint of compilation.entrypoints.values()) {
             let entryPointOrigin = null;
@@ -65,14 +57,17 @@ class ModuleLocalesPlugin {
               if (origin.request.indexOf("webpack") !== -1) {
                 continue;
               }
+
               entryPointOrigin = path.extname(origin.request)
                 ? path.resolve(origin.request, "..", "..", "messages")
                 : path.resolve(origin.request, "..", "messages");
               break;
             }
 
+            const hasRuntimeChunk = entryPoint.chunks.length > 1;
+
             for (const chunk of entryPoint.chunks) {
-              if (chunk.id === chunk.runtime) {
+              if (hasRuntimeChunk && chunk.id === chunk.runtime) {
                 continue;
               }
 
@@ -81,16 +76,39 @@ class ModuleLocalesPlugin {
                 if (compilation.getAsset(outputPath)) {
                   continue;
                 }
-
                 const inputPath = path.resolve(entryPointOrigin, asset);
-                try {
-                  const content = await this.ensureAsset(inputPath);
-                  compilation.fileDependencies.add(inputPath);
-                  compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
-                } catch (error) {
-                  console.error("Failed to process locale asset", inputPath, "with error", error);
-                }
+                assetsToWatch.push([inputPath, outputPath]);
               }
+            }
+          }
+
+          for (const [inputPath, outputPath] of assetsToWatch) {
+            try {
+              const content = await new Promise((resolve, reject) => {
+                fs.readFile(inputPath, "utf8", (read_err, read_ok) => {
+                  if (!read_err) {
+                    resolve(read_ok);
+                    return;
+                  }
+                  ensureFile(inputPath, (ensure_err, _ensure_ok) => {
+                    if (ensure_err) {
+                      reject(ensure_err);
+                      return;
+                    }
+                    fs.writeFile(inputPath, "{}", (write_err, _write_ok) => {
+                      if (write_err) {
+                        reject(write_err);
+                        return;
+                      }
+                      resolve("{}");
+                    });
+                  });
+                });
+              });
+              compilation.fileDependencies.add(inputPath);
+              compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
+            } catch (error) {
+              console.error("Failed to process locale asset", inputPath, "with error", error);
             }
           }
         },
