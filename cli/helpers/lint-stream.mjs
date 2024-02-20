@@ -28,6 +28,7 @@ export async function run(options) {
       {
         cwd: process.env.INIT_CWD,
         ignore: [
+          "**/*.git*/**",
           "**/*node_modules/**",
           "**/*build/**",
           "**/*dist/**",
@@ -36,6 +37,7 @@ export async function run(options) {
           "**/*.dll.js",
           "**/*-lock.json",
           "**/lint-final.json",
+          "**/coverage-final.json",
         ],
       },
       (error, files) => {
