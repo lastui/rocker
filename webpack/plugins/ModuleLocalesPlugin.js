@@ -3,30 +3,27 @@ const path = require("path");
 
 const settings = require("../settings");
 
-async function ensureFile(filename, reject, resolve) {
+async function ensureFile(filename, callback) {
   fs.stat(filename, (stat_err, _stat) => {
     if (stat_err === null) {
-      resolve(true);
+      callback(undefined, true);
     } else if (stat_err.code === "ENOENT") {
       fs.mkdir(path.dirname(filename), (mkdir_err) => {
         if (mkdir_err && mkdir_err.code !== "EEXIST") {
-          reject(mkdir_err);
+          callback(mkdir_err, undefined);
         } else {
-          resolve(true);
+          callback(undefined, true);
         }
       });
     } else {
-      reject(stat_err);
+      callback(stat_err, undefined);
     }
   });
 }
 
 class ModuleLocalesPlugin {
   constructor() {
-    this.paths_to_watch = [];
-    for (const language of settings.SUPPORTED_LOCALES) {
-      this.paths_to_watch.push(`${language}.json`);
-    }
+    this.paths_to_watch = settings.SUPPORTED_LOCALES.map((item) => `${item}.json`);
   }
 
   apply(compiler) {
