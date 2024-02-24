@@ -408,9 +408,11 @@ config.plugins.push(
         manifest.entrypoint = entrypoint;
       }
 
-      if (customManifest.available) {
+      if (customManifest.available && available) {
         manifest.available = customManifest.available.filter((left) => available.some((right) => right.name === left.name));
         manifest.available.push(...available);
+      } else if (customManifest.available) {
+        manifest.available = customManifest.available;
       } else {
         manifest.available = available;
       }
