@@ -259,143 +259,160 @@ config.plugins.push(
           return item;
         });
 
-      let manifest;
+      let customManifest;
+
       try {
-        manifest = fs.readFileSync(path.resolve(process.env.INIT_CWD, "manifest.json"), "utf8");
+        customManifest = JSON.parse(fs.readFileSync(path.resolve(process.env.INIT_CWD, "manifest.json"), "utf8"));
       } catch (_) {
-        let entrypoint = null;
+        customManifest = {};
+      }
 
-        if (entrypoints.length === 1) {
-          entrypoint = entrypoints[0].id;
-        } else {
-          const dependencyGraph = {};
+      let entrypoint = null;
 
-          for (const chunk of entrypoints) {
-            props.compilation.chunkGraph.getChunkModulesIterable(chunk).forEach((fragment) => {
-              const matchedImports = fragment.dependencies.filter(
-                (item) => item.request === "@lastui/rocker/platform" && item.name === "Module",
-              );
+      if (entrypoints.length === 1) {
+        entrypoint = entrypoints[0].id;
+      } else {
+        const dependencyGraph = {};
 
-              if (matchedImports.length > 0) {
-                fragment._source._sourceMapAsObject.sourcesContent.forEach((sourceCode) => {
-                  const ast = parser.parse(sourceCode, {
-                    sourceType: "module",
-                    plugins: ["jsx"],
-                  });
+        for (const chunk of entrypoints) {
+          props.compilation.chunkGraph.getChunkModulesIterable(chunk).forEach((fragment) => {
+            const matchedImports = fragment.dependencies.filter(
+              (item) => item.request === "@lastui/rocker/platform" && item.name === "Module",
+            );
 
-                  traverse(ast, {
-                    CallExpression: (path) => {
-                      if (path.node.callee.type !== "MemberExpression") {
-                        return;
-                      }
-                      if (path.node.callee.object.name !== "React") {
-                        return;
-                      }
-                      if (path.node.callee.property.name !== "createElement") {
-                        return;
-                      }
-                      if (path.node.arguments.length < 2) {
-                        return;
-                      }
-                      if (path.node.arguments[0].type !== "Identifier" && path.node.arguments[0].name !== "Module") {
-                        return;
-                      }
-                      if (path.node.arguments[1].type !== "ObjectExpression") {
-                        return;
-                      }
-
-                      (path.node.arguments[1].properties ?? []).forEach((attribute) => {
-                        if (attribute.key.type === "Identifier" && attribute.key.name === "name") {
-                          if (!dependencyGraph[chunk.id]) {
-                            dependencyGraph[chunk.id] = [];
-                          }
-                          if (!dependencyGraph[attribute.value.value]) {
-                            dependencyGraph[attribute.value.value] = [];
-                          }
-                          if (!dependencyGraph[attribute.value.value].includes(chunk.id)) {
-                            dependencyGraph[attribute.value.value].push(chunk.id);
-                          }
-                        }
-                      });
-                    },
-                    JSXElement: (path) => {
-                      if (path.node.openingElement.name.name !== "Module") {
-                        return;
-                      }
-                      (path.node.openingElement.attributes ?? []).forEach((attribute) => {
-                        if (attribute.name.type === "JSXIdentifier" && attribute.name.name === "name") {
-                          if (!dependencyGraph[chunk.id]) {
-                            dependencyGraph[chunk.id] = [];
-                          }
-                          if (!dependencyGraph[attribute.value.value]) {
-                            dependencyGraph[attribute.value.value] = [];
-                          }
-                          if (!dependencyGraph[attribute.value.value].includes(chunk.id)) {
-                            dependencyGraph[attribute.value.value].push(chunk.id);
-                          }
-                        }
-                      });
-                    },
-                  });
+            if (matchedImports.length > 0) {
+              fragment._source._sourceMapAsObject.sourcesContent.forEach((sourceCode) => {
+                const ast = parser.parse(sourceCode, {
+                  sourceType: "module",
+                  plugins: ["jsx"],
                 });
-              }
-            });
-          }
 
-          const executionOrder = [];
-          const visited = {};
-          const completed = {};
-          const trail = {};
+                traverse(ast, {
+                  CallExpression: (path) => {
+                    if (path.node.callee.type !== "MemberExpression") {
+                      return;
+                    }
+                    if (path.node.callee.object.name !== "React") {
+                      return;
+                    }
+                    if (path.node.callee.property.name !== "createElement") {
+                      return;
+                    }
+                    if (path.node.arguments.length < 2) {
+                      return;
+                    }
+                    if (path.node.arguments[0].type !== "Identifier" && path.node.arguments[0].name !== "Module") {
+                      return;
+                    }
+                    if (path.node.arguments[1].type !== "ObjectExpression") {
+                      return;
+                    }
 
-          function walk(node) {
-            if (completed[node]) {
-              return;
+                    (path.node.arguments[1].properties ?? []).forEach((attribute) => {
+                      if (attribute.key.type === "Identifier" && attribute.key.name === "name") {
+                        if (!dependencyGraph[chunk.id]) {
+                          dependencyGraph[chunk.id] = [];
+                        }
+                        if (!dependencyGraph[attribute.value.value]) {
+                          dependencyGraph[attribute.value.value] = [];
+                        }
+                        if (!dependencyGraph[attribute.value.value].includes(chunk.id)) {
+                          dependencyGraph[attribute.value.value].push(chunk.id);
+                        }
+                      }
+                    });
+                  },
+                  JSXElement: (path) => {
+                    if (path.node.openingElement.name.name !== "Module") {
+                      return;
+                    }
+                    (path.node.openingElement.attributes ?? []).forEach((attribute) => {
+                      if (attribute.name.type === "JSXIdentifier" && attribute.name.name === "name") {
+                        if (!dependencyGraph[chunk.id]) {
+                          dependencyGraph[chunk.id] = [];
+                        }
+                        if (!dependencyGraph[attribute.value.value]) {
+                          dependencyGraph[attribute.value.value] = [];
+                        }
+                        if (!dependencyGraph[attribute.value.value].includes(chunk.id)) {
+                          dependencyGraph[attribute.value.value].push(chunk.id);
+                        }
+                      }
+                    });
+                  },
+                });
+              });
             }
-            if (trail[node]) {
-              return executionOrder.unshift(node);
-            }
-            visited[node] = true;
-            trail[node] = true;
-            dependencyGraph[node].forEach(walk);
-            delete trail[node];
-            completed[node] = true;
-            executionOrder.unshift(node);
-          }
-
-          for (const node of Object.keys(dependencyGraph)) {
-            if (visited[node]) {
-              continue;
-            }
-            walk(node);
-          }
-
-          entrypoint = executionOrder[executionOrder.length - 1];
+          });
         }
 
-        const available = entrypoints.map((chunk) => {
-          const entry = {
-            name: chunk.id,
-            program: {
-              url: path.join(props.compilation.outputOptions.publicPath, Array.from(chunk.files)[0]),
-            },
-            locales: {},
-            props: {},
-          };
-          for (const language of settings.SUPPORTED_LOCALES) {
-            entry.locales[language] = path.join(
-              props.compilation.outputOptions.publicPath,
-              chunk.id,
-              "messages",
-              `${language}.json`,
-            );
-          }
-          return entry;
-        });
+        const executionOrder = [];
+        const visited = {};
+        const completed = {};
+        const trail = {};
 
-        manifest = JSON.stringify({
-          entrypoint,
-          available,
-        });
+        function walk(node) {
+          if (completed[node]) {
+            return;
+          }
+          if (trail[node]) {
+            return executionOrder.unshift(node);
+          }
+          visited[node] = true;
+          trail[node] = true;
+          dependencyGraph[node].forEach(walk);
+          delete trail[node];
+          completed[node] = true;
+          executionOrder.unshift(node);
+        }
+
+        for (const node of Object.keys(dependencyGraph)) {
+          if (visited[node]) {
+            continue;
+          }
+          walk(node);
+        }
+
+        entrypoint = executionOrder[executionOrder.length - 1];
+      }
+
+      const available = entrypoints.map((chunk) => {
+        const entry = {
+          name: chunk.id,
+          program: {
+            url: path.join(props.compilation.outputOptions.publicPath, Array.from(chunk.files)[0]),
+          },
+          locales: {},
+          props: {},
+        };
+        for (const language of settings.SUPPORTED_LOCALES) {
+          entry.locales[language] = path.join(
+            props.compilation.outputOptions.publicPath,
+            chunk.id,
+            "messages",
+            `${language}.json`,
+          );
+        }
+        return entry;
+      });
+
+      const manifest = {};
+
+      if (customManifest.environment) {
+        manifest.environment = customManifest.environment;
+      }
+
+      if (customManifest.entrypoint) {
+        manifest.entrypoint = customManifest.entrypoint;
+      } else if (entrypoint) {
+        manifest.entrypoint = entrypoint;
+      }
+
+      if (customManifest.available) {
+        manifest.available = customManifest.available.filter((left) => available.some((right) => right.name === left.name));
+        manifest.available.push(...available);
+      } else {
+        manifest.available = available;
       }
 
       return `
@@ -408,7 +425,7 @@ config.plugins.push(
               (function() {
                 "use strict";
 
-                const manifest = ${manifest.trim()};
+                const manifest = ${JSON.stringify(manifest).trim()};
 
                 window.addEventListener("DOMContentLoaded", function() {
                   const react = rocker_so_dependencies("./node_modules/react/index.js");
