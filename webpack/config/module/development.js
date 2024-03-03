@@ -239,7 +239,7 @@ config.plugins.push(
     inject: false,
     scriptLoading: "defer",
     templateContent: (props) => {
-      let entrypoints = [];
+      const entrypoints = [];
 
       for (const entryPoint of props.compilation.entrypoints.values()) {
         for (const chunk of entryPoint.chunks) {
@@ -267,10 +267,10 @@ config.plugins.push(
         customManifest = {};
       }
 
-      let entrypoint = null;
+      const implicitContext = {};
 
       if (entrypoints.length === 1) {
-        entrypoint = entrypoints[0].id;
+        implicitContext.entrypoint = entrypoints[0].id;
       } else {
         const dependencyGraph = {};
 
@@ -373,48 +373,53 @@ config.plugins.push(
           walk(node);
         }
 
-        entrypoint = executionOrder[executionOrder.length - 1];
+        implicitContext.entrypoint = executionOrder[executionOrder.length - 1];
       }
 
-      const available = entrypoints.map((chunk) => {
-        const entry = {
-          name: chunk.id,
-          program: {
-            url: path.join(props.compilation.outputOptions.publicPath, Array.from(chunk.files)[0]),
-          },
-          locales: {},
-          props: {},
-        };
-        for (const language of settings.SUPPORTED_LOCALES) {
-          entry.locales[language] = path.join(
-            props.compilation.outputOptions.publicPath,
-            chunk.id,
-            "messages",
-            `${language}.json`,
-          );
-        }
-        return entry;
-      });
+      if (entrypoints.length > 0) {
+        implicitContext.available = entrypoints.map((chunk) => {
+          const entry = {
+            name: chunk.id,
+            program: {
+              url: path.join(props.compilation.outputOptions.publicPath, Array.from(chunk.files)[0]),
+            },
+            locales: {},
+            props: {},
+          };
+          for (const language of settings.SUPPORTED_LOCALES) {
+            entry.locales[language] = path.join(
+              props.compilation.outputOptions.publicPath,
+              chunk.id,
+              "messages",
+              `${language}.json`,
+            );
+          }
+          return entry;
+        });
+      }
 
-      const manifest = {};
+      const mergedManifest = {};
 
       if (customManifest.environment) {
-        manifest.environment = customManifest.environment;
+        mergedManifest.environment = customManifest.environment;
       }
 
       if (customManifest.entrypoint) {
-        manifest.entrypoint = customManifest.entrypoint;
-      } else if (entrypoint) {
-        manifest.entrypoint = entrypoint;
+        mergedManifest.entrypoint = customManifest.entrypoint;
+      } else if (implicitContext.entrypoint) {
+        mergedManifest.entrypoint = implicitContext.entrypoint;
       }
 
-      if (customManifest.available && available) {
-        manifest.available = customManifest.available.filter((left) => available.some((right) => right.name === left.name));
-        manifest.available.push(...available);
+      if (customManifest.available && implicitContext.available) {
+        mergedManifest.available = customManifest.available;
+        for (const entry of implicitContext.available) {
+          mergedManifest.available = mergedManifest.available.filter((existing) => existing.name === entry.name);
+          mergedManifest.available.push(entry);
+        }
       } else if (customManifest.available) {
-        manifest.available = customManifest.available;
+        mergedManifest.available = customManifest.available;
       } else {
-        manifest.available = available;
+        mergedManifest.available = implicitContext.available;
       }
 
       return `
@@ -427,7 +432,7 @@ config.plugins.push(
               (function() {
                 "use strict";
 
-                const manifest = ${JSON.stringify(manifest).trim()};
+                const manifest = ${JSON.stringify(mergedManifest).trim()};
 
                 window.addEventListener("DOMContentLoaded", function() {
                   const react = rocker_so_dependencies("./node_modules/react/index.js");
@@ -444,7 +449,7 @@ config.plugins.push(
                 })
               }())
             </script>
-            <div id="${settings.PROJECT_NAME}" style="width: 100%; height: 100%;" />
+            <div id="${settings.PROJECT_NAME}" style="width: 100%; min-height: 100%; display: grid;" />
           </body>
         </html>
       `;
