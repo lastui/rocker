@@ -16,7 +16,10 @@ function createSharedReducer() {
       case constants.SET_SHARED: {
         if (!action.payload.module || typeof action.payload.module !== "string") {
           return {
-            global: Object.assign({}, state.global, action.payload.data),
+            global: {
+              ...state.global,
+              ...action.payload.data,
+            },
             local: state.local,
             language: state.language,
             messages: state.messages,
@@ -25,7 +28,10 @@ function createSharedReducer() {
           };
         }
         const nextLocal = { ...state.local };
-        nextLocal[action.payload.module] = Object.assign({}, nextLocal[action.payload.module], action.payload.data);
+        nextLocal[action.payload.module] = {
+          ...nextLocal[action.payload.module],
+          ...action.payload.data,
+        };
         return {
           global: state.global,
           local: nextLocal,

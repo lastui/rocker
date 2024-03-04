@@ -7,7 +7,7 @@ export function* watchBootstrap() {
 }
 
 export function* runRefresher(action) {
-  const interval = Number(action.payload.contextRefreshInterval);
+  const interval = isNaN(action.payload.contextRefreshInterval) ? 0 : Number(action.payload.contextRefreshInterval);
   const predicate = interval > 0 && process.env.NODE_ENV !== "development";
   if (predicate) {
     console.debug(`context will refresh automatically each ${interval} ms.`);

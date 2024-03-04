@@ -102,7 +102,7 @@ describe("store registry", () => {
 
         expect(store.getState()).toEqual(store.getState());
 
-        store = getStore().namespace("my-new-feature");
+        store = getStore().namespace("my-other-feature");
         expect(store.getState()).toEqual({
           foo: "baz",
           shared: {

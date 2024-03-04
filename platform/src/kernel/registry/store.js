@@ -12,9 +12,7 @@ const nilStore = {
   subscribe() {
     warning("Redux store is not provided!");
   },
-  replaceReducer() {
-    warning("Redux store is not provided!");
-  },
+  replaceReducer() {},
 };
 
 const initial = {
@@ -45,13 +43,13 @@ const handler = {
         const state = store.getState();
         if (prevState !== state) {
           prevState = state;
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NODE_ENV === "development") {
             stateProxy = new Proxy(state.modules[name], {
               get(ref, reducer) {
-                if (reducer === 'toString') {
-                  return () => '[object Object]';
+                if (reducer === "toString") {
+                  return () => "[object Object]";
                 }
-                if (reducer === 'valueOf') {
+                if (reducer === "valueOf") {
                   return () => state.modules[name].valueOf();
                 }
                 if (reducer === "shared") {
@@ -59,7 +57,9 @@ const handler = {
                 }
                 const fragment = state.modules[name][reducer];
                 if (!fragment) {
-                  warning(`module "${name}" tried to access reducer "${reducer}" that it does not own. For sharing of redux state use shared reducer and actions.`)
+                  warning(
+                    `module "${name}" tried to access reducer "${reducer}" that it does not own. For sharing of redux state use shared reducer and actions.`,
+                  );
                   return undefined;
                 }
                 return fragment;
@@ -72,7 +72,7 @@ const handler = {
               },
               ownKeys(target) {
                 const result = Reflect.ownKeys(state.modules[name]);
-                result.push('shared');
+                result.push("shared");
                 return result;
               },
               getOwnPropertyDescriptor(target, key) {
@@ -83,14 +83,14 @@ const handler = {
                 };
               },
               set(ref, reducer, value) {
-                warning(`module "${name}" tried to mutate state of "${reducer}" reducer, intercepting.`)
-              }
+                warning(`module "${name}" tried to mutate state of "${reducer}" reducer, intercepting.`);
+              },
             });
           } else {
             stateProxy = {
               ...state.modules[name],
               shared: state.shared,
-            }
+            };
           }
         }
         return stateProxy;
