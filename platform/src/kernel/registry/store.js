@@ -45,22 +45,42 @@ const handler = {
         const state = store.getState();
         if (prevState !== state) {
           prevState = state;
+          // TODO console.log(state) in selectors will look bad and unintuitive
+
           // TODO object polling might improve this
           // -> https://egghead.io/blog/object-pool-design-pattern
-          stateProxy = new Proxy(null, {
+          stateProxy = new Proxy([], {
             get(ref, reducer) {
               if (reducer === "shared") {
                 return state.shared;
               }
               const fragment = state.modules[name][reducer];
               if (!fragment) {
-                // TODO add warning about reaching into other module state without using shared data pattern
+                warning(`module "${name}" tried to access reducer "${reducer}" that it does not own. For sharing of redux state use shared reducer and actions.`)
                 return undefined;
               }
               return fragment;
             },
+            has(target, reducer) {
+              if (reducer === "shared") {
+                return true;
+              }
+              return reducer in state.modules[name];
+            },
+            ownKeys(target) {
+              const result = Reflect.ownKeys(state.modules[name]);
+              result.push('shared');
+              return result;
+            },
+            getOwnPropertyDescriptor(target, key) {
+              return {
+                value: this.get(target, key),
+                enumerable: true,
+                configurable: false,
+              };
+            },
             set(ref, reducer, value) {
-              // TODO add warning of mutating state 
+              warning(`module "${name}" tried to mutate state of "${reducer}" reducer, intercepting.`)
             }
           });
         }
