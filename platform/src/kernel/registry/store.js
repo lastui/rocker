@@ -22,16 +22,16 @@ const initial = {
 };
 
 const handler = {
-  get(ref, prop, proxy) {
+  get(ref, prop, store) {
     if (prop !== "namespace") {
       return Reflect.get(ref.underlying, prop);
     }
-    let prevProxy = null;
     let prevState = null;
+    let stateProxy = null;
     return (name) => ({
       dispatch: (action) => {
         if (action.type === SET_SHARED) {
-          return proxy.dispatch({
+          return store.dispatch({
             type: SET_SHARED,
             payload: {
               data: action.payload.data,
@@ -39,33 +39,34 @@ const handler = {
             },
           });
         }
-        return proxy.dispatch(action);
+        return store.dispatch(action);
       },
       getState() {
-        const state = proxy.getState();
+        const state = store.getState();
         if (prevState !== state) {
           prevState = state;
           // TODO object polling might improve this
           // -> https://egghead.io/blog/object-pool-design-pattern
-          prevProxy = new Proxy(null, {
+          stateProxy = new Proxy(null, {
             get(ref, reducer) {
               if (reducer === "shared") {
                 return state.shared;
               }
-              if (!state.modules[name][reducer]) {
-                // TODO add warning about reaching into other reducer state without using shared data pattern
-                return null;
+              const fragment = state.modules[name][reducer];
+              if (!fragment) {
+                // TODO add warning about reaching into other module state without using shared data pattern
+                return undefined;
               }
-              return state.modules[name][reducer];
+              return fragment;
             },
             set(ref, reducer, value) {
               // TODO add warning of mutating state 
             }
           });
         }
-        return prevProxy;
+        return stateProxy;
       },
-      subscribe: proxy.subscribe,
+      subscribe: store.subscribe,
       replaceReducer(newReducer) {},
     });
   },
