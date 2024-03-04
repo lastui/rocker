@@ -45,12 +45,14 @@ const handler = {
         const state = store.getState();
         if (prevState !== state) {
           prevState = state;
-          // TODO console.log(state) in selectors will look bad and unintuitive
-
-          // TODO object polling might improve this
-          // -> https://egghead.io/blog/object-pool-design-pattern
-          stateProxy = new Proxy([], {
+          stateProxy = new Proxy(state.modules[name], {
             get(ref, reducer) {
+              if (reducer === 'toString') {
+                return () => '[object Object]';
+              }
+              if (reducer === 'valueOf') {
+                return () => state.modules[name].valueOf();
+              }
               if (reducer === "shared") {
                 return state.shared;
               }
