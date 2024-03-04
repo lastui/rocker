@@ -45,15 +45,17 @@ const handler = {
         const state = proxy.getState();
         if (prevState !== state) {
           prevState = state;
-          // TODO object polling might improve this
           prevProxy = new Proxy(null, {
             get(ref, prop) {
               if (props === "shared") {
                 return state.shared;
               }
+              // TODO this is not right we are not reaching into state like state.moduleName.reducerName but state.reducerName
+              // need to know what other reducerName are there that are not owned by state.modules[name];
               if (prop !== name) {
                 // TODO here add getter that will produce warning about not using shared data
               }
+              // TODO wrong as comment states above
               return state.modules[prop];
             },
             set(ref, prop, value) {
