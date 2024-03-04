@@ -87,8 +87,10 @@ const handler = {
               }
             });
           } else {
-            stateProxy = state.modules[name];
-            stateProxy.shared = state.shared;
+            stateProxy = {
+              ...state.modules[name],
+              shared: state.shared,
+            }
           }
         }
         return stateProxy;
