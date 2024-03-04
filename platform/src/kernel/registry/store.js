@@ -45,6 +45,7 @@ const handler = {
         const state = proxy.getState();
         if (prevState !== state) {
           prevState = state;
+          // TODO object polling might improve this
           prevProxy = new Proxy(null, {
             get(ref, prop) {
               if (props === "shared") {
