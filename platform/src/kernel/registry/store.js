@@ -45,46 +45,51 @@ const handler = {
         const state = store.getState();
         if (prevState !== state) {
           prevState = state;
-          stateProxy = new Proxy(state.modules[name], {
-            get(ref, reducer) {
-              if (reducer === 'toString') {
-                return () => '[object Object]';
+          if (process.env.NODE_ENV === 'development') {
+            stateProxy = new Proxy(state.modules[name], {
+              get(ref, reducer) {
+                if (reducer === 'toString') {
+                  return () => '[object Object]';
+                }
+                if (reducer === 'valueOf') {
+                  return () => state.modules[name].valueOf();
+                }
+                if (reducer === "shared") {
+                  return state.shared;
+                }
+                const fragment = state.modules[name][reducer];
+                if (!fragment) {
+                  warning(`module "${name}" tried to access reducer "${reducer}" that it does not own. For sharing of redux state use shared reducer and actions.`)
+                  return undefined;
+                }
+                return fragment;
+              },
+              has(target, reducer) {
+                if (reducer === "shared") {
+                  return true;
+                }
+                return reducer in state.modules[name];
+              },
+              ownKeys(target) {
+                const result = Reflect.ownKeys(state.modules[name]);
+                result.push('shared');
+                return result;
+              },
+              getOwnPropertyDescriptor(target, key) {
+                return {
+                  value: this.get(target, key),
+                  enumerable: true,
+                  configurable: false,
+                };
+              },
+              set(ref, reducer, value) {
+                warning(`module "${name}" tried to mutate state of "${reducer}" reducer, intercepting.`)
               }
-              if (reducer === 'valueOf') {
-                return () => state.modules[name].valueOf();
-              }
-              if (reducer === "shared") {
-                return state.shared;
-              }
-              const fragment = state.modules[name][reducer];
-              if (!fragment) {
-                warning(`module "${name}" tried to access reducer "${reducer}" that it does not own. For sharing of redux state use shared reducer and actions.`)
-                return undefined;
-              }
-              return fragment;
-            },
-            has(target, reducer) {
-              if (reducer === "shared") {
-                return true;
-              }
-              return reducer in state.modules[name];
-            },
-            ownKeys(target) {
-              const result = Reflect.ownKeys(state.modules[name]);
-              result.push('shared');
-              return result;
-            },
-            getOwnPropertyDescriptor(target, key) {
-              return {
-                value: this.get(target, key),
-                enumerable: true,
-                configurable: false,
-              };
-            },
-            set(ref, reducer, value) {
-              warning(`module "${name}" tried to mutate state of "${reducer}" reducer, intercepting.`)
-            }
-          });
+            });
+          } else {
+            stateProxy = state.modules[name];
+            stateProxy.shared = state.shared;
+          }
         }
         return stateProxy;
       },
