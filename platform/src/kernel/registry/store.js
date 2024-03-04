@@ -48,17 +48,17 @@ const handler = {
           // TODO object polling might improve this
           // -> https://egghead.io/blog/object-pool-design-pattern
           prevProxy = new Proxy(null, {
-            get(ref, prop) {
-              if (props === "shared") {
+            get(ref, reducer) {
+              if (reducer === "shared") {
                 return state.shared;
               }
-              if (!state.modules[name][prop]) {
+              if (!state.modules[name][reducer]) {
                 // TODO add warning about reaching into other reducer state without using shared data pattern
                 return null;
               }
-              return state.modules[name][prop];
+              return state.modules[name][reducer];
             },
-            set(ref, prop, value) {
+            set(ref, reducer, value) {
               // TODO add warning of mutating state 
             }
           });
