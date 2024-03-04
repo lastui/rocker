@@ -1,7 +1,7 @@
 import { SET_SHARED } from "../../constants";
 import { warning } from "../../utils";
 
-const defaultStore = {
+const nilStore = {
   dispatch() {
     warning("Redux store is not provided!");
   },
@@ -18,54 +18,54 @@ const defaultStore = {
 };
 
 const initial = {
-  underlying: defaultStore,
+  underlying: nilStore,
 };
 
 const handler = {
-  get(ref, prop) {
-    if (prop === "namespace") {
-      const proxy = arguments[arguments.length - 1];
-      let prevStateIsolated = {};
-      let prevState = null;
-      return (name) => ({
-        dispatch: (action) => {
-          if (action.type === SET_SHARED) {
-            return proxy.dispatch({
-              type: SET_SHARED,
-              payload: {
-                data: action.payload.data,
-                module: action.payload.module ? name : undefined,
-              },
-            });
-          } else {
-            return proxy.dispatch(action);
-          }
-        },
-        getState() {
-          const state = proxy.getState();
-          if (prevState === state) {
-            return prevStateIsolated;
-          }
-          prevState = state;
-          prevStateIsolated = {};
-          for (const mid in state.modules) {
-            if (mid === name) {
-              continue;
-            }
-            prevStateIsolated = Object.assign(prevStateIsolated, state.modules[mid]);
-          }
-          const itself = state.modules[name];
-          if (itself) {
-            prevStateIsolated = Object.assign(prevStateIsolated, itself);
-          }
-          prevStateIsolated.shared = state.shared;
-          return prevStateIsolated;
-        },
-        subscribe: proxy.subscribe,
-        replaceReducer(newReducer) {},
-      });
+  get(ref, prop, proxy) {
+    if (prop !== "namespace") {
+      return Reflect.get(ref.underlying, prop);
     }
-    return Reflect.get(ref.underlying, prop);
+    let prevProxy = null;
+    let prevState = null;
+    return (name) => ({
+      dispatch: (action) => {
+        if (action.type === SET_SHARED) {
+          return proxy.dispatch({
+            type: SET_SHARED,
+            payload: {
+              data: action.payload.data,
+              module: action.payload.module ? name : undefined,
+            },
+          });
+        }
+        return proxy.dispatch(action);
+      },
+      getState() {
+        const state = proxy.getState();
+        if (prevState !== state) {
+          prevState = state;
+          // TODO object polling might improve this
+          prevProxy = new Proxy(null, {
+            get(ref, prop) {
+              if (props === "shared") {
+                return state.shared;
+              }
+              if (prop !== name) {
+                // TODO here add getter that will produce warning about not using shared data
+              }
+              return state.modules[prop];
+            },
+            set(ref, prop, value) {
+              // TODO add warning of mutating state 
+            }
+          });
+        }
+        return prevProxy;
+      },
+      subscribe: proxy.subscribe,
+      replaceReducer(newReducer) {},
+    });
   },
   set(ref, prop, value) {
     if (prop === "underlying" && value) {
@@ -82,7 +82,7 @@ function setStore(nextStore) {
   if (nextStore) {
     store.underlying = nextStore;
   } else {
-    store.underlying = defaultStore;
+    store.underlying = nilStore;
   }
 }
 
