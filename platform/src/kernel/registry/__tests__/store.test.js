@@ -4,11 +4,22 @@ import { SET_SHARED } from "../../../constants";
 import { setStore, getStore } from "../store";
 
 describe("store registry", () => {
-  const debugSpy = jest.spyOn(console, "debug");
-  debugSpy.mockImplementation(() => {});
+  const ORIGINAL_NODE_ENV = process.env.NODE_ENV;
+
+  const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
+  const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
   beforeEach(() => {
     setStore(null);
+    process.env.NODE_ENV = ORIGINAL_NODE_ENV;
+    debugSpy.mockClear();
+    errorSpy.mockClear();
+  });
+
+  afterAll(() => {
+    process.env.NODE_ENV = ORIGINAL_NODE_ENV;
+    debugSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
   it("setStore", () => {});
@@ -24,56 +35,107 @@ describe("store registry", () => {
 
     describe("fallback", () => {
       it(".getState", () => {
-        const spy = jest.spyOn(console, "error");
-        spy.mockImplementation(() => {});
-
         const store = getStore();
 
         expect(typeof store.getState).toEqual("function");
         store.getState();
 
-        expect(spy).toHaveBeenCalledWith("Redux store is not provided!");
+        expect(errorSpy).toHaveBeenCalledWith("Redux store is not provided!");
       });
 
       it(".dispatch", () => {
-        const spy = jest.spyOn(console, "error");
-        spy.mockImplementation(() => {});
-
         const store = getStore();
 
         expect(typeof store.dispatch).toEqual("function");
         store.dispatch({ type: "foo" });
 
-        expect(spy).toHaveBeenCalledWith("Redux store is not provided!");
+        expect(errorSpy).toHaveBeenCalledWith("Redux store is not provided!");
       });
 
       it(".subscribe", () => {
-        const spy = jest.spyOn(console, "error");
-        spy.mockImplementation(() => {});
-
         const store = getStore();
 
         expect(typeof store.subscribe).toEqual("function");
         store.subscribe();
 
-        expect(spy).toHaveBeenCalledWith("Redux store is not provided!");
+        expect(errorSpy).toHaveBeenCalledWith("Redux store is not provided!");
       });
 
       it(".replaceReducer", () => {
-        const spy = jest.spyOn(console, "error");
-        spy.mockImplementation(() => {});
-
         const store = getStore();
 
         expect(typeof store.replaceReducer).toEqual("function");
         store.replaceReducer();
 
-        expect(spy).toHaveBeenCalledWith("Redux store is not provided!");
+        expect(errorSpy).not.toHaveBeenCalledWith("Redux store is not provided!");
       });
     });
 
     describe("namespace", () => {
-      it(".getState", () => {
+      it(".getState in NODE_ENV=development", () => {
+        setStore(
+          configureStore([])({
+            modules: {
+              "my-feature": {
+                foo: "bat",
+              },
+              "my-other-feature": {
+                foo: "baz",
+              },
+            },
+            shared: {
+              beach: "bar",
+            },
+          }),
+        );
+
+        process.env.NODE_ENV = "development";
+
+        const store = getStore().namespace("my-feature");
+
+        expect(typeof store.getState).toEqual("function");
+
+        const state = store.getState();
+
+        expect(state).toEqual(store.getState());
+
+        expect(state).toEqual({
+          foo: "bat",
+          shared: {
+            beach: "bar",
+          },
+        });
+        expect(state.valueOf()).toEqual({
+          foo: "bat",
+          shared: {
+            beach: "bar",
+          },
+        });
+        expect(state.toString()).toEqual("[object Object]");
+        expect(state.shared).toEqual({ beach: "bar" });
+        errorSpy.mockClear();
+
+        expect(state.other).not.toBeDefined();
+        expect(errorSpy).toHaveBeenCalledWith(
+          expect.stringContaining('module "my-feature" tried to access reducer "other" that it does not own.'),
+        );
+
+        expect("shared" in state).toEqual(true);
+        expect("foo" in state).toEqual(true);
+        expect("other" in state).toEqual(false);
+
+        expect(Reflect.ownKeys(state)).toEqual(["foo", "shared"]);
+
+        state.foo = "mutation";
+
+        expect(() => {
+          state.shared.beach = "injection";
+        }).toThrow(TypeError);
+
+        expect(state.shared.beach).toEqual("bar");
+      });
+
+      it(".getState in NODE_ENV=production", () => {
         setStore(
           configureStore([])({
             modules: {
@@ -89,6 +151,8 @@ describe("store registry", () => {
             },
           }),
         );
+
+        process.env.NODE_ENV = "production";
 
         let store = getStore().namespace("my-feature");
 
@@ -109,6 +173,31 @@ describe("store registry", () => {
             beach: "bar",
           },
         });
+
+        const state = store.getState();
+
+        expect(state.valueOf()).toEqual({
+          foo: "baz",
+          shared: {
+            beach: "bar",
+          },
+        });
+        expect(state.toString()).toEqual("[object Object]");
+        expect(state.shared).toEqual({ beach: "bar" });
+
+        expect(state.other).not.toBeDefined();
+
+        expect("shared" in state).toEqual(true);
+        expect("foo" in state).toEqual(true);
+        expect("other" in state).toEqual(false);
+
+        expect(Reflect.ownKeys(state)).toEqual(["foo", "shared"]);
+
+        expect(() => {
+          state.shared.beach = "injection";
+        }).toThrow(TypeError);
+
+        expect(state.shared.beach).toEqual("bar");
       });
 
       it(".dispatch", () => {

@@ -5,11 +5,17 @@ jest.mock("../../reducer/modules", () => ({
 }));
 
 describe("reducer registry", () => {
-  const debugSpy = jest.spyOn(console, "debug");
-  debugSpy.mockImplementation(() => {});
+  const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
+  const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
   beforeEach(() => {
     debugSpy.mockClear();
+    errorSpy.mockClear();
+  });
+
+  afterAll(() => {
+    debugSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
   it("addReducer", async () => {
@@ -23,15 +29,12 @@ describe("reducer registry", () => {
     });
     expect(debugSpy).toHaveBeenLastCalledWith("module my-feature replacing reducer");
 
-    const spy = jest.spyOn(console, "error");
-    spy.mockImplementation(() => {});
-
     await addReducer("my-feature", {
       bar: (_state, _action) => {
         throw new Error("ouch");
       },
     });
-    expect(spy).toHaveBeenCalledWith("module my-feature wanted to register invalid reducer", new Error("ouch"));
+    expect(errorSpy).toHaveBeenCalledWith("module my-feature wanted to register invalid reducer", new Error("ouch"));
   });
 
   it("removeReducer", async () => {
