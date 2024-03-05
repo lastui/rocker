@@ -59,18 +59,17 @@ function createModulesReducer() {
       case constants.MODULE_INIT: {
         const name = action.payload.module;
         console.debug(`module ${name} initialized`);
-        let changed = false;
         const reducer = modulesReducers[name];
-        if (reducer) {
-          try {
-            state[name] = reducer(state[name], action);
-            changed = true;
-          } catch (error) {
-            warning(`module ${name} reducer failed to reduce on action ${action.type}`, error);
-          }
+        if (!reducer) {
+          return state;
         }
-        if (changed) {
-          return { ...state };
+        try {
+          return {
+            ...state,
+            [name]: reducer(state[name], action),
+          };
+        } catch (error) {
+          warning(`module ${name} reducer failed to reduce on action ${action.type}`, error);
         }
         return state;
       }
@@ -82,34 +81,36 @@ function createModulesReducer() {
       }
       case constants.MODULE_UNLOADED: {
         const name = action.payload.module;
-        let changed = false;
-        if (state[name]) {
+        let changed = name in state;
+        if (changed) {
           console.debug(`module ${name} evicting redux state`);
-          delete state[name];
-          changed = true;
         }
         console.debug(`module ${name} unloaded`);
         console.info(`- module ${name}`);
         if (changed) {
-          return { ...state };
+          const nextState = { ...state };
+          delete nextState[name];
+          return nextState;
         }
         return state;
       }
       default: {
-        let changed = false;
+        let nextState = null;
         for (const [name, reducer] of modulesReducers) {
           try {
-            const nextState = reducer(state[name], action);
-            if (state[name] !== nextState) {
-              state[name] = nextState;
-              changed = true;
+            const fragment = reducer(state[name], action);
+            if (state[name] !== fragment) {
+              if (!nextState) {
+                nextState = { ...state };
+              }
+              nextState[name] = fragment;
             }
           } catch (error) {
             warning(`module ${name} reducer failed to reduce on action ${action.type}`, error);
           }
         }
-        if (changed) {
-          return { ...state };
+        if (nextState) {
+          return nextState;
         }
         return state;
       }

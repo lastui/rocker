@@ -56,7 +56,7 @@ const createModuleLoader = () => {
   const loadingModules = {};
 
   const getLoadedModule = (name) => loadedModules[name];
-  const isModuleLoading = (name) => Boolean(loadingModules[name]);
+  const isModuleLoading = (name) => name in loadingModules;
 
   const loadModule = (name, controller) => {
     if (!name) {

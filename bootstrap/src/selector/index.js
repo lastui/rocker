@@ -1,4 +1,5 @@
 const emptydict = {};
+const descriptor = { configurable: true, enumerable: true };
 
 const memoizedMessages = new Proxy(
   {
@@ -18,7 +19,7 @@ const memoizedMessages = new Proxy(
         next = messages[locale];
       }
       if (next) {
-        ref.descriptor = { configurable: true, enumerable: true };
+        ref.descriptor = descriptor;
         ref.messages = next;
       } else {
         ref.descriptor = undefined;

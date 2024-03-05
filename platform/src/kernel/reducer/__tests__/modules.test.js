@@ -81,12 +81,7 @@ describe("modules reducer", () => {
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
-      expect(spyError).toHaveBeenCalledWith(
-        "module my-feature-broken reducer failed to reduce on action non-handled",
-        new Error("ouch"),
-      );
-
-      expect(reducer(state, action)).toEqual(expectedState);
+      expect(reducer(expectedState, action)).toEqual(expectedState);
       expect(spyError).toHaveBeenCalledWith(
         "module my-feature-broken reducer failed to reduce on action non-handled",
         new Error("ouch"),
