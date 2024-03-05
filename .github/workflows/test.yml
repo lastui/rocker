@@ -38,6 +38,8 @@ jobs:
           fail_ci_if_error: true
           flags: unittests
           file: platform/coverage/clover.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Test package bootstrap
         working-directory: bootstrap
         run: node ../cli/index.js test
@@ -47,4 +49,6 @@ jobs:
           fail_ci_if_error: true
           flags: unittests
           file: bootstrap/coverage/clover.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
