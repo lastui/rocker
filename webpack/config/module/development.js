@@ -284,7 +284,7 @@ config.plugins.push(
               fragment._source._sourceMapAsObject.sourcesContent.forEach((sourceCode) => {
                 const ast = parser.parse(sourceCode, {
                   sourceType: "module",
-                  plugins: ["jsx"],
+                  plugins: ["jsx", "typescript"],
                 });
 
                 traverse(ast, {

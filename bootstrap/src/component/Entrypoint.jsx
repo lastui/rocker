@@ -19,7 +19,7 @@ const Sink = (props) => {
   return <Module name={entrypoint}>{children}</Module>;
 };
 
-const router = createBrowserRouter([{ path: "*", element: <Sink />, errorElement: <Yank /> }], { basename: "/" });
+export const router = createBrowserRouter([{ path: "*", element: <Sink />, errorElement: <Yank /> }], { basename: "/" });
 
 const Entrypoint = (props) => {
   const entrypoint = useSelector(getEntrypoint);

@@ -46,6 +46,9 @@ module.exports = {
     if (options?.context?.fetchContext) {
       options.context.fetchContext();
     }
+    if (options?.context?.navigate) {
+      options.context.navigate();
+    }
     const channel = ReduxSaga.stdChannel();
     return {
       sagaMiddleware: (_store) => (next) => (action) => next(action),

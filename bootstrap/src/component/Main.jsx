@@ -8,7 +8,7 @@ import { constants, getStore, manualCleanup } from "@lastui/rocker/platform";
 import { getIsInitialized, getLanguage } from "../selector";
 import setupStore from "../store";
 
-import Entrypoint from "./Entrypoint";
+import Entrypoint, { router } from "./Entrypoint";
 import Globalisation from "./Globalisation";
 
 const FullyInitializedGate = (props) => {
@@ -27,7 +27,7 @@ const Main = (props) => {
 
   const manualInit = useCallback(() => {
     try {
-      const store = setupStore(props.fetchContext, props.reduxMiddlewares);
+      const store = setupStore(router, props.fetchContext, props.reduxMiddlewares);
       store.dispatch({
         type: constants.SET_LANGUAGE,
         payload: {
