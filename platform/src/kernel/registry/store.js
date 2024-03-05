@@ -44,54 +44,56 @@ const handler = {
         if (prevState !== state) {
           prevState = state;
           if (process.env.NODE_ENV === "development") {
-            const merged = {
-              ...state.modules[name],
-              shared: Object.freeze(state.shared),
-            };
-            stateProxy = new Proxy(merged, {
-              get(ref, reducer) {
-                switch (reducer) {
-                  case Symbol.iterator: {
-                    return Reflect.get(merged, reducer);
-                  }
-                  case "toString":
-                  case Symbol.toStringTag: {
-                    return () => "[object Object]";
-                  }
-                  case "valueOf": {
-                    return () => merged;
-                  }
-                  default: {
-                    const fragment = merged[reducer];
-                    if (!fragment) {
-                      warning(
-                        `module "${name}" tried to access reducer "${reducer}" that it does not own.
-                        For sharing of redux state use shared reducer and actions.`.replace(/  +/g, ""),
-                      );
-                      return undefined;
+            stateProxy = new Proxy(
+              {
+                ...state.modules[name],
+                shared: Object.freeze(state.shared),
+              },
+              {
+                get(ref, reducer) {
+                  switch (reducer) {
+                    case Symbol.iterator: {
+                      return Reflect.get(ref, reducer);
                     }
-                    return fragment;
+                    case "toString":
+                    case Symbol.toStringTag: {
+                      return () => "[object Object]";
+                    }
+                    case "valueOf": {
+                      return () => ref;
+                    }
+                    default: {
+                      const fragment = ref[reducer];
+                      if (!fragment) {
+                        warning(
+                          `module "${name}" tried to access reducer "${reducer}" that it does not own.
+                        For sharing of redux state use shared reducer and actions.`.replace(/  +/g, ""),
+                        );
+                        return undefined;
+                      }
+                      return fragment;
+                    }
                   }
-                }
+                },
+                has(ref, reducer) {
+                  return reducer in ref;
+                },
+                ownKeys(ref) {
+                  return Reflect.ownKeys(ref);
+                },
+                getOwnPropertyDescriptor(ref, key) {
+                  return {
+                    value: this.get(ref, key),
+                    enumerable: true,
+                    configurable: true,
+                  };
+                },
+                set(ref, reducer, value) {
+                  ref[reducer] = value;
+                  return true;
+                },
               },
-              has(target, reducer) {
-                return reducer in merged;
-              },
-              ownKeys(target) {
-                return Reflect.ownKeys(merged);
-              },
-              getOwnPropertyDescriptor(target, key) {
-                return {
-                  value: this.get(target, key),
-                  enumerable: true,
-                  configurable: true,
-                };
-              },
-              set(ref, reducer, value) {
-                warning(`module "${name}" tried to mutate state of "${reducer}" reducer, intercepting.`);
-                return true;
-              },
-            });
+            );
           } else {
             stateProxy = {
               ...state.modules[name],

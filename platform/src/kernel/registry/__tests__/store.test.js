@@ -22,7 +22,10 @@ describe("store registry", () => {
     errorSpy.mockRestore();
   });
 
-  it("setStore", () => {});
+  it("setStore", () => {
+    // TODO implement tests for setter
+    //if
+  });
 
   describe("getStore", () => {
     it("setter interception", () => {
