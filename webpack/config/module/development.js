@@ -267,10 +267,10 @@ config.plugins.push(
         customManifest = {};
       }
 
-      const implicitContext = {};
+      const implicitManifest = {};
 
       if (entrypoints.length === 1) {
-        implicitContext.entrypoint = entrypoints[0].id;
+        implicitManifest.entrypoint = entrypoints[0].id;
       } else {
         const dependencyGraph = {};
 
@@ -373,11 +373,11 @@ config.plugins.push(
           walk(node);
         }
 
-        implicitContext.entrypoint = executionOrder[executionOrder.length - 1];
+        implicitManifest.entrypoint = executionOrder[executionOrder.length - 1];
       }
 
       if (entrypoints.length > 0) {
-        implicitContext.available = entrypoints.map((chunk) => {
+        implicitManifest.available = entrypoints.map((chunk) => {
           const entry = {
             name: chunk.id,
             program: {
@@ -406,20 +406,20 @@ config.plugins.push(
 
       if (customManifest.entrypoint) {
         mergedManifest.entrypoint = customManifest.entrypoint;
-      } else if (implicitContext.entrypoint) {
-        mergedManifest.entrypoint = implicitContext.entrypoint;
+      } else if (implicitManifest.entrypoint) {
+        mergedManifest.entrypoint = implicitManifest.entrypoint;
       }
 
-      if (customManifest.available && implicitContext.available) {
+      if (customManifest.available && implicitManifest.available) {
         mergedManifest.available = customManifest.available;
-        for (const entry of implicitContext.available) {
-          mergedManifest.available = mergedManifest.available.filter((existing) => existing.name === entry.name);
+        for (const entry of implicitManifest.available) {
+          mergedManifest.available = mergedManifest.available.filter((existing) => existing.name !== entry.name);
           mergedManifest.available.push(entry);
         }
       } else if (customManifest.available) {
         mergedManifest.available = customManifest.available;
       } else {
-        mergedManifest.available = implicitContext.available;
+        mergedManifest.available = implicitManifest.available;
       }
 
       return `
