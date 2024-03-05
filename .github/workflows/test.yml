@@ -33,14 +33,18 @@ jobs:
         working-directory: platform
         run: node ../cli/index.js test
       - name: Collect coverage for platform
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
+          fail_ci_if_error: true
+          flags: unittests
           file: platform/coverage/clover.xml
       - name: Test package bootstrap
         working-directory: bootstrap
         run: node ../cli/index.js test
       - name: Collect coverage for bootstrap
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
+          fail_ci_if_error: true
+          flags: unittests
           file: bootstrap/coverage/clover.xml
 
