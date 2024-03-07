@@ -47,7 +47,7 @@ const mockStore = configureStore([])((actions) => {
 
 setStore(mockStore);
 
-jest.mock("../../store", () => (fetchContext) => {
+jest.mock("../../store", () => (_router, fetchContext, _bootstrapMiddlewares) => {
   fetchContext();
   return mockStore;
 });

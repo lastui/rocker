@@ -15,11 +15,14 @@ import {
 import { runtimeReducer } from "../reducer";
 import { watchRefresh, watchFetchContext, watchBootstrap } from "../saga";
 
-export default (fetchContext, bootstrapMiddlewares) => {
+export default (router, fetchContext, bootstrapMiddlewares) => {
   const dynamicMiddleware = createDynamicMiddleware();
   const loaderMiddleware = createLoaderMiddleware();
   const { sagaMiddleware, runSaga } = createSagaMiddleware({
     context: {
+      async navigate(to, options) {
+        await router.navigate(to, options);
+      },
       async fetchContext() {
         const ctx = await fetchContext();
         return {
