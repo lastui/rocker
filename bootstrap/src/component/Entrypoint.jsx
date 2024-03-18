@@ -24,12 +24,14 @@ export const router = createBrowserRouter([{ path: "*", element: <Sink />, error
 const Entrypoint = (props) => {
   const entrypoint = useSelector(getEntrypoint);
 
+  const value = useMemo(() => ({ entrypoint, children: props.children }), [entrypoint, props.children]);
+
   if (entrypoint === null) {
     return null;
   }
 
   return (
-    <Hatch.Provider value={{ entrypoint, children: props.children }}>
+    <Hatch.Provider value={value}>
       <RouterProvider router={router} />
     </Hatch.Provider>
   );
