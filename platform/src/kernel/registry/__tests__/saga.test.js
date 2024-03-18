@@ -36,7 +36,7 @@ describe("saga registry", () => {
     spy.mockImplementation(() => {});
 
     const store = configureStore([])({
-      shared: {
+      env: {
         readyModules: {
           "my-feature": true,
         },
@@ -72,7 +72,7 @@ describe("saga registry", () => {
 
   it("removeSaga", async () => {
     const store = configureStore([])({
-      shared: {
+      env: {
         readyModules: {
           "my-feature": true,
         },
