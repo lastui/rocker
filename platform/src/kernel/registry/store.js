@@ -33,7 +33,7 @@ const handler = {
             type: SET_SHARED,
             payload: {
               data: action.payload.data,
-              module: action.payload.module ? name : undefined,
+              module: name,
             },
           });
         }
@@ -47,6 +47,7 @@ const handler = {
             stateProxy = new Proxy(
               {
                 ...state.modules[name],
+                env: state.env,
                 shared: Object.freeze(state.shared),
               },
               {
@@ -97,6 +98,7 @@ const handler = {
           } else {
             stateProxy = {
               ...state.modules[name],
+              env: state.env,
               shared: Object.freeze(state.shared),
             };
           }

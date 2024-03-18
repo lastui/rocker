@@ -13,10 +13,9 @@ describe("safe module exports", () => {
 
   describe("actions", () => {
     it("exposes expected", () => {
-      expect(Object.keys(all.actions).length).toEqual(4);
+      expect(Object.keys(all.actions).length).toEqual(3);
       expect(all.actions.setLanguage).toBeDefined();
-      expect(all.actions.setGlobalShared).toBeDefined();
-      expect(all.actions.setLocalShared).toBeDefined();
+      expect(all.actions.setShared).toBeDefined();
       expect(all.actions.refresh).toBeDefined();
     });
 
@@ -29,20 +28,8 @@ describe("safe module exports", () => {
       });
     });
 
-    it(".setGlobalShared", () => {
-      expect(all.actions.setGlobalShared({ foo: "bar" })).toEqual({
-        type: "@@shared/SET_SHARED",
-        payload: {
-          data: {
-            foo: "bar",
-          },
-          module: false,
-        },
-      });
-    });
-
-    it(".setLocalShared", () => {
-      expect(all.actions.setLocalShared({ foo: "bar" })).toEqual({
+    it(".setShared", () => {
+      expect(all.actions.setShared({ foo: "bar" })).toEqual({
         type: "@@shared/SET_SHARED",
         payload: {
           data: {

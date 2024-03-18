@@ -19,17 +19,7 @@ function refresh() {
   };
 }
 
-function setGlobalShared(data) {
-  return {
-    type: SET_SHARED,
-    payload: {
-      data,
-      module: false,
-    },
-  };
-}
-
-function setLocalShared(data) {
+function setShared(data) {
   return {
     type: SET_SHARED,
     payload: {
@@ -41,8 +31,7 @@ function setLocalShared(data) {
 
 const actions = {
   setLanguage,
-  setGlobalShared,
-  setLocalShared,
+  setShared,
   refresh,
 };
 

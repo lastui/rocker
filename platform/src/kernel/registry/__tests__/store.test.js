@@ -86,6 +86,7 @@ describe("store registry", () => {
                 foo: "baz",
               },
             },
+            env: {},
             shared: {
               beach: "bar",
             },
@@ -104,12 +105,14 @@ describe("store registry", () => {
 
         expect(state).toEqual({
           foo: "bat",
+          env: {},
           shared: {
             beach: "bar",
           },
         });
         expect(state.valueOf()).toEqual({
           foo: "bat",
+          env: {},
           shared: {
             beach: "bar",
           },
@@ -127,7 +130,7 @@ describe("store registry", () => {
         expect("foo" in state).toEqual(true);
         expect("other" in state).toEqual(false);
 
-        expect(Reflect.ownKeys(state)).toEqual(["foo", "shared"]);
+        expect(Reflect.ownKeys(state)).toEqual(["foo", "env", "shared"]);
 
         state.foo = "mutation";
 
@@ -149,6 +152,7 @@ describe("store registry", () => {
                 foo: "baz",
               },
             },
+            env: {},
             shared: {
               beach: "bar",
             },
@@ -162,6 +166,7 @@ describe("store registry", () => {
         expect(typeof store.getState).toEqual("function");
         expect(store.getState()).toEqual({
           foo: "bar",
+          env: {},
           shared: {
             beach: "bar",
           },
@@ -172,6 +177,7 @@ describe("store registry", () => {
         store = getStore().namespace("my-other-feature");
         expect(store.getState()).toEqual({
           foo: "baz",
+          env: {},
           shared: {
             beach: "bar",
           },
@@ -181,6 +187,7 @@ describe("store registry", () => {
 
         expect(state.valueOf()).toEqual({
           foo: "baz",
+          env: {},
           shared: {
             beach: "bar",
           },
@@ -194,7 +201,7 @@ describe("store registry", () => {
         expect("foo" in state).toEqual(true);
         expect("other" in state).toEqual(false);
 
-        expect(Reflect.ownKeys(state)).toEqual(["foo", "shared"]);
+        expect(Reflect.ownKeys(state)).toEqual(["foo", "env", "shared"]);
 
         expect(() => {
           state.shared.beach = "injection";
@@ -229,25 +236,6 @@ describe("store registry", () => {
             payload: {
               data: "secret",
               module: "my-feature",
-            },
-          },
-        ]);
-
-        storeRef.clearActions();
-
-        store.dispatch({
-          type: SET_SHARED,
-          payload: {
-            data: "secret",
-            module: false,
-          },
-        });
-
-        expect(storeRef.getActions()).toEqual([
-          {
-            type: SET_SHARED,
-            payload: {
-              data: "secret",
             },
           },
         ]);

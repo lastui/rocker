@@ -56,7 +56,7 @@ describe("<Module />", () => {
 
   it("renders loaded module component", () => {
     const store = configureStore([])({
-      shared: {
+      platform: {
         readyModules: {
           "my-feature": true,
         },
@@ -72,7 +72,7 @@ describe("<Module />", () => {
 
   it("renders children of loaded module", () => {
     const store = configureStore([])({
-      shared: {
+      platform: {
         readyModules: {
           "my-feature": true,
         },
@@ -96,7 +96,7 @@ describe("<Module />", () => {
 
   it("renders nothing if module not ready", () => {
     const store = configureStore([])({
-      shared: {
+      platform: {
         readyModules: {
           "my-feature": false,
         },
@@ -119,7 +119,7 @@ describe("<Module />", () => {
 
   it("renders nothing if there is no view", async () => {
     const store = configureStore([])({
-      shared: {
+      platform: {
         readyModules: {
           "my-feature-without-view": true,
         },
@@ -142,7 +142,7 @@ describe("<Module />", () => {
 
   it("renders fallback while loading", () => {
     const store = configureStore([])({
-      shared: {
+      platform: {
         readyModules: {
           "my-loading-feature": false,
         },
@@ -166,7 +166,7 @@ describe("<Module />", () => {
 
   it("renders nothing if there is no module name provided", () => {
     const store = configureStore([])({
-      shared: {
+      platform: {
         readyModules: {},
       },
     });
@@ -187,7 +187,7 @@ describe("<Module />", () => {
 
   it("renders nothing if module is not available", () => {
     const store = configureStore([])({
-      shared: {
+      platform: {
         readyModules: {},
       },
     });

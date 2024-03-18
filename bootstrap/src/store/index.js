@@ -6,6 +6,7 @@ import { all, fork } from "redux-saga/effects";
 import {
   setStore,
   sharedReducer,
+  envReducer,
   modulesReducer,
   createLoaderMiddleware,
   createDynamicMiddleware,
@@ -44,6 +45,7 @@ export default (router, fetchContext, bootstrapMiddlewares) => {
   const reducer = combineReducers({
     runtime: runtimeReducer,
     shared: sharedReducer,
+    env: envReducer,
     modules: modulesReducer,
   });
 

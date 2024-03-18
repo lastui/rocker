@@ -8,6 +8,7 @@ import registerModule from "../register";
 import createDynamicMiddleware from "./middleware/dynamic";
 import createLoaderMiddleware from "./middleware/loader";
 import createSagaMiddleware from "./middleware/saga";
+import envReducer from "./reducer/env";
 import modulesReducer from "./reducer/modules";
 import sharedReducer from "./reducer/shared";
 import { manualCleanup } from "./registry/loader";
@@ -18,6 +19,7 @@ export {
   constants,
   createLoaderMiddleware,
   sharedReducer,
+  envReducer,
   modulesReducer,
   createDynamicMiddleware,
   createSagaMiddleware,
@@ -32,6 +34,7 @@ export default {
   constants,
   createLoaderMiddleware,
   sharedReducer,
+  envReducer,
   modulesReducer,
   createDynamicMiddleware,
   createSagaMiddleware,

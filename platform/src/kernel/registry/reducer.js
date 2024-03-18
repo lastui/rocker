@@ -24,6 +24,7 @@ async function addReducer(name, reducer) {
   try {
     const composedReducer = combineReducers({
       ...reducer,
+      platform: (_state, _action) => emptydict,
       shared: (_state, _action) => emptydict,
     });
     composedReducer(undefined, { type: constants.MODULE_INIT, module: name });
