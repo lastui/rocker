@@ -6,9 +6,9 @@ import moduleLoader from "../kernel/registry/loader";
 import Fallback from "./Fallback";
 
 const Module = forwardRef((props, ref) => {
-  const isReady = useSelector((state) => Boolean(state.platform.readyModules[props.name]));
+  const isReady = useSelector((state) => Boolean(state.env.readyModules[props.name]));
 
-  const lastUpdate = useSelector((state) => state.platform.lastUpdate);
+  const lastUpdate = useSelector((state) => state.env.lastUpdate);
 
   const [lastLocalUpdate, setLastLocalUpdate] = useState(0);
 
