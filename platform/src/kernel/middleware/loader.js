@@ -62,7 +62,7 @@ const createLoaderMiddleware = () => {
         case constants.MODULE_LOADED: {
           const name = action.payload.module;
           console.debug(`module ${name} loaded`);
-          const language = store.getState().shared.language;
+          const language = store.getState().env.language;
           return downloadBatchLocales([name], language).then((items) => {
             if (items.length > 0) {
               store.dispatch({

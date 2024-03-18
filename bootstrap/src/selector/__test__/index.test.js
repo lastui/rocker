@@ -5,7 +5,7 @@ describe("selector", () => {
     runtime: {
       entrypoint: "value",
     },
-    shared: {
+    env: {
       language: "en-US",
       messages: {
         "en-US": {
@@ -30,7 +30,7 @@ describe("selector", () => {
   describe(".getI18nMessages", () => {
     it("should return a structure supporting getting i18n keys", () => {
       const messages = selectors.getI18nMessages(state);
-      expect(messages.foo).toEqual(state.shared.messages["en-US"].foo);
+      expect(messages.foo).toEqual(state.env.messages["en-US"].foo);
       expect(messages.miss).not.toBeDefined();
     });
   });
