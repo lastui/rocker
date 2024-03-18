@@ -161,7 +161,7 @@ describe("loader middleware", () => {
     it("no language in state", async () => {
       const loaderMiddleware = createLoaderMiddleware();
       const store = configureStore([loaderMiddleware])({
-        shared: {
+        env: {
           language: null,
         },
       });
@@ -194,7 +194,7 @@ describe("loader middleware", () => {
     it("no availableLocales", async () => {
       const loaderMiddleware = createLoaderMiddleware();
       const store = configureStore([loaderMiddleware])({
-        shared: {
+        env: {
           language: "en—US",
         },
       });
@@ -227,7 +227,7 @@ describe("loader middleware", () => {
     it("missing uri in availableLocales for selected language", async () => {
       const loaderMiddleware = createLoaderMiddleware();
       const store = configureStore([loaderMiddleware])({
-        shared: {
+        env: {
           language: "en—US",
         },
       });
@@ -277,7 +277,7 @@ describe("loader middleware", () => {
     it("existing uri in availableLocales for selected language (broken asset)", async () => {
       const loaderMiddleware = createLoaderMiddleware();
       const store = configureStore([loaderMiddleware])({
-        shared: {
+        env: {
           language: "en-US",
         },
       });
@@ -324,7 +324,7 @@ describe("loader middleware", () => {
     it("existing uri in availableLocales for selected language (valid empty asset)", async () => {
       const loaderMiddleware = createLoaderMiddleware();
       const store = configureStore([loaderMiddleware])({
-        shared: {
+        env: {
           language: "en-US",
         },
       });
@@ -371,7 +371,7 @@ describe("loader middleware", () => {
     it("existing uri in availableLocales for selected language (valid non-empty asset)", async () => {
       const loaderMiddleware = createLoaderMiddleware();
       const store = configureStore([loaderMiddleware])({
-        shared: {
+        env: {
           language: "en-US",
         },
       });
@@ -438,7 +438,7 @@ describe("loader middleware", () => {
     it("existing uri in availableLocales for selected language (already loaded)", async () => {
       const loaderMiddleware = createLoaderMiddleware();
       const store = configureStore([loaderMiddleware])({
-        shared: {
+        env: {
           language: "en-US",
         },
       });
@@ -521,7 +521,7 @@ describe("loader middleware", () => {
 
       const loaderMiddleware = createLoaderMiddleware();
       const store = configureStore([loaderMiddleware])({
-        shared: {
+        env: {
           language: "en-US",
         },
       });

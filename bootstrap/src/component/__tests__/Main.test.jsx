@@ -11,7 +11,7 @@ const initialState = {
     entrypoint: "some-entrypoint",
     initialized: false,
   },
-  shared: {
+  env: {
     language: null,
     messages: {},
   },
@@ -26,8 +26,8 @@ const mockStore = configureStore([])((actions) => {
           ...state.runtime,
           initialized: true,
         },
-        shared: {
-          ...state.shared,
+        env: {
+          ...state.env,
         },
       };
     } else if (action.type === constants.SET_LANGUAGE) {
@@ -35,8 +35,8 @@ const mockStore = configureStore([])((actions) => {
         runtime: {
           ...state.runtime,
         },
-        shared: {
-          ...state.shared,
+        env: {
+          ...state.env,
           language: action.payload.language,
         },
       };

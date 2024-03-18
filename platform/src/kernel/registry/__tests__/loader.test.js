@@ -47,7 +47,7 @@ describe("loader registry", () => {
     const channel = stdChannel();
     const storeRef = configureStore([])({
       modules: {},
-      shared: {
+      env: {
         readyModules: {},
       },
     });
