@@ -31,7 +31,7 @@ const memoizedMessages = new Proxy(
 );
 
 export const getI18nMessages = (state) => {
-  memoizedMessages[state.shared.language] = state.shared.messages;
+  memoizedMessages[state.env.language] = state.env.messages;
   return memoizedMessages;
 };
 
@@ -39,4 +39,4 @@ export const getIsInitialized = (state) => state.runtime.initialized;
 
 export const getEntrypoint = (state) => state.runtime.entrypoint;
 
-export const getLanguage = (state) => state.shared.language;
+export const getLanguage = (state) => state.env.language;
