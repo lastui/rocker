@@ -226,7 +226,6 @@ describe("store registry", () => {
           type: SET_SHARED,
           payload: {
             data: "secret",
-            module: true,
           },
         });
 

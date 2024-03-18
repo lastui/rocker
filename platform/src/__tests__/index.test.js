@@ -13,7 +13,7 @@ describe("safe module exports", () => {
 
   describe("actions", () => {
     it("exposes expected", () => {
-      expect(Object.keys(all.actions).length).toEqual(3);
+      expect(Object.keys(all.actions).length).toEqual(4);
       expect(all.actions.setLanguage).toBeDefined();
       expect(all.actions.setShared).toBeDefined();
       expect(all.actions.refresh).toBeDefined();
@@ -30,13 +30,19 @@ describe("safe module exports", () => {
 
     it(".setShared", () => {
       expect(all.actions.setShared({ foo: "bar" })).toEqual({
-        type: "@@shared/SET_SHARED",
+        type: "@@shared/SET",
         payload: {
           data: {
             foo: "bar",
           },
-          module: true,
         },
+      });
+    });
+
+    it(".clearShared", () => {
+      expect(all.actions.clearShared()).toEqual({
+        type: "@@shared/CLEAR",
+        payload: {},
       });
     });
 

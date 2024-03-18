@@ -1,7 +1,7 @@
 import "regenerator-runtime/runtime";
 
 import Module from "./component/Module";
-import { SET_LANGUAGE, REFRESH, SET_SHARED } from "./constants";
+import { SET_LANGUAGE, REFRESH, SET_SHARED, CLEAR_SHARED } from "./constants";
 import registerModule from "./register";
 
 function setLanguage(language) {
@@ -24,14 +24,21 @@ function setShared(data) {
     type: SET_SHARED,
     payload: {
       data,
-      module: true,
     },
+  };
+}
+
+function clearShared() {
+  return {
+    type: CLEAR_SHARED,
+    payload: {},
   };
 }
 
 const actions = {
   setLanguage,
   setShared,
+  clearShared,
   refresh,
 };
 

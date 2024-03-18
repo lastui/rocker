@@ -17,6 +17,23 @@ describe("shared reducer", () => {
     });
   });
 
+  it("CLEAR_SHARED", () => {
+    const action = {
+      type: constants.CLEAR_SHARED,
+      payload: {},
+    };
+    const state = {
+      ...initialState,
+      hair: "yes",
+      feet: "two",
+    };
+    const expectedState = {
+      ...initialState,
+    };
+
+    expect(reducer(state, action)).toEqual(expectedState);
+  });
+
   describe("SET_SHARED", () => {
     it("set data", () => {
       const action = {

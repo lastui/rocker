@@ -6,6 +6,11 @@ function createSharedReducer() {
   const sharedMapping = {};
   return (state = initialState, action) => {
     switch (action.type) {
+      case constants.CLEAR_SHARED: {
+        return {
+          ...initialState,
+        };
+      }
       case constants.SET_SHARED: {
         const nextState = {
           ...state,
