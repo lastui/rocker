@@ -25,18 +25,10 @@ module.exports = {
     refresh: () => ({
       type: constants.REFRESH,
     }),
-    setGlobalShared: (data) => ({
+    setShared: (data) => ({
       type: constants.SET_SHARED,
       payload: {
         data,
-        module: false,
-      },
-    }),
-    setLocalShared: (data) => ({
-      type: constants.SET_SHARED,
-      payload: {
-        data,
-        module: true,
       },
     }),
   },
@@ -70,5 +62,6 @@ module.exports = {
   manualCleanup: () => {},
   getStore: () => store,
   sharedReducer: (state = {}, action) => state,
+  envReducer: (state = {}, action) => state,
   modulesReducer: (state = {}, action) => state,
 };

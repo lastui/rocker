@@ -14,4 +14,5 @@ export const MODULE_UNLOADED = "@@modules/UNLOADED";
 
 export const I18N_MESSAGES_BATCH = "@@shared/I18N_MESSAGES_BATCH";
 
-export const SET_SHARED = "@@shared/SET_SHARED";
+export const SET_SHARED = "@@shared/SET";
+export const CLEAR_SHARED = "@@shared/CLEAR";
