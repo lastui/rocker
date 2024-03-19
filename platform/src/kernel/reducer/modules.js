@@ -1,6 +1,8 @@
 import * as constants from "../../constants";
 import { warning } from "../../utils";
 
+const BROADCAST_ACTION_PREFIX = '@@';
+
 const initial = {
   keys: [],
   values: [],
@@ -22,7 +24,7 @@ const handler = {
     }
     const index = target.keys.indexOf(prop);
     if (index !== -1) {
-      return target.values[index][1];
+      return target.values[index][2];
     }
     return undefined;
   },
@@ -33,9 +35,9 @@ const handler = {
     const index = obj.keys.indexOf(prop);
     if (index === -1) {
       obj.keys.push(prop);
-      obj.values.push([prop, value]);
+      obj.values.push([prop, `$${prop}$`, value]);
     } else {
-      obj.values[index] = [prop, value];
+      obj.values[index] = [prop, `$${prop}$`, value];
     }
     return true;
   },
@@ -96,12 +98,10 @@ function createModulesReducer() {
       }
       default: {
         let nextState = null;
-        for (const [name, reducer] of modulesReducers) {
-          const prefix = `$${name}$`;
-
+        for (const [name, prefix, reducer] of modulesReducers) {
           let copy = undefined;
 
-          if (action.type.startsWith('@@')) {
+          if (action.type.startsWith(BROADCAST_ACTION_PREFIX)) {
             copy = action
           } else if (action.type.startsWith(prefix)) {
             copy = {
