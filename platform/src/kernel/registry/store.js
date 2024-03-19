@@ -37,7 +37,16 @@ const handler = {
             },
           });
         }
-        return store.dispatch(action);
+
+        if (action.type.startsWith('@@')) {
+          return store.dispatch(action);
+        }
+
+        return store.dispatch({
+          ...action,
+          type: `$${name}$${action.type}`,
+        });
+
       },
       getState() {
         const state = store.getState();

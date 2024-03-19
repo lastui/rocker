@@ -97,8 +97,23 @@ function createModulesReducer() {
       default: {
         let nextState = null;
         for (const [name, reducer] of modulesReducers) {
+          const prefix = `$${name}$`;
+
+          let copy = undefined;
+
+          if (action.type.startsWith('@@')) {
+            copy = action
+          } else if (action.type.startsWith(prefix)) {
+            copy = {
+              ...action,
+              type: action.type.replace(prefix, ''),
+            }
+          } else {
+            continue
+          }
+
           try {
-            const fragment = reducer(state[name], action);
+            const fragment = reducer(state[name], copy);
             if (state[name] !== fragment) {
               if (!nextState) {
                 nextState = { ...state };
@@ -106,7 +121,7 @@ function createModulesReducer() {
               nextState[name] = fragment;
             }
           } catch (error) {
-            warning(`module ${name} reducer failed to reduce on action ${action.type}`, error);
+            warning(`module ${name} reducer failed to reduce on action ${copy.type}`, error);
           }
         }
         if (nextState) {
