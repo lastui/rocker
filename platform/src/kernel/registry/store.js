@@ -1,6 +1,8 @@
 import { SET_SHARED } from "../../constants";
 import { warning } from "../../utils";
 
+const BROADCAST_ACTION_PREFIX = "@@";
+
 const nilStore = {
   dispatch() {
     warning("Redux store is not provided!");
@@ -28,6 +30,9 @@ const handler = {
     let stateProxy = null;
     return (name) => ({
       dispatch: (action) => {
+        if (!action.type || action.type[0] === "$") {
+          return;
+        }
         if (action.type === SET_SHARED) {
           return store.dispatch({
             type: SET_SHARED,
@@ -37,7 +42,13 @@ const handler = {
             },
           });
         }
-        return store.dispatch(action);
+        if (action.type.startsWith(BROADCAST_ACTION_PREFIX)) {
+          return store.dispatch(action);
+        }
+        return store.dispatch({
+          ...action,
+          type: `$${name}$${action.type}`,
+        });
       },
       getState() {
         const state = store.getState();

@@ -81,11 +81,53 @@ describe("modules reducer", () => {
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
+
       expect(reducer(expectedState, action)).toEqual(expectedState);
-      expect(spyError).toHaveBeenCalledWith(
-        "module my-feature-broken reducer failed to reduce on action non-handled",
-        new Error("ouch"),
-      );
+      expect(spyError).toHaveBeenCalledWith("module my-feature-broken reducer failed to reduce", new Error("ouch"));
+    });
+
+    it("handles broadcast action", () => {
+      const action = {
+        type: "@@FEATURE_BROADCASTING_A_THING",
+      };
+
+      modulesReducers["my-feature-sniff"] = (localState = {}, action) => ({
+        ...localState,
+        lastAction: action.type,
+      });
+      const state = {
+        ...initialState,
+      };
+      const expectedState = {
+        ...initialState,
+        "my-feature-sniff": {
+          lastAction: "@@FEATURE_BROADCASTING_A_THING",
+        },
+      };
+
+      expect(reducer(state, action)).toEqual(expectedState);
+    });
+
+    it("handles owned action", () => {
+      const action = {
+        type: "$my-feature-sniff$OWNED_ACTION",
+      };
+
+      modulesReducers["my-feature-sniff"] = (localState = {}, action) => ({
+        ...localState,
+        lastAction: action.type,
+      });
+      const state = {
+        ...initialState,
+      };
+      const expectedState = {
+        ...initialState,
+        "my-feature-sniff": {
+          lastAction: "OWNED_ACTION",
+        },
+      };
+
+      expect(reducer(state, action)).toEqual(expectedState);
     });
   });
 
