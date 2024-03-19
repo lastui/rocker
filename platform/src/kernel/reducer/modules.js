@@ -101,7 +101,6 @@ function createModulesReducer() {
         return state;
       }
       default: {
-        console.log("action", action);
         let nextState = null;
         for (const [name, prefix, reducer] of modulesReducers) {
           let copy = undefined;
@@ -129,9 +128,6 @@ function createModulesReducer() {
             warning(`module ${name} reducer failed to reduce`, error);
           }
         }
-        console.log("after action", action);
-        console.log("state", state);
-        console.log("nextState", nextState);
         if (nextState) {
           return nextState;
         }
