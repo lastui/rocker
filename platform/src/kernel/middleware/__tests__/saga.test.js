@@ -17,13 +17,15 @@ describe("saga middleware ", () => {
       const { runSaga, sagaMiddleware } = createSagaMiddleware();
 
       const store = configureStore([sagaMiddleware])({});
-      const action = { type: "probe " };
+      store.wrap = (type) => `test_${type}`
+
+      const action = { type: "probe" };
 
       runSaga(store, function* () {
         yield put(action);
       });
 
-      expect(store.getActions()).toEqual([action]);
+      expect(store.getActions()).toEqual([{ type: "test_probe" }]);
     });
   });
 });

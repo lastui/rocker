@@ -110,7 +110,7 @@ function createModulesReducer() {
           } else if (action.type.startsWith(prefix)) {
             copy = {
               ...action,
-              type: action.type.replace(prefix, ""),
+              type: action.type.slice(prefix.length),
             };
           } else {
             copy = PROBE_ACTION;
