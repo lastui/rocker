@@ -1,6 +1,8 @@
 import { SET_SHARED } from "../../constants";
 import { warning } from "../../utils";
 
+const BROADCAST_ACTION_PREFIX = "@@";
+
 const nilStore = {
   dispatch() {
     warning("Redux store is not provided!");
@@ -37,16 +39,13 @@ const handler = {
             },
           });
         }
-
-        if (action.type.startsWith('@@')) {
+        if (action.type.startsWith(BROADCAST_ACTION_PREFIX)) {
           return store.dispatch(action);
         }
-
         return store.dispatch({
           ...action,
           type: `$${name}$${action.type}`,
         });
-
       },
       getState() {
         const state = store.getState();

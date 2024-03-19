@@ -1,7 +1,11 @@
 import * as constants from "../../constants";
 import { warning } from "../../utils";
 
-const BROADCAST_ACTION_PREFIX = '@@';
+const BROADCAST_ACTION_PREFIX = "@@";
+
+const PROBE_ACTION = {
+  type: undefined,
+};
 
 const initial = {
   keys: [],
@@ -97,19 +101,20 @@ function createModulesReducer() {
         return state;
       }
       default: {
+        console.log("action", action);
         let nextState = null;
         for (const [name, prefix, reducer] of modulesReducers) {
           let copy = undefined;
 
           if (action.type.startsWith(BROADCAST_ACTION_PREFIX)) {
-            copy = action
+            copy = action;
           } else if (action.type.startsWith(prefix)) {
             copy = {
               ...action,
-              type: action.type.replace(prefix, ''),
-            }
+              type: action.type.replace(prefix, ""),
+            };
           } else {
-            continue
+            copy = PROBE_ACTION;
           }
 
           try {
@@ -121,9 +126,12 @@ function createModulesReducer() {
               nextState[name] = fragment;
             }
           } catch (error) {
-            warning(`module ${name} reducer failed to reduce on action ${copy.type}`, error);
+            warning(`module ${name} reducer failed to reduce`, error);
           }
         }
+        console.log("after action", action);
+        console.log("state", state);
+        console.log("nextState", nextState);
         if (nextState) {
           return nextState;
         }

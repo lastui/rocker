@@ -81,11 +81,23 @@ describe("modules reducer", () => {
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
+
       expect(reducer(expectedState, action)).toEqual(expectedState);
-      expect(spyError).toHaveBeenCalledWith(
-        "module my-feature-broken reducer failed to reduce on action non-handled",
-        new Error("ouch"),
-      );
+      expect(spyError).toHaveBeenCalledWith("module my-feature-broken reducer failed to reduce", new Error("ouch"));
+    });
+
+    xit("handles broadcast action", () => {
+      //const action = {
+      //type: "non-handled",
+      //};
+      //expect(reducer(initialState, action)).toEqual(initialState);
+    });
+
+    xit("handles owned action", () => {
+      //const action = {
+      //type: "non-handled",
+      //};
+      //expect(reducer(initialState, action)).toEqual(initialState);
     });
   });
 

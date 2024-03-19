@@ -217,9 +217,9 @@ describe("store registry", () => {
         const store = getStore().namespace("my-feature");
 
         expect(typeof store.dispatch).toEqual("function");
-        store.dispatch({ type: "foo" });
 
-        expect(storeRef.getActions()).toEqual([{ type: "foo" }]);
+        store.dispatch({ type: "foo" });
+        expect(storeRef.getActions()).toEqual([{ type: "$my-feature$foo" }]);
         storeRef.clearActions();
 
         store.dispatch({
@@ -228,7 +228,6 @@ describe("store registry", () => {
             data: "secret",
           },
         });
-
         expect(storeRef.getActions()).toEqual([
           {
             type: SET_SHARED,
@@ -238,6 +237,23 @@ describe("store registry", () => {
             },
           },
         ]);
+        storeRef.clearActions();
+
+        store.dispatch({
+          type: "@@BROADCAST",
+          payload: {
+            data: "chatter",
+          },
+        });
+        expect(storeRef.getActions()).toEqual([
+          {
+            type: "@@BROADCAST",
+            payload: {
+              data: "chatter",
+            },
+          },
+        ]);
+        storeRef.clearActions();
       });
 
       it(".subscribe", () => {
