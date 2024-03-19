@@ -30,6 +30,9 @@ const handler = {
     let stateProxy = null;
     return (name) => ({
       dispatch: (action) => {
+        if (!action.type || action.type[0] === "$") {
+          return;
+        }
         if (action.type === SET_SHARED) {
           return store.dispatch({
             type: SET_SHARED,

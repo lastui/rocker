@@ -254,6 +254,18 @@ describe("store registry", () => {
           },
         ]);
         storeRef.clearActions();
+
+        store.dispatch({
+          type: undefined,
+        });
+        expect(storeRef.getActions()).toEqual([]);
+        storeRef.clearActions();
+
+        store.dispatch({
+          type: "$injection$ACTION",
+        });
+        expect(storeRef.getActions()).toEqual([]);
+        storeRef.clearActions();
       });
 
       it(".subscribe", () => {
