@@ -53,6 +53,9 @@ const createSagaMiddleware = (options = {}) => {
                 return;
               }
               case "PUT": {
+                if (!effect.payload.action.type) {
+                  return next(effect);
+                }
                 return next({
                   [IO]: true,
                   combinator: false,
