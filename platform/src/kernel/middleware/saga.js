@@ -24,7 +24,7 @@ const createSagaMiddleware = (options = {}) => {
                 if (typeof effect.payload.pattern === "string") {
                   return next({
                     [IO]: effect[IO],
-                    [SAGA_ACTION]: effect[SAGA_ACTION], // TODO investigate implication of this to prevent double wrap
+                    [SAGA_ACTION]: effect[SAGA_ACTION],
                     combinator: effect.combinator,
                     payload: {
                       channel: effect.payload.channel,
@@ -40,7 +40,7 @@ const createSagaMiddleware = (options = {}) => {
                   }
                   return next({
                     [IO]: effect[IO],
-                    [SAGA_ACTION]: effect[SAGA_ACTION], // TODO investigate implication of this to prevent double wrap
+                    //[SAGA_ACTION]: effect[SAGA_ACTION],
                     combinator: effect.combinator,
                     payload: {
                       channel: effect.payload.channel,
@@ -54,7 +54,36 @@ const createSagaMiddleware = (options = {}) => {
                 }
                 return;
               }
+              case "PUT": {
+                console.log("PUT effect", effect.payload.action);
+
+                if (!effect.payload.action.type) {
+                  return next(effect);
+                }
+
+                //if (effect.payload.action.type === "GET_TV_LIST_SUCCESS") {
+                //return next(effect);
+                //}
+
+                // TODO FIXME prefixed wrap actions put here do not trigger take
+                return next({
+                  [IO]: effect[IO],
+                  [SAGA_ACTION]: effect[SAGA_ACTION],
+                  combinator: effect.combinator,
+                  payload: {
+                    //...effect.payload,
+                    action: {
+                      ...effect.payload.action,
+                      type: store.wrap(effect.payload.action.type),
+                    },
+                    channel: effect.payload.channel,
+                  },
+                  type: effect.type,
+                  resolve: effect.resolve,
+                });
+              }
               default: {
+                //console.log(`passthough ${effect.type} effect`);
                 return next(effect);
               }
             }

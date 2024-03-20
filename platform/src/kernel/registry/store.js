@@ -45,7 +45,13 @@ const handler = {
           return `${prefix}${type}`;
         },
         dispatch(action) {
-          if (!action.type || action.type[0] === RUNE) {
+          if (!action.type) {
+            return;
+          }
+          if (action.type[0] === RUNE) {
+            if (action.type.startsWith(prefix)) {
+              return store.dispatch(action);
+            }
             return;
           }
           if (action.type === SET_SHARED) {
