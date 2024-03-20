@@ -3,6 +3,7 @@ import { warning } from "../../utils";
 
 const RUNE = "$";
 const BROADCAST_ACTION_PREFIX = "@@";
+const IDENTITY = (type) => type;
 
 const nilStore = {
   dispatch() {
@@ -25,7 +26,7 @@ const initial = {
 const handler = {
   get(ref, prop, store) {
     if (prop === "wrap") {
-      return (type) => type;
+      return IDENTITY;
     }
     if (prop !== "namespace") {
       return Reflect.get(ref.underlying, prop);
