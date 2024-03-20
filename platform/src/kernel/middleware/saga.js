@@ -18,7 +18,7 @@ const createSagaMiddleware = (options = {}) => {
           (next) => (effect) => {
             switch (effect.type) {
               case "TAKE": {
-                if (effect.payload.pattern === undefined || effect.payload.pattern === "*") {
+                if (!effect.payload.pattern || effect.payload.pattern === "*") {
                   return next(effect);
                 }
                 if (typeof effect.payload.pattern === "string") {
