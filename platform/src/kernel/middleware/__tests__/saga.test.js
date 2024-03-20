@@ -17,7 +17,7 @@ describe("saga middleware ", () => {
       const { runSaga, sagaMiddleware } = createSagaMiddleware();
 
       const store = configureStore([sagaMiddleware])({});
-      store.wrap = (type) => `test_${type}`
+      store.wrap = (type) => `test_${type}`;
 
       const action = { type: "probe" };
 

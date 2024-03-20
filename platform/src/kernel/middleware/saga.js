@@ -18,7 +18,7 @@ const createSagaMiddleware = (options = {}) => {
           (next) => (effect) => {
             switch (effect.type) {
               case "TAKE": {
-                if (effect.payload.pattern === "*") {
+                if (effect.payload.pattern === undefined || effect.payload.pattern === "*") {
                   return next(effect);
                 }
                 if (typeof effect.payload.pattern === "string") {
@@ -48,7 +48,7 @@ const createSagaMiddleware = (options = {}) => {
                   });
                 }
                 if (process.env.NODE_ENV === "development") {
-                  warning("Saga TAKE pattern function is not supported");
+                  warning("Saga TAKE pattern function is not supported", effect);
                 }
                 return;
               }
