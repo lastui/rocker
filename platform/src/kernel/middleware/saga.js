@@ -40,7 +40,6 @@ const createSagaMiddleware = (options = {}) => {
                   }
                   return next({
                     [IO]: effect[IO],
-                    //[SAGA_ACTION]: effect[SAGA_ACTION],
                     combinator: effect.combinator,
                     payload: {
                       channel: effect.payload.channel,
@@ -49,29 +48,21 @@ const createSagaMiddleware = (options = {}) => {
                     type: effect.type,
                   });
                 }
+                /* istanbul ignore next */
                 if (process.env.NODE_ENV === "development") {
                   warning("Saga TAKE pattern function is not supported", effect);
                 }
                 return;
               }
               case "PUT": {
-                console.log("PUT effect", effect.payload.action);
-
                 if (!effect.payload.action.type) {
                   return next(effect);
                 }
-
-                //if (effect.payload.action.type === "GET_TV_LIST_SUCCESS") {
-                //return next(effect);
-                //}
-
-                // TODO FIXME prefixed wrap actions put here do not trigger take
                 return next({
                   [IO]: effect[IO],
                   [SAGA_ACTION]: effect[SAGA_ACTION],
                   combinator: effect.combinator,
                   payload: {
-                    //...effect.payload,
                     action: {
                       ...effect.payload.action,
                       type: store.wrap(effect.payload.action.type),
@@ -83,7 +74,6 @@ const createSagaMiddleware = (options = {}) => {
                 });
               }
               default: {
-                //console.log(`passthough ${effect.type} effect`);
                 return next(effect);
               }
             }
