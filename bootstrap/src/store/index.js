@@ -5,6 +5,7 @@ import { all, fork } from "redux-saga/effects";
 
 import {
   setStore,
+  getStore,
   sharedReducer,
   envReducer,
   modulesReducer,
@@ -49,12 +50,11 @@ export default (router, fetchContext, bootstrapMiddlewares) => {
     modules: modulesReducer,
   });
 
-  const store = createStore(reducer, {}, composer(...[applyMiddleware(...enhancers)]));
+  const store = createStore(reducer, {}, composer(applyMiddleware(...enhancers)));
   setStore(store);
 
-  const sagas = [watchBootstrap, watchFetchContext, watchRefresh];
-  runSaga(store, function* rooSaga() {
-    yield all(sagas.map(fork));
+  runSaga(getStore(), function* rooSaga() {
+    yield all([watchBootstrap(), watchFetchContext(), watchRefresh()]);
   });
 
   return store;
