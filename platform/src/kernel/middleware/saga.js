@@ -1,4 +1,4 @@
-import { IO } from "@redux-saga/symbols";
+import { IO, SAGA_ACTION } from "@redux-saga/symbols";
 import { runSaga as runSagaInternal, stdChannel } from "redux-saga";
 
 import { warning } from "../../utils";
@@ -23,8 +23,9 @@ const createSagaMiddleware = (options = {}) => {
                 }
                 if (typeof effect.payload.pattern === "string") {
                   return next({
-                    [IO]: true,
-                    combinator: false,
+                    [IO]: effect[IO],
+                    [SAGA_ACTION]: effect[SAGA_ACTION], // TODO investigate implication of this to prevent double wrap
+                    combinator: effect.combinator,
                     payload: {
                       channel: effect.payload.channel,
                       pattern: store.wrap(effect.payload.pattern),
@@ -38,8 +39,9 @@ const createSagaMiddleware = (options = {}) => {
                     pattern[i] = store.wrap(effect.payload.pattern[i]);
                   }
                   return next({
-                    [IO]: true,
-                    combinator: false,
+                    [IO]: effect[IO],
+                    [SAGA_ACTION]: effect[SAGA_ACTION], // TODO investigate implication of this to prevent double wrap
+                    combinator: effect.combinator,
                     payload: {
                       channel: effect.payload.channel,
                       pattern,
@@ -51,23 +53,6 @@ const createSagaMiddleware = (options = {}) => {
                   warning("Saga TAKE pattern function is not supported", effect);
                 }
                 return;
-              }
-              case "PUT": {
-                if (!effect.payload.action.type) {
-                  return next(effect);
-                }
-                return next({
-                  [IO]: true,
-                  combinator: false,
-                  payload: {
-                    channel: effect.payload.channel,
-                    action: {
-                      ...effect.payload.action,
-                      type: store.wrap(effect.payload.action.type),
-                    },
-                  },
-                  type: effect.type,
-                });
               }
               default: {
                 return next(effect);
