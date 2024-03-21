@@ -423,6 +423,7 @@ config.plugins.push(
       }
 
       return `
+        <!DOCTYPE html>
         <html style="margin: 0; width: 100%; height: 100%;">
           <head>
             ${headTags}

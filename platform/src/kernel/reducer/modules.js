@@ -1,6 +1,7 @@
 import * as constants from "../../constants";
 import { warning } from "../../utils";
 
+const RUNE = "$";
 const BROADCAST_ACTION_PREFIX = "@@";
 
 const PROBE_ACTION = {
@@ -39,9 +40,9 @@ const handler = {
     const index = obj.keys.indexOf(prop);
     if (index === -1) {
       obj.keys.push(prop);
-      obj.values.push([prop, `$${prop}$`, value]);
+      obj.values.push([prop, `${RUNE}${prop}${RUNE}`, value]);
     } else {
-      obj.values[index] = [prop, `$${prop}$`, value];
+      obj.values[index] = [prop, `${RUNE}${prop}${RUNE}`, value];
     }
     return true;
   },
@@ -110,7 +111,7 @@ function createModulesReducer() {
           } else if (action.type.startsWith(prefix)) {
             copy = {
               ...action,
-              type: action.type.replace(prefix, ""),
+              type: action.type.slice(prefix.length),
             };
           } else {
             copy = PROBE_ACTION;

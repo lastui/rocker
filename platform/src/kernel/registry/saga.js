@@ -32,7 +32,11 @@ function removeSaga(name, preferentialStore) {
 }
 
 async function addSaga(name, preferentialStore, saga) {
-  if (sagas[name]) {
+  const dangling = sagas[name];
+  if (dangling) {
+    sagaRunner(preferentialStore, function* () {
+      yield cancel(dangling);
+    });
     delete sagas[name];
     console.debug(`module ${name} replacing saga`);
   } else {

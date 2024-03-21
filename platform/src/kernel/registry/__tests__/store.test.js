@@ -22,11 +22,6 @@ describe("store registry", () => {
     errorSpy.mockRestore();
   });
 
-  it("setStore", () => {
-    // TODO implement tests for setter
-    //if
-  });
-
   describe("getStore", () => {
     it("setter interception", () => {
       const store = getStore();
@@ -69,6 +64,15 @@ describe("store registry", () => {
 
         expect(typeof store.replaceReducer).toEqual("function");
         store.replaceReducer();
+
+        expect(errorSpy).not.toHaveBeenCalledWith("Redux store is not provided!");
+      });
+
+      it(".wrap", () => {
+        const store = getStore();
+
+        expect(typeof store.wrap).toEqual("function");
+        store.wrap();
 
         expect(errorSpy).not.toHaveBeenCalledWith("Redux store is not provided!");
       });
@@ -215,7 +219,6 @@ describe("store registry", () => {
         setStore(storeRef);
 
         const store = getStore().namespace("my-feature");
-
         expect(typeof store.dispatch).toEqual("function");
 
         store.dispatch({ type: "foo" });
@@ -255,32 +258,43 @@ describe("store registry", () => {
         ]);
         storeRef.clearActions();
 
-        store.dispatch({
-          type: undefined,
-        });
+        store.dispatch({ type: undefined });
         expect(storeRef.getActions()).toEqual([]);
         storeRef.clearActions();
 
-        store.dispatch({
-          type: "$injection$ACTION",
-        });
+        store.dispatch({ type: "$injection$ACTION" });
         expect(storeRef.getActions()).toEqual([]);
+        storeRef.clearActions();
+
+        store.dispatch({ type: "$my-feature$foo" });
+        expect(storeRef.getActions()).toEqual([{ type: "$my-feature$foo" }]);
         storeRef.clearActions();
       });
 
       it(".subscribe", () => {
         const store = getStore().namespace("my-feature");
-
         expect(typeof store.subscribe).toEqual("function");
         store.subscribe();
       });
 
       it(".replaceReducer", () => {
         const store = getStore().namespace("my-feature");
-
         expect(typeof store.replaceReducer).toEqual("function");
         store.replaceReducer();
       });
+    });
+
+    it(".wrap", () => {
+      const storeRef = configureStore([])({});
+      setStore(storeRef);
+
+      const store = getStore().namespace("my-feature");
+      expect(typeof store.wrap).toEqual("function");
+
+      expect(store.wrap()).toEqual();
+      expect(store.wrap("$other-feature$THING")).toEqual("$other-feature$THING");
+      expect(store.wrap("@@agenda/THING")).toEqual("@@agenda/THING");
+      expect(store.wrap("THING")).toEqual("$my-feature$THING");
     });
   });
 });
