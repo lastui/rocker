@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.19.31",
+  "version": "0.19.32",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -127,7 +127,7 @@
     "sass-loader": "14.1.1",
     "source-map": "mozilla/source-map#master",
     "style-loader": "3.3.4",
-    "stylelint": "16.2.1",
+    "stylelint": "16.3.0",
     "terser-webpack-plugin": "5.3.10",
     "util": "0.12.5",
     "weak-napi": "2.0.2",
