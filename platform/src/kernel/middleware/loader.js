@@ -112,7 +112,7 @@ const createLoaderMiddleware = () => {
         }
       }
     } catch (error) {
-      warning("dynamic middleware errored", error);
+      warning("loader middleware errored", error);
       return next(action);
     }
   };

@@ -83,7 +83,7 @@ describe("loader middleware", () => {
     const actual = createLoaderMiddleware()()(next)(action);
     expect(actual).toEqual(action);
 
-    expect(spy).toHaveBeenLastCalledWith("dynamic middleware errored", new Error("ouch"));
+    expect(spy).toHaveBeenLastCalledWith("loader middleware errored", new Error("ouch"));
   });
 
   describe("SET_AVAILABLE_MODULES", () => {
