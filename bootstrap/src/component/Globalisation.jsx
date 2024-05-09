@@ -1,3 +1,5 @@
+/* global DEFAULT_LOCALE */
+
 import { useMemo, Fragment } from "react";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { useSelector } from "react-redux";
@@ -15,6 +17,7 @@ const Globalisation = (props) => {
       createIntl(
         {
           locale,
+          defaultLocale: DEFAULT_LOCALE,
           textComponent: Fragment,
           messages,
           onError: (err) => {

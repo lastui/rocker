@@ -1,29 +1,41 @@
+/* global DEFAULT_LOCALE */
+
 const emptydict = {};
-const descriptor = { configurable: true, enumerable: true };
 
 const memoizedMessages = new Proxy(
   {
-    messages: emptydict,
-    descriptor: undefined,
+    fallback: emptydict,
+    primary: emptydict,
+    descriptor: { configurable: true, enumerable: true },
   },
   {
     getOwnPropertyDescriptor(ref, key) {
       return ref.descriptor;
     },
     get(ref, key) {
-      return ref.messages[key];
+      if (key in ref.primary) {
+        return ref.primary[key];
+      }
+      if (key in ref.fallback) {
+        return ref.fallback[key];
+      }
+      return undefined;
     },
     set(ref, locale, messages) {
-      let next = undefined;
-      if (locale in messages) {
-        next = messages[locale];
+      if (!messages) {
+        ref.primary = emptydict;
+        ref.fallback = emptydict;
+        return true;
       }
-      if (next) {
-        ref.descriptor = descriptor;
-        ref.messages = next;
+      if (locale in messages) {
+        ref.primary = messages[locale];
       } else {
-        ref.descriptor = undefined;
-        ref.messages = emptydict;
+        ref.primary = emptydict;
+      }
+      if (DEFAULT_LOCALE in messages) {
+        ref.fallback = messages[DEFAULT_LOCALE];
+      } else {
+        ref.fallback = emptydict;
       }
       return true;
     },
