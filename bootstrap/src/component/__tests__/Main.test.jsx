@@ -1,3 +1,5 @@
+/* global DEFAULT_LOCALE */
+
 import { render, screen, waitFor, act } from "@testing-library/react";
 import React from "react";
 import configureStore from "redux-mock-store";
@@ -73,6 +75,7 @@ class ErrorBoundary extends React.Component {
 
 describe("<Main />", () => {
   beforeEach(() => {
+    global.DEFAULT_LOCALE = "en-US";
     mockStore.clearActions();
   });
 
@@ -94,8 +97,9 @@ describe("<Main />", () => {
   });
 
   it("should use provided default locale", async () => {
+    global.DEFAULT_LOCALE = "fr-FR";
     const fetchContext = jest.fn();
-    render(<Main contextRefreshInterval={10} defaultLocale="fr-FR" fetchContext={fetchContext} />);
+    render(<Main contextRefreshInterval={10} fetchContext={fetchContext} />);
     await waitFor(() => {
       expect(screen.getByTestId("module/some-entrypoint")).toBeInTheDocument();
     });

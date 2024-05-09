@@ -31,7 +31,7 @@ const Main = (props) => {
       store.dispatch({
         type: constants.SET_LANGUAGE,
         payload: {
-          language: props.defaultLocale ?? DEFAULT_LOCALE,
+          language: DEFAULT_LOCALE,
         },
       });
       store.dispatch({
