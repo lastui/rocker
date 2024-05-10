@@ -34,18 +34,20 @@ export class SequentialProgramEvaluator {
       __SANDBOX_SCOPE__: {},
     };
     try {
-      window.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
-      if (!(item.data.startsWith("!") || item.data.startsWith("/*"))) {
-        throw new Error(`Asset is not a module`);
-      }
+      top.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
+
       new Function("", item.data)({});
     } catch (error) {
-      warning(`module ${item.name} failed to adapt`);
+      if (!(item.data.startsWith("!") || item.data.startsWith("/*"))) {
+        warning(`asset for module ${item.name} is not a module`);
+      } else {
+        warning(`module ${item.name} failed to adapt`);
+      }
       sandbox.__SANDBOX_SCOPE__.component = () => {
         throw error;
       };
     } finally {
-      delete window.__SANDBOX_SCOPE__;
+      delete top.__SANDBOX_SCOPE__;
     }
     item.resolve(sandbox.__SANDBOX_SCOPE__);
     this.compiling = false;
@@ -57,7 +59,7 @@ export class SequentialProgramEvaluator {
 /* istanbul ignore next */
 async function clientCache(name) {
   try {
-    return await window.caches.open(`rocker/${name}`);
+    return await top.caches.open(`rocker/${name}`);
   } catch (_err) {
     return {
       async match() {

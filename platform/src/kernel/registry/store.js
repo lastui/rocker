@@ -16,7 +16,7 @@ const nilStore = {
   subscribe() {
     warning("Redux store is not provided!");
   },
-  replaceReducer() {},
+  replaceReducer(_newReducer) {},
 };
 
 const initial = {
@@ -139,7 +139,7 @@ const handler = {
           return stateProxy;
         },
         subscribe: store.subscribe,
-        replaceReducer(newReducer) {},
+        replaceReducer(_newReducer) {},
       };
     };
   },

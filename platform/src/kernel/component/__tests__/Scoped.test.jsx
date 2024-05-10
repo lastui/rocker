@@ -83,8 +83,6 @@ describe("Scoped", () => {
       component: (props) => <div data-testid="happy-component">{props.children}</div>,
     };
 
-    const ref = React.createRef();
-
     const View = Scoped("my-feature", store, scope);
 
     render(

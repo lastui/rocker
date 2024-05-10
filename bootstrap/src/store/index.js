@@ -1,7 +1,7 @@
 /* global BUILD_ID */
 
 import { applyMiddleware, compose, createStore, combineReducers } from "redux";
-import { all, fork } from "redux-saga/effects";
+import { all } from "redux-saga/effects";
 
 import {
   setStore,

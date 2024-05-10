@@ -15,8 +15,8 @@ config.entry = {
     "react-router",
     "react-router-dom",
     // css-in-js
-    "@linaria/react",
     "@linaria/core",
+    "@linaria/react",
     // shims
     "regenerator-runtime/runtime",
   ],

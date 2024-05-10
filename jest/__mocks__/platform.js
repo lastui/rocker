@@ -61,7 +61,7 @@ module.exports = {
   },
   manualCleanup: () => {},
   getStore: () => store,
-  sharedReducer: (state = {}, action) => state,
-  envReducer: (state = {}, action) => state,
-  modulesReducer: (state = {}, action) => state,
+  sharedReducer: (state = {}, _action) => state,
+  envReducer: (state = {}, _action) => state,
+  modulesReducer: (state = {}, _action) => state,
 };

@@ -164,7 +164,7 @@ const createModuleLoader = () => {
     }
   };
 
-  const isAvailable = (name) => Boolean(availableModules[name]);
+  const isAvailable = (name) => name in availableModules;
 
   const manualCleanup = () => {
     for (const name in availableModules) {

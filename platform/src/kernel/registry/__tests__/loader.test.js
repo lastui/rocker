@@ -2,7 +2,6 @@ import configureStore from "redux-mock-store";
 import { runSaga, stdChannel } from "redux-saga";
 
 import moduleLoader, { adaptModule, manualCleanup } from "../loader";
-import { addReducer, removeReducer } from "../reducer";
 import { setSagaRunner } from "../saga";
 import { setStore } from "../store";
 
@@ -88,7 +87,7 @@ describe("loader registry", () => {
     it("adapt reducers", async () => {
       const scope = {
         reducers: {
-          "my-state": (state = {}, action) => state,
+          "my-state": (state = {}, _action) => state,
         },
       };
       const { view, cleanup } = await adaptModule("my-feature", scope);
@@ -99,7 +98,7 @@ describe("loader registry", () => {
 
     it("adapt middleware", async () => {
       const scope = {
-        middleware: () => (store) => (next) => (action) => next(action),
+        middleware: () => (_store) => (next) => (action) => next(action),
       };
       const { view, cleanup } = await adaptModule("my-feature", scope);
       expect(cleanup).toBeDefined();

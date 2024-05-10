@@ -14,35 +14,35 @@ const initial = {
 };
 
 const handler = {
-  deleteProperty(target, prop) {
-    const index = target.keys.indexOf(prop);
+  deleteProperty(ref, prop) {
+    const index = ref.keys.indexOf(prop);
     if (index === -1) {
       return true;
     }
-    target.keys = target.keys.filter((_, idx) => idx !== index);
-    target.values = target.values.filter((_, idx) => idx !== index);
+    ref.keys = ref.keys.filter((_, idx) => idx !== index);
+    ref.values = ref.values.filter((_, idx) => idx !== index);
     return true;
   },
-  get(target, prop) {
+  get(ref, prop) {
     if (prop === Symbol.iterator) {
-      return target.values[Symbol.iterator].bind(target.values);
+      return ref.values[Symbol.iterator].bind(ref.values);
     }
-    const index = target.keys.indexOf(prop);
+    const index = ref.keys.indexOf(prop);
     if (index !== -1) {
-      return target.values[index][2];
+      return ref.values[index][2];
     }
     return undefined;
   },
-  set(obj, prop, value) {
-    if (!value) {
+  set(ref, prop, value) {
+    if (!value || prop === Symbol.iterator) {
       return false;
     }
-    const index = obj.keys.indexOf(prop);
+    const index = ref.keys.indexOf(prop);
     if (index === -1) {
-      obj.keys.push(prop);
-      obj.values.push([prop, `${RUNE}${prop}${RUNE}`, value]);
+      ref.keys.push(prop);
+      ref.values.push([prop, `${RUNE}${prop}${RUNE}`, value]);
     } else {
-      obj.values[index] = [prop, `${RUNE}${prop}${RUNE}`, value];
+      ref.values[index] = [prop, `${RUNE}${prop}${RUNE}`, value];
     }
     return true;
   },

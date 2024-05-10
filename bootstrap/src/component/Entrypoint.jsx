@@ -13,7 +13,7 @@ const Yank = () => {
   throw error;
 };
 
-const Sink = (props) => {
+const Sink = () => {
   const { children, entrypoint } = useContext(Hatch);
 
   return <Module name={entrypoint}>{children}</Module>;

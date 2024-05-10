@@ -435,7 +435,7 @@ config.plugins.push(
 
                 const manifest = ${JSON.stringify(mergedManifest).trim()};
 
-                window.addEventListener("DOMContentLoaded", function() {
+                top.addEventListener("DOMContentLoaded", function() {
                   const react = rocker_so_dependencies("./node_modules/react/index.js");
                   const dom = rocker_so_dependencies("./node_modules/react-dom/client.js");
                   const bootstrap = rocker_so_bootstrap("@rocker/bootstrap/index.js");

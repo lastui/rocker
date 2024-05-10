@@ -9,7 +9,7 @@ const memoizedMessages = new Proxy(
     descriptor: { configurable: true, enumerable: true },
   },
   {
-    getOwnPropertyDescriptor(ref, key) {
+    getOwnPropertyDescriptor(ref, _key) {
       return ref.descriptor;
     },
     get(ref, key) {

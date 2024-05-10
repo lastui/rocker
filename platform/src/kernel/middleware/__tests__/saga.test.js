@@ -11,6 +11,9 @@ describe("saga middleware ", () => {
 
     it("exposes runSaga and sagaMiddleware upon creation", () => {
       const { runSaga, sagaMiddleware } = createSagaMiddleware();
+
+      expect(runSaga).toBeDefined();
+      expect(sagaMiddleware).toBeDefined();
     });
 
     it("runSaga runs saga that is captured by sagaMiddleware", () => {

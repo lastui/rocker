@@ -110,7 +110,7 @@ describe("assets registry", () => {
     it("compiles program", async () => {
       global.fetch.mockImplementationOnce(
         async () =>
-          new Response(`!function(){ window.__SANDBOX_SCOPE__.component = () => 'main' }();`, { status: 200, statusText: "OK" }),
+          new Response(`!function(){ top.__SANDBOX_SCOPE__.component = () => 'main' }();`, { status: 200, statusText: "OK" }),
       );
 
       const result = await downloadProgram("my-feature", {
@@ -125,17 +125,15 @@ describe("assets registry", () => {
       spy.mockImplementation(() => {});
       spy.mockClear();
 
-      global.fetch.mockImplementationOnce(
-        async () => new Response(`window.__SANDBOX_SCOPE__.component = () => 'main';`, { status: 200, statusText: "OK" }),
-      );
+      global.fetch.mockImplementationOnce(async () => new Response(`<html/>`, { status: 200, statusText: "OK" }));
 
       const result = await downloadProgram("my-feature", {
         url: "/service/program.js",
       });
 
       expect(result.component).toBeDefined();
-      expect(() => result.component()).toThrow(new Error("Asset is not a module"));
-      expect(spy).toHaveBeenCalledWith("module my-feature failed to adapt");
+      expect(() => result.component()).toThrow(new Error("Unexpected token '<'"));
+      expect(spy).toHaveBeenCalledWith("asset for module my-feature is not a module");
     });
 
     it("has error boundaries", async () => {
