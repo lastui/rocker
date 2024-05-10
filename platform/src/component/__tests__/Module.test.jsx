@@ -3,7 +3,6 @@ import configureStore from "redux-mock-store";
 
 import { withRedux } from "@lastui/rocker/test";
 
-import moduleLoader from "../../kernel/registry/loader";
 import Module from "../Module";
 
 jest.mock("../../kernel/registry/loader", () => ({

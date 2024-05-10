@@ -3,7 +3,6 @@ import * as constants from "../../constants";
 export const initialState = {};
 
 function createSharedReducer() {
-  const sharedMapping = {};
   return (state = initialState, action) => {
     switch (action.type) {
       case constants.CLEAR_SHARED: {

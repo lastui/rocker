@@ -34,10 +34,6 @@ describe("context", () => {
 
   describe("runRefresher", () => {
     it("single run", async () => {
-      const ctx = {
-        entrypoint: "my-entrypoint",
-        available: [],
-      };
       const action = {
         type: constants.INIT,
         payload: {},
@@ -56,10 +52,6 @@ describe("context", () => {
     });
 
     it("continuous polling delay", async () => {
-      const ctx = {
-        entrypoint: "my-entrypoint",
-        available: [],
-      };
       const action = {
         type: constants.INIT,
         payload: {
@@ -90,10 +82,6 @@ describe("context", () => {
     });
 
     it("continuous polling interupt", async () => {
-      const ctx = {
-        entrypoint: "my-entrypoint",
-        available: [],
-      };
       const action = {
         type: constants.INIT,
         payload: {

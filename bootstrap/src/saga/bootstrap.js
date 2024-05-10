@@ -1,4 +1,4 @@
-import { call, put, takeLatest, take, race, delay } from "redux-saga/effects";
+import { put, takeLatest, take, race, delay } from "redux-saga/effects";
 
 import { constants } from "@lastui/rocker/platform";
 
@@ -16,7 +16,7 @@ export function* runRefresher(action) {
     yield put({ type: constants.FETCH_CONTEXT });
     let waiting = interval > 0;
     while (waiting) {
-      const { refresh, timeout } = yield race({
+      const { _refresh, timeout } = yield race({
         refresh: take(constants.REFRESH),
         timeout: delay(interval),
       });

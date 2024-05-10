@@ -22,7 +22,7 @@ const FullyInitializedGate = (props) => {
 };
 
 const Main = (props) => {
-  const [_, setErrorState] = useState();
+  const [_errorState, setErrorState] = useState();
   const [storeReady, markStoreReady] = useState(false);
 
   const manualInit = useCallback(() => {

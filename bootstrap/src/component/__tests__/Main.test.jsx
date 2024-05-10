@@ -1,6 +1,4 @@
-/* global DEFAULT_LOCALE */
-
-import { render, screen, waitFor, act } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import configureStore from "redux-mock-store";
 
@@ -60,7 +58,7 @@ class ErrorBoundary extends React.Component {
     this.state = false;
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(_error) {
     return true;
   }
 

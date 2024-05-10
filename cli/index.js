@@ -58,6 +58,7 @@ function envelope(command) {
   };
 }
 
+/* eslint-disable no-unused-expressions */
 require("yargs")
   .parserConfiguration({
     "unknown-options-as-args": true,

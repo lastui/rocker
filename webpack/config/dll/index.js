@@ -11,7 +11,6 @@ const config = {
 };
 
 const webpackBabel = babel.env[settings.DEVELOPMENT ? "development" : "production"];
-const linariaBabel = babel.env.test;
 
 config.output.path = settings.DLL_BUILD_PATH;
 config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;

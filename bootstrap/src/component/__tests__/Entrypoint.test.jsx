@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
-import { FormattedMessage } from "react-intl";
 import { Routes, Route, Link } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
@@ -13,7 +12,7 @@ const initialState = {
   runtime: {
     entrypoint: null,
   },
-  shared: {},
+  env: {},
 };
 
 const mockStore = configureStore([]);
@@ -24,7 +23,7 @@ class ErrorBoundary extends React.Component {
     this.state = false;
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(_error) {
     return true;
   }
 
@@ -43,11 +42,11 @@ const BrokenComponent = () => {
 
 describe("<Entrypoint />", () => {
   beforeEach(() => {
-    window.history.pushState(null, document.title, "/");
+    top.history.pushState(null, document.title, "/");
   });
 
   afterEach(() => {
-    window.history.pushState(null, document.title, "/");
+    top.history.pushState(null, document.title, "/");
   });
 
   it("entrypoint missing", () => {
@@ -98,7 +97,7 @@ describe("<Entrypoint />", () => {
       await userEvent.click(screen.getByText("Navigate"));
 
       await waitFor(() => {
-        expect(window.location.pathname).toBe("/404");
+        expect(top.location.pathname).toBe("/404");
         expect(screen.getByTestId("RouteNoMatch")).toBeInTheDocument();
       });
 
@@ -107,7 +106,7 @@ describe("<Entrypoint />", () => {
       await userEvent.click(screen.getByText("Navigate"));
 
       await waitFor(() => {
-        expect(window.location.pathname).toBe("/grand/parent/child");
+        expect(top.location.pathname).toBe("/grand/parent/child");
         expect(screen.getByTestId("RouteMatchLeft")).toBeInTheDocument();
       });
 
@@ -116,7 +115,7 @@ describe("<Entrypoint />", () => {
       await userEvent.click(screen.getByText("Navigate"));
 
       await waitFor(() => {
-        expect(window.location.pathname).toBe("/sibling");
+        expect(top.location.pathname).toBe("/sibling");
         expect(screen.getByTestId("RouteMatchRight")).toBeInTheDocument();
       });
     });

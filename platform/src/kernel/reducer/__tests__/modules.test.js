@@ -196,12 +196,7 @@ describe("modules reducer", () => {
           module: "my-feature",
         },
       };
-      const state = {
-        ...initialState,
-      };
-      const expectedState = {
-        ...initialState,
-      };
+
       expect(reducer(initialState, action)).toEqual(initialState);
 
       expect(spyDebug).toHaveBeenCalledWith("module my-feature initialized");

@@ -4,11 +4,11 @@ import register from "../register";
 
 describe("register", () => {
   beforeEach(() => {
-    window.__SANDBOX_SCOPE__ = {};
+    top.__SANDBOX_SCOPE__ = {};
   });
 
   afterEach(() => {
-    delete window.__SANDBOX_SCOPE__;
+    delete top.__SANDBOX_SCOPE__;
   });
 
   it("is defined", () => {
@@ -44,12 +44,12 @@ describe("register", () => {
 
       register({ BUILD_ID: 1 });
       expect(spy).toHaveBeenCalledWith(`implicit attribute "BUILD_ID" provided in registerModule is not string`);
-      expect(window.__SANDBOX_SCOPE__.BUILD_ID).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.BUILD_ID).not.toBeDefined();
     });
 
     it("accepts string", () => {
       register({ BUILD_ID: "2" });
-      expect(window.__SANDBOX_SCOPE__.BUILD_ID).toEqual("2");
+      expect(top.__SANDBOX_SCOPE__.BUILD_ID).toEqual("2");
     });
   });
 
@@ -60,7 +60,7 @@ describe("register", () => {
       const scope = { component: 1 };
 
       register(scope);
-      expect(window.__SANDBOX_SCOPE__.component).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.component).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(`attribute "component" provided in registerModule is not function or React.Component`);
     });
 
@@ -71,13 +71,13 @@ describe("register", () => {
         }
       }
       register({ component: ClassComponent });
-      expect(window.__SANDBOX_SCOPE__.component).toEqual(ClassComponent);
+      expect(top.__SANDBOX_SCOPE__.component).toEqual(ClassComponent);
     });
 
     it("accepts function", () => {
       const functionComponent = () => null;
       register({ component: functionComponent });
-      expect(window.__SANDBOX_SCOPE__.component).toEqual(functionComponent);
+      expect(top.__SANDBOX_SCOPE__.component).toEqual(functionComponent);
     });
   });
 
@@ -88,7 +88,7 @@ describe("register", () => {
       const scope = { fallback: 1 };
 
       register(scope);
-      expect(window.__SANDBOX_SCOPE__.fallback).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.fallback).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(`attribute "fallback" provided in registerModule is not function or React.Component`);
     });
 
@@ -99,13 +99,13 @@ describe("register", () => {
         }
       }
       register({ fallback: ClassFallback });
-      expect(window.__SANDBOX_SCOPE__.fallback).toEqual(ClassFallback);
+      expect(top.__SANDBOX_SCOPE__.fallback).toEqual(ClassFallback);
     });
 
     it("accepts function", () => {
       const functionFallback = () => null;
       register({ fallback: functionFallback });
-      expect(window.__SANDBOX_SCOPE__.fallback).toEqual(functionFallback);
+      expect(top.__SANDBOX_SCOPE__.fallback).toEqual(functionFallback);
     });
   });
 
@@ -115,7 +115,7 @@ describe("register", () => {
       spy.mockImplementation(() => {});
 
       register({ reducers: 1 });
-      expect(window.__SANDBOX_SCOPE__.reducers).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.reducers).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(`attribute \"reducers\" provided in registerModule is not plain object`);
     });
 
@@ -124,7 +124,7 @@ describe("register", () => {
         a: 1,
       };
       register({ reducers });
-      expect(window.__SANDBOX_SCOPE__.reducers).toEqual(reducers);
+      expect(top.__SANDBOX_SCOPE__.reducers).toEqual(reducers);
     });
   });
 
@@ -135,31 +135,31 @@ describe("register", () => {
       const scope = { middleware: 1 };
 
       register(scope);
-      expect(window.__SANDBOX_SCOPE__.middleware).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.middleware).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"middleware\" provided in registerModule is not function or async function`,
       );
     });
 
     it("accepts function", () => {
-      const middleware = function (a) {};
+      const middleware = function () {};
       register({ middleware });
-      expect(window.__SANDBOX_SCOPE__.middleware).toEqual(middleware);
+      expect(top.__SANDBOX_SCOPE__.middleware).toEqual(middleware);
     });
 
     it("accepts async function", () => {
-      const middleware = async function (b) {};
+      const middleware = async function () {};
       register({ middleware });
-      expect(window.__SANDBOX_SCOPE__.middleware).toEqual(middleware);
+      expect(top.__SANDBOX_SCOPE__.middleware).toEqual(middleware);
     });
 
     it("does not accept generator function", () => {
       const spy = jest.spyOn(console, "error");
       spy.mockImplementation(() => {});
 
-      const middleware = function* (c) {};
+      const middleware = function* () {};
       register({ middleware });
-      expect(window.__SANDBOX_SCOPE__.middleware).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.middleware).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"middleware\" provided in registerModule is not function or async function`,
       );
@@ -169,9 +169,9 @@ describe("register", () => {
       const spy = jest.spyOn(console, "error");
       spy.mockImplementation(() => {});
 
-      const middleware = async function* (d) {};
+      const middleware = async function* () {};
       register({ middleware });
-      expect(window.__SANDBOX_SCOPE__.middleware).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.middleware).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"middleware\" provided in registerModule is not function or async function`,
       );
@@ -185,7 +185,7 @@ describe("register", () => {
       const scope = { saga: 1 };
 
       register(scope);
-      expect(window.__SANDBOX_SCOPE__.saga).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.saga).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"saga\" provided in registerModule is not generator function or async generator function`,
       );
@@ -195,9 +195,9 @@ describe("register", () => {
       const spy = jest.spyOn(console, "error");
       spy.mockImplementation(() => {});
 
-      const saga = function (a) {};
+      const saga = function () {};
       register({ saga });
-      expect(window.__SANDBOX_SCOPE__.saga).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.saga).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"saga\" provided in registerModule is not generator function or async generator function`,
       );
@@ -207,24 +207,24 @@ describe("register", () => {
       const spy = jest.spyOn(console, "error");
       spy.mockImplementation(() => {});
 
-      const saga = async function (b) {};
+      const saga = async function () {};
       register({ saga });
-      expect(window.__SANDBOX_SCOPE__.saga).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.saga).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"saga\" provided in registerModule is not generator function or async generator function`,
       );
     });
 
     it("accepts generator function", () => {
-      const saga = function* (c) {};
+      const saga = function* () {};
       register({ saga });
-      expect(window.__SANDBOX_SCOPE__.saga).toEqual(saga);
+      expect(top.__SANDBOX_SCOPE__.saga).toEqual(saga);
     });
 
     it("accepts async generator function", () => {
-      const saga = async function* (d) {};
+      const saga = async function* () {};
       register({ saga });
-      expect(window.__SANDBOX_SCOPE__.saga).toEqual(saga);
+      expect(top.__SANDBOX_SCOPE__.saga).toEqual(saga);
     });
   });
 
@@ -235,7 +235,7 @@ describe("register", () => {
       const scope = { props: 1 };
 
       register(scope);
-      expect(window.__SANDBOX_SCOPE__.props).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.props).not.toBeDefined();
       expect(spy).toHaveBeenLastCalledWith(`attribute \"props\" provided in registerModule is not plain object`);
     });
 
@@ -244,7 +244,7 @@ describe("register", () => {
         a: 1,
       };
       register({ props });
-      expect(window.__SANDBOX_SCOPE__.props).toEqual(props);
+      expect(top.__SANDBOX_SCOPE__.props).toEqual(props);
     });
   });
 });

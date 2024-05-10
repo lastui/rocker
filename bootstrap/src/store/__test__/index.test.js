@@ -39,7 +39,7 @@ describe("store", () => {
     expect(spy).toHaveBeenCalledWith(action);
   });
 
-  it("contains window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ in NODE_ENV=development", async () => {
+  it("contains __REDUX_DEVTOOLS_EXTENSION_COMPOSE__ in NODE_ENV=development", async () => {
     global.BUILD_ID = "xxx";
     top.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ = jest.fn();
     top.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__.mockReturnValue(() => {});

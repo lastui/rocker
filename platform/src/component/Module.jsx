@@ -1,4 +1,4 @@
-import { forwardRef, useState, useMemo, useEffect, createElement, useCallback } from "react";
+import { forwardRef, useState, useMemo, useEffect, createElement } from "react";
 import { useSelector } from "react-redux";
 
 import moduleLoader from "../kernel/registry/loader";
@@ -6,7 +6,7 @@ import moduleLoader from "../kernel/registry/loader";
 import Fallback from "./Fallback";
 
 const Module = forwardRef((props, ref) => {
-  const isReady = useSelector((state) => Boolean(state.env.readyModules[props.name]));
+  const isReady = useSelector((state) => state.env.readyModules[props.name]);
 
   const lastUpdate = useSelector((state) => state.env.lastUpdate);
 
