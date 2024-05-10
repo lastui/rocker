@@ -39,7 +39,7 @@ module.exports = {
       },
     ],
     "\\.css$": path.resolve(__dirname, "transform", "css.js"),
-    "^(?!.*\\.(ts|js|jsx|tsx|css))": path.resolve(__dirname, "transform", "file.js"),
+    "^(?!.*\\.(ts|js|jsx|tsx))": path.resolve(__dirname, "transform", "file.js"),
   },
   cacheDirectory: "<rootDir>/node_modules/@lastui/rocker/jest/.jest-cache",
   transformIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
