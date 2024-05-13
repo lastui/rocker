@@ -81,7 +81,7 @@ const handler = {
                 {
                   ...state.modules[name],
                   env: state.env,
-                  shared: Object.freeze(state.shared.view),
+                  shared: Object.freeze(state.shared),
                 },
                 {
                   get(ref, reducer) {
@@ -132,7 +132,7 @@ const handler = {
               stateProxy = {
                 ...state.modules[name],
                 env: state.env,
-                shared: Object.freeze(state.shared.view),
+                shared: Object.freeze(state.shared),
               };
             }
           }

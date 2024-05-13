@@ -2,6 +2,13 @@ import * as constants from "../../../constants";
 import reducer, { initialState } from "../shared";
 
 describe("shared reducer", () => {
+  beforeEach(() => {
+    reducer(undefined, {
+      type: constants.CLEAR_SHARED,
+      payload: {},
+    });
+  });
+
   describe("is reducer", () => {
     it("has initial state", () => {
       const action = {
@@ -65,12 +72,36 @@ describe("shared reducer", () => {
       const state = { ...initialState };
       const expectedState = {
         ...initialState,
-        global: {
-          hair: "yes",
+        hair: "yes",
+      };
+
+      expect(reducer(state, action)).toEqual(expectedState);
+    });
+
+    it("module not set purges data", () => {
+      reducer(undefined, {
+        type: constants.SET_SHARED,
+        payload: {
+          data: {
+            hair: "yes",
+          },
         },
-        view: {
-          hair: "yes",
+      });
+
+      const action = {
+        type: constants.SET_SHARED,
+        payload: {
+          data: {
+            hair: undefined,
+          },
         },
+      };
+      const state = {
+        ...initialState,
+        hair: "yes",
+      };
+      const expectedState = {
+        ...initialState,
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -92,18 +123,7 @@ describe("shared reducer", () => {
       let state = { ...initialState };
       let expectedState = {
         ...initialState,
-        local: {
-          hair: [
-            {
-              data: "yes",
-              module: "my-feature",
-              ts: 1581638400000,
-            },
-          ],
-        },
-        view: {
-          hair: "yes",
-        },
+        hair: "yes",
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -124,21 +144,22 @@ describe("shared reducer", () => {
 
       expectedState = {
         ...initialState,
-        local: {
-          hair: [
-            {
-              data: "no",
-              module: "my-feature",
-              ts: 1676332800000,
-            },
-          ],
-        },
-        view: {
-          hair: "no",
-        },
+        hair: "no",
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
+    });
+
+    it("module with empty", () => {
+      const action = {
+        type: constants.SET_SHARED,
+        payload: {
+          module: "my-feature",
+          data: {},
+        },
+      };
+
+      expect(reducer(initialState, action)).toEqual(initialState);
     });
 
     it("module masks data", () => {
@@ -157,18 +178,7 @@ describe("shared reducer", () => {
       let state = { ...initialState };
       let expectedState = {
         ...initialState,
-        local: {
-          hair: [
-            {
-              data: "yes",
-              module: "my-feature",
-              ts: 1613260800000,
-            },
-          ],
-        },
-        view: {
-          hair: "yes",
-        },
+        hair: "yes",
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -189,21 +199,6 @@ describe("shared reducer", () => {
 
       expectedState = {
         ...initialState,
-        local: {
-          hair: [
-            {
-              data: undefined,
-              module: "my-other-feature",
-              ts: 1676332800000,
-            },
-            {
-              data: "yes",
-              module: "my-feature",
-              ts: 1613260800000,
-            },
-          ],
-        },
-        view: {},
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -224,23 +219,7 @@ describe("shared reducer", () => {
 
       expectedState = {
         ...initialState,
-        local: {
-          hair: [
-            {
-              data: "yes",
-              module: "my-feature",
-              ts: 1613260800000,
-            },
-            {
-              data: undefined,
-              module: "my-other-feature",
-              ts: 1581638400000,
-            },
-          ],
-        },
-        view: {
-          hair: "yes",
-        },
+        hair: "yes",
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
@@ -265,6 +244,39 @@ describe("shared reducer", () => {
 
   describe("MODULE_UNLOADED", () => {
     it("purges local shared state of module", () => {
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2020-02-14"));
+      reducer(undefined, {
+        type: constants.SET_SHARED,
+        payload: {
+          module: "my-another-feature",
+          data: {
+            hair: "maybe",
+          },
+        },
+      });
+
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2023-02-14"));
+      reducer(undefined, {
+        type: constants.SET_SHARED,
+        payload: {
+          module: "my-other-feature",
+          data: {
+            hair: "yes",
+          },
+        },
+      });
+
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2022-02-14"));
+      reducer(undefined, {
+        type: constants.SET_SHARED,
+        payload: {
+          module: "my-feature",
+          data: {
+            hair: "yes",
+          },
+        },
+      });
+
       const action = {
         type: constants.MODULE_UNLOADED,
         payload: {
@@ -273,54 +285,28 @@ describe("shared reducer", () => {
       };
       const state = {
         ...initialState,
-        local: {
-          hair: [
-            {
-              data: "no",
-              module: "my-other-feature",
-              ts: 1600000000000,
-            },
-            {
-              data: "maybe",
-              module: "my-another-feature",
-              ts: 1400000000000,
-            },
-            {
-              data: "yes",
-              module: "my-feature",
-              ts: 1500000000000,
-            },
-          ],
-        },
-        view: {
-          hair: "no",
-        },
+        hair: "no",
       };
       const expectedState = {
         ...initialState,
-        local: {
-          hair: [
-            {
-              data: "yes",
-              module: "my-feature",
-              ts: 1500000000000,
-            },
-            {
-              data: "maybe",
-              module: "my-another-feature",
-              ts: 1400000000000,
-            },
-          ],
-        },
-        view: {
-          hair: "yes",
-        },
+        hair: "yes",
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
     });
 
     it("did not have shared data", () => {
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2022-02-14"));
+      reducer(undefined, {
+        type: constants.SET_SHARED,
+        payload: {
+          module: "my-feature",
+          data: {
+            hair: "yes",
+          },
+        },
+      });
+
       const action = {
         type: constants.MODULE_UNLOADED,
         payload: {
@@ -329,24 +315,24 @@ describe("shared reducer", () => {
       };
       const state = {
         ...initialState,
-        local: {
-          hair: [
-            {
-              data: "yes",
-              module: "my-feature",
-              ts: 1581638400000,
-            },
-          ],
-        },
-        view: {
-          hair: "yes",
-        },
+        hair: "yes",
       };
 
       expect(reducer(state, action)).toEqual(state);
     });
 
     it("was only one holding shared data key", () => {
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2022-02-14"));
+      reducer(undefined, {
+        type: constants.SET_SHARED,
+        payload: {
+          module: "my-feature",
+          data: {
+            hair: "yes",
+          },
+        },
+      });
+
       const action = {
         type: constants.MODULE_UNLOADED,
         payload: {
@@ -355,18 +341,7 @@ describe("shared reducer", () => {
       };
       const state = {
         ...initialState,
-        local: {
-          hair: [
-            {
-              data: "yes",
-              module: "my-feature",
-              ts: 1581638400000,
-            },
-          ],
-        },
-        view: {
-          hair: "yes",
-        },
+        hair: "yes",
       };
 
       expect(reducer(state, action)).toEqual(initialState);

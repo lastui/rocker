@@ -1,104 +1,94 @@
 import * as constants from "../../constants";
 
-export const initialState = {
-  global: {},
-  local: {},
-  view: {},
-};
+export const initialState = {};
 
-function createView(state) {
-  const result = {
-    ...state.global,
-  };
-  for (const key in state.local) {
-    result[key] = state.local[key][0].data;
+function createView(globalShared, localShared) {
+  const result = {};
+  for (const key in globalShared) {
+    result[key] = globalShared[key];
   }
-  for (const key in result) {
-    if (result[key] === undefined) {
-      delete result[key];
+  for (const key in localShared) {
+    if (localShared[key][0].data === undefined) {
+      continue;
     }
+    result[key] = localShared[key][0].data;
   }
   return result;
 }
 
 function createSharedReducer() {
+  const localShared = {};
+  const globalShared = {};
+
   return (state = initialState, action) => {
     switch (action.type) {
       case constants.CLEAR_SHARED: {
-        return {
-          ...initialState,
-        };
+        for (let key in localShared) {
+          delete localShared[key];
+        }
+        for (let key in globalShared) {
+          delete globalShared[key];
+        }
+        return {};
       }
       case constants.SET_SHARED: {
         if (!action.payload.module) {
-          const nextState = {
-            global: {
-              ...state.global,
-              ...action.payload.data,
-            },
-            local: state.local,
-          };
+          for (const key in action.payload.data) {
+            if (action.payload.data[key] === undefined) {
+              delete globalShared[key];
+            } else {
+              globalShared[key] = action.payload.data[key];
+            }
+          }
 
-          return {
-            global: nextState.global,
-            local: nextState.local,
-            view: createView(nextState),
-          };
+          return createView(globalShared, localShared);
         }
 
         if (typeof action.payload.module !== "string" || action.payload.data.constructor !== Object) {
           return state;
         }
 
-        let nextState = {
-          global: state.global,
-          local: state.local,
-        };
+        let changed = false;
 
-        nextState.local = { ...state.local };
         const now = Date.now();
 
         for (const key in action.payload.data) {
-          if (!nextState.local[key]) {
-            nextState.local[key] = [{ ts: now, data: action.payload.data[key], module: action.payload.module }];
+          changed = true;
+          if (!localShared[key]) {
+            localShared[key] = [{ ts: now, data: action.payload.data[key], module: action.payload.module }];
           } else {
             let index = -1;
-            for (let i = 0; i < nextState.local[key].length; i++) {
-              if (nextState.local[key][i].module === action.payload.module) {
+            for (let i = 0; i < localShared[key].length; i++) {
+              if (localShared[key][i].module === action.payload.module) {
                 index = i;
                 break;
               }
             }
 
             if (index === -1) {
-              nextState.local[key].push({ ts: now, data: action.payload.data[key], module: action.payload.module });
+              localShared[key].push({ ts: now, data: action.payload.data[key], module: action.payload.module });
             } else {
-              nextState.local[key][index].ts = now;
-              nextState.local[key][index].data = action.payload.data[key];
+              localShared[key][index].ts = now;
+              localShared[key][index].data = action.payload.data[key];
             }
 
-            nextState.local[key].sort((a, b) => b.ts - a.ts);
+            localShared[key].sort((a, b) => b.ts - a.ts);
           }
         }
 
-        return {
-          global: nextState.global,
-          local: nextState.local,
-          view: createView(nextState),
-        };
+        if (!changed) {
+          return state;
+        }
+
+        return createView(globalShared, localShared);
       }
       case constants.MODULE_UNLOADED: {
         let changed = false;
 
-        const nextState = {
-          local: { ...state.local },
-          global: state.global,
-        };
-
-        for (const key in nextState.local) {
+        for (const key in localShared) {
           let index = -1;
-          for (let i = 0; i < nextState.local[key].length; i++) {
-            if (nextState.local[key][i].module === action.payload.module) {
+          for (let i = 0; i < localShared[key].length; i++) {
+            if (localShared[key][i].module === action.payload.module) {
               index = i;
               break;
             }
@@ -110,12 +100,12 @@ function createSharedReducer() {
 
           changed = true;
 
-          nextState.local[key][index] = nextState.local[key][nextState.local[key].length - 1];
-          nextState.local[key].pop();
-          if (nextState.local[key].length === 0) {
-            delete nextState.local[key];
+          if (localShared[key].length === 1) {
+            delete localShared[key];
           } else {
-            nextState.local[key].sort((a, b) => b.ts - a.ts);
+            localShared[key][index] = localShared[key][localShared[key].length - 1];
+            localShared[key].pop();
+            localShared[key].sort((a, b) => b.ts - a.ts);
           }
         }
 
@@ -123,11 +113,7 @@ function createSharedReducer() {
           return state;
         }
 
-        return {
-          global: nextState.global,
-          local: nextState.local,
-          view: createView(nextState),
-        };
+        return createView(globalShared, localShared);
       }
       default: {
         return state;

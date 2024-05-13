@@ -14,35 +14,43 @@ const initial = {
 };
 
 const handler = {
-  deleteProperty(ref, prop) {
-    const index = ref.keys.indexOf(prop);
+  deleteProperty(ref, key) {
+    let index = ref.keys.indexOf(key);
     if (index === -1) {
       return true;
     }
-    ref.keys = ref.keys.filter((_, idx) => idx !== index);
-    ref.values = ref.values.filter((_, idx) => idx !== index);
+    const stop = ref.keys.length - 1;
+    let point = index;
+    while (index < stop) {
+      ++point;
+      ref.keys[index] = ref.keys[point];
+      ref.values[index] = ref.values[point];
+      index = point;
+    }
+    ref.keys.pop();
+    ref.values.pop();
     return true;
   },
-  get(ref, prop) {
-    if (prop === Symbol.iterator) {
+  get(ref, key) {
+    if (key === Symbol.iterator) {
       return ref.values[Symbol.iterator].bind(ref.values);
     }
-    const index = ref.keys.indexOf(prop);
+    const index = ref.keys.indexOf(key);
     if (index !== -1) {
       return ref.values[index][2];
     }
     return undefined;
   },
-  set(ref, prop, value) {
-    if (!value || prop === Symbol.iterator) {
+  set(ref, key, reducer) {
+    if (!reducer || key === Symbol.iterator) {
       return false;
     }
-    const index = ref.keys.indexOf(prop);
+    const index = ref.keys.indexOf(key);
     if (index === -1) {
-      ref.keys.push(prop);
-      ref.values.push([prop, `${RUNE}${prop}${RUNE}`, value]);
+      ref.keys.push(key);
+      ref.values.push([key, RUNE + String(key) + RUNE, reducer]);
     } else {
-      ref.values[index] = [prop, `${RUNE}${prop}${RUNE}`, value];
+      ref.values[index][2] = reducer;
     }
     return true;
   },
