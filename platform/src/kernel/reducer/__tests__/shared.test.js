@@ -31,26 +31,7 @@ describe("shared reducer", () => {
     };
     const state = {
       ...initialState,
-      global: {
-        hair: "yes",
-      },
-      local: {
-        hair: [
-          {
-            data: "no",
-            module: "my-other-feature",
-            ts: 1676332800000,
-          },
-          {
-            data: "maybe",
-            module: "my-feature",
-            ts: 1581638400000,
-          },
-        ],
-      },
-      view: {
-        hair: "no",
-      },
+      hair: "no",
     };
     const expectedState = {
       ...initialState,
