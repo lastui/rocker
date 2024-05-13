@@ -89,8 +89,6 @@ describe("shared reducer", () => {
     });
 
     it("module updates self", () => {
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2020-02-14"));
-
       let action = {
         type: constants.SET_SHARED,
         payload: {
@@ -110,8 +108,6 @@ describe("shared reducer", () => {
       expect(reducer(state, action)).toEqual(expectedState);
 
       state = expectedState;
-
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2023-02-14"));
 
       action = {
         type: constants.SET_SHARED,
@@ -144,8 +140,6 @@ describe("shared reducer", () => {
     });
 
     it("module masks data", () => {
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2021-02-14"));
-
       let action = {
         type: constants.SET_SHARED,
         payload: {
@@ -166,8 +160,6 @@ describe("shared reducer", () => {
 
       state = expectedState;
 
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2023-02-14"));
-
       action = {
         type: constants.SET_SHARED,
         payload: {
@@ -185,8 +177,6 @@ describe("shared reducer", () => {
       expect(reducer(state, action)).toEqual(expectedState);
 
       state = expectedState;
-
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2020-02-14"));
 
       action = {
         type: constants.SET_SHARED,
@@ -225,7 +215,6 @@ describe("shared reducer", () => {
 
   describe("MODULE_UNLOADED", () => {
     it("purges local shared state of module", () => {
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2020-02-14"));
       reducer(undefined, {
         type: constants.SET_SHARED,
         payload: {
@@ -235,8 +224,6 @@ describe("shared reducer", () => {
           },
         },
       });
-
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2023-02-14"));
       reducer(undefined, {
         type: constants.SET_SHARED,
         payload: {
@@ -246,8 +233,6 @@ describe("shared reducer", () => {
           },
         },
       });
-
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2022-02-14"));
       reducer(undefined, {
         type: constants.SET_SHARED,
         payload: {
@@ -277,7 +262,6 @@ describe("shared reducer", () => {
     });
 
     it("did not have shared data", () => {
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2022-02-14"));
       reducer(undefined, {
         type: constants.SET_SHARED,
         payload: {
@@ -303,7 +287,6 @@ describe("shared reducer", () => {
     });
 
     it("was only one holding shared data key", () => {
-      //jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2022-02-14"));
       reducer(undefined, {
         type: constants.SET_SHARED,
         payload: {
