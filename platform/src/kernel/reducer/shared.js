@@ -44,18 +44,16 @@ function createSharedReducer() {
           return createView(globalShared, localShared);
         }
 
-        if (typeof action.payload.module !== "string" || action.payload.data.constructor !== Object) {
+        if (typeof action.payload.module !== "string" || !action.payload.data || action.payload.data.constructor !== Object) {
           return state;
         }
 
         let changed = false;
 
-        const now = Date.now();
-
         for (const key in action.payload.data) {
           changed = true;
           if (!localShared[key]) {
-            localShared[key] = [{ ts: now, data: action.payload.data[key], module: action.payload.module }];
+            localShared[key] = [{ data: action.payload.data[key], module: action.payload.module }];
           } else {
             let index = -1;
             for (let i = 0; i < localShared[key].length; i++) {
@@ -66,13 +64,12 @@ function createSharedReducer() {
             }
 
             if (index === -1) {
-              localShared[key].push({ ts: now, data: action.payload.data[key], module: action.payload.module });
+              localShared[key].unshift({ data: action.payload.data[key], module: action.payload.module });
             } else {
-              localShared[key][index].ts = now;
-              localShared[key][index].data = action.payload.data[key];
+              const item = localShared[key].splice(index, 1);
+              item.data = action.payload.data[key];
+              localShared[key].unshift(item);
             }
-
-            localShared[key].sort((a, b) => b.ts - a.ts);
           }
         }
 
@@ -103,9 +100,11 @@ function createSharedReducer() {
           if (localShared[key].length === 1) {
             delete localShared[key];
           } else {
-            localShared[key][index] = localShared[key][localShared[key].length - 1];
+            const stop = localShared[key].length - 1;
+            while (index < stop) {
+              localShared[key][index] = localShared[key][++index];
+            }
             localShared[key].pop();
-            localShared[key].sort((a, b) => b.ts - a.ts);
           }
         }
 
