@@ -92,7 +92,11 @@ describe("store registry", () => {
             },
             env: {},
             shared: {
-              beach: "bar",
+              view: {
+                beach: "bar",
+                thing: "A",
+                stuff: "C",
+              },
             },
           }),
         );
@@ -112,6 +116,8 @@ describe("store registry", () => {
           env: {},
           shared: {
             beach: "bar",
+            thing: "A",
+            stuff: "C",
           },
         });
         expect(state.valueOf()).toEqual({
@@ -119,10 +125,12 @@ describe("store registry", () => {
           env: {},
           shared: {
             beach: "bar",
+            thing: "A",
+            stuff: "C",
           },
         });
         expect(state.toString()).toEqual("[object Object]");
-        expect(state.shared).toEqual({ beach: "bar" });
+        expect(state.shared).toEqual({ beach: "bar", thing: "A", stuff: "C" });
         errorSpy.mockClear();
 
         expect(state.other).not.toBeDefined();
@@ -158,7 +166,11 @@ describe("store registry", () => {
             },
             env: {},
             shared: {
-              beach: "bar",
+              view: {
+                beach: "bar",
+                thing: "A",
+                stuff: "C",
+              },
             },
           }),
         );
@@ -173,6 +185,8 @@ describe("store registry", () => {
           env: {},
           shared: {
             beach: "bar",
+            thing: "A",
+            stuff: "C",
           },
         });
 
@@ -184,6 +198,8 @@ describe("store registry", () => {
           env: {},
           shared: {
             beach: "bar",
+            thing: "A",
+            stuff: "C",
           },
         });
 
@@ -194,10 +210,12 @@ describe("store registry", () => {
           env: {},
           shared: {
             beach: "bar",
+            thing: "A",
+            stuff: "C",
           },
         });
         expect(state.toString()).toEqual("[object Object]");
-        expect(state.shared).toEqual({ beach: "bar" });
+        expect(state.shared).toEqual({ beach: "bar", beach: "bar", thing: "A", stuff: "C" });
 
         expect(state.other).not.toBeDefined();
 

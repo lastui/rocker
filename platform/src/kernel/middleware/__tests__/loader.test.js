@@ -58,7 +58,7 @@ describe("loader middleware", () => {
       type: "non-handled",
     };
     const loaderMiddleware = createLoaderMiddleware();
-    const store = configureStore([loaderMiddleware])({});
+    const store = configureStore([loaderMiddleware])({ env: {}, shared: {} });
     store.dispatch(action);
     expect(store.getActions()).toEqual([action]);
   });
@@ -89,7 +89,7 @@ describe("loader middleware", () => {
   describe("SET_AVAILABLE_MODULES", () => {
     it("calls setAvailableModules on loader", async () => {
       const loaderMiddleware = createLoaderMiddleware();
-      const store = configureStore([loaderMiddleware])({});
+      const store = configureStore([loaderMiddleware])({ env: {}, shared: {} });
       const action = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
@@ -106,7 +106,7 @@ describe("loader middleware", () => {
 
     it("marks availableLocales", async () => {
       const loaderMiddleware = createLoaderMiddleware();
-      const store = configureStore([loaderMiddleware])({});
+      const store = configureStore([loaderMiddleware])({ env: {}, shared: {} });
       const action = {
         type: constants.SET_AVAILABLE_MODULES,
         payload: {
@@ -129,7 +129,7 @@ describe("loader middleware", () => {
   describe("SET_ENTRYPOINT_MODULE", () => {
     it("calls loadModule on loader", async () => {
       const loaderMiddleware = createLoaderMiddleware();
-      const store = configureStore([loaderMiddleware])({});
+      const store = configureStore([loaderMiddleware])({ env: {}, shared: {} });
       const action = {
         type: constants.SET_ENTRYPOINT_MODULE,
         payload: {
@@ -164,6 +164,7 @@ describe("loader middleware", () => {
         env: {
           language: null,
         },
+        shared: {},
       });
 
       const action = {
@@ -197,6 +198,7 @@ describe("loader middleware", () => {
         env: {
           language: "en—US",
         },
+        shared: {},
       });
 
       const action = {
@@ -230,6 +232,7 @@ describe("loader middleware", () => {
         env: {
           language: "en—US",
         },
+        shared: {},
       });
 
       const setupAvailableLocalesAction = {
@@ -280,6 +283,7 @@ describe("loader middleware", () => {
         env: {
           language: "en-US",
         },
+        shared: {},
       });
 
       const setupAvailableLocalesAction = {
@@ -327,6 +331,7 @@ describe("loader middleware", () => {
         env: {
           language: "en-US",
         },
+        shared: {},
       });
 
       const setupAvailableLocalesAction = {
@@ -346,6 +351,7 @@ describe("loader middleware", () => {
         payload: {
           module: "my-feature",
         },
+        shared: {},
       };
 
       store.dispatch(action);
@@ -374,6 +380,7 @@ describe("loader middleware", () => {
         env: {
           language: "en-US",
         },
+        shared: {},
       });
 
       const setupAvailableLocalesAction = {
@@ -441,6 +448,7 @@ describe("loader middleware", () => {
         env: {
           language: "en-US",
         },
+        shared: {},
       });
 
       const setupAvailableLocalesAction = {
@@ -524,6 +532,7 @@ describe("loader middleware", () => {
         env: {
           language: "en-US",
         },
+        shared: {},
       });
 
       const setupAvailableLocalesAction = {
@@ -621,7 +630,7 @@ describe("loader middleware", () => {
   describe("MODULE_UNLOADED", () => {
     it("purges availableLocales", () => {
       const loaderMiddleware = createLoaderMiddleware();
-      const store = configureStore([loaderMiddleware])({});
+      const store = configureStore([loaderMiddleware])({ env: {}, shared: {} });
       const action = {
         type: constants.MODULE_UNLOADED,
         payload: {

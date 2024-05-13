@@ -24,8 +24,26 @@ describe("shared reducer", () => {
     };
     const state = {
       ...initialState,
-      hair: "yes",
-      feet: "two",
+      global: {
+        hair: "yes",
+      },
+      local: {
+        hair: [
+          {
+            data: "no",
+            module: "my-other-feature",
+            ts: 1676332800000,
+          },
+          {
+            data: "maybe",
+            module: "my-feature",
+            ts: 1581638400000,
+          },
+        ],
+      },
+      view: {
+        hair: "no",
+      },
     };
     const expectedState = {
       ...initialState,
@@ -35,7 +53,7 @@ describe("shared reducer", () => {
   });
 
   describe("SET_SHARED", () => {
-    it("set data", () => {
+    it("module not set", () => {
       const action = {
         type: constants.SET_SHARED,
         payload: {
@@ -47,51 +65,311 @@ describe("shared reducer", () => {
       const state = { ...initialState };
       const expectedState = {
         ...initialState,
-        hair: "yes",
+        global: {
+          hair: "yes",
+        },
+        view: {
+          hair: "yes",
+        },
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
     });
 
-    it("modify data", () => {
-      const action = {
+    it("module updates self", () => {
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2020-02-14"));
+
+      let action = {
         type: constants.SET_SHARED,
         payload: {
+          module: "my-feature",
+          data: {
+            hair: "yes",
+          },
+        },
+      };
+
+      let state = { ...initialState };
+      let expectedState = {
+        ...initialState,
+        local: {
+          hair: [
+            {
+              data: "yes",
+              module: "my-feature",
+              ts: 1581638400000,
+            },
+          ],
+        },
+        view: {
+          hair: "yes",
+        },
+      };
+
+      expect(reducer(state, action)).toEqual(expectedState);
+
+      state = expectedState;
+
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2023-02-14"));
+
+      action = {
+        type: constants.SET_SHARED,
+        payload: {
+          module: "my-feature",
           data: {
             hair: "no",
           },
         },
       };
-      const state = {
+
+      expectedState = {
         ...initialState,
-        hair: "yes",
-      };
-      const expectedState = {
-        ...initialState,
-        hair: "no",
+        local: {
+          hair: [
+            {
+              data: "no",
+              module: "my-feature",
+              ts: 1676332800000,
+            },
+          ],
+        },
+        view: {
+          hair: "no",
+        },
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
     });
 
-    it("remove data", () => {
-      const action = {
+    it("module masks data", () => {
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2021-02-14"));
+
+      let action = {
         type: constants.SET_SHARED,
         payload: {
+          module: "my-feature",
+          data: {
+            hair: "yes",
+          },
+        },
+      };
+
+      let state = { ...initialState };
+      let expectedState = {
+        ...initialState,
+        local: {
+          hair: [
+            {
+              data: "yes",
+              module: "my-feature",
+              ts: 1613260800000,
+            },
+          ],
+        },
+        view: {
+          hair: "yes",
+        },
+      };
+
+      expect(reducer(state, action)).toEqual(expectedState);
+
+      state = expectedState;
+
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2023-02-14"));
+
+      action = {
+        type: constants.SET_SHARED,
+        payload: {
+          module: "my-other-feature",
           data: {
             hair: undefined,
           },
         },
       };
-      const state = {
+
+      expectedState = {
         ...initialState,
-        hair: "yes",
-      };
-      const expectedState = {
-        ...initialState,
+        local: {
+          hair: [
+            {
+              data: undefined,
+              module: "my-other-feature",
+              ts: 1676332800000,
+            },
+            {
+              data: "yes",
+              module: "my-feature",
+              ts: 1613260800000,
+            },
+          ],
+        },
+        view: {},
       };
 
       expect(reducer(state, action)).toEqual(expectedState);
+
+      state = expectedState;
+
+      jest.spyOn(global.Date, "now").mockImplementationOnce(() => Date.parse("2020-02-14"));
+
+      action = {
+        type: constants.SET_SHARED,
+        payload: {
+          module: "my-other-feature",
+          data: {
+            hair: undefined,
+          },
+        },
+      };
+
+      expectedState = {
+        ...initialState,
+        local: {
+          hair: [
+            {
+              data: "yes",
+              module: "my-feature",
+              ts: 1613260800000,
+            },
+            {
+              data: undefined,
+              module: "my-other-feature",
+              ts: 1581638400000,
+            },
+          ],
+        },
+        view: {
+          hair: "yes",
+        },
+      };
+
+      expect(reducer(state, action)).toEqual(expectedState);
+    });
+
+    it("module set to invalid", () => {
+      const action = {
+        type: constants.SET_SHARED,
+        payload: {
+          module: 42,
+          data: {
+            hair: "yes",
+          },
+        },
+      };
+      const state = { ...initialState };
+      const expectedState = { ...initialState };
+
+      expect(reducer(state, action)).toEqual(expectedState);
+    });
+  });
+
+  describe("MODULE_UNLOADED", () => {
+    it("purges local shared state of module", () => {
+      const action = {
+        type: constants.MODULE_UNLOADED,
+        payload: {
+          module: "my-other-feature",
+        },
+      };
+      const state = {
+        ...initialState,
+        local: {
+          hair: [
+            {
+              data: "no",
+              module: "my-other-feature",
+              ts: 1600000000000,
+            },
+            {
+              data: "maybe",
+              module: "my-another-feature",
+              ts: 1400000000000,
+            },
+            {
+              data: "yes",
+              module: "my-feature",
+              ts: 1500000000000,
+            },
+          ],
+        },
+        view: {
+          hair: "no",
+        },
+      };
+      const expectedState = {
+        ...initialState,
+        local: {
+          hair: [
+            {
+              data: "yes",
+              module: "my-feature",
+              ts: 1500000000000,
+            },
+            {
+              data: "maybe",
+              module: "my-another-feature",
+              ts: 1400000000000,
+            },
+          ],
+        },
+        view: {
+          hair: "yes",
+        },
+      };
+
+      expect(reducer(state, action)).toEqual(expectedState);
+    });
+
+    it("did not have shared data", () => {
+      const action = {
+        type: constants.MODULE_UNLOADED,
+        payload: {
+          module: "my-other-feature",
+        },
+      };
+      const state = {
+        ...initialState,
+        local: {
+          hair: [
+            {
+              data: "yes",
+              module: "my-feature",
+              ts: 1581638400000,
+            },
+          ],
+        },
+        view: {
+          hair: "yes",
+        },
+      };
+
+      expect(reducer(state, action)).toEqual(state);
+    });
+
+    it("was only one holding shared data key", () => {
+      const action = {
+        type: constants.MODULE_UNLOADED,
+        payload: {
+          module: "my-feature",
+        },
+      };
+      const state = {
+        ...initialState,
+        local: {
+          hair: [
+            {
+              data: "yes",
+              module: "my-feature",
+              ts: 1581638400000,
+            },
+          ],
+        },
+        view: {
+          hair: "yes",
+        },
+      };
+
+      expect(reducer(state, action)).toEqual(initialState);
     });
   });
 });

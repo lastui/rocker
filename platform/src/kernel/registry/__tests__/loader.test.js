@@ -49,6 +49,7 @@ describe("loader registry", () => {
       env: {
         readyModules: {},
       },
+      shared: {},
     });
     setStore(storeRef);
     setSagaRunner((store, saga) =>
