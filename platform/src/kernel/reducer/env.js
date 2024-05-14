@@ -1,6 +1,6 @@
 import * as constants from "../../constants";
 
-export const initialState = {
+const initialState = {
   language: null,
   messages: {},
   readyModules: {},
@@ -115,5 +115,7 @@ function createEnvReducer() {
     }
   };
 }
+
+export { initialState };
 
 export default createEnvReducer();

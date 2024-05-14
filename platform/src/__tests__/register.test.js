@@ -44,7 +44,7 @@ describe("register", () => {
 
       register({ BUILD_ID: 1 });
       expect(spy).toHaveBeenCalledWith(`implicit attribute "BUILD_ID" provided in registerModule is not string`);
-      expect(top.__SANDBOX_SCOPE__.BUILD_ID).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.BUILD_ID).toBeUndefined();
     });
 
     it("accepts string", () => {
@@ -60,7 +60,7 @@ describe("register", () => {
       const scope = { component: 1 };
 
       register(scope);
-      expect(top.__SANDBOX_SCOPE__.component).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.component).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(`attribute "component" provided in registerModule is not function or React.Component`);
     });
 
@@ -88,7 +88,7 @@ describe("register", () => {
       const scope = { fallback: 1 };
 
       register(scope);
-      expect(top.__SANDBOX_SCOPE__.fallback).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.fallback).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(`attribute "fallback" provided in registerModule is not function or React.Component`);
     });
 
@@ -115,7 +115,7 @@ describe("register", () => {
       spy.mockImplementation(() => {});
 
       register({ reducers: 1 });
-      expect(top.__SANDBOX_SCOPE__.reducers).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.reducers).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(`attribute \"reducers\" provided in registerModule is not plain object`);
     });
 
@@ -135,7 +135,7 @@ describe("register", () => {
       const scope = { middleware: 1 };
 
       register(scope);
-      expect(top.__SANDBOX_SCOPE__.middleware).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.middleware).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"middleware\" provided in registerModule is not function or async function`,
       );
@@ -159,7 +159,7 @@ describe("register", () => {
 
       const middleware = function* () {};
       register({ middleware });
-      expect(top.__SANDBOX_SCOPE__.middleware).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.middleware).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"middleware\" provided in registerModule is not function or async function`,
       );
@@ -171,7 +171,7 @@ describe("register", () => {
 
       const middleware = async function* () {};
       register({ middleware });
-      expect(top.__SANDBOX_SCOPE__.middleware).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.middleware).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"middleware\" provided in registerModule is not function or async function`,
       );
@@ -185,7 +185,7 @@ describe("register", () => {
       const scope = { saga: 1 };
 
       register(scope);
-      expect(top.__SANDBOX_SCOPE__.saga).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.saga).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"saga\" provided in registerModule is not generator function or async generator function`,
       );
@@ -197,7 +197,7 @@ describe("register", () => {
 
       const saga = function () {};
       register({ saga });
-      expect(top.__SANDBOX_SCOPE__.saga).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.saga).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"saga\" provided in registerModule is not generator function or async generator function`,
       );
@@ -209,7 +209,7 @@ describe("register", () => {
 
       const saga = async function () {};
       register({ saga });
-      expect(top.__SANDBOX_SCOPE__.saga).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.saga).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(
         `attribute \"saga\" provided in registerModule is not generator function or async generator function`,
       );
@@ -235,7 +235,7 @@ describe("register", () => {
       const scope = { props: 1 };
 
       register(scope);
-      expect(top.__SANDBOX_SCOPE__.props).not.toBeDefined();
+      expect(top.__SANDBOX_SCOPE__.props).toBeUndefined();
       expect(spy).toHaveBeenLastCalledWith(`attribute \"props\" provided in registerModule is not plain object`);
     });
 

@@ -36,7 +36,7 @@ describe("selector", () => {
     it("should return a structure supporting getting i18n keys", () => {
       const messages = selectors.getI18nMessages(state);
       expect(messages.foo).toEqual(state.env.messages["en-US"].foo);
-      expect(messages.miss).not.toBeDefined();
+      expect(messages.miss).toBeUndefined();
     });
 
     it("should fallback on DEFAULT_LOCALE when it is missing in current locale", () => {
@@ -48,7 +48,7 @@ describe("selector", () => {
     it("should work properly when no messages exist at all", () => {
       delete state.env.messages;
       const messages = selectors.getI18nMessages(state);
-      expect(messages.foo).not.toBeDefined();
+      expect(messages.foo).toBeUndefined();
     });
   });
 });

@@ -60,6 +60,7 @@ describe("<Module />", () => {
           "my-feature": true,
         },
       },
+      shared: {},
     });
 
     const { unmount } = render(withRedux(<Module name="my-feature" />, store));
@@ -76,6 +77,7 @@ describe("<Module />", () => {
           "my-feature": true,
         },
       },
+      shared: {},
     });
 
     const { unmount } = render(
@@ -100,6 +102,7 @@ describe("<Module />", () => {
           "my-feature": false,
         },
       },
+      shared: {},
     });
 
     const { unmount } = render(
@@ -123,6 +126,7 @@ describe("<Module />", () => {
           "my-feature-without-view": true,
         },
       },
+      shared: {},
     });
 
     const { unmount } = render(
@@ -146,6 +150,7 @@ describe("<Module />", () => {
           "my-loading-feature": false,
         },
       },
+      shared: {},
     });
 
     const { unmount } = render(
@@ -168,6 +173,7 @@ describe("<Module />", () => {
       env: {
         readyModules: {},
       },
+      shared: {},
     });
 
     const { unmount } = render(
@@ -189,6 +195,7 @@ describe("<Module />", () => {
       env: {
         readyModules: {},
       },
+      shared: {},
     });
 
     const { unmount } = render(

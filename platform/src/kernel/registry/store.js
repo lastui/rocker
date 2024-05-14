@@ -4,18 +4,14 @@ import { warning } from "../../utils";
 const RUNE = "$";
 const BROADCAST_ACTION_PREFIX = "@@";
 const IDENTITY = (type) => type;
+const NIL_STATE = {};
 
 const nilStore = {
-  dispatch() {
-    warning("Redux store is not provided!");
-  },
+  dispatch(_action) {},
   getState() {
-    warning("Redux store is not provided!");
-    return {};
+    return NIL_STATE;
   },
-  subscribe() {
-    warning("Redux store is not provided!");
-  },
+  subscribe() {},
   replaceReducer(_newReducer) {},
 };
 
@@ -34,7 +30,7 @@ const handler = {
     let prevState = null;
     let stateProxy = null;
     return (name) => {
-      const prefix = `${RUNE}${name}${RUNE}`;
+      const prefix = RUNE + name + RUNE;
       return {
         wrap(type) {
           if (!type || type[0] === RUNE) {
@@ -43,7 +39,7 @@ const handler = {
           if (type.startsWith(BROADCAST_ACTION_PREFIX)) {
             return type;
           }
-          return `${prefix}${type}`;
+          return prefix + type;
         },
         dispatch(action) {
           if (!action.type) {
@@ -69,7 +65,7 @@ const handler = {
           }
           return store.dispatch({
             ...action,
-            type: `${prefix}${action.type}`,
+            type: prefix + action.type,
           });
         },
         getState() {
@@ -99,10 +95,7 @@ const handler = {
                       default: {
                         const fragment = ref[reducer];
                         if (!fragment) {
-                          warning(
-                            `module "${name}" tried to access reducer "${reducer}" that it does not own.
-                          For sharing of redux state use shared reducer and actions.`.replace(/  +/g, ""),
-                          );
+                          warning(`module "${name}" tried to access reducer "${reducer}" that it does not own.`);
                           return undefined;
                         }
                         return fragment;

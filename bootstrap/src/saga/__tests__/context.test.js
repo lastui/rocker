@@ -111,7 +111,7 @@ describe("context", () => {
       expect(stepSetShared.done).toEqual(false);
       expect(stepSetShared.value.payload.action.type).toEqual(constants.SET_SHARED);
       expect(stepSetShared.value.payload.action.payload.data).toEqual(ctx.environment);
-      expect(stepSetShared.value.payload.action.payload.module).not.toBeDefined();
+      expect(stepSetShared.value.payload.action.payload.module).toBeUndefined();
 
       const stepEntrypointModule = gen.next();
 

@@ -49,6 +49,7 @@ describe("loader registry", () => {
       env: {
         readyModules: {},
       },
+      shared: {},
     });
     setStore(storeRef);
     setSagaRunner((store, saga) =>
@@ -142,7 +143,7 @@ describe("loader registry", () => {
     describe(".getLoadedModule", () => {
       it("returns loaded module", async () => {
         const item = moduleLoader.getLoadedModule("my-feature");
-        expect(item).not.toBeDefined();
+        expect(item).toBeUndefined();
       });
     });
 
@@ -180,8 +181,8 @@ describe("loader registry", () => {
           },
         ]);
 
-        expect(moduleLoader.getLoadedModule("a")).not.toBeDefined();
-        expect(moduleLoader.getLoadedModule("b")).not.toBeDefined();
+        expect(moduleLoader.getLoadedModule("a")).toBeUndefined();
+        expect(moduleLoader.getLoadedModule("b")).toBeUndefined();
 
         await moduleLoader.loadModule("a", controller);
         await moduleLoader.loadModule("b", controller);
@@ -199,7 +200,7 @@ describe("loader registry", () => {
         ]);
 
         expect(moduleLoader.getLoadedModule("a")).toBeDefined();
-        expect(moduleLoader.getLoadedModule("b")).not.toBeDefined();
+        expect(moduleLoader.getLoadedModule("b")).toBeUndefined();
       });
     });
 
@@ -352,7 +353,7 @@ describe("loader registry", () => {
       await moduleLoader.loadModule("a", controller);
       expect(moduleLoader.getLoadedModule("a")).toBeDefined();
       manualCleanup();
-      expect(moduleLoader.getLoadedModule("a")).not.toBeDefined();
+      expect(moduleLoader.getLoadedModule("a")).toBeUndefined();
       expect(moduleLoader.isAvailable("a")).toEqual(false);
     });
   });
