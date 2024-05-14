@@ -1,6 +1,6 @@
 import * as constants from "../../constants";
 
-export const initialState = {};
+const initialState = {};
 
 function createView(globalShared, localShared) {
   const result = {};
@@ -52,9 +52,7 @@ function createSharedReducer() {
 
         for (const key in action.payload.data) {
           changed = true;
-          if (!localShared[key]) {
-            localShared[key] = [{ data: action.payload.data[key], module: action.payload.module }];
-          } else {
+          if (key in localShared) {
             let index = -1;
             for (let i = 0; i < localShared[key].length; i++) {
               if (localShared[key][i].module === action.payload.module) {
@@ -70,6 +68,8 @@ function createSharedReducer() {
               item.data = action.payload.data[key];
               localShared[key].unshift(item);
             }
+          } else {
+            localShared[key] = [{ data: action.payload.data[key], module: action.payload.module }];
           }
         }
 
@@ -120,5 +120,7 @@ function createSharedReducer() {
     }
   };
 }
+
+export { initialState };
 
 export default createSharedReducer();

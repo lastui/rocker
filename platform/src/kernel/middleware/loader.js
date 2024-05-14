@@ -4,7 +4,7 @@ import { downloadAsset } from "../registry/assets";
 import loader from "../registry/loader";
 
 const createLoaderMiddleware = () => {
-  let availableLocales = {};
+  const availableLocales = {};
   const loadedLocales = {};
 
   const downloadBatchLocales = async (names, language) => {
@@ -13,18 +13,22 @@ const createLoaderMiddleware = () => {
       if (!loadedLocales[name]) {
         loadedLocales[name] = {};
       }
-      if (loadedLocales[name][language]) {
+      if (language in loadedLocales[name]) {
         continue;
       }
       loadedLocales[name][language] = true;
-
-      const uri = availableLocales[name] && availableLocales[name][language];
+      const uri = name in availableLocales && availableLocales[name][language];
       if (!uri) {
         continue;
       }
       const promise = downloadAsset(uri)
         .then((data) => data.json())
-        .then((data) => Object.keys(data).length > 0 && { module: name, data });
+        .then((data) => {
+          for (const _prop in data) {
+            return { module: name, data };
+          }
+          return null;
+        });
       scheduledAssets.push(promise);
     }
 
@@ -46,10 +50,17 @@ const createLoaderMiddleware = () => {
     try {
       switch (action.type) {
         case constants.SET_AVAILABLE_MODULES: {
-          availableLocales = {};
+          /* istanbul ignore next */
+          for (const key in availableLocales) {
+            delete availableLocales[key];
+          }
           for (const item of action.payload.modules) {
-            if (item.locales && Object.keys(item.locales) !== 0) {
+            if (!item.locales) {
+              continue;
+            }
+            for (const _prop in item.locales) {
               availableLocales[item.name] = item.locales;
+              break;
             }
           }
           return loader.setAvailableModules(action.payload.modules).then(() => next(action));
@@ -100,10 +111,7 @@ const createLoaderMiddleware = () => {
         }
 
         case constants.MODULE_UNLOADED: {
-          const name = action.payload.module;
-          if (loadedLocales[name]) {
-            delete loadedLocales[name];
-          }
+          delete loadedLocales[action.payload.module];
           return next(action);
         }
 

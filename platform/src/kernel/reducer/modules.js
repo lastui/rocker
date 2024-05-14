@@ -42,13 +42,13 @@ const handler = {
     return undefined;
   },
   set(ref, key, reducer) {
-    if (!reducer || key === Symbol.iterator) {
+    if (!reducer || typeof key === "symbol") {
       return false;
     }
     const index = ref.keys.indexOf(key);
     if (index === -1) {
       ref.keys.push(key);
-      ref.values.push([key, RUNE + String(key) + RUNE, reducer]);
+      ref.values.push([key, RUNE + key + RUNE, reducer]);
     } else {
       ref.values[index][2] = reducer;
     }
@@ -58,7 +58,7 @@ const handler = {
 
 const modulesReducers = new Proxy(initial, handler);
 
-export const initialState = {};
+const initialState = {};
 
 function createModulesReducer() {
   return (state = initialState, action) => {
@@ -146,6 +146,6 @@ function createModulesReducer() {
   };
 }
 
-export { modulesReducers };
+export { modulesReducers, initialState };
 
 export default createModulesReducer();

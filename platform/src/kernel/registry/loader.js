@@ -167,6 +167,7 @@ const createModuleLoader = () => {
   const isAvailable = (name) => name in availableModules;
 
   const manualCleanup = () => {
+    getStore().dispatch({ type: constants.CLEAR_SHARED });
     for (const name in availableModules) {
       delete availableModules[name];
     }

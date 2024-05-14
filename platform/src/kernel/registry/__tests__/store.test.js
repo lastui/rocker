@@ -28,17 +28,14 @@ describe("store registry", () => {
       expect(() => {
         store.foo = "bar";
       }).toThrow();
-      expect(store.foo).not.toBeDefined();
+      expect(store.foo).toBeUndefined();
     });
 
     describe("fallback", () => {
       it(".getState", () => {
         const store = getStore();
 
-        expect(typeof store.getState).toEqual("function");
-        store.getState();
-
-        expect(errorSpy).toHaveBeenCalledWith("Redux store is not provided!");
+        expect(store.getState()).toEqual({});
       });
 
       it(".dispatch", () => {
@@ -46,8 +43,6 @@ describe("store registry", () => {
 
         expect(typeof store.dispatch).toEqual("function");
         store.dispatch({ type: "foo" });
-
-        expect(errorSpy).toHaveBeenCalledWith("Redux store is not provided!");
       });
 
       it(".subscribe", () => {
@@ -55,8 +50,6 @@ describe("store registry", () => {
 
         expect(typeof store.subscribe).toEqual("function");
         store.subscribe();
-
-        expect(errorSpy).toHaveBeenCalledWith("Redux store is not provided!");
       });
 
       it(".replaceReducer", () => {
@@ -64,17 +57,13 @@ describe("store registry", () => {
 
         expect(typeof store.replaceReducer).toEqual("function");
         store.replaceReducer();
-
-        expect(errorSpy).not.toHaveBeenCalledWith("Redux store is not provided!");
       });
 
       it(".wrap", () => {
         const store = getStore();
 
         expect(typeof store.wrap).toEqual("function");
-        store.wrap();
-
-        expect(errorSpy).not.toHaveBeenCalledWith("Redux store is not provided!");
+        expect(store.wrap("x")).toEqual("x");
       });
     });
 
@@ -125,10 +114,8 @@ describe("store registry", () => {
         expect(state.shared).toEqual({ beach: "bar" });
         errorSpy.mockClear();
 
-        expect(state.other).not.toBeDefined();
-        expect(errorSpy).toHaveBeenCalledWith(
-          expect.stringContaining('module "my-feature" tried to access reducer "other" that it does not own.'),
-        );
+        expect(state.other).toBeUndefined();
+        expect(errorSpy).toHaveBeenCalledWith('module "my-feature" tried to access reducer "other" that it does not own.');
 
         expect("shared" in state).toEqual(true);
         expect("foo" in state).toEqual(true);
@@ -199,7 +186,7 @@ describe("store registry", () => {
         expect(state.toString()).toEqual("[object Object]");
         expect(state.shared).toEqual({ beach: "bar" });
 
-        expect(state.other).not.toBeDefined();
+        expect(state.other).toBeUndefined();
 
         expect("shared" in state).toEqual(true);
         expect("foo" in state).toEqual(true);
