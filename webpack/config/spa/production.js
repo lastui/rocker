@@ -127,32 +127,6 @@ config.module.rules.push(
     ],
   },
   {
-    test: /\.s[a|c]ss$/,
-    use: [
-      {
-        loader: MiniCssExtractPlugin.loader,
-      },
-      {
-        loader: "css-loader",
-        options: {
-          sourceMap: false,
-          modules: false,
-          importLoaders: 0,
-        },
-      },
-      {
-        loader: "sass-loader",
-        options: {
-          implementation: require("sass"),
-          sassOptions: {
-            fiber: false,
-          },
-          sourceMap: false,
-        },
-      },
-    ],
-  },
-  {
     test: /\.(mp3|woff|woff2|svg|eot|otf|ttf|png|jpe?g|gif)(\?.*$|$)/,
     type: "asset/resource",
   },

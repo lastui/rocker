@@ -141,38 +141,6 @@ config.module.rules.push(
     ],
   },
   {
-    test: /\.s[a|c]ss$/,
-    use: [
-      {
-        loader: "style-loader",
-        options: {
-          injectType: "singletonStyleTag",
-          attributes: {
-            id: `rocker-${settings.BUILD_ID}`,
-          },
-        },
-      },
-      {
-        loader: "css-loader",
-        options: {
-          sourceMap: false,
-          modules: false,
-          importLoaders: 0,
-        },
-      },
-      {
-        loader: "sass-loader",
-        options: {
-          implementation: require("sass"),
-          sassOptions: {
-            fiber: false,
-          },
-          sourceMap: false,
-        },
-      },
-    ],
-  },
-  {
     test: /\.(png|jpg|gif)$/i,
     type: "asset/inline",
   },
