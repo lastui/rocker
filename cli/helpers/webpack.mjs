@@ -59,10 +59,6 @@ function formatMessage(message) {
   if (lines[1] && lines[1].indexOf("Module not found: ") === 0) {
     lines = [lines[0], lines[1].replace("Error: ", "").replace("Module not found: Cannot find file:", "Cannot find file:")];
   }
-  if (lines[1] && lines[1].match(/Cannot find module.+sass/)) {
-    lines[1] = "To import Sass files, you first need to install sass.\n";
-    lines[1] += "Run `npm install sass` or `yarn add sass` inside your workspace.";
-  }
 
   message = lines.join("\n");
   message = message.replace(/^\s*at\s((?!webpack:).)*:\d+:\d+[\s)]*(\n|$)/gm, "");
