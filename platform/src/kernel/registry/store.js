@@ -93,12 +93,11 @@ const handler = {
                         return () => ref;
                       }
                       default: {
-                        const fragment = ref[reducer];
-                        if (!fragment) {
-                          warning(`module "${name}" tried to access reducer "${reducer}" that it does not own.`);
-                          return undefined;
+                        if (reducer in ref) {
+                          return ref[reducer];
                         }
-                        return fragment;
+                        warning(`module "${name}" tried to access reducer "${reducer}" that it does not own.`);
+                        return undefined;
                       }
                     }
                   },

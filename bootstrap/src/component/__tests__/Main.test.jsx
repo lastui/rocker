@@ -73,7 +73,6 @@ class ErrorBoundary extends React.Component {
 
 describe("<Main />", () => {
   beforeEach(() => {
-    global.DEFAULT_LOCALE = "en-US";
     mockStore.clearActions();
   });
 
@@ -95,9 +94,8 @@ describe("<Main />", () => {
   });
 
   it("should use provided default locale", async () => {
-    global.DEFAULT_LOCALE = "fr-FR";
     const fetchContext = jest.fn();
-    render(<Main contextRefreshInterval={10} fetchContext={fetchContext} />);
+    render(<Main contextRefreshInterval={10} fetchContext={fetchContext} defaultLocale="fr-FR" />);
     await waitFor(() => {
       expect(screen.getByTestId("module/some-entrypoint")).toBeInTheDocument();
     });

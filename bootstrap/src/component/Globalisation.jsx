@@ -1,14 +1,14 @@
-/* global DEFAULT_LOCALE */
-
 import { useMemo, Fragment } from "react";
 import { createIntl, createIntlCache, RawIntlProvider } from "react-intl";
 import { useSelector } from "react-redux";
 
-import { getLanguage, getI18nMessages } from "../selector";
+import { getLanguage, getI18nMessagesFacade } from "../selector";
 
 const cache = createIntlCache();
 
 const Globalisation = (props) => {
+  const getI18nMessages = useMemo(() => getI18nMessagesFacade(props.defaultLocale), [props.defaultLocale]);
+
   const locale = useSelector(getLanguage);
   const messages = useSelector(getI18nMessages);
 
@@ -17,7 +17,7 @@ const Globalisation = (props) => {
       createIntl(
         {
           locale,
-          defaultLocale: DEFAULT_LOCALE,
+          defaultLocale: props.defaultLocale,
           textComponent: Fragment,
           messages,
           onError: (err) => {
@@ -28,7 +28,7 @@ const Globalisation = (props) => {
         },
         cache,
       ),
-    [locale, messages],
+    [props.defaultLocale, locale, messages],
   );
 
   return <RawIntlProvider value={intl}>{props.children}</RawIntlProvider>;
