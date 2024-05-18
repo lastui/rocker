@@ -1,5 +1,3 @@
-/* global DEFAULT_LOCALE */
-
 import { Children, StrictMode, useState, useCallback, useEffect } from "react";
 import { Provider as ReduxProvider, useSelector } from "react-redux";
 
@@ -10,6 +8,8 @@ import setupStore from "../store";
 
 import Entrypoint, { router } from "./Entrypoint";
 import Globalisation from "./Globalisation";
+
+const DEFAULT_LOCALE = "en-US";
 
 const FullyInitializedGate = (props) => {
   const initialized = useSelector(getIsInitialized);
@@ -31,7 +31,7 @@ const Main = (props) => {
       store.dispatch({
         type: constants.SET_LANGUAGE,
         payload: {
-          language: DEFAULT_LOCALE,
+          language: props.defaultLocale ?? DEFAULT_LOCALE,
         },
       });
       store.dispatch({
@@ -46,7 +46,14 @@ const Main = (props) => {
         throw error;
       });
     }
-  }, [markStoreReady, setErrorState, props.reduxMiddlewares, props.fetchContext, props.contextRefreshInterval]);
+  }, [
+    markStoreReady,
+    setErrorState,
+    props.defaultLocale,
+    props.reduxMiddlewares,
+    props.fetchContext,
+    props.contextRefreshInterval,
+  ]);
 
   useEffect(() => {
     manualCleanup();
@@ -64,7 +71,7 @@ const Main = (props) => {
     <StrictMode>
       <ReduxProvider store={getStore()}>
         <FullyInitializedGate>
-          <Globalisation>
+          <Globalisation defaultLocale={props.defaultLocale ?? DEFAULT_LOCALE}>
             <Entrypoint />
           </Globalisation>
         </FullyInitializedGate>
