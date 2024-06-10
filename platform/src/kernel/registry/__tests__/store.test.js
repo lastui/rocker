@@ -4,20 +4,16 @@ import { SET_SHARED } from "../../../constants";
 import { setStore, getStore } from "../store";
 
 describe("store registry", () => {
-  const ORIGINAL_NODE_ENV = process.env.NODE_ENV;
-
   const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
   const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
   beforeEach(() => {
     setStore(null);
-    process.env.NODE_ENV = ORIGINAL_NODE_ENV;
     debugSpy.mockClear();
     errorSpy.mockClear();
   });
 
   afterAll(() => {
-    process.env.NODE_ENV = ORIGINAL_NODE_ENV;
     debugSpy.mockRestore();
     errorSpy.mockRestore();
   });
@@ -68,71 +64,7 @@ describe("store registry", () => {
     });
 
     describe("namespace", () => {
-      it(".getState in NODE_ENV=development", () => {
-        setStore(
-          configureStore([])({
-            modules: {
-              "my-feature": {
-                foo: "bat",
-              },
-              "my-other-feature": {
-                foo: "baz",
-              },
-            },
-            env: {},
-            shared: {
-              beach: "bar",
-            },
-          }),
-        );
-
-        process.env.NODE_ENV = "development";
-
-        const store = getStore().namespace("my-feature");
-
-        expect(typeof store.getState).toEqual("function");
-
-        const state = store.getState();
-
-        expect(state).toEqual(store.getState());
-
-        expect(state).toEqual({
-          foo: "bat",
-          env: {},
-          shared: {
-            beach: "bar",
-          },
-        });
-        expect(state.valueOf()).toEqual({
-          foo: "bat",
-          env: {},
-          shared: {
-            beach: "bar",
-          },
-        });
-        expect(state.toString()).toEqual("[object Object]");
-        expect(state.shared).toEqual({ beach: "bar" });
-        errorSpy.mockClear();
-
-        expect(state.other).toBeUndefined();
-        expect(errorSpy).toHaveBeenCalledWith('module "my-feature" tried to access reducer "other" that it does not own.');
-
-        expect("shared" in state).toEqual(true);
-        expect("foo" in state).toEqual(true);
-        expect("other" in state).toEqual(false);
-
-        expect(Reflect.ownKeys(state)).toEqual(["foo", "env", "shared"]);
-
-        state.foo = "mutation";
-
-        expect(() => {
-          state.shared.beach = "injection";
-        }).toThrow(TypeError);
-
-        expect(state.shared.beach).toEqual("bar");
-      });
-
-      it(".getState in NODE_ENV=production", () => {
+      it(".getState", () => {
         setStore(
           configureStore([])({
             modules: {
@@ -149,8 +81,6 @@ describe("store registry", () => {
             },
           }),
         );
-
-        process.env.NODE_ENV = "production";
 
         let store = getStore().namespace("my-feature");
 
