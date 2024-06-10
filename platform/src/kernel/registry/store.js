@@ -1,5 +1,4 @@
 import { SET_SHARED } from "../../constants";
-import { warning } from "../../utils";
 
 const RUNE = "$";
 const BROADCAST_ACTION_PREFIX = "@@";
@@ -72,61 +71,11 @@ const handler = {
           const state = store.getState();
           if (prevState !== state) {
             prevState = state;
-            if (process.env.NODE_ENV === "development") {
-              stateProxy = new Proxy(
-                {
-                  ...state.modules[name],
-                  env: state.env,
-                  shared: Object.freeze(state.shared),
-                },
-                {
-                  get(ref, reducer) {
-                    switch (reducer) {
-                      case Symbol.iterator: {
-                        return Reflect.get(ref, reducer);
-                      }
-                      case "toString":
-                      case Symbol.toStringTag: {
-                        return () => "[object Object]";
-                      }
-                      case "valueOf": {
-                        return () => ref;
-                      }
-                      default: {
-                        if (reducer in ref) {
-                          return ref[reducer];
-                        }
-                        warning(`module "${name}" tried to access reducer "${reducer}" that it does not own.`);
-                        return undefined;
-                      }
-                    }
-                  },
-                  has(ref, reducer) {
-                    return reducer in ref;
-                  },
-                  ownKeys(ref) {
-                    return Reflect.ownKeys(ref);
-                  },
-                  getOwnPropertyDescriptor(ref, key) {
-                    return {
-                      value: this.get(ref, key),
-                      enumerable: true,
-                      configurable: true,
-                    };
-                  },
-                  set(ref, reducer, value) {
-                    ref[reducer] = value;
-                    return true;
-                  },
-                },
-              );
-            } else {
-              stateProxy = {
-                ...state.modules[name],
-                env: state.env,
-                shared: Object.freeze(state.shared),
-              };
-            }
+            stateProxy = {
+              ...state.modules[name],
+              env: state.env,
+              shared: Object.freeze(state.shared),
+            };
           }
           return stateProxy;
         },
