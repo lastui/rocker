@@ -5,10 +5,36 @@ import { warning } from "../../utils";
 import { setSagaRunner } from "../registry/saga";
 
 const createSagaMiddleware = (options = {}) => {
-  const channel = stdChannel();
+  const multicast = stdChannel();
+
   const context = options.context || undefined;
-  const runSaga = (store, saga) =>
-    runSagaInternal(
+  const runSaga = (store, saga) => {
+    const channel = new Proxy(
+      {},
+      {
+        get(ref, prop, _target) {
+          if (prop !== "take") {
+            return Reflect.get(multicast, prop);
+          }
+          return (cb, matcher) => {
+            function unwrappingCallback(result) {
+              if (!result[SAGA_ACTION] || typeof result.type !== "string") {
+                cb(result);
+                return;
+              }
+              cb({
+                ...result,
+                type: store.unwrap(result.type),
+              });
+            }
+            cb.cancel = () => unwrappingCallback.cancel();
+            return multicast.take(unwrappingCallback, matcher);
+          };
+        },
+      },
+    );
+
+    return runSagaInternal(
       {
         context,
         channel,
@@ -27,7 +53,7 @@ const createSagaMiddleware = (options = {}) => {
                     [SAGA_ACTION]: effect[SAGA_ACTION],
                     combinator: effect.combinator,
                     payload: {
-                      channel: effect.payload.channel,  // TODO this should be probably improved
+                      channel: effect.payload.channel,
                       pattern: store.wrap(effect.payload.pattern),
                     },
                     type: effect.type,
@@ -42,7 +68,7 @@ const createSagaMiddleware = (options = {}) => {
                     [IO]: effect[IO],
                     combinator: effect.combinator,
                     payload: {
-                      channel: effect.payload.channel,  // TODO this should be probably improved
+                      channel: effect.payload.channel,
                       pattern,
                     },
                     type: effect.type,
@@ -82,11 +108,13 @@ const createSagaMiddleware = (options = {}) => {
       },
       saga,
     );
+  };
+
   setSagaRunner(runSaga);
   return {
     sagaMiddleware: (_store) => (next) => (action) => {
       const result = next(action);
-      channel.put(action);
+      multicast.put(action);
       return result;
     },
     runSaga,
