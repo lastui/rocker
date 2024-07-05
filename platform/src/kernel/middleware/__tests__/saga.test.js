@@ -35,6 +35,7 @@ describe("saga middleware ", () => {
       const store = configureStore([sagaMiddleware])({});
 
       store.wrap = (type) => (!type || type.startsWith("@@") ? type : `test_${type}`);
+      store.unwrap = (type) => (type && type.startsWith("test_") ? type.slice(5) : type);
 
       beforeEach(() => {
         store.clearActions();
@@ -86,7 +87,7 @@ describe("saga middleware ", () => {
         });
 
         store.dispatch({ type: "test_REQUEST" });
-        expect(sniff).toEqual([{ type: "test_REQUEST" }]);
+        expect(sniff).toEqual([{ type: "REQUEST" }]);
       });
 
       it('take(["REQUEST"])', () => {
@@ -96,7 +97,7 @@ describe("saga middleware ", () => {
         });
 
         store.dispatch({ type: "test_REQUEST" });
-        expect(sniff).toEqual([{ type: "test_REQUEST" }]);
+        expect(sniff).toEqual([{ type: "REQUEST" }]);
       });
 
       it("take(() => true)", () => {

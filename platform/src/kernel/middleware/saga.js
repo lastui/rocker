@@ -18,7 +18,7 @@ const createSagaMiddleware = (options = {}) => {
           }
           return (cb, matcher) => {
             function unwrappingCallback(result) {
-              if (!result[SAGA_ACTION] || typeof result.type !== "string") {
+              if (!result || typeof result.type !== "string") {
                 cb(result);
                 return;
               }
@@ -50,7 +50,6 @@ const createSagaMiddleware = (options = {}) => {
                 if (typeof effect.payload.pattern === "string") {
                   return next({
                     [IO]: effect[IO],
-                    [SAGA_ACTION]: effect[SAGA_ACTION],
                     combinator: effect.combinator,
                     payload: {
                       channel: effect.payload.channel,
