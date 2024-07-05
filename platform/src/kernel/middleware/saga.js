@@ -27,7 +27,7 @@ const createSagaMiddleware = (options = {}) => {
                     [SAGA_ACTION]: effect[SAGA_ACTION],
                     combinator: effect.combinator,
                     payload: {
-                      channel: effect.payload.channel,
+                      channel: effect.payload.channel,  // TODO this should be probably improved
                       pattern: store.wrap(effect.payload.pattern),
                     },
                     type: effect.type,
@@ -42,7 +42,7 @@ const createSagaMiddleware = (options = {}) => {
                     [IO]: effect[IO],
                     combinator: effect.combinator,
                     payload: {
-                      channel: effect.payload.channel,
+                      channel: effect.payload.channel,  // TODO this should be probably improved
                       pattern,
                     },
                     type: effect.type,
