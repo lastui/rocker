@@ -32,6 +32,9 @@ const handler = {
       const prefix = RUNE + name + RUNE;
       return {
         unwrap(type) {
+          if (!type || type[0] !== RUNE) {
+            return type;
+          }
           if (type.startsWith(prefix)) {
             return type.slice(prefix.length);
           }

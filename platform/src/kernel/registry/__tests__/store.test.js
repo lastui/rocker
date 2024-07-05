@@ -61,6 +61,13 @@ describe("store registry", () => {
         expect(typeof store.wrap).toEqual("function");
         expect(store.wrap("x")).toEqual("x");
       });
+
+      it(".unwrap", () => {
+        const store = getStore();
+
+        expect(typeof store.unwrap).toEqual("function");
+        expect(store.unwrap("x")).toEqual("x");
+      });
     });
 
     describe("namespace", () => {
@@ -212,6 +219,19 @@ describe("store registry", () => {
       expect(store.wrap("$other-feature$THING")).toEqual("$other-feature$THING");
       expect(store.wrap("@@agenda/THING")).toEqual("@@agenda/THING");
       expect(store.wrap("THING")).toEqual("$my-feature$THING");
+    });
+
+    it(".unwrap", () => {
+      const storeRef = configureStore([])({});
+      setStore(storeRef);
+
+      const store = getStore().namespace("my-feature");
+      expect(typeof store.unwrap).toEqual("function");
+
+      expect(store.unwrap()).toEqual();
+      expect(store.unwrap("$other-feature$THING")).toEqual("$other-feature$THING");
+      expect(store.unwrap("@@agenda/THING")).toEqual("@@agenda/THING");
+      expect(store.unwrap("$my-feature$THING")).toEqual("THING");
     });
   });
 });
