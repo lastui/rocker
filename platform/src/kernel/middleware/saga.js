@@ -8,28 +8,32 @@ const createSagaMiddleware = (options = {}) => {
   const multicast = stdChannel();
 
   const context = options.context || undefined;
+
   const runSaga = (store, saga) => {
+    function takeCallback(cb, matcher) {
+      function unwrappingCallback(result) {
+        if (!result || typeof result.type !== "string") {
+          cb(result);
+          return;
+        }
+        cb({
+          ...result,
+          type: store.unwrap(result.type),
+        });
+      }
+
+      cb.cancel = () => unwrappingCallback.cancel();
+      return multicast.take(unwrappingCallback, matcher);
+    }
+
     const channel = new Proxy(
       {},
       {
-        get(ref, prop, _target) {
-          if (prop !== "take") {
-            return Reflect.get(multicast, prop);
+        get(_ref, prop, _target) {
+          if (prop === "take") {
+            return takeCallback;
           }
-          return (cb, matcher) => {
-            function unwrappingCallback(result) {
-              if (!result || typeof result.type !== "string") {
-                cb(result);
-                return;
-              }
-              cb({
-                ...result,
-                type: store.unwrap(result.type),
-              });
-            }
-            cb.cancel = () => unwrappingCallback.cancel();
-            return multicast.take(unwrappingCallback, matcher);
-          };
+          return Reflect.get(multicast, prop);
         },
       },
     );
@@ -110,6 +114,7 @@ const createSagaMiddleware = (options = {}) => {
   };
 
   setSagaRunner(runSaga);
+
   return {
     sagaMiddleware: (_store) => (next) => (action) => {
       const result = next(action);
