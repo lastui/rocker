@@ -1,5 +1,5 @@
 import configureStore from "redux-mock-store";
-import { put, take, all } from "redux-saga/effects";
+import { put, take, fork, cancel, all } from "redux-saga/effects";
 
 import createSagaMiddleware from "../saga";
 
@@ -21,6 +21,7 @@ describe("saga middleware ", () => {
 
       const store = configureStore([sagaMiddleware])({});
       store.wrap = (type) => `test_${type}`;
+      store.unwrap = (type) => type.slice(5);
 
       runSaga(store, function* () {
         yield put({ type: "probe" });
@@ -44,6 +45,15 @@ describe("saga middleware ", () => {
       it("all([])", () => {
         runSaga(store, function* () {
           yield all([]);
+        });
+      });
+
+      it("cancel()", () => {
+        runSaga(store, function* () {
+          const task = yield fork(function* () {
+            yield take("NEVER");
+          });
+          yield cancel(task);
         });
       });
 
@@ -88,6 +98,17 @@ describe("saga middleware ", () => {
 
         store.dispatch({ type: "test_REQUEST" });
         expect(sniff).toEqual([{ type: "REQUEST" }]);
+      });
+
+      it('take(Symbol("REQUEST"))', () => {
+        const symbol = Symbol("REQUEST");
+        const sniff = [];
+        runSaga(store, function* () {
+          sniff.push(yield take(symbol));
+        });
+
+        store.dispatch({ type: symbol });
+        expect(sniff).toEqual([{ type: symbol }]);
       });
 
       it('take(["REQUEST"])', () => {

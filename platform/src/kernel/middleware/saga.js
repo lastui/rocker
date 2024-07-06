@@ -9,46 +9,33 @@ const createSagaMiddleware = (options = {}) => {
 
   const context = options.context || undefined;
 
-  const runSaga = (store, saga) => {
-    function takeCallback(cb, matcher) {
-      function unwrappingCallback(result) {
-        if (!result || typeof result.type !== "string") {
-          cb(result);
-          return;
-        }
-        cb({
-          ...result,
-          type: store.unwrap(result.type),
-        });
-      }
-
-      cb.cancel = () => unwrappingCallback.cancel();
-      return multicast.take(unwrappingCallback, matcher);
-    }
-
-    const channel = new Proxy(
-      {},
-      {
-        get(_ref, prop, _target) {
-          if (prop === "take") {
-            return takeCallback;
-          }
-          return Reflect.get(multicast, prop);
-        },
-      },
-    );
-
-    return runSagaInternal(
+  const runSaga = (store, saga) =>
+    runSagaInternal(
       {
         context,
-        channel,
+        channel: {
+          take(cb, matcher) {
+            function unwrappingCallback(result) {
+              if (typeof result.type !== "string") {
+                cb(result);
+                return;
+              }
+              cb({
+                ...result,
+                type: store.unwrap(result.type),
+              });
+            }
+            cb.cancel = () => unwrappingCallback.cancel();
+            return multicast.take(unwrappingCallback, matcher);
+          },
+        },
         dispatch: store.dispatch,
         getState: store.getState,
         effectMiddlewares: [
           (next) => (effect) => {
             switch (effect.type) {
               case "TAKE": {
-                if (!effect.payload.pattern || effect.payload.pattern === "*") {
+                if (!effect.payload.pattern || effect.payload.pattern === "*" || typeof effect.payload.pattern === "symbol") {
                   return next(effect);
                 }
                 if (typeof effect.payload.pattern === "string") {
@@ -111,7 +98,6 @@ const createSagaMiddleware = (options = {}) => {
       },
       saga,
     );
-  };
 
   setSagaRunner(runSaga);
 
