@@ -111,14 +111,19 @@ describe("saga middleware ", () => {
         expect(sniff).toEqual([{ type: symbol }]);
       });
 
-      it('take(["REQUEST"])', () => {
+      it('take(["REQUEST", Symbol("REQUEST")])', () => {
+        const symbol = Symbol("REQUEST");
         const sniff = [];
         runSaga(store, function* () {
-          sniff.push(yield take(["REQUEST"]));
+          while (true) {
+            const action = yield take(["REQUEST", symbol]);
+            sniff.push(action);
+          }
         });
 
         store.dispatch({ type: "test_REQUEST" });
-        expect(sniff).toEqual([{ type: "REQUEST" }]);
+        store.dispatch({ type: symbol });
+        expect(sniff).toEqual([{ type: "REQUEST" }, { type: symbol }]);
       });
 
       it("take(() => true)", () => {

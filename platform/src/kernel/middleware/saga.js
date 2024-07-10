@@ -52,7 +52,11 @@ const createSagaMiddleware = (options = {}) => {
                 if (Array.isArray(effect.payload.pattern)) {
                   const pattern = new Array(effect.payload.pattern.length);
                   for (let i = 0; i < effect.payload.pattern.length; i++) {
-                    pattern[i] = store.wrap(effect.payload.pattern[i]);
+                    if (effect.payload.pattern[i] === "*" || typeof effect.payload.pattern[i] === "symbol") {
+                      pattern[i] = effect.payload.pattern[i];
+                    } else {
+                      pattern[i] = store.wrap(effect.payload.pattern[i]);
+                    }
                   }
                   return next({
                     [IO]: effect[IO],
