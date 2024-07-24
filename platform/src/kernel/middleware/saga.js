@@ -5,26 +5,42 @@ import { warning } from "../../utils";
 import { setSagaRunner } from "../registry/saga";
 
 const createSagaMiddleware = (options = {}) => {
-  const channel = stdChannel();
+  const multicast = stdChannel();
+
   const context = options.context || undefined;
+
   const runSaga = (store, saga) =>
     runSagaInternal(
       {
         context,
-        channel,
+        channel: {
+          take(cb, matcher) {
+            function unwrappingCallback(result) {
+              if (typeof result.type !== "string") {
+                cb(result);
+                return;
+              }
+              cb({
+                ...result,
+                type: store.unwrap(result.type),
+              });
+            }
+            cb.cancel = () => unwrappingCallback.cancel();
+            return multicast.take(unwrappingCallback, matcher);
+          },
+        },
         dispatch: store.dispatch,
         getState: store.getState,
         effectMiddlewares: [
           (next) => (effect) => {
             switch (effect.type) {
               case "TAKE": {
-                if (!effect.payload.pattern || effect.payload.pattern === "*") {
+                if (!effect.payload.pattern || effect.payload.pattern === "*" || typeof effect.payload.pattern === "symbol") {
                   return next(effect);
                 }
                 if (typeof effect.payload.pattern === "string") {
                   return next({
                     [IO]: effect[IO],
-                    [SAGA_ACTION]: effect[SAGA_ACTION],
                     combinator: effect.combinator,
                     payload: {
                       channel: effect.payload.channel,
@@ -36,7 +52,11 @@ const createSagaMiddleware = (options = {}) => {
                 if (Array.isArray(effect.payload.pattern)) {
                   const pattern = new Array(effect.payload.pattern.length);
                   for (let i = 0; i < effect.payload.pattern.length; i++) {
-                    pattern[i] = store.wrap(effect.payload.pattern[i]);
+                    if (effect.payload.pattern[i] === "*" || typeof effect.payload.pattern[i] === "symbol") {
+                      pattern[i] = effect.payload.pattern[i];
+                    } else {
+                      pattern[i] = store.wrap(effect.payload.pattern[i]);
+                    }
                   }
                   return next({
                     [IO]: effect[IO],
@@ -82,11 +102,13 @@ const createSagaMiddleware = (options = {}) => {
       },
       saga,
     );
+
   setSagaRunner(runSaga);
+
   return {
     sagaMiddleware: (_store) => (next) => (action) => {
       const result = next(action);
-      channel.put(action);
+      multicast.put(action);
       return result;
     },
     runSaga,

@@ -20,7 +20,7 @@ const initial = {
 
 const handler = {
   get(ref, prop, store) {
-    if (prop === "wrap") {
+    if (prop === "wrap" || prop === "unwrap") {
       return IDENTITY;
     }
     if (prop !== "namespace") {
@@ -31,6 +31,15 @@ const handler = {
     return (name) => {
       const prefix = RUNE + name + RUNE;
       return {
+        unwrap(type) {
+          if (!type || type[0] !== RUNE) {
+            return type;
+          }
+          if (type.startsWith(prefix)) {
+            return type.slice(prefix.length);
+          }
+          return type;
+        },
         wrap(type) {
           if (!type || type[0] === RUNE) {
             return type;
