@@ -22,6 +22,7 @@ const Module = forwardRef((props, ref) => {
 
   const available = useMemo(() => moduleLoader.isAvailable(props.name), [props.name, lastLocalUpdate, lastUpdate]);
 
+  // TODO when react19 is available refactor with useTransition with async support
   useEffect(() => {
     const controller = new AbortController();
 
@@ -48,10 +49,8 @@ const Module = forwardRef((props, ref) => {
 
   const loadedModule = moduleLoader.getLoadedModule(props.name);
 
-  const isLoading = moduleLoader.isModuleLoading(props.name);
-
   if (!isReady || !loadedModule) {
-    if (isLoading && props.fallback) {
+    if (props.fallback && moduleLoader.isModuleLoading(props.name)) {
       return createElement(Fallback, composite.owned, props.fallback);
     }
     return null;
