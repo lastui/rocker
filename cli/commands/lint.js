@@ -1,6 +1,6 @@
 exports.command = "lint";
 
-exports.describe = "lint sources";
+exports.describe = "run static analysis";
 
 exports.builder = {};
 

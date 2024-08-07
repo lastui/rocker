@@ -1,6 +1,6 @@
 exports.command = "upgrade";
 
-exports.describe = "upgrade version to latest";
+exports.describe = "upgrade to latest compatible";
 
 exports.builder = {};
 

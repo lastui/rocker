@@ -19,15 +19,11 @@ async function getCurrentVersion(name) {
   const result = JSON.parse(await readFile(path.resolve(process.env.INIT_CWD, "package.json")));
 
   if (result.dependencies && name in result.dependencies) {
-    // TODO use semver min version
-    return result.dependencies[name].replace(/[^\d.]/g, "");
+    return semver.minVersion(result.dependencies[name]).version;
   }
-
   if (result.devDependencies && name in result.devDependencies) {
-    // TODO use semver min version
-    return result.devDependencies[name].replace(/[^\d.]/g, "");
+    return semver.minVersion(result.devDependencies[name]).version;
   }
-
   return null;
 }
 
@@ -44,29 +40,26 @@ async function getLatestVersion(name) {
     },
   });
 
-  const fragment = { name };
-  const fields = ["versions"];
+  const versions = {};
 
   for await (const { key, value } of stream) {
-    if (fields.includes(key)) {
-      fragment[key] = value;
-      if (Object.keys(fragment).length === fields.length + 1) {
-        break;
-      }
+    if (key === "versions") {
+      Object.assign(versions, value);
+      break;
     }
   }
 
   let newest = null;
 
-  for (const version in fragment.versions) {
-    const item = fragment.versions[version];
+  for (const version in versions) {
+    const wantedEngine = versions[version].engines?.node;
 
-    const wantedEngine = item?.engines?.node;
+    if (wantedEngine && !semver.satisfies(process.version, wantedEngine)) {
+      continue;
+    }
 
-    if (!wantedEngine || semver.satisfies(process.version, wantedEngine)) {
-      if (!newest || semver.gt(version, newest)) {
-        newest = version;
-      }
+    if (!newest || semver.gt(version, newest)) {
+      newest = version;
     }
   }
 
@@ -74,42 +67,44 @@ async function getLatestVersion(name) {
 }
 
 export async function run(options) {
-  let changed = false;
+  const outdated = [];
 
-  const scheduled = ["@lastui/dependencies", "@lastui/rocker"];
-
-  for (const item of scheduled) {
-    const current = await getCurrentVersion(item);
+  for (const name of ["@lastui/dependencies", "@lastui/rocker"]) {
+    const current = await getCurrentVersion(name);
     if (!current) {
       continue;
     }
 
-    const latest = await getLatestVersion(item);
+    const latest = await getLatestVersion(name);
 
     if (!latest) {
       continue;
     }
 
-    if (current === latest) {
-      continue;
+    if (semver.gt(latest, current)) {
+      outdated.push({
+        name,
+        current,
+        latest,
+      });
     }
-
-    changed = true;
-
-    const idx = longestCommonPrefix(latest, current);
-
-    console.log(`Upgrading ${colors.bold.green(item)} ${current.substring(0, idx)}${colors.cyan(latest.substring(idx))}`);
-
-    await execShellCommand(
-      `npm --prefix=${process.env.INIT_CWD} i --no-progress --package-lock-only --save-exact --no-fund --no-audit ${item}@${latest}`,
-    );
   }
 
-  if (!changed) {
+  if (outdated.length === 0) {
     console.log(colors.green("Up to date"));
     return;
   }
 
-  console.log(colors.bold.green("Installing upgrade"));
+  for (const { name, current, latest } of outdated) {
+    const idx = longestCommonPrefix(latest, current);
+
+    console.log(`Bumping ${colors.cyan.bold(name)} to ${current.substring(0, idx)}${colors.cyan(latest.substring(idx))}`);
+
+    await execShellCommand(
+      `npm --prefix=${process.env.INIT_CWD} i --no-progress --package-lock-only --save-exact --no-fund --no-audit ${name}@${latest}`,
+    );
+  }
+
+  console.log(colors.green("Installing upgrade"));
   await execShellCommand(`npm --prefix=${process.env.INIT_CWD} ci --no-progress --ci --no-fund`);
 }

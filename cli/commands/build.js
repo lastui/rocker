@@ -1,6 +1,6 @@
 exports.command = "build";
 
-exports.describe = "bundle package";
+exports.describe = "compile sources";
 
 exports.builder = {};
 
