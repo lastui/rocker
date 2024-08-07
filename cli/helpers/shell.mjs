@@ -5,7 +5,7 @@ export async function execShellCommand(cmd) {
   return new Promise((resolve, reject) => {
     exec(cmd, { env: process.env, maxBuffer: 1024 * 500 }, (error, stdout, stderr) => {
       if (error) {
-        return reject(error);
+        return reject(stderr ? new Error(stderr) : error);
       } else {
         return resolve(stdout.trim());
       }
