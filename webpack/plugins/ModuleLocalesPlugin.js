@@ -45,7 +45,7 @@ class ModuleLocalesPlugin {
               if (origin.request.indexOf("core-js/") !== -1) {
                 continue;
               }
-              if (origin.request.endsWith("tslib/tslib.es6.js")) {
+              if (origin.request.indexOf("tslib/") !== -1) {
                 continue;
               }
               if (origin.request.indexOf("regenerator-runtime/") !== -1) {
