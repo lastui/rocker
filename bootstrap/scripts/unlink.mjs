@@ -21,6 +21,7 @@ async function unlinkModule(...nodePath) {
 
 await unlinkModule("@lastui", "rocker", "bootstrap");
 await unlinkModule("core-js");
+await unlinkModule("tslib");
 await unlinkDLL("dependencies");
 await unlinkDLL("rocker", "platform");
 await ulinkDependenciesModules();

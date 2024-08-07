@@ -1,3 +1,4 @@
+// INFO: jest-dom matchers leak
 import matchers from "@testing-library/jest-dom/matchers";
 import "whatwg-fetch";
 

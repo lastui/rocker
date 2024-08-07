@@ -4,14 +4,14 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import glob from "glob";
 
-async function verifyManifests(pattern) {
+async function verifyManifests(workspace) {
   const fileStream = new Readable({ objectMode: true });
   fileStream._read = () => {};
 
   glob(
-    pattern + "*-manifest.json",
+    workspace + "*-manifest.json",
     {
-      cwd: path.resolve(fileURLToPath(import.meta.url), "..", "..", "dll"),
+      cwd: path.resolve(fileURLToPath(import.meta.url), "..", "..", workspace, "dll"),
       ignore: [],
     },
     (error, files) => {
@@ -34,7 +34,7 @@ async function verifyManifests(pattern) {
   ];
 
   for await (const filePath of fileStream) {
-    const manifestFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", "dll", filePath);
+    const manifestFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", workspace, "dll", filePath);
     const manifest = JSON.parse(await fs.readFile(manifestFile, { encoding: "utf8" }));
 
     for (const entry in manifest.content) {
@@ -43,11 +43,11 @@ async function verifyManifests(pattern) {
       }
 
       if (!entry.startsWith("./node_modules")) {
-        throw new AssertionError(`${filename} contains wrongly linked reference ${entry}`);
+        throw new AssertionError(`${filePath} contains wrongly linked reference ${entry}`);
       }
     }
 
-    if (!filePath.startsWith(pattern + "-")) {
+    if (!filePath.startsWith(workspace + "-")) {
       continue;
     }
 
@@ -71,3 +71,5 @@ async function verifyManifests(pattern) {
 }
 
 await verifyManifests("dependencies");
+await verifyManifests("platform");
+await verifyManifests("bootstrap");

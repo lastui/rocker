@@ -53,5 +53,6 @@ async function linkSelfAsModule() {
 
 await linkDependenciesModules();
 await linkDevModule("core-js");
+await linkDevModule("tslib");
 await linkDLL("dependencies");
 await linkSelfAsModule();

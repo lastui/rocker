@@ -16,5 +16,6 @@ async function linkDevModule(...nodePath) {
 }
 
 await linkDevModule("core-js");
+await linkDevModule("tslib");
 await linkDevModule("buffer");
 await linkDevModule("ieee754");

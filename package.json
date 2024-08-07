@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.20.6",
+  "version": "0.20.7",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -63,7 +63,7 @@
   ],
   "scripts": {
     "build": "npm run build:dependencies && npm run build:platform && npm run build:bootstrap",
-    "postbuild": "node ./dependencies/scripts/verify-dlls.mjs && node ./platform/scripts/verify-dlls.mjs && node ./bootstrap/scripts/verify-dlls.mjs",
+    "postbuild": "node ./scripts/verify-dlls.mjs && node ./cli/index.js lint --fix",
     "prebuild:bootstrap": "node ./bootstrap/scripts/link.mjs",
     "build:bootstrap": "npm run build:bootstrap:dev && npm run build:bootstrap:prod",
     "postbuild:bootstrap": "node ./bootstrap/scripts/unlink.mjs",
