@@ -82,16 +82,18 @@ require("yargs")
   })
   .option("fix", {
     type: "boolean",
-    describe: "Fix automatically fixable issues",
+    describe: "Try to automatically fix issues",
   })
   .option("cwd", {
     type: "string",
-    describe: "Override working directory",
+    describe: "Set working directory",
   })
   .conflicts("quiet", "debug")
   .command(envelope(require("./commands/build.js")))
+  .command(envelope(require("./commands/upgrade.js")))
   .command(envelope(require("./commands/start.js")))
   .command(envelope(require("./commands/test.js")))
   .command(envelope(require("./commands/lint.js")))
-  .demandCommand()
-  .help(false).argv;
+  .showHelpOnFail(false)
+  .strict()
+  .help(true).argv;
