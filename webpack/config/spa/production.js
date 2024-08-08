@@ -4,6 +4,7 @@ const HTMLWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 const webpack = require("webpack");
+const { StatsWriterPlugin } = require("webpack-stats-plugin");
 
 const dependenciesDlls = require("@lastui/dependencies");
 
@@ -216,6 +217,13 @@ config.plugins.push(
     },
   ]),
   new NormalizedModuleIdPlugin(),
+  new StatsWriterPlugin({
+    filename: path.join("..", "reports", "sbom.json"),
+    stats: {
+      assets: false,
+      dependentModules: true,
+    },
+  }),
 );
 
 module.exports = config;
