@@ -82,11 +82,7 @@ export async function run(options) {
     }
 
     if (semver.gt(latest, current)) {
-      outdated.push({
-        name,
-        current,
-        latest,
-      });
+      outdated.push({ name, current, latest });
     }
   }
 
