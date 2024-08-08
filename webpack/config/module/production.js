@@ -1,5 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
+const { StatsWriterPlugin } = require("webpack-stats-plugin");
 
 const dependenciesDlls = require("@lastui/dependencies");
 
@@ -167,6 +168,13 @@ config.plugins.push(
     context: process.env.INIT_CWD,
   }),
   new NormalizedModuleIdPlugin(),
+  new StatsWriterPlugin({
+    filename: path.join("..", "reports", "bundle-stats.json"),
+    stats: {
+      assets: false,
+      dependentModules: true,
+    },
+  }),
 );
 
 module.exports = config;

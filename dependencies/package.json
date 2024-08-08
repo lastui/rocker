@@ -14,14 +14,18 @@
   "files": [
     "dll/*-manifest.json",
     "dll/*.js",
-    "index.js"
+    "index.js",
+    "sbom.json"
   ],
   "scripts": {
-    "prebuild": "npm ci --no-fund --no-audit && node ./scripts/link.mjs",
+    "prebuild": "npm ci --no-fund --no-audit",
     "build": "npm run build:dev && npm run build:prod",
-    "postbuild": "node ./scripts/unlink.mjs",
+    "prebuild:dev": "node ./scripts/link.mjs",
     "build:dev": "NODE_ENV=development node ./scripts/build.mjs",
-    "build:prod": "NODE_ENV=production node ./scripts/build.mjs"
+    "postbuild:dev": "node ./scripts/unlink.mjs",
+    "prebuild:prod": "node ./scripts/link.mjs",
+    "build:prod": "NODE_ENV=production node ./scripts/build.mjs",
+    "postbuild:prod": "node ./scripts/unlink.mjs && node ./scripts/generate-sbom.mjs"
   },
   "dependencies": {
     "@linaria/core": "6.2.0",
