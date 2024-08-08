@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.20.8",
+  "version": "0.20.9",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -26,6 +26,7 @@
     "cli/commands/lint.js",
     "cli/commands/start.js",
     "cli/commands/test.js",
+    "cli/commands/upgrade.js",
     "cli/helpers/eslint.mjs",
     "cli/helpers/io.mjs",
     "cli/helpers/jest.mjs",
@@ -34,6 +35,7 @@
     "cli/helpers/prettier.mjs",
     "cli/helpers/shell.mjs",
     "cli/helpers/stylelint.mjs",
+    "cli/helpers/upgrade.mjs",
     "cli/helpers/webpack.mjs",
     "cli/index.js",
     "jest/__mocks__/platform.js",
