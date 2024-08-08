@@ -169,7 +169,7 @@ config.plugins.push(
   }),
   new NormalizedModuleIdPlugin(),
   new StatsWriterPlugin({
-    filename: path.join("..", "reports", "sbom.json"),
+    filename: path.join("..", "reports", "bundle-stats.json"),
     stats: {
       assets: false,
       dependentModules: true,
