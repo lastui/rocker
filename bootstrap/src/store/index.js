@@ -14,8 +14,8 @@ import {
   createSagaMiddleware,
 } from "@lastui/rocker/platform";
 
-import { runtimeReducer } from "../reducer";
-import { watchRefresh, watchFetchContext, watchBootstrap } from "../saga";
+import { runtimeReducer, localisationReducer } from "../reducer";
+import { watchRefresh, watchFetchContext, watchBootstrap, watchModules, watchChangeLanguage } from "../saga";
 
 export default (router, fetchContext, bootstrapMiddlewares) => {
   const dynamicMiddleware = createDynamicMiddleware();
@@ -46,6 +46,7 @@ export default (router, fetchContext, bootstrapMiddlewares) => {
   const reducer = combineReducers({
     runtime: runtimeReducer,
     shared: sharedReducer,
+    localisation: localisationReducer,
     env: envReducer,
     modules: modulesReducer,
   });
@@ -54,7 +55,7 @@ export default (router, fetchContext, bootstrapMiddlewares) => {
   setStore(store);
 
   runSaga(getStore(), function* rooSaga() {
-    yield all([watchBootstrap(), watchFetchContext(), watchRefresh()]);
+    yield all([watchBootstrap(), watchFetchContext(), watchRefresh(), watchModules(), watchChangeLanguage()]);
   });
 
   return store;

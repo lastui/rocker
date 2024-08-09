@@ -32,9 +32,5 @@ describe("constants", () => {
       expect(constants.MODULE_UNLOADED).toBeDefined();
       expect(constants.MODULE_READY).toBeDefined();
     });
-
-    it("i18n", () => {
-      expect(constants.I18N_MESSAGES_BATCH).toBeDefined();
-    });
   });
 });

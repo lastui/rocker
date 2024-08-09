@@ -8,7 +8,7 @@ describe("selector", () => {
       runtime: {
         entrypoint: "value",
       },
-      env: {
+      localisation: {
         language: "en-US",
         messages: {
           "en-US": {
@@ -38,18 +38,18 @@ describe("selector", () => {
 
     it("should return a structure supporting getting i18n keys", () => {
       const messages = selectors.getI18nMessagesFacade("en-US")(state);
-      expect(messages.foo).toEqual(state.env.messages["en-US"].foo);
+      expect(messages.foo).toEqual(state.localisation.messages["en-US"].foo);
       expect(messages.miss).toBeUndefined();
     });
 
     it("should fallback on default locale when it is missing in current locale", () => {
-      state.env.language = "fr-FR";
+      state.localisation.language = "fr-FR";
       const messages = selectors.getI18nMessagesFacade("en-US")(state);
-      expect(messages.foo).toEqual(state.env.messages["en-US"].foo);
+      expect(messages.foo).toEqual(state.localisation.messages["en-US"].foo);
     });
 
     it("should work properly when no messages exist at all", () => {
-      delete state.env.messages;
+      delete state.localisation.messages;
       const messages = selectors.getI18nMessagesFacade("en-US")(state);
       expect(messages.foo).toBeUndefined();
     });

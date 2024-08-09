@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+import localisationReducer from "./localisation";
 import runtimeReducer from "./runtime";
 
-export { runtimeReducer };
+export { runtimeReducer, localisationReducer };

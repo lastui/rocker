@@ -158,15 +158,6 @@ describe("modules reducer", () => {
     });
   });
 
-  describe("I18N_MESSAGES_BATCH", () => {
-    it("passthrough", () => {
-      const action = {
-        type: constants.I18N_MESSAGES_BATCH,
-      };
-      expect(reducer(initialState, action)).toEqual(initialState);
-    });
-  });
-
   describe("MODULE_LOADED", () => {
     it("passthrough", () => {
       const action = {
