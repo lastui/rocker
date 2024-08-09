@@ -47,9 +47,6 @@ jobs:
       - run: npm run build:platform
       - run: npm run build:bootstrap
       - run: npm run postbuild
-      - uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: '${{ github.workspace }}/dependencies/dll'
       - name: Cache workspace
         id: cache
         uses: actions/cache/save@v4

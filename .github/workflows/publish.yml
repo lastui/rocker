@@ -32,11 +32,11 @@ jobs:
       - name: Publish @lastui/dependencies
         continue-on-error: true
         working-directory: dependencies
-        run: npm publish --fetch-retries=10 --loglevel=verbose
+        run: npm publish --fetch-retries=10 --loglevel=verbose --access=public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: Publish @lastui/rocker
         continue-on-error: true
-        run: npm publish --fetch-retries=10 --loglevel=verbose
+        run: npm publish --fetch-retries=10 --loglevel=verbose --access=public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
