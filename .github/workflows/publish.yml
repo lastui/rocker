@@ -21,6 +21,16 @@ jobs:
           node-version: 20.11.0
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
+      - name: Wait for cache to be ready
+        timeout-minutes: 1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh extension install actions/gh-actions-cache
+          KEY="cache-${{ github.sha }}-dlls"
+          while ret=0; $(gh actions-cache list --key $KEY | grep -q $KEY) || ret=$?; [ $ret -ne 0 ] ; do
+            sleep 1
+          done
       - uses: actions/cache/restore@v4
         with:
           path: |
