@@ -178,9 +178,6 @@ describe("modules reducer", () => {
 
   describe("MODULE_INIT", () => {
     it("module without reducer", () => {
-      const spyDebug = jest.spyOn(console, "debug");
-      spyDebug.mockImplementation(() => {});
-
       const action = {
         type: constants.MODULE_INIT,
         payload: {
@@ -189,14 +186,9 @@ describe("modules reducer", () => {
       };
 
       expect(reducer(initialState, action)).toEqual(initialState);
-
-      expect(spyDebug).toHaveBeenCalledWith("module my-feature initialized");
     });
 
     it("module with working reducer", () => {
-      const spyDebug = jest.spyOn(console, "debug");
-      spyDebug.mockImplementation(() => {});
-
       const action = {
         type: constants.MODULE_INIT,
         payload: {
@@ -217,14 +209,9 @@ describe("modules reducer", () => {
         },
       };
       expect(reducer(state, action)).toEqual(expectedState);
-
-      expect(spyDebug).toHaveBeenCalledWith("module my-feature initialized");
     });
 
     it("module with broken reducer", () => {
-      const spyDebug = jest.spyOn(console, "debug");
-      spyDebug.mockImplementation(() => {});
-
       const spyError = jest.spyOn(console, "error");
       spyError.mockImplementation(() => {});
 
@@ -239,7 +226,7 @@ describe("modules reducer", () => {
       };
       expect(reducer(initialState, action)).toEqual(initialState);
 
-      expect(spyDebug).toHaveBeenCalledWith("module my-feature initialized");
+      //expect(spyDebug).toHaveBeenCalledWith("module my-feature initialized");
       expect(spyError).toHaveBeenCalledWith(
         "module my-feature reducer failed to reduce on action @@modules/INIT",
         new Error("ouch"),
@@ -249,9 +236,6 @@ describe("modules reducer", () => {
 
   describe("MODULE_READY", () => {
     it("passthrough", () => {
-      const spyDebug = jest.spyOn(console, "debug");
-      spyDebug.mockImplementation(() => {});
-
       const spyInfo = jest.spyOn(console, "info");
       spyInfo.mockImplementation(() => {});
 
@@ -263,16 +247,12 @@ describe("modules reducer", () => {
       };
       expect(reducer(initialState, action)).toEqual(initialState);
 
-      expect(spyDebug).toHaveBeenCalledWith("module my-feature ready");
       expect(spyInfo).toHaveBeenCalledWith("+ module my-feature");
     });
   });
 
   describe("MODULE_UNLOADED", () => {
     it("with existing module state", () => {
-      const spyDebug = jest.spyOn(console, "debug");
-      spyDebug.mockImplementation(() => {});
-
       const spyInfo = jest.spyOn(console, "info");
       spyInfo.mockImplementation(() => {});
 
@@ -293,15 +273,10 @@ describe("modules reducer", () => {
       };
       expect(reducer(state, action)).toEqual(expectedState);
 
-      expect(spyDebug).toHaveBeenCalledWith("module my-feature evicting redux state");
-      expect(spyDebug).toHaveBeenCalledWith("module my-feature unloaded");
       expect(spyInfo).toHaveBeenCalledWith("- module my-feature");
     });
 
     it("without existing module state", () => {
-      const spyDebug = jest.spyOn(console, "debug");
-      spyDebug.mockImplementation(() => {});
-
       const spyInfo = jest.spyOn(console, "info");
       spyInfo.mockImplementation(() => {});
 
@@ -313,7 +288,6 @@ describe("modules reducer", () => {
       };
       expect(reducer(initialState, action)).toEqual(initialState);
 
-      expect(spyDebug).toHaveBeenCalledWith("module my-feature unloaded");
       expect(spyInfo).toHaveBeenCalledWith("- module my-feature");
     });
   });

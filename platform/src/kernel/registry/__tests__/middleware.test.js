@@ -26,31 +26,14 @@ jest.mock("../../middleware/dynamic", () => {
 });
 
 describe("middleware registry", () => {
-  const debugSpy = jest.spyOn(console, "debug");
-  debugSpy.mockImplementation(() => {});
-
-  beforeEach(() => {
-    debugSpy.mockClear();
-  });
-
   it("addMiddleware", async () => {
     await addMiddleware("my-feature", () => (_store) => (next) => (action) => next(action));
-    expect(debugSpy).toHaveBeenLastCalledWith("module my-feature introducing middleware");
-
     await addMiddleware("my-feature", () => (_store) => (next) => (action) => next(action));
-    expect(debugSpy).toHaveBeenLastCalledWith("module my-feature replacing middleware");
   });
 
   it("removeMiddleware", async () => {
     await addMiddleware("my-feature", () => (_store) => (next) => (action) => next(action));
-
     removeMiddleware("my-feature");
-
-    expect(debugSpy).toHaveBeenCalledWith("module my-feature removing middleware");
-    debugSpy.mockClear();
-
     removeMiddleware("my-feature");
-
-    expect(debugSpy).not.toHaveBeenCalled();
   });
 });

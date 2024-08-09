@@ -72,7 +72,6 @@ function createModulesReducer() {
       }
       case constants.MODULE_INIT: {
         const name = action.payload.module;
-        console.debug(`module ${name} initialized`);
         const reducer = modulesReducers[name];
         if (!reducer) {
           return state;
@@ -89,19 +88,13 @@ function createModulesReducer() {
       }
       case constants.MODULE_READY: {
         const name = action.payload.module;
-        console.debug(`module ${name} ready`);
         console.info(`+ module ${name}`);
         return state;
       }
       case constants.MODULE_UNLOADED: {
         const name = action.payload.module;
-        let changed = name in state;
-        if (changed) {
-          console.debug(`module ${name} evicting redux state`);
-        }
-        console.debug(`module ${name} unloaded`);
         console.info(`- module ${name}`);
-        if (changed) {
+        if (name in state) {
           const nextState = { ...state };
           delete nextState[name];
           return nextState;

@@ -5,16 +5,13 @@ jest.mock("../../reducer/modules", () => ({
 }));
 
 describe("reducer registry", () => {
-  const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
   const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
   beforeEach(() => {
-    debugSpy.mockClear();
     errorSpy.mockClear();
   });
 
   afterAll(() => {
-    debugSpy.mockRestore();
     errorSpy.mockRestore();
   });
 
@@ -22,12 +19,10 @@ describe("reducer registry", () => {
     await addReducer("my-feature", {
       foo: (state = {}, _action) => state,
     });
-    expect(debugSpy).toHaveBeenLastCalledWith("module my-feature introducing reducer");
 
     await addReducer("my-feature", {
       foo: (state = {}, _action) => state,
     });
-    expect(debugSpy).toHaveBeenLastCalledWith("module my-feature replacing reducer");
 
     await addReducer("my-feature", {
       bar: (_state, _action) => {
@@ -43,12 +38,6 @@ describe("reducer registry", () => {
     });
 
     removeReducer("my-feature");
-
-    expect(debugSpy).toHaveBeenCalledWith("module my-feature removing reducer");
-    debugSpy.mockClear();
-
     removeReducer("my-feature");
-
-    expect(debugSpy).not.toHaveBeenCalled();
   });
 });

@@ -3,9 +3,6 @@ import { CANCEL } from "redux-saga";
 import { downloadAsset, downloadProgram, SequentialProgramEvaluator } from "../assets";
 
 describe("assets registry", () => {
-  const debugSpy = jest.spyOn(console, "debug");
-  debugSpy.mockImplementation(() => {});
-
   global.fetch = jest.fn();
 
   beforeAll(() => {
@@ -18,7 +15,6 @@ describe("assets registry", () => {
 
   beforeEach(() => {
     global.fetch.mockClear();
-    debugSpy.mockClear();
   });
 
   describe("downloadAsset", () => {

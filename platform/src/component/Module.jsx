@@ -6,7 +6,7 @@ import moduleLoader from "../kernel/registry/loader";
 import Fallback from "./Fallback";
 
 const Module = forwardRef((props, ref) => {
-  const isReady = useSelector((state) => state.env.readyModules[props.name]);
+  const isReady = useSelector((state) => state.env.readyModules[props.name] === true);
 
   const lastUpdate = useSelector((state) => state.env.lastUpdate);
 
@@ -31,6 +31,7 @@ const Module = forwardRef((props, ref) => {
       if (controller.signal.aborted) {
         return;
       }
+
       if (changed) {
         setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
       }

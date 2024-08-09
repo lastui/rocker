@@ -10,16 +10,12 @@ function removeReducer(name) {
   if (!modulesReducers[name]) {
     return;
   }
-  console.debug(`module ${name} removing reducer`);
   delete modulesReducers[name];
 }
 
 async function addReducer(name, reducer) {
   if (modulesReducers[name]) {
     delete modulesReducers[name];
-    console.debug(`module ${name} replacing reducer`);
-  } else {
-    console.debug(`module ${name} introducing reducer`);
   }
   try {
     const composedReducer = combineReducers({
