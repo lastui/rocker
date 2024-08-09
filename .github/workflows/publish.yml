@@ -1,13 +1,15 @@
-name: Publish to npm
+name: Publish to registry.npmjs.org
 
 on:
   push:
     branches:
       - main
 
-  build:
+jobs:
+
+  publish:
     needs: test
-    name: Publish to npm
+    name: Publish to registry.npmjs.org
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +26,7 @@ on:
             dependencies/dll
             platform/dll
             bootstrap/dll
-          key: ${{ runner.os }}-workspace
+          key: cache-${{ github.sha }}
       - name: Publish @lastui/dependencies
         continue-on-error: true
         working-directory: dependencies

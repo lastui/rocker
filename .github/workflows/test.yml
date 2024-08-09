@@ -34,7 +34,7 @@ jobs:
             dependencies/dll
             platform/dll
             bootstrap/dll
-          key: ${{ steps.cache.outputs.cache-primary-key }}
+          key: cache-${{ github.sha }}
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
