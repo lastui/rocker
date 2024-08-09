@@ -19,7 +19,9 @@ jobs:
         with:
           node-version: 20.11.0
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: |
+            dependencies/package-lock.json
+            package-lock.json
       - name: install @lastui/rocker dependencies
         run: npm ci --no-fund --no-audit
       - name: install @lastui/dependencies dependencies
@@ -36,7 +38,9 @@ jobs:
         with:
           node-version: 20.11.0
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: |
+            dependencies/package-lock.json
+            package-lock.json
       - run: npm ci --no-fund --no-audit --prefer-offline --prefix=dependencies
       - run: npm ci --no-fund --no-audit --prefer-offline
       - run: npm run build:dependencies
@@ -66,7 +70,9 @@ jobs:
         with:
           node-version: 20.11.0
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: |
+            dependencies/package-lock.json
+            package-lock.json
       - run: npm ci --no-fund --no-audit --prefer-offline --prefix=dependencies
       - run: npm ci --no-fund --no-audit --prefer-offline
       - name: Test package platform
@@ -102,7 +108,9 @@ jobs:
         with:
           node-version: 20.11.0
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: |
+            dependencies/package-lock.json
+            package-lock.json
       - run: npm ci --no-fund --no-audit --prefer-offline --prefix=dependencies
       - run: npm ci --no-fund --no-audit --prefer-offline
       - run: npm run lint -- --debug
