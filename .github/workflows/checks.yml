@@ -82,7 +82,6 @@ jobs:
         with:
           path: node_modules
           key: cache-${{ github.sha }}-dependencies
-      - run: npm run lint -- --debug
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
@@ -106,3 +105,23 @@ jobs:
           flags: unittests
           file: bootstrap/coverage/clover.xml
 
+  lint:
+    name: Lint
+    needs: setup
+    permissions:
+      checks: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.0
+          registry-url: https://registry.npmjs.org
+          scope: "@lastui"
+      - uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: cache-${{ github.sha }}-dependencies
+      - run: npm run lint -- --debug
+      
