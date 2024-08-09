@@ -418,7 +418,7 @@ config.plugins.push(
                 })
               }())
             </script>
-            <div id="${settings.PROJECT_NAME}" style="width: 100%; min-height: 100%; display: grid;" />
+            <div id="${settings.PROJECT_NAME}" style="width: 100%; min-height: 100%; display: flex; flex-flow: column nowrap;" />
           </body>
         </html>
       `;
