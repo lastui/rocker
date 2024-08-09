@@ -18,8 +18,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-          registry-url: https://registry.npmjs.org
-          scope: "@lastui"
       - name: install @lastui/rocker dependencies
         run: npm ci --no-fund --no-audit
       - name: install @lastui/dependencies dependencies
@@ -30,7 +28,7 @@ jobs:
           path: |
             node_modules
             dependencies/node_modules
-          key: cache-${{ github.sha }}-dependencies
+          key: cache-${{ github.sha }}-node_modules
 
   compile:
     name: Compile
@@ -44,12 +42,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-          registry-url: https://registry.npmjs.org
-          scope: "@lastui"
       - uses: actions/cache/restore@v4
         with:
-          path: node_modules
-          key: cache-${{ github.sha }}-dependencies
+          path: |
+            node_modules
+            dependencies/node_modules
+          key: cache-${{ github.sha }}-node_modules
+          fail-on-cache-miss: true
       - run: npm run build:dependencies
       - run: npm run build:platform
       - run: npm run build:bootstrap
@@ -76,12 +75,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-          registry-url: https://registry.npmjs.org
-          scope: "@lastui"
       - uses: actions/cache/restore@v4
         with:
-          path: node_modules
-          key: cache-${{ github.sha }}-dependencies
+          path: |
+            node_modules
+            dependencies/node_modules
+          key: cache-${{ github.sha }}-node_modules
+          fail-on-cache-miss: true
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
@@ -117,11 +117,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-          registry-url: https://registry.npmjs.org
-          scope: "@lastui"
       - uses: actions/cache/restore@v4
         with:
           path: node_modules
-          key: cache-${{ github.sha }}-dependencies
+          key: cache-${{ github.sha }}-node_modules
+          fail-on-cache-miss: true
       - run: npm run lint -- --debug
       
