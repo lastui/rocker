@@ -10,8 +10,8 @@ on:
 
 jobs:
 
-  build:
-    name: Run Tests and Report Coverage
+  test:
+    name: Compile and Test
     permissions:
       checks: write
       pull-requests: write
@@ -25,10 +25,16 @@ jobs:
           scope: "@lastui"
       - run: npm ci --no-fund --no-audit
       - run: npm run lint -- --debug
-      - run: npm run build:dependencies
-      - run: npm run build:platform
-      - run: npm run build:bootstrap
-      - run: npm run postbuild
+      - run: npm run build
+      - name: Cache workspace
+        id: cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            dependencies/dll
+            platform/dll
+            bootstrap/dll
+          key: ${{ steps.cache.outputs.cache-primary-key }}
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
