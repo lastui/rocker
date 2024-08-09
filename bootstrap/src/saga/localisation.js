@@ -42,7 +42,6 @@ export async function downloadBatchLocales(names, language) {
     if (action.status !== "fulfilled" || !action.value) {
       continue;
     }
-    console.debug(`module ${action.value.module} introducing locales for ${language}`);
     batch.push(action.value);
   }
 
