@@ -27,7 +27,9 @@ jobs:
         run: npm ci --no-fund --no-audit
       - uses: actions/cache/save@v4
         with:
-          path: node_modules
+          path: |
+            node_modules
+            dependencies/node_modules
           key: cache-${{ github.sha }}-dependencies
 
   compile:
