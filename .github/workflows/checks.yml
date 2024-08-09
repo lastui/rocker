@@ -42,16 +42,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-      - name: Wait for cache to be ready
-        timeout-minutes: 1
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh extension install actions/gh-actions-cache
-          KEY="cache-${{ github.sha }}-dependencies"
-          while ret=0; $(gh actions-cache list --key $KEY | grep -q $KEY) || ret=$?; [ $ret -ne 0 ] ; do
-            sleep 1
-          done
       - uses: actions/cache/restore@v4
         with:
           path: |
@@ -59,6 +49,9 @@ jobs:
             dependencies/node_modules
           key: cache-${{ github.sha }}-dependencies
           restore-keys: |
+            cache-${{ github.sha }}-dependencies
+            cache-${{ github.sha }}-dependencies
+            cache-${{ github.sha }}-dependencies
             cache-${{ github.sha }}-dependencies
           fail-on-cache-miss: true
       - run: npm run build:dependencies
@@ -87,16 +80,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-      - name: Wait for cache to be ready
-        timeout-minutes: 1
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh extension install actions/gh-actions-cache
-          KEY="cache-${{ github.sha }}-dependencies"
-          while ret=0; $(gh actions-cache list --key $KEY | grep -q $KEY) || ret=$?; [ $ret -ne 0 ] ; do
-            sleep 1
-          done
       - uses: actions/cache/restore@v4
         with:
           path: |
@@ -104,6 +87,9 @@ jobs:
             dependencies/node_modules
           key: cache-${{ github.sha }}-dependencies
           restore-keys: |
+            cache-${{ github.sha }}-dependencies
+            cache-${{ github.sha }}-dependencies
+            cache-${{ github.sha }}-dependencies
             cache-${{ github.sha }}-dependencies
           fail-on-cache-miss: true
       - name: Test package platform
@@ -138,21 +124,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-      - name: Wait for cache to be ready
-        timeout-minutes: 1
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh extension install actions/gh-actions-cache
-          KEY="cache-${{ github.sha }}-dependencies"
-          while ret=0; $(gh actions-cache list --key $KEY | grep -q $KEY) || ret=$?; [ $ret -ne 0 ] ; do
-            sleep 1
-          done
       - uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: cache-${{ github.sha }}-dependencies
           restore-keys: |
+            cache-${{ github.sha }}-dependencies
+            cache-${{ github.sha }}-dependencies
+            cache-${{ github.sha }}-dependencies
             cache-${{ github.sha }}-dependencies
           fail-on-cache-miss: true
       - run: npm run lint -- --debug
