@@ -29,10 +29,6 @@ jobs:
   compile:
     name: Compile
     needs: setup
-    permissions:
-      id-token: write
-      contents: read
-      attestations: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
