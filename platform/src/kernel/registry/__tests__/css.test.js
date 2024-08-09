@@ -1,13 +1,6 @@
 import { addStyles, removeStyles } from "../css";
 
 describe("css registry", () => {
-  const debugSpy = jest.spyOn(console, "debug");
-  debugSpy.mockImplementation(() => {});
-
-  beforeEach(() => {
-    debugSpy.mockClear();
-  });
-
   describe("addStyles", () => {
     beforeEach(() => {
       const node = document.createElement("style");
@@ -23,14 +16,11 @@ describe("css registry", () => {
     it("expected DOM node exists", async () => {
       await addStyles("my-feature", "NODE_ID");
 
-      expect(debugSpy).toHaveBeenCalledWith("module my-feature introducing styles");
       expect(document.querySelector('style[data-module="my-feature"]')).toBeDefined();
     });
 
     it("expected DOM node does not exist", async () => {
       await addStyles("my-feature", "non-existant-id");
-
-      expect(debugSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -52,14 +42,12 @@ describe("css registry", () => {
     it("expected DOM node exists", () => {
       removeStyles("my-feature");
 
-      expect(debugSpy).toHaveBeenCalledWith("module my-feature removing styles");
       expect(document.querySelector('style[data-module="my-feature"]')).toEqual(null);
     });
 
     it("expected DOM node does not exist", () => {
       removeStyles("my-other-feature");
 
-      expect(debugSpy).not.toHaveBeenCalled();
       expect(document.querySelector('style[data-module="my-feature"]')).toBeDefined();
     });
   });

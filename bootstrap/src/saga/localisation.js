@@ -1,4 +1,4 @@
-import { put, call, take, select } from "redux-saga/effects";
+import { put, call, take, select, actionChannel } from "redux-saga/effects";
 
 import { constants, downloadAsset } from "@lastui/rocker/platform";
 
@@ -49,8 +49,10 @@ export async function downloadBatchLocales(names, language) {
 }
 
 export function* watchModules() {
+  const backlog = yield actionChannel([constants.SET_AVAILABLE_MODULES, constants.MODULE_LOADED, constants.MODULE_UNLOADED]);
+
   while (true) {
-    const action = yield take([constants.SET_AVAILABLE_MODULES, constants.MODULE_LOADED, constants.MODULE_UNLOADED]);
+    const action = yield take(backlog);
 
     if (action.type === constants.SET_AVAILABLE_MODULES) {
       /* istanbul ignore next */
@@ -93,8 +95,10 @@ export function* watchModules() {
 }
 
 export function* watchChangeLanguage() {
+  const backlog = yield actionChannel(constants.SET_LANGUAGE);
+
   while (true) {
-    const action = yield take(constants.SET_LANGUAGE);
+    const action = yield take(backlog);
 
     const language = action.payload.language;
 

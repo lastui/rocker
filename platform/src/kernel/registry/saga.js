@@ -24,7 +24,6 @@ function removeSaga(name, preferentialStore) {
   if (!dangling) {
     return;
   }
-  console.debug(`module ${name} removing saga`);
   sagaRunner(preferentialStore, function* () {
     yield cancel(dangling);
   });
@@ -38,14 +37,11 @@ async function addSaga(name, preferentialStore, saga) {
       yield cancel(dangling);
     });
     delete sagas[name];
-    console.debug(`module ${name} replacing saga`);
-  } else {
-    console.debug(`module ${name} introducing saga`);
   }
   sagaRunner(preferentialStore, function* () {
     sagas[name] = yield spawn(function* () {
       while (true) {
-        const isReady = yield select((state) => state.env.readyModules[name]);
+        const isReady = yield select((state) => name in state.env.readyModules);
         if (isReady) {
           break;
         }

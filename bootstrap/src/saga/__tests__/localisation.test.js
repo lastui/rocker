@@ -7,17 +7,18 @@ import { getLanguage } from "../../selector";
 import { watchModules, watchChangeLanguage, downloadBatchLocales } from "../localisation";
 
 describe("localisation", () => {
-  const consoleDebug = console.warn;
-  const consoleWarn = console.warn;
+  function createMockChannel(name = "channel") {
+    return { name, take: jest.fn(), close: jest.fn() };
+  }
+
+  const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
 
   beforeEach(() => {
-    console.debug = jest.fn();
-    console.warn = jest.fn();
+    warnSpy.mockClear();
   });
 
   afterAll(() => {
-    console.debug = consoleDebug;
-    console.warn = consoleWarn;
+    warnSpy.mockRestore();
   });
 
   describe("watchChangeLanguage", () => {
@@ -30,6 +31,8 @@ describe("localisation", () => {
         const gen = watchChangeLanguage();
 
         gen.next();
+
+        gen.next(createMockChannel(constants.SET_LANGUAGE));
 
         const stepDownloadMessages = gen.next({ type: constants.SET_LANGUAGE, payload: { language: "fr-FR" } });
 
@@ -51,6 +54,8 @@ describe("localisation", () => {
         const gen = watchChangeLanguage();
 
         gen.next();
+
+        gen.next(createMockChannel(constants.SET_LANGUAGE));
 
         const stepDownloadMessages = gen.next({ type: constants.SET_LANGUAGE, payload: { language: "fr-FR" } });
 
@@ -80,6 +85,8 @@ describe("localisation", () => {
 
       gen.next();
 
+      gen.next(createMockChannel(constants.SET_AVAILABLE_MODULES));
+
       expect(
         gen.next({
           type: constants.SET_AVAILABLE_MODULES,
@@ -103,6 +110,8 @@ describe("localisation", () => {
         const gen = watchModules();
 
         gen.next();
+
+        gen.next(createMockChannel(constants.SET_AVAILABLE_MODULES));
 
         expect(gen.next({ type: constants.MODULE_LOADED, payload: { module: "my-feature" } }).value).toEqual(select(getLanguage));
 
@@ -133,6 +142,8 @@ describe("localisation", () => {
 
         gen.next();
 
+        gen.next(createMockChannel(constants.SET_AVAILABLE_MODULES));
+
         expect(gen.next({ type: constants.MODULE_LOADED, payload: { module: "my-feature" } }).value).toEqual(select(getLanguage));
 
         expect(gen.next("en-US").value).toEqual(call(downloadBatchLocales, ["my-feature"], "en-US"));
@@ -152,90 +163,11 @@ describe("localisation", () => {
 
       gen.next();
 
+      gen.next(createMockChannel(constants.SET_AVAILABLE_MODULES));
+
       expect(gen.next({ type: constants.MODULE_UNLOADED, payload: { module: "my-feature" } }).value).toEqual(
         put({ type: I18N_REMOVE_MESSAGES, payload: { module: "my-feature" } }),
       );
     });
   });
-
-  /*
-  describe("runRefresher", () => {
-    it("single run", async () => {
-      const action = {
-        type: constants.INIT,
-        payload: {},
-      };
-
-      const gen = runRefresher(action);
-      const stepFetch = gen.next();
-
-      expect(stepFetch.done).toEqual(false);
-      expect(stepFetch.value.type).toEqual("PUT");
-      expect(stepFetch.value.payload.action.type).toEqual(constants.FETCH_CONTEXT);
-
-      const waitingStep = gen.next();
-
-      expect(waitingStep.done).toEqual(true);
-    });
-
-    it("continuous polling delay", async () => {
-      const action = {
-        type: constants.INIT,
-        payload: {
-          contextRefreshInterval: 10,
-        },
-      };
-
-      const gen = runRefresher(action);
-      const stepFetch = gen.next();
-
-      expect(stepFetch.done).toEqual(false);
-      expect(stepFetch.value.type).toEqual("PUT");
-      expect(stepFetch.value.payload.action.type).toEqual(constants.FETCH_CONTEXT);
-
-      const waitingStep = gen.next();
-
-      expect(waitingStep.done).toEqual(false);
-      expect(waitingStep.value.type).toEqual("RACE");
-
-      const stepNextCycle = gen.next({
-        refresh: false,
-        timeout: true,
-      });
-
-      expect(stepNextCycle.done).toEqual(false);
-      expect(stepNextCycle.value.type).toEqual("PUT");
-      expect(stepNextCycle.value.payload.action.type).toEqual(constants.FETCH_CONTEXT);
-    });
-
-    it("continuous polling interupt", async () => {
-      const action = {
-        type: constants.INIT,
-        payload: {
-          contextRefreshInterval: 10,
-        },
-      };
-
-      const gen = runRefresher(action);
-      const stepFetch = gen.next();
-
-      expect(stepFetch.done).toEqual(false);
-      expect(stepFetch.value.type).toEqual("PUT");
-      expect(stepFetch.value.payload.action.type).toEqual(constants.FETCH_CONTEXT);
-
-      const waitingStep = gen.next();
-
-      expect(waitingStep.done).toEqual(false);
-      expect(waitingStep.value.type).toEqual("RACE");
-
-      const stepNextCycle = gen.next({
-        refresh: true,
-        timeout: false,
-      });
-
-      expect(stepNextCycle.done).toEqual(false);
-      expect(stepNextCycle.value.type).toEqual("RACE");
-    });
-  });
-  */
 });

@@ -37,9 +37,6 @@ jest.mock("../assets", () => ({
 }));
 
 describe("loader registry", () => {
-  const debugSpy = jest.spyOn(console, "debug");
-  debugSpy.mockImplementation(() => {});
-
   const controller = new AbortController();
 
   beforeEach(() => {

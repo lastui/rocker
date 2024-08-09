@@ -4,17 +4,14 @@ import { SET_SHARED } from "../../../constants";
 import { setStore, getStore } from "../store";
 
 describe("store registry", () => {
-  const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
   const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
   beforeEach(() => {
     setStore(null);
-    debugSpy.mockClear();
     errorSpy.mockClear();
   });
 
   afterAll(() => {
-    debugSpy.mockRestore();
     errorSpy.mockRestore();
   });
 

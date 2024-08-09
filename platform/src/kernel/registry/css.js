@@ -3,7 +3,6 @@ function removeStyles(name) {
   if (!orphanStyles) {
     return;
   }
-  console.debug(`module ${name} removing styles`);
   orphanStyles.remove();
 }
 
@@ -12,7 +11,6 @@ async function addStyles(name, BUILD_ID) {
   if (!injectedStyles) {
     return;
   }
-  console.debug(`module ${name} introducing styles`);
   injectedStyles.removeAttribute("id");
   injectedStyles.setAttribute("data-module", name);
 }

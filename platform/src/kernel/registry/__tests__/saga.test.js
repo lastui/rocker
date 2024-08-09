@@ -6,13 +6,12 @@ import * as constants from "../../../constants";
 import { addSaga, removeSaga, setSagaRunner } from "../saga";
 
 describe("saga registry", () => {
-  const debugSpy = jest.spyOn(console, "debug");
-  debugSpy.mockImplementation(() => {});
+  const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
   const channel = stdChannel();
 
   beforeEach(() => {
-    debugSpy.mockClear();
+    errorSpy.mockClear();
     setSagaRunner((store, saga) =>
       runSaga(
         {
@@ -26,15 +25,16 @@ describe("saga registry", () => {
     );
   });
 
+  afterAll(() => {
+    errorSpy.mockRestore();
+  });
+
   it("setSagaRunner", () => {
     setSagaRunner(() => {});
     setSagaRunner(null);
   });
 
   it("addSaga", async () => {
-    const spy = jest.spyOn(console, "error");
-    spy.mockImplementation(() => {});
-
     const store = configureStore([])({
       env: {
         readyModules: {
@@ -46,13 +46,12 @@ describe("saga registry", () => {
     await addSaga("my-feature", store, function* () {
       yield take("never-happens");
     });
-    expect(debugSpy).toHaveBeenCalledWith("module my-feature introducing saga");
 
     await addSaga("my-feature", store, function* () {
       throw new Error("ouch");
     });
-    expect(debugSpy).toHaveBeenCalledWith("module my-feature replacing saga");
-    expect(spy).toHaveBeenCalledWith("module my-feature saga crashed", new Error("ouch"));
+
+    expect(errorSpy).toHaveBeenCalledWith("module my-feature saga crashed", new Error("ouch"));
 
     await addSaga("my-other-feature", store, function* () {
       yield take("this-is-stale");
@@ -67,7 +66,7 @@ describe("saga registry", () => {
       throw new Error("unused");
     });
 
-    expect(spy).toHaveBeenCalledWith("Sagas runnner is not provided!");
+    expect(errorSpy).toHaveBeenCalledWith("Sagas runnner is not provided!");
   });
 
   it("removeSaga", async () => {
@@ -78,16 +77,12 @@ describe("saga registry", () => {
         },
       },
     });
+
     await addSaga("my-feature", store, function* () {
       yield take("never-happens");
     });
-    debugSpy.mockClear();
 
     removeSaga("my-feature", store);
-    expect(debugSpy).toHaveBeenCalledWith("module my-feature removing saga");
-    debugSpy.mockClear();
-
     removeSaga("my-feature", store);
-    expect(debugSpy).not.toHaveBeenCalled();
   });
 });
