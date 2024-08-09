@@ -1,4 +1,4 @@
-name: Testing
+name: Checks
 
 on:
   pull_request:
@@ -25,7 +25,10 @@ jobs:
           scope: "@lastui"
       - run: npm ci --no-fund --no-audit
       - run: npm run lint -- --debug
-      - run: npm run build
+      - run: npm run build:dependencies
+      - run: npm run build:platform
+      - run: npm run build:bootstrap
+      - run: npm run postbuild
       - name: Cache workspace
         id: cache
         uses: actions/cache/save@v4
