@@ -41,7 +41,7 @@ async function addSaga(name, preferentialStore, saga) {
   sagaRunner(preferentialStore, function* () {
     sagas[name] = yield spawn(function* () {
       while (true) {
-        const isReady = yield select((state) => state.env.readyModules[name] === true);
+        const isReady = yield select((state) => name in state.env.readyModules);
         if (isReady) {
           break;
         }

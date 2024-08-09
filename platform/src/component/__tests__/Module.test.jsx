@@ -98,9 +98,7 @@ describe("<Module />", () => {
   it("renders nothing if module not ready", () => {
     const store = configureStore([])({
       env: {
-        readyModules: {
-          "my-feature": false,
-        },
+        readyModules: {},
       },
       shared: {},
     });
@@ -146,9 +144,7 @@ describe("<Module />", () => {
   it("renders fallback while loading", () => {
     const store = configureStore([])({
       env: {
-        readyModules: {
-          "my-loading-feature": false,
-        },
+        readyModules: {},
       },
       shared: {},
     });

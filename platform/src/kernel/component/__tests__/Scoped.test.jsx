@@ -9,11 +9,14 @@ import Scoped from "../Scoped";
 describe("Scoped", () => {
   const store = configureStore([])({});
 
-  const spyError = jest.spyOn(console, "error");
-  spyError.mockImplementation(() => {});
+  const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
   beforeEach(() => {
-    spyError.mockClear();
+    errorSpy.mockClear();
+  });
+
+  afterAll(() => {
+    errorSpy.mockRestore();
   });
 
   afterEach(() => {
@@ -109,7 +112,7 @@ describe("Scoped", () => {
 
     render(withRedux(<View />, store));
 
-    expect(spyError).toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalled();
   });
 
   it("has error boundaries with custom component", () => {
@@ -125,7 +128,7 @@ describe("Scoped", () => {
     render(withRedux(<View />, store));
 
     expect(screen.getByTestId("sad-component")).toBeInTheDocument();
-    expect(spyError).toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalled();
   });
 
   it("updates properly", () => {

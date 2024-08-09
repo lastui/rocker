@@ -2,6 +2,16 @@ import * as constants from "../../../constants";
 import reducer, { initialState, modulesReducers } from "../modules";
 
 describe("modules reducer", () => {
+  const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+  beforeEach(() => {
+    errorSpy.mockClear();
+  });
+
+  afterAll(() => {
+    errorSpy.mockRestore();
+  });
+
   afterEach(() => {
     const dangling = [];
     for (const tuple of modulesReducers) {
@@ -55,9 +65,6 @@ describe("modules reducer", () => {
     });
 
     it("reduce on modules reducers", () => {
-      const spyError = jest.spyOn(console, "error");
-      spyError.mockImplementation(() => {});
-
       const action = {
         type: "non-handled",
       };
@@ -83,7 +90,7 @@ describe("modules reducer", () => {
       expect(reducer(state, action)).toEqual(expectedState);
 
       expect(reducer(expectedState, action)).toEqual(expectedState);
-      expect(spyError).toHaveBeenCalledWith("module my-feature-broken reducer failed to reduce", new Error("ouch"));
+      expect(errorSpy).toHaveBeenCalledWith("module my-feature-broken reducer failed to reduce", new Error("ouch"));
     });
 
     it("handles broadcast action", () => {
@@ -212,9 +219,6 @@ describe("modules reducer", () => {
     });
 
     it("module with broken reducer", () => {
-      const spyError = jest.spyOn(console, "error");
-      spyError.mockImplementation(() => {});
-
       const action = {
         type: constants.MODULE_INIT,
         payload: {
@@ -226,8 +230,7 @@ describe("modules reducer", () => {
       };
       expect(reducer(initialState, action)).toEqual(initialState);
 
-      //expect(spyDebug).toHaveBeenCalledWith("module my-feature initialized");
-      expect(spyError).toHaveBeenCalledWith(
+      expect(errorSpy).toHaveBeenCalledWith(
         "module my-feature reducer failed to reduce on action @@modules/INIT",
         new Error("ouch"),
       );
