@@ -28,8 +28,8 @@ jobs:
           path: node_modules
           key: cache-${{ github.sha }}-dependencies
 
-  test:
-    name: Compile and Test
+  compile:
+    name: Compile
     needs: setup
     permissions:
       checks: write
@@ -42,12 +42,11 @@ jobs:
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
       - name: Restore cached workspace
-        id: cache-dlls
+        id: cache-dependencies
         uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: cache-${{ github.sha }}-dependencies
-      - run: npm run lint -- --debug
       - run: npm run build:dependencies
       - run: npm run build:platform
       - run: npm run build:bootstrap
@@ -61,6 +60,27 @@ jobs:
             platform/dll
             bootstrap/dll
           key: cache-${{ github.sha }}-dlls
+
+  test:
+    name: Test
+    needs: setup
+    permissions:
+      checks: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.0
+          registry-url: https://registry.npmjs.org
+          scope: "@lastui"
+      - name: Restore cached workspace
+        id: cache-dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: cache-${{ github.sha }}-dependencies
+      - run: npm run lint -- --debug
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
