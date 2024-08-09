@@ -18,7 +18,6 @@
     "sbom.json"
   ],
   "scripts": {
-    "prebuild": "npm ci --no-fund --no-audit",
     "build": "npm run build:dev && npm run build:prod",
     "prebuild:dev": "node ./scripts/link.mjs",
     "build:dev": "NODE_ENV=development node ./scripts/build.mjs",

@@ -1,4 +1,4 @@
-name: Publish to registry.npmjs.org
+name: Publish
 
 on:
   workflow_run:
@@ -21,23 +21,22 @@ jobs:
           node-version: 20.11.0
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
-      - name: Restore cached workspace
-        id: cache
-        uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v4
         with:
           path: |
             dependencies/dll
             platform/dll
             bootstrap/dll
-          key: cache-${{ github.sha }}
+          key: cache-${{ github.sha }}-dlls
+          fail-on-cache-miss: true
       - name: Publish @lastui/dependencies
         continue-on-error: true
         working-directory: dependencies
-        run: npm publish --fetch-retries=10 --loglevel=verbose
+        run: npm publish --fetch-retries=10 --loglevel=verbose --access=public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: Publish @lastui/rocker
         continue-on-error: true
-        run: npm publish --fetch-retries=10 --loglevel=verbose
+        run: npm publish --fetch-retries=10 --loglevel=verbose --access=public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
