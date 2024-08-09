@@ -58,6 +58,8 @@ jobs:
             node_modules
             dependencies/node_modules
           key: cache-${{ github.sha }}-dependencies
+          restore-keys: |
+            cache-${{ github.sha }}-dependencies
           fail-on-cache-miss: true
       - run: npm run build:dependencies
       - run: npm run build:platform
@@ -101,6 +103,8 @@ jobs:
             node_modules
             dependencies/node_modules
           key: cache-${{ github.sha }}-dependencies
+          restore-keys: |
+            cache-${{ github.sha }}-dependencies
           fail-on-cache-miss: true
       - name: Test package platform
         working-directory: platform
@@ -148,6 +152,8 @@ jobs:
         with:
           path: node_modules
           key: cache-${{ github.sha }}-dependencies
+          restore-keys: |
+            cache-${{ github.sha }}-dependencies
           fail-on-cache-miss: true
       - run: npm run lint -- --debug
       
