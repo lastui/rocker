@@ -12,7 +12,5 @@ export const MODULE_LOADED = "@@modules/LOADED";
 export const MODULE_READY = "@@modules/READY";
 export const MODULE_UNLOADED = "@@modules/UNLOADED";
 
-export const I18N_MESSAGES_BATCH = "@@shared/I18N_MESSAGES_BATCH";
-
 export const SET_SHARED = "@@shared/SET";
 export const CLEAR_SHARED = "@@shared/CLEAR";

@@ -11,6 +11,7 @@ import createSagaMiddleware from "./middleware/saga";
 import envReducer from "./reducer/env";
 import modulesReducer from "./reducer/modules";
 import sharedReducer from "./reducer/shared";
+import { downloadAsset } from "./registry/assets";
 import { manualCleanup } from "./registry/loader";
 import { getStore, setStore } from "./registry/store";
 
@@ -27,6 +28,7 @@ export {
   getStore,
   setStore,
   manualCleanup,
+  downloadAsset,
 };
 
 export default {
@@ -42,4 +44,5 @@ export default {
   getStore,
   setStore,
   manualCleanup,
+  downloadAsset,
 };

@@ -59,6 +59,7 @@ module.exports = {
   setStore: (nextStore) => {
     store = nextStore;
   },
+  downloadAsset: () => {},
   manualCleanup: () => {},
   getStore: () => store,
   sharedReducer: (state = {}, _action) => state,

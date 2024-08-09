@@ -8,7 +8,7 @@ import { withRedux } from "@lastui/rocker/test";
 import Globalisation from "../Globalisation";
 
 const initialState = {
-  env: {
+  localisation: {
     language: "en-US",
     messages: {},
   },
@@ -39,8 +39,8 @@ describe("<Globalisation />", () => {
   it("is supported", () => {
     const store = mockStore({
       ...initialState,
-      env: {
-        ...initialState.env,
+      localisation: {
+        ...initialState.localisation,
         messages: {
           "en-US": {
             existant: "message with key {key} and value {value}",
@@ -85,8 +85,8 @@ describe("<Globalisation />", () => {
       runtime: {
         entrypoint: "entrypoint",
       },
-      env: {
-        ...initialState.env,
+      localisation: {
+        ...initialState.localisation,
         language: "boo",
       },
     });
@@ -110,8 +110,8 @@ describe("<Globalisation />", () => {
       runtime: {
         entrypoint: "entrypoint",
       },
-      env: {
-        ...initialState.env,
+      localisation: {
+        ...initialState.localisation,
         messages: {
           "en-US": {
             existant: "message with key {key and value {value}",

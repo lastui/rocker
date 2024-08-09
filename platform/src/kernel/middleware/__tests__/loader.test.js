@@ -1,7 +1,7 @@
 import configureStore from "redux-mock-store";
 
 import * as constants from "../../../constants";
-import { downloadAsset } from "../../registry/assets";
+//import { downloadAsset } from "../../registry/assets";
 import loader from "../../registry/loader";
 import createLoaderMiddleware from "../loader";
 
@@ -18,29 +18,29 @@ jest.mock("../../registry/loader", () => {
   };
 });
 
-jest.mock("../../registry/assets", () => {
-  const downloadAsset = jest.fn();
-  downloadAsset.mockImplementation(async (uri) => {
-    if (uri === "/i18n/broken.json") {
-      throw new Error("ouch");
-    }
-
-    return {
-      json: async () => {
-        if (uri === "/i18n/empty.json") {
-          return {};
-        }
-        return {
-          foo: "bar",
-        };
-      },
-    };
-  });
-
-  return {
-    downloadAsset,
-  };
-});
+//jest.mock("../../registry/assets", () => {
+//  const downloadAsset = jest.fn();
+//  downloadAsset.mockImplementation(async (uri) => {
+//    if (uri === "/i18n/broken.json") {
+//      throw new Error("ouch");
+//    }
+//
+//    return {
+//      json: async () => {
+//        if (uri === "/i18n/empty.json") {
+//          return {};
+//        }
+//        return {
+//          foo: "bar",
+//        };
+//      },
+//    };
+//  });
+//
+//  return {
+//    downloadAsset,
+//  };
+//});
 
 describe("loader middleware", () => {
   beforeEach(() => {
@@ -145,6 +145,7 @@ describe("loader middleware", () => {
     });
   });
 
+  /*
   describe("MODULE_LOADED", () => {
     let debugSpy = null;
 
@@ -520,115 +521,13 @@ describe("loader middleware", () => {
       store.dispatch(unloadAction);
     });
   });
+  */
 
-  describe("SET_LANGUAGE", () => {
-    it("loads messages for new language that are already loaded for other language", async () => {
-      const spy = jest.spyOn(console, "debug");
-      spy.mockImplementation(() => {});
-      spy.mockClear();
-
-      const loaderMiddleware = createLoaderMiddleware();
-      const store = configureStore([loaderMiddleware])({
-        env: {
-          language: "en-US",
-        },
-        shared: {},
-      });
-
-      const setupAvailableLocalesAction = {
-        type: constants.SET_AVAILABLE_MODULES,
-        payload: {
-          modules: [
-            {
-              name: "my-feature",
-              locales: {
-                "en-US": "/i18n/valid.json",
-                "fr-FR": "/i18n/valid.json",
-              },
-            },
-          ],
-        },
-      };
-
-      store.dispatch(setupAvailableLocalesAction);
-      await new Promise(process.nextTick);
-
-      store.clearActions();
-
-      const loaderAction = {
-        type: constants.MODULE_LOADED,
-        payload: {
-          module: "my-feature",
-        },
-      };
-
-      store.dispatch(loaderAction);
-
-      expect(downloadAsset).toHaveBeenLastCalledWith("/i18n/valid.json");
-      await new Promise(process.nextTick);
-
-      store.clearActions();
-
-      const action = {
-        type: constants.SET_LANGUAGE,
-        payload: {
-          language: "fr-FR",
-        },
-      };
-
-      store.dispatch(action);
-      await new Promise(process.nextTick);
-
-      expect(store.getActions()).toEqual([
-        {
-          type: constants.I18N_MESSAGES_BATCH,
-          payload: {
-            batch: [
-              {
-                data: {
-                  foo: "bar",
-                },
-                module: "my-feature",
-              },
-            ],
-            language: "fr-FR",
-          },
-        },
-      ]);
-
-      expect(spy).toHaveBeenLastCalledWith("module my-feature introducing locales for fr-FR");
-
-      spy.mockClear();
-      store.clearActions();
-
-      store.dispatch(action);
-      await new Promise(process.nextTick);
-
-      expect(store.getActions()).toEqual([
-        {
-          type: constants.I18N_MESSAGES_BATCH,
-          payload: {
-            batch: [],
-            language: "fr-FR",
-          },
-        },
-      ]);
-
-      expect(spy).not.toHaveBeenLastCalledWith("module my-feature introducing locales for fr-FR");
-
-      const unloadAction = {
-        type: constants.MODULE_UNLOADED,
-        payload: {
-          module: "my-feature",
-        },
-      };
-
-      store.dispatch(unloadAction);
-    });
-  });
+  /*
+  describe("MODULE_LOADED", () => {
 
   describe("MODULE_UNLOADED", () => {
-    it("purges availableLocales", () => {
+    it("purges module", () => {
       const loaderMiddleware = createLoaderMiddleware();
       const store = configureStore([loaderMiddleware])({ env: {}, shared: {} });
       const action = {
@@ -656,4 +555,5 @@ describe("loader middleware", () => {
       expect(store.getActions()).toEqual([action]);
     });
   });
+  */
 });

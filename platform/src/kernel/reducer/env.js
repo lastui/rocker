@@ -1,20 +1,15 @@
 import * as constants from "../../constants";
 
 const initialState = {
-  language: null,
-  messages: {},
   readyModules: {},
   lastUpdate: 0,
 };
 
 function createEnvReducer() {
-  const localeMapping = {};
   return (state = initialState, action) => {
     switch (action.type) {
       case constants.SET_ENTRYPOINT_MODULE: {
         return {
-          language: state.language,
-          messages: state.messages,
           lastUpdate: (state.lastUpdate + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: state.readyModules,
         };
@@ -23,16 +18,12 @@ function createEnvReducer() {
         const nextReadyModules = { ...state.readyModules };
         nextReadyModules[action.payload.module] = true;
         return {
-          language: state.language,
-          messages: state.messages,
           lastUpdate: state.lastUpdate,
           readyModules: nextReadyModules,
         };
       }
       case constants.MODULE_LOADED: {
         return {
-          language: state.language,
-          messages: state.messages,
           lastUpdate: (state.lastUpdate + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: state.readyModules,
         };
@@ -40,73 +31,9 @@ function createEnvReducer() {
       case constants.MODULE_UNLOADED: {
         const nextReadyModules = { ...state.readyModules };
         delete nextReadyModules[action.payload.module];
-        const nextMessages = {};
-        for (const locale in state.messages) {
-          nextMessages[locale] = { ...state.messages[locale] };
-        }
-        const keys = localeMapping[action.payload.module] || {};
-        for (const key in keys) {
-          for (const locale in state.messages) {
-            delete nextMessages[locale][key];
-          }
-        }
-        delete localeMapping[action.payload.module];
-
         return {
-          language: state.language,
-          messages: nextMessages,
           lastUpdate: (state.lastUpdate + 1) % Number.MAX_SAFE_INTEGER,
           readyModules: nextReadyModules,
-        };
-      }
-      case constants.I18N_MESSAGES_BATCH: {
-        if (action.payload.batch.length === 0) {
-          if (action.payload.language === state.language) {
-            return state;
-          }
-          return {
-            language: action.payload.language,
-            messages: state.messages,
-            lastUpdate: state.lastUpdate,
-            readyModules: state.readyModules,
-          };
-        }
-
-        const nextMessages = {};
-        for (const locale in state.messages) {
-          nextMessages[locale] = { ...state.messages[locale] };
-        }
-
-        for (const patch of action.payload.batch) {
-          if (!localeMapping[patch.module]) {
-            localeMapping[patch.module] = {};
-          }
-          if (!nextMessages[action.payload.language]) {
-            nextMessages[action.payload.language] = {};
-          }
-          const addItem = (key, message) => {
-            const hash = key.substring(1);
-            localeMapping[patch.module][hash] = true;
-            nextMessages[action.payload.language][hash] = message;
-          };
-          const walk = (path, table) => {
-            for (const property in table) {
-              const item = table[property];
-              if (item.constructor !== Object) {
-                addItem(`${path}.${property}`, item);
-              } else {
-                walk(`${path}.${property}`, item);
-              }
-            }
-          };
-          walk("", patch.data);
-        }
-
-        return {
-          language: action.payload.language,
-          messages: nextMessages,
-          lastUpdate: state.lastUpdate,
-          readyModules: state.readyModules,
         };
       }
       default: {

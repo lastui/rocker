@@ -12,7 +12,7 @@ const initialState = {
   runtime: {
     entrypoint: null,
   },
-  env: {},
+  localisation: {},
 };
 
 const mockStore = configureStore([]);

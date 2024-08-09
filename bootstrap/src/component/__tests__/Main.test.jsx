@@ -11,7 +11,7 @@ const initialState = {
     entrypoint: "some-entrypoint",
     initialized: false,
   },
-  env: {
+  localisation: {
     language: null,
     messages: {},
   },
@@ -26,8 +26,8 @@ const mockStore = configureStore([])((actions) => {
           ...state.runtime,
           initialized: true,
         },
-        env: {
-          ...state.env,
+        localisation: {
+          ...state.localisation,
         },
       };
     } else if (action.type === constants.SET_LANGUAGE) {
@@ -35,8 +35,8 @@ const mockStore = configureStore([])((actions) => {
         runtime: {
           ...state.runtime,
         },
-        env: {
-          ...state.env,
+        localisation: {
+          ...state.localisation,
           language: action.payload.language,
         },
       };

@@ -45,7 +45,7 @@ function createMessagesWithFallback(defaultLocale) {
 export const getI18nMessagesFacade = (defaultLocale) => {
   const memo = createMessagesWithFallback(defaultLocale);
   return (state) => {
-    memo[state.env.language] = state.env.messages;
+    memo[state.localisation.language] = state.localisation.messages;
     return memo;
   };
 };
@@ -54,4 +54,4 @@ export const getIsInitialized = (state) => state.runtime.initialized;
 
 export const getEntrypoint = (state) => state.runtime.entrypoint;
 
-export const getLanguage = (state) => state.env.language;
+export const getLanguage = (state) => state.localisation.language;
