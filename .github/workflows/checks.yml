@@ -52,6 +52,8 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: |
+            dependencies/index.js
+            dependencies/sbom.json
             dependencies/dll
             platform/dll
             bootstrap/dll
