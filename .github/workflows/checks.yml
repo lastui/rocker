@@ -30,8 +30,8 @@ jobs:
     name: Compile
     needs: setup
     permissions:
-      checks: write
-      pull-requests: write
+      id-token: write
+      contents: read
       attestations: write
     runs-on: ubuntu-latest
     steps:
