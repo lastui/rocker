@@ -18,17 +18,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
+          cache: 'npm'
+          cache-dependency-path: |
+            dependencies/package-lock.json
+            package-lock.json
       - name: install @lastui/rocker dependencies
         run: npm ci --no-fund --no-audit
       - name: install @lastui/dependencies dependencies
         working-directory: dependencies
         run: npm ci --no-fund --no-audit
-      - uses: actions/cache/save@v4
-        with:
-          path: |
-            node_modules
-            dependencies/node_modules
-          key: cache-${{ github.sha }}-dependencies
 
   compile:
     name: Compile
@@ -42,18 +40,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-      - uses: actions/cache/restore@v4
-        with:
-          path: |
-            node_modules
-            dependencies/node_modules
-          key: cache-${{ github.sha }}-dependencies
-          restore-keys: |
-            cache-${{ github.sha }}-dependencies
-            cache-${{ github.sha }}-dependencies
-            cache-${{ github.sha }}-dependencies
-            cache-${{ github.sha }}-dependencies
-          fail-on-cache-miss: true
+          cache: 'npm'
+          cache-dependency-path: |
+            dependencies/package-lock.json
+            package-lock.json
       - run: npm run build:dependencies
       - run: npm run build:platform
       - run: npm run build:bootstrap
@@ -80,18 +70,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-      - uses: actions/cache/restore@v4
-        with:
-          path: |
-            node_modules
-            dependencies/node_modules
-          key: cache-${{ github.sha }}-dependencies
-          restore-keys: |
-            cache-${{ github.sha }}-dependencies
-            cache-${{ github.sha }}-dependencies
-            cache-${{ github.sha }}-dependencies
-            cache-${{ github.sha }}-dependencies
-          fail-on-cache-miss: true
+          cache: 'npm'
+          cache-dependency-path: |
+            dependencies/package-lock.json
+            package-lock.json
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
@@ -124,15 +106,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.11.0
-      - uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: cache-${{ github.sha }}-dependencies
-          restore-keys: |
-            cache-${{ github.sha }}-dependencies
-            cache-${{ github.sha }}-dependencies
-            cache-${{ github.sha }}-dependencies
-            cache-${{ github.sha }}-dependencies
-          fail-on-cache-miss: true
+          cache: 'npm'
+          cache-dependency-path: |
+            dependencies/package-lock.json
+            package-lock.json
       - run: npm run lint -- --debug
       

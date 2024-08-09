@@ -28,11 +28,6 @@ jobs:
             platform/dll
             bootstrap/dll
           key: cache-${{ github.sha }}-dlls
-          restore-keys: |
-            cache-${{ github.sha }}-dlls
-            cache-${{ github.sha }}-dlls
-            cache-${{ github.sha }}-dlls
-            cache-${{ github.sha }}-dlls
           fail-on-cache-miss: true
       - name: Publish @lastui/dependencies
         continue-on-error: true
