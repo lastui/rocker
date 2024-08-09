@@ -1,14 +1,17 @@
 name: Publish to registry.npmjs.org
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - Checks
     branches:
       - main
+    types:
+      - completed
 
 jobs:
 
   publish:
-    needs: test
     name: Publish to registry.npmjs.org
     runs-on: ubuntu-latest
     steps:
