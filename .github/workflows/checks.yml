@@ -21,9 +21,7 @@ jobs:
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
       - run: npm ci --no-fund --no-audit
-      - name: Cache workspace
-        id: cache-dependencies
-        uses: actions/cache/save@v4
+      - uses: actions/cache/save@v4
         with:
           path: node_modules
           key: cache-${{ github.sha }}-dependencies
@@ -42,9 +40,7 @@ jobs:
           node-version: 20.11.0
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
-      - name: Restore cached workspace
-        id: cache-dependencies
-        uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: cache-${{ github.sha }}-dependencies
@@ -76,9 +72,7 @@ jobs:
           node-version: 20.11.0
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
-      - name: Restore cached workspace
-        id: cache-dependencies
-        uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: cache-${{ github.sha }}-dependencies

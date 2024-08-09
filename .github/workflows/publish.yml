@@ -21,9 +21,7 @@ jobs:
           node-version: 20.11.0
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
-      - name: Restore cached workspace
-        id: cache
-        uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v4
         with:
           path: |
             dependencies/dll
