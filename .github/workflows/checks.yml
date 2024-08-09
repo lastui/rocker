@@ -10,11 +10,8 @@ on:
 
 jobs:
 
-  test:
-    name: Compile and Test
-    permissions:
-      checks: write
-      pull-requests: write
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,6 +21,32 @@ jobs:
           registry-url: https://registry.npmjs.org
           scope: "@lastui"
       - run: npm ci --no-fund --no-audit
+      - name: Cache workspace
+        id: cache-dependencies
+        uses: actions/cache/save@v4
+        with:
+          path: node_modules
+          key: cache-${{ github.sha }}-dependencies
+
+  test:
+    name: Compile and Test
+    needs: setup
+    permissions:
+      checks: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.0
+          registry-url: https://registry.npmjs.org
+          scope: "@lastui"
+      - name: Restore cached workspace
+        id: cache-dlls
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: cache-${{ github.sha }}-dependencies
       - run: npm run lint -- --debug
       - run: npm run build:dependencies
       - run: npm run build:platform
@@ -37,7 +60,7 @@ jobs:
             dependencies/dll
             platform/dll
             bootstrap/dll
-          key: cache-${{ github.sha }}
+          key: cache-${{ github.sha }}-dlls
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test

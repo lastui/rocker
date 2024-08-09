@@ -12,7 +12,7 @@
     "url": "https://github.com/lastui/rocker/issues"
   },
   "bin": {
-    "rocker": "./cli/index.js"
+    "rocker": "cli/index.js"
   },
   "files": [
     "babel/index.js",
@@ -127,7 +127,7 @@
     "prettier-package-json": "2.8.0",
     "pretty-format": "29.7.0",
     "redux-mock-store": "1.5.4",
-    "source-map": "mozilla/source-map#master",
+    "source-map": "github:mozilla/source-map#master",
     "style-loader": "4.0.0",
     "stylelint": "16.8.1",
     "terser-webpack-plugin": "5.3.10",
