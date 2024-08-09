@@ -40,6 +40,8 @@ jobs:
           node-version: 20.11.0
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
+      - run: npm ci --no-fund --no-audit --prefer-offline --prefix=dependencies
+      - run: npm ci --no-fund --no-audit --prefer-offline
       - run: npm run build:dependencies
       - run: npm run build:platform
       - run: npm run build:bootstrap
@@ -68,6 +70,8 @@ jobs:
           node-version: 20.11.0
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
+      - run: npm ci --no-fund --no-audit --prefer-offline --prefix=dependencies
+      - run: npm ci --no-fund --no-audit --prefer-offline
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
@@ -102,5 +106,7 @@ jobs:
           node-version: 20.11.0
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
+      - run: npm ci --no-fund --no-audit --prefer-offline --prefix=dependencies
+      - run: npm ci --no-fund --no-audit --prefer-offline
       - run: npm run lint -- --debug
       
