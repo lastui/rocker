@@ -32,11 +32,15 @@ jobs:
       - name: Wait for cache to be published
         run: |
           gh extension install actions/gh-actions-cache
+          
+          KEY="cache-${{ github.sha }}-dependencies"
 
-          echo "Fetching list of cache key"
-          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH -L 100 | cut -f 1 )
-          echo "${cacheKeysForPR}"
-          echo "Done"
+          while ret=0; $(gh actions-cache list --key $KEY | grep -q $KEY) || ret=$?; [ $ret -ne 0 ] ; do
+            echo "Cache miss on ${KEY}"
+            sleep 1
+          done
+
+          echo "Cache ${KEY} ready"
 
   compile:
     name: Compile
