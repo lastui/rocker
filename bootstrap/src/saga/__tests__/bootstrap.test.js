@@ -1,19 +1,18 @@
+import { put, race, take, delay } from "redux-saga/effects";
+
 import { constants } from "@lastui/rocker/platform";
 
 import { watchBootstrap, runRefresher } from "../bootstrap";
 
 describe("context", () => {
-  const consoleDebug = console.warn;
-  const consoleWarn = console.warn;
+  const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
 
   beforeEach(() => {
-    console.debug = jest.fn();
-    console.warn = jest.fn();
+    debugSpy.mockClear();
   });
 
   afterAll(() => {
-    console.debug = consoleDebug;
-    console.warn = consoleWarn;
+    debugSpy.mockRestore();
   });
 
   describe("watchBootstrap", () => {
@@ -22,7 +21,7 @@ describe("context", () => {
     });
 
     it("should fork runRefresher", () => {
-      const gen = watchBootstrap({ type: constants.INIT });
+      const gen = watchBootstrap();
       const step = gen.next();
 
       expect(step.done).toEqual(false);
@@ -33,81 +32,42 @@ describe("context", () => {
   });
 
   describe("runRefresher", () => {
-    it("single run", async () => {
-      const action = {
+    it("single run", () => {
+      const gen = runRefresher({
         type: constants.INIT,
         payload: {},
-      };
+      });
 
-      const gen = runRefresher(action);
-      const stepFetch = gen.next();
-
-      expect(stepFetch.done).toEqual(false);
-      expect(stepFetch.value.type).toEqual("PUT");
-      expect(stepFetch.value.payload.action.type).toEqual(constants.FETCH_CONTEXT);
-
-      const waitingStep = gen.next();
-
-      expect(waitingStep.done).toEqual(true);
+      expect(gen.next().value).toEqual(put({ type: constants.FETCH_CONTEXT }));
+      expect(gen.next().done).toEqual(true);
     });
 
-    it("continuous polling delay", async () => {
-      const action = {
+    it("continuous polling delay", () => {
+      const gen = runRefresher({
         type: constants.INIT,
         payload: {
           contextRefreshInterval: 10,
         },
-      };
-
-      const gen = runRefresher(action);
-      const stepFetch = gen.next();
-
-      expect(stepFetch.done).toEqual(false);
-      expect(stepFetch.value.type).toEqual("PUT");
-      expect(stepFetch.value.payload.action.type).toEqual(constants.FETCH_CONTEXT);
-
-      const waitingStep = gen.next();
-
-      expect(waitingStep.done).toEqual(false);
-      expect(waitingStep.value.type).toEqual("RACE");
-
-      const stepNextCycle = gen.next({
-        refresh: false,
-        timeout: true,
       });
 
-      expect(stepNextCycle.done).toEqual(false);
-      expect(stepNextCycle.value.type).toEqual("PUT");
-      expect(stepNextCycle.value.payload.action.type).toEqual(constants.FETCH_CONTEXT);
+      expect(gen.next().value).toEqual(put({ type: constants.FETCH_CONTEXT }));
+      expect(gen.next().value).toEqual(race({ refresh: take(constants.REFRESH), timeout: delay(10) }));
+      expect(gen.next({ refresh: false, timeout: true }).value).toEqual(put({ type: constants.FETCH_CONTEXT }));
     });
 
-    it("continuous polling interupt", async () => {
-      const action = {
+    it("continuous polling interupt", () => {
+      const gen = runRefresher({
         type: constants.INIT,
         payload: {
           contextRefreshInterval: 10,
         },
-      };
-
-      const gen = runRefresher(action);
-      const stepFetch = gen.next();
-
-      expect(stepFetch.done).toEqual(false);
-      expect(stepFetch.value.type).toEqual("PUT");
-      expect(stepFetch.value.payload.action.type).toEqual(constants.FETCH_CONTEXT);
-
-      const waitingStep = gen.next();
-
-      expect(waitingStep.done).toEqual(false);
-      expect(waitingStep.value.type).toEqual("RACE");
-
-      const stepNextCycle = gen.next({
-        refresh: true,
-        timeout: false,
       });
 
-      expect(stepNextCycle.done).toEqual(false);
-      expect(stepNextCycle.value.type).toEqual("RACE");
+      expect(gen.next().value).toEqual(put({ type: constants.FETCH_CONTEXT }));
+      expect(gen.next().value).toEqual(race({ refresh: take(constants.REFRESH), timeout: delay(10) }));
+      expect(gen.next({ refresh: true, timeout: false }).value).toEqual(
+        race({ refresh: take(constants.REFRESH), timeout: delay(10) }),
+      );
     });
   });
 });

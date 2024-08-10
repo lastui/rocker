@@ -12,20 +12,9 @@ function createMessagesWithFallback(defaultLocale) {
         return ref.descriptor;
       },
       get(ref, key) {
-        if (key in ref.primary) {
-          return ref.primary[key];
-        }
-        if (key in ref.fallback) {
-          return ref.fallback[key];
-        }
-        return undefined;
+        return ref.primary[key] ?? ref.fallback[key];
       },
       set(ref, locale, messages) {
-        if (!messages) {
-          ref.primary = emptydict;
-          ref.fallback = emptydict;
-          return true;
-        }
         if (locale in messages) {
           ref.primary = messages[locale];
         } else {
@@ -50,8 +39,8 @@ export const getI18nMessagesFacade = (defaultLocale) => {
   };
 };
 
+export const getLanguage = (state) => state.localisation.language;
+
 export const getIsInitialized = (state) => state.runtime.initialized;
 
 export const getEntrypoint = (state) => state.runtime.entrypoint;
-
-export const getLanguage = (state) => state.localisation.language;

@@ -10,21 +10,23 @@ function createLocalisationReducer() {
   return (state = initialState, action) => {
     switch (action.type) {
       case constants.I18N_REMOVE_MESSAGES: {
-        const nextMessages = {};
-        for (const locale in state.messages) {
-          nextMessages[locale] = { ...state.messages[locale] };
+        if (!(action.payload.module in localeMapping)) {
+          return state;
         }
-        const keys = localeMapping[action.payload.module] || {};
-        for (const key in keys) {
-          for (const locale in state.messages) {
-            delete nextMessages[locale][key];
+
+        const keys = localeMapping[action.payload.module];
+
+        delete localeMapping[action.payload.module];
+
+        for (const locale in state.messages) {
+          for (const key in keys) {
+            delete state.messages[locale][key];
           }
         }
-        delete localeMapping[action.payload.module];
 
         return {
           language: state.language,
-          messages: nextMessages,
+          messages: state.messages,
         };
       }
 
@@ -39,23 +41,19 @@ function createLocalisationReducer() {
           };
         }
 
-        const nextMessages = {};
-
-        for (const locale in state.messages) {
-          nextMessages[locale] = { ...state.messages[locale] };
+        if (!(action.payload.language in state.messages)) {
+          state.messages[action.payload.language] = {};
         }
 
         for (const patch of action.payload.batch) {
-          if (!localeMapping[patch.module]) {
+          if (!(patch.module in localeMapping)) {
             localeMapping[patch.module] = {};
           }
-          if (!nextMessages[action.payload.language]) {
-            nextMessages[action.payload.language] = {};
-          }
+
           const addItem = (key, message) => {
             const hash = key.substring(1);
             localeMapping[patch.module][hash] = true;
-            nextMessages[action.payload.language][hash] = message;
+            state.messages[action.payload.language][hash] = message;
           };
           const walk = (path, table) => {
             for (const property in table) {
@@ -72,7 +70,7 @@ function createLocalisationReducer() {
 
         return {
           language: action.payload.language,
-          messages: nextMessages,
+          messages: state.messages,
         };
       }
       default: {

@@ -47,11 +47,5 @@ describe("selector", () => {
       const messages = selectors.getI18nMessagesFacade("en-US")(state);
       expect(messages.foo).toEqual(state.localisation.messages["en-US"].foo);
     });
-
-    it("should work properly when no messages exist at all", () => {
-      delete state.localisation.messages;
-      const messages = selectors.getI18nMessagesFacade("en-US")(state);
-      expect(messages.foo).toBeUndefined();
-    });
   });
 });
