@@ -40,14 +40,12 @@ describe("localisation", () => {
         expect(stepDownloadMessages.value.type).toEqual("CALL");
         expect(stepDownloadMessages.value.payload.args).toEqual([[], "fr-FR"]);
 
-        const stepAddI18n = gen.next(["item"]);
-
-        expect(stepAddI18n.done).toEqual(false);
-        expect(stepAddI18n.value.type).toEqual("PUT");
-        expect(stepAddI18n.value.payload.action).toEqual({
-          type: I18N_ADD_MESSAGES,
-          payload: { batch: ["item"], language: "fr-FR" },
-        });
+        expect(gen.next(["item"]).value).toEqual(
+          put({
+            type: I18N_ADD_MESSAGES,
+            payload: { batch: ["item"], language: "fr-FR" },
+          }),
+        );
       });
 
       it(`should not load already loaded messages and yield ${I18N_ADD_MESSAGES} afterwards`, () => {
@@ -63,14 +61,12 @@ describe("localisation", () => {
         expect(stepDownloadMessages.value.type).toEqual("CALL");
         expect(stepDownloadMessages.value.payload.args).toEqual([[], "fr-FR"]);
 
-        const stepAddI18n = gen.next(["item"]);
-
-        expect(stepAddI18n.done).toEqual(false);
-        expect(stepAddI18n.value.type).toEqual("PUT");
-        expect(stepAddI18n.value.payload.action).toEqual({
-          type: I18N_ADD_MESSAGES,
-          payload: { batch: ["item"], language: "fr-FR" },
-        });
+        expect(gen.next(["item"]).value).toEqual(
+          put({
+            type: I18N_ADD_MESSAGES,
+            payload: { batch: ["item"], language: "fr-FR" },
+          }),
+        );
       });
     });
   });
@@ -114,11 +110,8 @@ describe("localisation", () => {
         gen.next(createMockChannel(constants.SET_AVAILABLE_MODULES));
 
         expect(gen.next({ type: constants.MODULE_LOADED, payload: { module: "my-feature" } }).value).toEqual(select(getLanguage));
-
         expect(gen.next("en-US").value).toEqual(call(downloadBatchLocales, ["my-feature"], "en-US"));
-
         expect(gen.next([]).value).toEqual(put({ type: constants.MODULE_INIT, payload: { module: "my-feature" } }));
-
         expect(gen.next().value).toEqual(put({ type: constants.MODULE_READY, payload: { module: "my-feature" } }));
 
         gen.next({ type: constants.MODULE_UNLOADED, payload: { module: "my-feature" } });
@@ -145,13 +138,9 @@ describe("localisation", () => {
         gen.next(createMockChannel(constants.SET_AVAILABLE_MODULES));
 
         expect(gen.next({ type: constants.MODULE_LOADED, payload: { module: "my-feature" } }).value).toEqual(select(getLanguage));
-
         expect(gen.next("en-US").value).toEqual(call(downloadBatchLocales, ["my-feature"], "en-US"));
-
         expect(gen.next(batch).value).toEqual(put({ type: I18N_ADD_MESSAGES, payload: { language: "en-US", batch } }));
-
         expect(gen.next().value).toEqual(put({ type: constants.MODULE_INIT, payload: { module: "my-feature" } }));
-
         expect(gen.next().value).toEqual(put({ type: constants.MODULE_READY, payload: { module: "my-feature" } }));
 
         gen.next({ type: constants.MODULE_UNLOADED, payload: { module: "my-feature" } });

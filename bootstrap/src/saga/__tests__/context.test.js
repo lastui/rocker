@@ -1,16 +1,21 @@
+import { put, call } from "redux-saga/effects";
+
 import { constants } from "@lastui/rocker/platform";
 
 import { watchRefresh, watchFetchContext, refreshContext, fetchContext } from "../context";
 
 describe("context", () => {
-  const consoleDebug = console.warn;
+  const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
+  const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
 
   beforeEach(() => {
-    console.debug = jest.fn();
+    debugSpy.mockClear();
+    warnSpy.mockClear();
   });
 
   afterAll(() => {
-    console.debug = consoleDebug;
+    debugSpy.mockRestore();
+    warnSpy.mockRestore();
   });
 
   describe("watchRefresh", () => {
@@ -36,12 +41,8 @@ describe("context", () => {
 
     it("should put FETCH_CONTEXT", () => {
       const gen = refreshContext();
-      const step = gen.next();
 
-      expect(step.done).toEqual(false);
-      expect(step.value.type).toEqual("PUT");
-      expect(step.value.payload.action.type).toEqual(constants.FETCH_CONTEXT);
-
+      expect(gen.next().value).toEqual(put({ type: constants.FETCH_CONTEXT }));
       expect(gen.next().done).toEqual(true);
     });
   });
@@ -63,16 +64,6 @@ describe("context", () => {
   });
 
   describe("fetchContext", () => {
-    const consoleWarn = console.warn;
-
-    beforeEach(() => {
-      console.warn = jest.fn();
-    });
-
-    afterAll(() => {
-      console.warn = consoleWarn;
-    });
-
     it("should be defined", () => {
       expect(fetchContext).toBeDefined();
     });
@@ -89,50 +80,21 @@ describe("context", () => {
 
       const gen = fetchContext();
 
-      const stepSagaContext = gen.next();
-
-      expect(stepSagaContext.done).toEqual(false);
-      expect(stepSagaContext.value.payload).toEqual("fetchContext");
-
-      const stepFetchContext = gen.next(fetchContextFuture);
-
-      expect(stepFetchContext.done).toEqual(false);
-      expect(stepFetchContext.value.type).toEqual("CALL");
-      expect(stepFetchContext.value.payload.fn).toEqual(fetchContextFuture);
-
-      const stepAvailableModules = gen.next(ctx);
-
-      expect(stepAvailableModules.done).toEqual(false);
-      expect(stepAvailableModules.value.payload.action.type).toEqual(constants.SET_AVAILABLE_MODULES);
-      expect(stepAvailableModules.value.payload.action.payload.modules).toEqual(ctx.available);
-
-      const stepSetShared = gen.next();
-
-      expect(stepSetShared.done).toEqual(false);
-      expect(stepSetShared.value.payload.action.type).toEqual(constants.SET_SHARED);
-      expect(stepSetShared.value.payload.action.payload.data).toEqual(ctx.environment);
-      expect(stepSetShared.value.payload.action.payload.module).toBeUndefined();
-
-      const stepEntrypointModule = gen.next();
-
-      expect(stepEntrypointModule.done).toEqual(false);
-      expect(stepEntrypointModule.value.payload.action.type).toEqual(constants.SET_ENTRYPOINT_MODULE);
-      expect(stepEntrypointModule.value.payload.action.payload.entrypoint).toEqual(ctx.entrypoint);
+      expect(gen.next().value.payload).toEqual("fetchContext");
+      expect(gen.next(fetchContextFuture).value).toEqual(call(fetchContextFuture));
+      expect(gen.next(ctx).value).toEqual(put({ type: constants.SET_AVAILABLE_MODULES, payload: { modules: ctx.available } }));
+      expect(gen.next().value).toEqual(put({ type: constants.SET_SHARED, payload: { data: ctx.environment } }));
+      expect(gen.next().value).toEqual(put({ type: constants.SET_ENTRYPOINT_MODULE, payload: { entrypoint: ctx.entrypoint } }));
     });
 
     it("error path", () => {
       const error = new Error("fail");
 
       const gen = fetchContext();
-      const stepSagaContext = gen.next();
+      expect(gen.next().value.payload).toEqual("fetchContext");
+      expect(gen.throw(error).done).toEqual(true);
 
-      expect(stepSagaContext.done).toEqual(false);
-      expect(stepSagaContext.value.payload).toEqual("fetchContext");
-
-      const stepFetchContext = gen.throw(error);
-
-      expect(stepFetchContext.done).toEqual(true);
-      expect(console.warn).toHaveBeenCalledWith("failed to obtain context", error);
+      expect(warnSpy).toHaveBeenCalledWith("failed to obtain context", error);
     });
   });
 });

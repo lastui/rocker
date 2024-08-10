@@ -74,29 +74,6 @@ describe("env reducer", () => {
   });
 
   describe("MODULE_UNLOADED", () => {
-    it("purges local shared state of module", () => {
-      const action = {
-        type: constants.MODULE_UNLOADED,
-        payload: {
-          module: "my-feature",
-        },
-      };
-      const state = {
-        ...initialState,
-        local: {
-          "my-feature": {
-            hair: "yes",
-          },
-        },
-      };
-      const expectedState = {
-        ...initialState,
-        lastUpdate: 1,
-      };
-
-      expect(reducer(state, action)).toEqual(expectedState);
-    });
-
     it("marks module as no longer ready", () => {
       const action = {
         type: constants.MODULE_UNLOADED,

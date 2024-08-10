@@ -18,26 +18,36 @@ describe("localisation reducer", () => {
   });
 
   describe("I18N_REMOVE_MESSAGES", () => {
-    it("purges local shared state of module", () => {
+    it("fast tracks when unloaded module did not have locales", () => {
+      const state = {
+        ...initialState,
+        language: "en-US",
+      };
+
+      const addMessagesAction = {
+        type: constants.I18N_ADD_MESSAGES,
+        payload: {
+          language: "en-US",
+          batch: [
+            {
+              module: "my-feature",
+              data: {
+                "message.key": "message.value",
+              },
+            },
+          ],
+        },
+      };
+
       const action = {
         type: constants.I18N_REMOVE_MESSAGES,
         payload: {
-          module: "my-feature",
+          module: "my-other-feature",
         },
       };
-      const state = {
-        ...initialState,
-        local: {
-          "my-feature": {
-            hair: "yes",
-          },
-        },
-      };
-      const expectedState = {
-        ...initialState,
-      };
-
-      expect(reducer(state, action)).toEqual(expectedState);
+      const nextState = reducer(state, addMessagesAction);
+      expect(nextState.messages["en-US"]["message.key"]).toEqual("message.value");
+      expect(reducer(nextState, action)).toEqual(nextState);
     });
 
     it("purges localisation messages owned by this module", () => {
