@@ -26,6 +26,7 @@ export const config = {
     'selector-pseudo-class-no-unknown': {
       ignorePseudoClasses: [':global'],
     },
+    'selector-class-pattern': null,
   },
 };
 
