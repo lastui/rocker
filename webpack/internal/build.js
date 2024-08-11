@@ -4,8 +4,6 @@ const webpack = require("webpack");
 
 const settings = require("../settings");
 
-console.log(process.env);
-
 module.exports = {
   bail: true,
   output: {
