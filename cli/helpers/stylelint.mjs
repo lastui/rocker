@@ -1,13 +1,27 @@
 import process from "node:process";
 import stylelint from "stylelint";
 import prettier from "prettier";
+import customSyntax from '@linaria/postcss-linaria';
 
 import { config as prettierConfig } from "./prettier.mjs"
 
 export const config = {
-  extends: ["@linaria/stylelint-config-standard-linaria"],
+  extends: ['stylelint-config-standard'],
+  customSyntax,
   rules: {
-    'value-list-comma-newline-after': null,
+    'property-no-vendor-prefix': true,
+    'string-no-newline': true,
+    'value-no-vendor-prefix': true,
+    'no-empty-source': null,
+    'comment-empty-line-before': [
+      'always',
+      {
+        except: ['first-nested'],
+        ignore: ['stylelint-commands'],
+        ignoreComments: [/pcss-lin/],
+      },
+    ],
+    'no-invalid-double-slash-comments': true,
     'declaration-empty-line-before': null,
     'selector-pseudo-class-no-unknown': {
       ignorePseudoClasses: [':global'],
