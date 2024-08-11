@@ -103,7 +103,13 @@ class ModuleLocalesPlugin {
                 });
               });
               compilation.fileDependencies.add(inputPath);
-              compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
+
+              const asset = compilation.getAsset(outputPath);
+              if (asset) {
+                compilation.updateAsset(outputPath, new compiler.webpack.sources.RawSource(content));
+              } else {
+                compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
+              }
             } catch (error) {
               console.error("Failed to process locale asset", inputPath, "with error", error);
             }

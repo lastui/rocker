@@ -4,6 +4,8 @@ const webpack = require("webpack");
 
 const settings = require("../settings");
 
+console.log(process.env);
+
 module.exports = {
   bail: true,
   output: {
@@ -12,7 +14,7 @@ module.exports = {
     chunkLoadingGlobal: "lastuiJsonp",
     chunkLoading: "jsonp",
     wasmLoading: false,
-    path: path.resolve(process.env.INIT_CWD, "build"),
+    path: path.resolve(__dirname, "..", "..", "..", "..", "..", "build"),
     publicPath: settings.PROJECT_NAMESPACE,
     globalObject: "this",
     environment: {

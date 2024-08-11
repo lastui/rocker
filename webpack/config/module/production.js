@@ -1,6 +1,4 @@
-const path = require("path");
 const webpack = require("webpack");
-const { StatsWriterPlugin } = require("webpack-stats-plugin");
 
 const dependenciesDlls = require("@lastui/dependencies");
 
@@ -8,6 +6,7 @@ const babel = require("../../../babel");
 const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
 const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
+const SoftwareBillOfMaterialsPlugin = require("../../plugins/SoftwareBillOfMaterialsPlugin");
 const settings = require("../../settings");
 
 const config = {
@@ -167,70 +166,8 @@ config.plugins.push(
     context: process.env.INIT_CWD,
   }),
   new NormalizedModuleIdPlugin(),
-  new StatsWriterPlugin({
-    filename: path.join("..", "reports", "sbom.json"),
-    stats: {
-      assets: false,
-      dependentModules: true,
-    },
-    async transform(data) {
-      const shared = require("@lastui/dependencies/sbom.json");
-
-      const lockfile = require(
-        path.resolve(require.resolve("@lastui/dependencies"), "..", "..", "..", "..", "package-lock.json"),
-      );
-
-      const candidates = [];
-
-      for (const chunk of data.chunks) {
-        for (const entry of chunk.modules) {
-          if (entry.moduleType === "asset/inline") {
-            if (!entry.id.startsWith("./node_modules/")) {
-              continue;
-            }
-            if (candidates.indexOf(entry.id) === -1) {
-              candidates.push(entry.id);
-            }
-          } else {
-            for (const reason of entry.reasons) {
-              if (!reason.resolvedModuleId) {
-                continue;
-              }
-              if (!reason.resolvedModuleId.startsWith("./node_modules/")) {
-                continue;
-              }
-              if (candidates.indexOf(reason.resolvedModuleId) === -1) {
-                candidates.push(reason.resolvedModuleId);
-              }
-            }
-          }
-        }
-      }
-
-      const report = {};
-
-      for (const candidate of candidates) {
-        const parts = candidate.substring(15).split("/");
-        const item = candidate[15] === "@" ? parts[0] + "/" + parts[1] : parts[0];
-
-        if (item in shared) {
-          continue;
-        }
-
-        report[item] = "*";
-      }
-
-      for (const item in report) {
-        const entry = lockfile.packages["node_modules/" + item];
-        if (!entry) {
-          delete report[item];
-        } else {
-          report[item] = entry.version;
-        }
-      }
-
-      return JSON.stringify(report, null, 2);
-    },
+  new SoftwareBillOfMaterialsPlugin({
+    filename: (entrypoint) => `sbom-module-${entrypoint}.json`,
   }),
 );
 
