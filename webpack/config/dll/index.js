@@ -51,7 +51,7 @@ config.module.rules.push(
             }
           }),
           assumptions: webpackBabel.assumptions,
-          cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".babel-cache"),
+          cacheDirectory: true,
           sourceMaps: false,
           sourceType: "module",
           highlightCode: true,

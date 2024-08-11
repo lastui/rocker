@@ -66,7 +66,7 @@ config.module.rules.push(
             }
           }),
           assumptions: webpackBabel.assumptions,
-          cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".babel-cache"),
+          cacheDirectory: true,
           sourceMaps: false,
           sourceType: "module",
           highlightCode: true,
@@ -82,9 +82,8 @@ config.module.rules.push(
           sourceMap: false,
           displayName: false,
           ignore: [/node_modules/],
-          classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
-          variableNameSlug: (context) =>
-            `${settings.PROJECT_NAME}-${context.componentName}-${context.valueSlug}-${context.index}`,
+          classNameSlug: (hash, title) => `${title}__${hash}`,
+          variableNameSlug: (context) => `${context.componentName}-${context.valueSlug}-${context.index}`,
           babelOptions: {
             babelrc: false,
             presets: linariaBabel.presets.map((preset) => {
@@ -152,18 +151,18 @@ config.plugins.push(
   ...dependenciesDlls.map(
     (item) =>
       new webpack.DllReferencePlugin({
-        manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item}-prod-manifest.json`),
+        manifest: require.resolve(`@lastui/dependencies/dll/${item}-prod-manifest.json`),
         sourceType: "var",
         context: process.env.INIT_CWD,
       }),
   ),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-prod-manifest.json"),
+    manifest: require.resolve("@lastui/rocker/platform/dll/platform-prod-manifest.json"),
     sourceType: "var",
     context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-prod-manifest.json"),
+    manifest: require.resolve("@lastui/rocker/bootstrap/dll/bootstrap-prod-manifest.json"),
     sourceType: "var",
     context: process.env.INIT_CWD,
   }),

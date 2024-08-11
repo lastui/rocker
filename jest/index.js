@@ -1,22 +1,22 @@
 const fs = require("fs");
 const path = require("path");
 
-const babelConfig = require("../babel").env.test;
-
 process.env.TZ = "UTC";
 process.env.NODE_ENV = "test";
 process.env.BABEL_ENV = "test";
 
-const node_modules =
-  path.dirname(process.env.INIT_CWD) === path.resolve(__dirname, "..")
-    ? [
-        "<rootDir>/../node_modules",
-        "<rootDir>/../dependencies/node_modules",
-        "<rootDir>/../platform/node_modules",
-        "<rootDir>/../bootstrap/node_modules",
-        "node_modules",
-      ]
-    : ["node_modules"];
+const isTestingSelf = path.dirname(process.env.INIT_CWD) === path.resolve(__dirname, "..");
+
+const cacheDirectory = path.resolve(
+  require.resolve("jest").split(path.join(path.sep, "node_modules", path.sep))[0],
+  "node_modules",
+  ".cache",
+  "jest-runner",
+);
+
+const node_modules = isTestingSelf
+  ? ["<rootDir>/../node_modules", "<rootDir>/../dependencies/node_modules", "node_modules"]
+  : ["node_modules"];
 
 module.exports = {
   rootDir: process.env.INIT_CWD,
@@ -35,13 +35,13 @@ module.exports = {
         cwd: process.env.INIT_CWD,
         babelrc: false,
         sourceMaps: "inline",
-        ...babelConfig,
+        ...require("../babel").env.test,
       },
     ],
     "\\.css$": path.resolve(__dirname, "transform", "css.js"),
     "^(?!.*\\.(ts|js|jsx|tsx))": path.resolve(__dirname, "transform", "file.js"),
   },
-  cacheDirectory: "<rootDir>/node_modules/@lastui/rocker/jest/.jest-cache",
+  cacheDirectory,
   transformIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   testPathIgnorePatterns: [...node_modules, "<rootDir>/build/", "<rootDir>/static/"],
   setupFilesAfterEnv: [

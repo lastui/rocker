@@ -5,7 +5,7 @@ exports.describe = "upgrade to latest compatible";
 exports.builder = {};
 
 exports.handler = async function (options, _cleanupHooks) {
-  const { run } = await import("../helpers/upgrade.mjs");
+  const { run: runUpgrade } = await import("../helpers/upgrade.mjs");
 
-  await run(options);
+  await runUpgrade(options);
 };

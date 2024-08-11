@@ -95,7 +95,7 @@ config.module.rules.push(
             }
           }),
           assumptions: webpackBabel.assumptions,
-          cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".babel-cache"),
+          cacheDirectory: true,
           sourceMaps: true,
           sourceType: "module",
           highlightCode: true,
@@ -111,9 +111,8 @@ config.module.rules.push(
           sourceMap: true,
           displayName: false,
           ignore: [/node_modules/],
-          classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
-          variableNameSlug: (context) =>
-            `${settings.PROJECT_NAME}-${context.componentName}-${context.valueSlug}-${context.index}`,
+          classNameSlug: (hash, title) => `${title}__${hash}`,
+          variableNameSlug: (context) => `${context.componentName}-${context.valueSlug}-${context.index}`,
           babelOptions: {
             babelrc: false,
             presets: linariaBabel.presets.map((preset) => {
@@ -184,18 +183,18 @@ config.plugins.push(
   ...dependenciesDlls.map(
     (item) =>
       new webpack.DllReferencePlugin({
-        manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item}-dev-manifest.json`),
+        manifest: require.resolve(`@lastui/dependencies/dll/${item}-dev-manifest.json`),
         sourceType: "var",
         context: process.env.INIT_CWD,
       }),
   ),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-dev-manifest.json"),
+    manifest: require.resolve("@lastui/rocker/platform/dll/platform-dev-manifest.json"),
     sourceType: "var",
     context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-dev-manifest.json"),
+    manifest: require.resolve("@lastui/rocker/bootstrap/dll/bootstrap-dev-manifest.json"),
     sourceType: "var",
     context: process.env.INIT_CWD,
   }),
@@ -408,7 +407,7 @@ config.plugins.push(
                   const dom = rocker_so_dependencies("./node_modules/react-dom/client.js");
                   const bootstrap = rocker_so_bootstrap("@rocker/bootstrap/index.js");
 
-                  const root = dom.createRoot(document.getElementById("${settings.PROJECT_NAME}"));
+                  const root = dom.createRoot(document.getElementById("spa"));
                 
                   root.render(react.createElement(bootstrap.Main, {
                     async fetchContext() {
@@ -418,7 +417,7 @@ config.plugins.push(
                 })
               }())
             </script>
-            <div id="${settings.PROJECT_NAME}" style="width: 100%; min-height: 100%; display: flex; flex-flow: column nowrap;" />
+            <div id="spa" style="width: 100%; min-height: 100%; display: flex; flex-flow: column nowrap;" />
           </body>
         </html>
       `;
@@ -426,21 +425,21 @@ config.plugins.push(
   }),
   new AddAssetHtmlPlugin([
     ...dependenciesDlls.map((item) => ({
-      filepath: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item}.dll.js`),
+      filepath: require.resolve(`@lastui/dependencies/dll/${item}.dll.js`),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     })),
     {
-      filepath: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform.dll.js"),
+      filepath: require.resolve("@lastui/rocker/platform/dll/platform.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
       },
     },
     {
-      filepath: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap.dll.js"),
+      filepath: require.resolve("@lastui/rocker/bootstrap/dll/bootstrap.dll.js"),
       typeOfAsset: "js",
       attributes: {
         defer: true,
