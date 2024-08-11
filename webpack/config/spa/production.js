@@ -9,6 +9,7 @@ const dependenciesDlls = require("@lastui/dependencies");
 
 const babel = require("../../../babel");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
+const SoftwareBillOfMaterialsPlugin = require("../../plugins/SoftwareBillOfMaterialsPlugin");
 const settings = require("../../settings");
 
 const config = {
@@ -218,7 +219,7 @@ config.plugins.push(
   ]),
   new NormalizedModuleIdPlugin(),
   new SoftwareBillOfMaterialsPlugin({
-    filename: (_entrypoint) => 'sbom-spa.json',
+    filename: (_entrypoint) => "sbom-spa.json",
   }),
 );
 

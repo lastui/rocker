@@ -1,4 +1,5 @@
 const webpack = require("webpack");
+
 const dependenciesDlls = require("@lastui/dependencies");
 
 const babel = require("../../../babel");
@@ -6,7 +7,6 @@ const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModu
 const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
 const SoftwareBillOfMaterialsPlugin = require("../../plugins/SoftwareBillOfMaterialsPlugin");
-
 const settings = require("../../settings");
 
 const config = {
