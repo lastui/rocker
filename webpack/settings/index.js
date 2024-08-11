@@ -26,10 +26,6 @@ exports.DEVELOPMENT = process.env.NODE_ENV === "development";
 
 exports.PROJECT_NAMESPACE = namespace(exports.DEVELOPMENT ? "" : process.env.PROJECT_NAMESPACE);
 
-exports.DLL_BUILD_PATH = path.resolve(process.env.INIT_CWD, "dll");
-
-exports.PROJECT_BUILD_PATH = path.resolve(process.env.INIT_CWD, "build");
-
 exports.DEV_SERVER_PORT = Number(process.env.DEV_SERVER_PORT ?? 0);
 
 exports.PROGRESS = process.env.PROGRESS !== "false";

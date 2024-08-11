@@ -12,7 +12,7 @@ const config = {
 
 const webpackBabel = babel.env[settings.DEVELOPMENT ? "development" : "production"];
 
-config.output.path = settings.DLL_BUILD_PATH;
+config.output.path = path.resolve(process.env.INIT_CWD, "dll");
 config.output.filename = `[name].dll${settings.DEVELOPMENT ? "" : ".min"}.js`;
 config.output.library = {
   name: "rocker_so_[name]",
@@ -73,7 +73,7 @@ config.plugins.push(
     entryOnly: false,
     format: true,
     context: process.env.INIT_CWD,
-    path: path.join(settings.DLL_BUILD_PATH, `[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`),
+    path: path.join(config.output.path, `[name]-${settings.DEVELOPMENT ? "dev" : "prod"}-manifest.json`),
     name: "rocker_so_[name]",
   }),
   new NormalizedModuleIdPlugin(),

@@ -1,3 +1,4 @@
+const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 
@@ -11,7 +12,7 @@ module.exports = {
     chunkLoadingGlobal: "lastuiJsonp",
     chunkLoading: "jsonp",
     wasmLoading: false,
-    path: settings.PROJECT_BUILD_PATH,
+    path: path.resolve(process.env.INIT_CWD, "build"),
     publicPath: settings.PROJECT_NAMESPACE,
     globalObject: "this",
     environment: {

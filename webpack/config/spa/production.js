@@ -181,7 +181,7 @@ config.plugins.push(
     patterns: [
       {
         from: path.resolve(process.env.INIT_CWD, "static"),
-        to: path.join(settings.PROJECT_BUILD_PATH, "spa"),
+        to: path.resolve(process.env.INIT_CWD, "build", "spa"),
         async filter(resourcePath) {
           return !resourcePath.endsWith("index.html");
         },
