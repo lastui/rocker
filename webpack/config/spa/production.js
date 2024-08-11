@@ -63,7 +63,7 @@ config.module.rules.push(
             }
           }),
           assumptions: webpackBabel.assumptions,
-          cacheDirectory: path.join(settings.WEBPACK_ROOT_PATH, ".babel-cache"),
+          cacheDirectory: true,
           sourceMaps: false,
           sourceType: "module",
           highlightCode: true,
@@ -79,9 +79,8 @@ config.module.rules.push(
           sourceMap: false,
           displayName: false,
           ignore: [/node_modules/],
-          classNameSlug: (hash, title) => `${settings.PROJECT_NAME}__${title}__${hash}`,
-          variableNameSlug: (context) =>
-            `${settings.PROJECT_NAME}-${context.componentName}-${context.valueSlug}-${context.index}`,
+          classNameSlug: (hash, title) => `${title}__${hash}`,
+          variableNameSlug: (context) => `${context.componentName}-${context.valueSlug}-${context.index}`,
           babelOptions: {
             babelrc: false,
             presets: linariaBabel.presets.map((preset) => {
@@ -143,18 +142,18 @@ config.plugins.push(
   ...dependenciesDlls.map(
     (item) =>
       new webpack.DllReferencePlugin({
-        manifest: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item}-prod-manifest.json`),
+        manifest: require.resolve(`@lastui/dependencies/dll/${item}-prod-manifest.json`),
         sourceType: "var",
         context: process.env.INIT_CWD,
       }),
   ),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform-prod-manifest.json"),
+    manifest: require.resolve("@lastui/rocker/platform/dll/platform-prod-manifest.json"),
     sourceType: "var",
     context: process.env.INIT_CWD,
   }),
   new webpack.DllReferencePlugin({
-    manifest: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap-prod-manifest.json"),
+    manifest: require.resolve("@lastui/rocker/bootstrap/dll/bootstrap-prod-manifest.json"),
     sourceType: "var",
     context: process.env.INIT_CWD,
   }),
@@ -182,14 +181,16 @@ config.plugins.push(
     patterns: [
       {
         from: path.resolve(process.env.INIT_CWD, "static"),
-        to: path.join(settings.PROJECT_BUILD_PATH, "spa"),
-        filter: async (resourcePath) => !resourcePath.endsWith("index.html"),
+        to: path.resolve(process.env.INIT_CWD, "build", "spa"),
+        async filter(resourcePath) {
+          return !resourcePath.endsWith("index.html");
+        },
       },
     ],
   }),
   new AddAssetHtmlPlugin([
     ...dependenciesDlls.map((item) => ({
-      filepath: path.resolve(require.resolve("@lastui/dependencies"), "..", "dll", `${item}.dll.min.js`),
+      filepath: require.resolve(`@lastui/dependencies/dll/${item}.dll.min.js`),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
@@ -198,7 +199,7 @@ config.plugins.push(
       },
     })),
     {
-      filepath: path.resolve(__dirname, "..", "..", "..", "platform", "dll", "platform.dll.min.js"),
+      filepath: require.resolve("@lastui/rocker/platform/dll/platform.dll.min.js"),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
@@ -207,7 +208,7 @@ config.plugins.push(
       },
     },
     {
-      filepath: path.resolve(__dirname, "..", "..", "..", "bootstrap", "dll", "bootstrap.dll.min.js"),
+      filepath: require.resolve("@lastui/rocker/bootstrap/dll/bootstrap.dll.min.js"),
       outputPath: "spa",
       publicPath: `${settings.PROJECT_NAMESPACE}spa`,
       typeOfAsset: "js",
