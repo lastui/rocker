@@ -39,6 +39,9 @@ let styleNode = document.querySelector('head > style#' + id);
 if (!styleNode) {
   styleNode = document.createElement('style');
   styleNode.setAttribute('id', id);
+  if (__webpack_nonce__) {
+    styleNode.setAttribute('nonce', __webpack_nonce__);
+  }
   styleNode.appendChild(cssNode);
   document.head.appendChild(styleNode);
 } else {
