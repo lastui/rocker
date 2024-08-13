@@ -120,6 +120,7 @@ config.module.rules.push(
   {
     test: /\.css$/i,
     use: [
+      // TODO FIXME so it is a partition per-module not per-compilation
       {
         loader: "style-loader",
         options: {

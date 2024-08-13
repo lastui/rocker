@@ -93,7 +93,7 @@ const createModuleLoader = () => {
         return adaptModule(name, scope);
       })
       .then((data) => {
-        if (!availableModules[name]) {
+        if (!(name in availableModules)) {
           data.cleanup();
           return true;
         }
@@ -136,7 +136,7 @@ const createModuleLoader = () => {
     for (let i = modules.length; i--; ) {
       const item = modules[i];
       newModules[item.name] = item;
-      if (!availableModules[item.name]) {
+      if (!(item.name in availableModules)) {
         availableModules[item.name] = item;
       }
     }

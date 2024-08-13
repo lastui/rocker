@@ -151,13 +151,22 @@ config.module.rules.push(
     test: /\.css$/i,
     use: [
       {
-        loader: "style-loader",
-        options: {
-          injectType: "singletonStyleTag",
-          attributes: {
-            id: `rocker-${settings.BUILD_ID}`,
-          },
-        },
+        loader: path.resolve(__dirname, 'entry-aware-style-loader.js'),
+
+//        loader: "style-loader",
+//        options: {
+//          //injectType: "lazyStyleTag",
+//           //injectType: "linkTag",
+//          //injectType: "singletonStyleTag",
+//          styleTagTransform: require.resolve("./style-transform-function"),
+//          insert: require.resolve("./style-insert-function"),
+//          //options: {
+//          //id: `rocker-${settings.BUILD_ID}`,
+//          //}
+//          attributes: {
+//            id: `beta-rocker-${settings.BUILD_ID}`, // TODO not singleon but retrieve from some build map
+//          },
+//        },
       },
       {
         loader: "css-loader",
