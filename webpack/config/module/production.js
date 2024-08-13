@@ -1,3 +1,4 @@
+const path = require("path");
 const webpack = require("webpack");
 
 const dependenciesDlls = require("@lastui/dependencies");
@@ -120,13 +121,11 @@ config.module.rules.push(
   {
     test: /\.css$/i,
     use: [
-      // TODO FIXME so it is a partition per-module not per-compilation
       {
-        loader: "style-loader",
+        loader: path.resolve(__dirname, "..", "..", "loaders", "EntryAwareStyleLoader.js"),
         options: {
-          injectType: "singletonStyleTag",
-          attributes: {
-            id: `rocker-${settings.BUILD_ID}`,
+          getEntryCouplingID(name) {
+            return settings.GET_COUPLING_ID(name);
           },
         },
       },

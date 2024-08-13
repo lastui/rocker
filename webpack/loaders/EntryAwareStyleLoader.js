@@ -1,16 +1,14 @@
 function loader(content) {
   return content;
-};
+}
 
 loader.pitch = function pitch(request) {
   const options = this.getOptions();
 
-  const context = this.context.slice(process.env.INIT_CWD.length);
-
   let max = 0;
   let candidate = null;
 
-  const file = request.slice(request.lastIndexOf('!') + 1);
+  const file = request.slice(request.lastIndexOf("!") + 1);
 
   for (const entry of this._compilation.entries) {
     let idx = 0;
@@ -18,7 +16,7 @@ loader.pitch = function pitch(request) {
     for (const entryFile of entry[1].dependencies) {
       while (entryFile.request[idx] === file[idx]) {
         idx++;
-      }  
+      }
     }
 
     if (idx > max) {
@@ -28,7 +26,7 @@ loader.pitch = function pitch(request) {
   }
 
   if (!candidate) {
-    return '';
+    return "";
   }
 
   const guid = `rocker-${options.getEntryCouplingID(candidate[0])}`;

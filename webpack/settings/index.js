@@ -32,19 +32,19 @@ exports.PROGRESS = process.env.PROGRESS !== "false";
 
 exports.BUILD_ID = randomUUID();
 
-exports.GET_ENTRY_COUPLING_HASH = (function() {
+exports.GET_COUPLING_ID = (function () {
   const cache = {};
   return (name) => {
     if (!name) {
       return exports.BUILD_ID;
     }
     if (name in cache) {
-      return exports.BUILD_ID + '-' + cache[name];
+      return exports.BUILD_ID + "-" + cache[name];
     }
     const value = randomUUID();
-    cache[name] = value
-    return exports.BUILD_ID + '-' + value;
-  }
-}());
+    cache[name] = value;
+    return exports.BUILD_ID + "-" + value;
+  };
+})();
 
 exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US").split(",").map((locale) => locale.trim());

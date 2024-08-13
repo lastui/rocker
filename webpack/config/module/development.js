@@ -151,22 +151,12 @@ config.module.rules.push(
     test: /\.css$/i,
     use: [
       {
-        loader: path.resolve(__dirname, 'entry-aware-style-loader.js'),
-
-//        loader: "style-loader",
-//        options: {
-//          //injectType: "lazyStyleTag",
-//           //injectType: "linkTag",
-//          //injectType: "singletonStyleTag",
-//          styleTagTransform: require.resolve("./style-transform-function"),
-//          insert: require.resolve("./style-insert-function"),
-//          //options: {
-//          //id: `rocker-${settings.BUILD_ID}`,
-//          //}
-//          attributes: {
-//            id: `beta-rocker-${settings.BUILD_ID}`, // TODO not singleon but retrieve from some build map
-//          },
-//        },
+        loader: path.resolve(__dirname, "..", "..", "loaders", "EntryAwareStyleLoader.js"),
+        options: {
+          getEntryCouplingID(name) {
+            return settings.GET_COUPLING_ID(name);
+          },
+        },
       },
       {
         loader: "css-loader",

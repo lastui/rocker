@@ -64,7 +64,7 @@ module.exports = {
                 name = entry[0];
               }
             }
-            return `"${settings.GET_ENTRY_COUPLING_HASH(name)}"`;
+            return `"${settings.GET_COUPLING_ID(name)}"`;
           }),
         },
       ),
