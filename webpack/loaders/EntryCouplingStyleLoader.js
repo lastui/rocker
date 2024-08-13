@@ -10,6 +10,8 @@ loader.pitch = function pitch(request) {
 
   const file = request.slice(request.lastIndexOf("!") + 1);
 
+  // TODO INFO possibility of false positive when using common node_modules outside of entrypoint which would falsely associate it
+  // to random entrypoint
   for (const entry of this._compilation.entries) {
     let idx = 0;
 
