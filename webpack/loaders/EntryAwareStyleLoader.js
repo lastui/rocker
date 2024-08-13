@@ -32,16 +32,13 @@ loader.pitch = function pitch(request) {
   const guid = `rocker-${options.getEntryCouplingID(candidate[0])}`;
 
   return `
-    let css = require(${JSON.stringify(this.utils.contextify(this.context, `!!${request}`))});
-    css = css.__esModule ? css.default : css;
-
-    const cssNode = document.createTextNode(css[0][1]);
-
-    let styleNode = document.querySelector('head > style#${guid}');
-
+    const couplingID = '${guid}';
+    const css = require(${JSON.stringify(this.utils.contextify(this.context, `!!${request}`))});
+    const cssNode = document.createTextNode((css.__esModule ? css.default : css)[0][1]);
+    let styleNode = document.querySelector('head > style#' + couplingID);
     if (!styleNode) {
       styleNode = document.createElement('style');
-      styleNode.setAttribute('id', '${guid}');
+      styleNode.setAttribute('id', couplingID);
       styleNode.appendChild(cssNode);
       document.head.appendChild(styleNode);
     } else {
