@@ -151,9 +151,9 @@ config.module.rules.push(
     test: /\.css$/i,
     use: [
       {
-        loader: path.resolve(__dirname, "..", "..", "loaders", "EntryAwareStyleLoader.js"),
+        loader: path.resolve(__dirname, "..", "..", "loaders", "EntryCouplingStyleLoader.js"),
         options: {
-          getEntryCouplingID(name) {
+          getID(name) {
             return settings.GET_COUPLING_ID(name);
           },
         },
