@@ -1,14 +1,18 @@
+const path = require('path');
+
 function loader(content) {
   return content;
 }
 
-loader.pitch = function pitch(request) {
+loader.pitch = function(request) {
   const options = this.getOptions();
 
   let max = 0;
   let candidate = null;
 
   const file = request.slice(request.lastIndexOf("!") + 1);
+
+  // TODO two passes firstly remove common prefix from all 
 
   // TODO INFO possibility of false positive when using common node_modules outside of entrypoint which would falsely associate it
   // to random entrypoint
@@ -31,24 +35,13 @@ loader.pitch = function pitch(request) {
     return "";
   }
 
-  const guid = `rocker-${options.getID(candidate[0])}`;
+  const thisBuild = options.getEntryCouplingID();
+  const guid = options.getEntryCouplingID(candidate[0]);
 
   return `
-const id = '${guid}';
 const css = require(${JSON.stringify(this.utils.contextify(this.context, `!!${request}`))});
-const cssNode = document.createTextNode((css.__esModule ? css.default : css)[0][1]);
-let styleNode = document.querySelector('head > style#' + id);
-if (!styleNode) {
-  styleNode = document.createElement('style');
-  styleNode.setAttribute('id', id);
-  if (__webpack_nonce__) {
-    styleNode.setAttribute('nonce', __webpack_nonce__);
-  }
-  styleNode.appendChild(cssNode);
-  document.head.appendChild(styleNode);
-} else {
-  styleNode.appendChild(cssNode);
-}
+const load = require(${JSON.stringify(this.utils.contextify(this.context, path.join(__dirname, "runtime.js")))});
+load(css, '${guid.startsWith(thisBuild + '-') ? guid.slice(thisBuild.length + 1) : guid}');
   `;
 };
 

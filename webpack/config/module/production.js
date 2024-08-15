@@ -122,7 +122,7 @@ config.module.rules.push(
     test: /\.css$/i,
     use: [
       {
-        loader: path.resolve(__dirname, "..", "..", "loaders", "EntryCouplingStyleLoader.js"),
+        loader: path.resolve(__dirname, "..", "..", "loaders", "EntryCouplingStyleLoader', 'compile.js"),
         options: {
           getID(name) {
             return settings.GET_COUPLING_ID(name);
