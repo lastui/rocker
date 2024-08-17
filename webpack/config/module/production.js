@@ -120,10 +120,10 @@ config.module.rules.push(
   },
   {
     test: /\.css$/i,
-    use: (info) => ([
+    use: (info) => [
       {
         loader: path.resolve(__dirname, "..", "..", "loaders", "EntryCouplingStyleLoader", "compile.js"),
-        ident: 'EntryCouplingStyleLoader',
+        ident: "EntryCouplingStyleLoader",
         options: {
           getIssuer() {
             return info.issuer;
@@ -135,14 +135,14 @@ config.module.rules.push(
       },
       {
         loader: "css-loader",
-        ident: 'css-loader',
+        ident: "css-loader",
         options: {
           sourceMap: false,
           modules: false,
           importLoaders: 0,
         },
       },
-    ]),
+    ],
   },
   {
     test: /\.(png|jpg|gif)$/i,
