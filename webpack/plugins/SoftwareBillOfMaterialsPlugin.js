@@ -95,13 +95,11 @@ class SoftwareBillOfMaterialsPlugin {
 
             const outputPath = path.join("..", "reports", this.options.filename(entrypoint));
 
-            const content = Buffer.from(JSON.stringify(report, null, 2), "utf-8");
-
             const asset = compilation.getAsset(outputPath);
             if (asset) {
-              compilation.updateAsset(outputPath, new compiler.webpack.sources.RawSource(content));
+              compilation.updateAsset(outputPath, new compiler.webpack.sources.RawSource(JSON.stringify(report, null, 2)));
             } else {
-              compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(content));
+              compilation.emitAsset(outputPath, new compiler.webpack.sources.RawSource(JSON.stringify(report, null, 2)));
             }
           }
         },

@@ -151,11 +151,10 @@ config.module.rules.push(
     test: /\.css$/i,
     use: [
       {
-        loader: "style-loader",
+        loader: path.resolve(__dirname, "..", "..", "loaders", "EntryCouplingStyleLoader', 'compile.js"),
         options: {
-          injectType: "singletonStyleTag",
-          attributes: {
-            id: `rocker-${settings.BUILD_ID}`,
+          getID(name) {
+            return settings.GET_COUPLING_ID(name);
           },
         },
       },
@@ -417,7 +416,7 @@ config.plugins.push(
                 })
               }())
             </script>
-            <div id="spa" style="width: 100%; min-height: 100%; display: flex; flex-flow: column nowrap;" />
+            <div id="spa" style="width: 100%; min-height: 100%; display: grid;" />
           </body>
         </html>
       `;

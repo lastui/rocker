@@ -57,7 +57,17 @@ module.exports = {
           "process.env": {},
           "process.env.NODE_ENV": `"development"`,
           "process.env.NODE_DEBUG": false,
-          BUILD_ID: `"${settings.BUILD_ID}"`,
+          BUILD_ID: webpack.DefinePlugin.runtimeValue((context) => {
+            let name = null;
+            for (const entry of context.module.parser.state.compilation.entries) {
+              for (const dependency of entry[1].dependencies) {
+                if (dependency.request === context.module.resource) {
+                  name = entry[0];
+                }
+              }
+            }
+            return `"${settings.GET_COUPLING_ID(name)}"`;
+          }),
         },
       ),
     ),

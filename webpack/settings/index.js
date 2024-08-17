@@ -32,4 +32,19 @@ exports.PROGRESS = process.env.PROGRESS !== "false";
 
 exports.BUILD_ID = randomUUID();
 
+exports.GET_COUPLING_ID = (function () {
+  const cache = [];
+  return (name) => {
+    if (!name) {
+      return exports.BUILD_ID;
+    }
+    const idx = cache.indexOf(name);
+    if (idx !== -1) {
+      return exports.BUILD_ID + "-" + idx;
+    }
+    cache.push(name);
+    return exports.BUILD_ID + "-" + (cache.length - 1);
+  };
+})();
+
 exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US").split(",").map((locale) => locale.trim());
