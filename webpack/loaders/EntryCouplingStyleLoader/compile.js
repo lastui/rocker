@@ -7,18 +7,16 @@ function loader(content) {
 loader.pitch = function (request) {
   const options = this.getOptions();
 
+  const issuer = options.getIssuer();
+
   let max = 0;
   let candidate = null;
 
-  const file = request.slice(request.lastIndexOf("!") + 1);
-
-  // TODO INFO possibility of false positive when using common node_modules outside of entrypoint which would falsely associate it
-  // to random entrypoint
   for (const entry of this._compilation.entries) {
     let idx = 0;
 
     for (const entryFile of entry[1].dependencies) {
-      while (entryFile.request[idx] === file[idx]) {
+      while (idx < entryFile.request.length && entryFile.request[idx] === issuer[idx]) {
         idx++;
       }
     }

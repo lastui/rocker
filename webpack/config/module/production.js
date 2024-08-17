@@ -120,24 +120,29 @@ config.module.rules.push(
   },
   {
     test: /\.css$/i,
-    use: [
+    use: (info) => ([
       {
-        loader: path.resolve(__dirname, "..", "..", "loaders", "EntryCouplingStyleLoader', 'compile.js"),
+        loader: path.resolve(__dirname, "..", "..", "loaders", "EntryCouplingStyleLoader", "compile.js"),
+        ident: 'EntryCouplingStyleLoader',
         options: {
-          getID(name) {
+          getIssuer() {
+            return info.issuer;
+          },
+          getEntryCouplingID(name) {
             return settings.GET_COUPLING_ID(name);
           },
         },
       },
       {
         loader: "css-loader",
+        ident: 'css-loader',
         options: {
           sourceMap: false,
           modules: false,
           importLoaders: 0,
         },
       },
-    ],
+    ]),
   },
   {
     test: /\.(png|jpg|gif)$/i,
