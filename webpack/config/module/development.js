@@ -416,7 +416,7 @@ config.plugins.push(
                 })
               }())
             </script>
-            <div id="spa" style="width: 100%; min-height: 100%; display: flex; flex-flow: column nowrap;" />
+            <div id="spa" style="width: 100%; min-height: 100%; display: grid;" />
           </body>
         </html>
       `;

@@ -40,11 +40,11 @@ exports.GET_COUPLING_ID = (function () {
     }
     const idx = cache.indexOf(name);
     if (idx !== -1) {
-      return exports.BUILD_ID + '-' + idx;
+      return exports.BUILD_ID + "-" + idx;
     }
     cache.push(name);
-    return exports.BUILD_ID + '-' + (cache.length - 1);
-  }
-}());
+    return exports.BUILD_ID + "-" + (cache.length - 1);
+  };
+})();
 
 exports.SUPPORTED_LOCALES = (process.env.SUPPORTED_LOCALES || "en-US").split(",").map((locale) => locale.trim());
