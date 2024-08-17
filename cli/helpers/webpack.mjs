@@ -123,7 +123,9 @@ export async function getStack(options, packageName) {
   let DevServer = null;
 
   if (options.config || customConfigExists) {
-    const resolvedConfigs = options.config ? options.config : (await import(`file://${projectConfig}?t=${process.hrtime()[0]}`)).default;
+    const resolvedConfigs = options.config
+      ? options.config
+      : (await import(`file://${projectConfig}?t=${process.hrtime()[0]}`)).default;
 
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
@@ -172,7 +174,9 @@ export async function getStack(options, packageName) {
     }
   } else if (projectNodeModulesExists) {
     const resolvedConfigs = (
-      await import(`file://${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`)
+      await import(
+        `file://${projectNodeModules}/@lastui/rocker/webpack/config/${packageName === "spa" ? "spa" : "module"}/index.js`
+      )
     ).default;
     if (!Array.isArray(resolvedConfigs)) {
       configs.push(resolvedConfigs);
