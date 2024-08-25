@@ -10,6 +10,8 @@ class ImplicitDLLAssetPlugin {
 
   apply(compiler) {
     compiler.hooks.thisCompilation.tap(ImplicitDLLAssetPlugin.name, (compilation) => {
+
+      // TODO find a better way
       const hooks = HtmlWebpackPlugin.getHooks(compilation);
 
       hooks.beforeAssetTagGeneration.tapPromise(ImplicitDLLAssetPlugin.name, async (htmlPluginData) => {
@@ -31,11 +33,12 @@ class ImplicitDLLAssetPlugin {
               });
             });
 
-            const source = new compiler.webpack.sources.RawSource(content, true);
+            const source = new compiler.webpack.sources.RawSource(content);
 
             compilation.emitAsset(basename, source);
           }
 
+          // TODO hackish kinda
           const fullPath =
             compilation.outputOptions.publicPath +
             compilation.outputOptions.chunkFilename.slice(0, compilation.outputOptions.chunkFilename.length - 13) +
