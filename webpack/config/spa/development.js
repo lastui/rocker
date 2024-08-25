@@ -1,4 +1,3 @@
-const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
@@ -7,6 +6,7 @@ const { setLogLevel } = require("webpack/hot/log");
 const dependenciesDlls = require("@lastui/dependencies");
 
 const babel = require("../../../babel");
+const ImplicitDLLAssetPlugin = require("../../plugins/ImplicitDLLAssetPlugin");
 const settings = require("../../settings");
 
 const config = {
@@ -187,28 +187,10 @@ config.plugins.push(
     inject: "head",
     scriptLoading: "defer",
   }),
-  new AddAssetHtmlPlugin([
-    ...dependenciesDlls.map((item) => ({
-      filepath: require.resolve(`@lastui/dependencies/dll/${item}.dll.js`),
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    })),
-    {
-      filepath: require.resolve("@lastui/rocker/platform/dll/platform.dll.js"),
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    },
-    {
-      filepath: require.resolve("@lastui/rocker/bootstrap/dll/bootstrap.dll.js"),
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    },
+  new ImplicitDLLAssetPlugin([
+    ...dependenciesDlls.map((item) => require.resolve(`@lastui/dependencies/dll/${item}.dll.js`)),
+    require.resolve("@lastui/rocker/platform/dll/platform.dll.js"),
+    require.resolve("@lastui/rocker/bootstrap/dll/bootstrap.dll.js"),
   ]),
 );
 

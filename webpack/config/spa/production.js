@@ -1,4 +1,3 @@
-const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -8,6 +7,7 @@ const webpack = require("webpack");
 const dependenciesDlls = require("@lastui/dependencies");
 
 const babel = require("../../../babel");
+const ImplicitDLLAssetPlugin = require("../../plugins/ImplicitDLLAssetPlugin");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
 const SoftwareBillOfMaterialsPlugin = require("../../plugins/SoftwareBillOfMaterialsPlugin");
 const settings = require("../../settings");
@@ -188,34 +188,10 @@ config.plugins.push(
       },
     ],
   }),
-  new AddAssetHtmlPlugin([
-    ...dependenciesDlls.map((item) => ({
-      filepath: require.resolve(`@lastui/dependencies/dll/${item}.dll.min.js`),
-      outputPath: "spa",
-      publicPath: `${settings.PROJECT_NAMESPACE}spa`,
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    })),
-    {
-      filepath: require.resolve("@lastui/rocker/platform/dll/platform.dll.min.js"),
-      outputPath: "spa",
-      publicPath: `${settings.PROJECT_NAMESPACE}spa`,
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    },
-    {
-      filepath: require.resolve("@lastui/rocker/bootstrap/dll/bootstrap.dll.min.js"),
-      outputPath: "spa",
-      publicPath: `${settings.PROJECT_NAMESPACE}spa`,
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    },
+  new ImplicitDLLAssetPlugin([
+    ...dependenciesDlls.map((item) => require.resolve(`@lastui/dependencies/dll/${item}.dll.min.js`)),
+    require.resolve("@lastui/rocker/platform/dll/platform.dll.min.js"),
+    require.resolve("@lastui/rocker/bootstrap/dll/bootstrap.dll.min.js"),
   ]),
   new NormalizedModuleIdPlugin(),
   new SoftwareBillOfMaterialsPlugin({
