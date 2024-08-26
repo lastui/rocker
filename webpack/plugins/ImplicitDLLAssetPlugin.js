@@ -1,4 +1,3 @@
-const fs = require("fs");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
@@ -10,39 +9,25 @@ class ImplicitDLLAssetPlugin {
 
   apply(compiler) {
     compiler.hooks.thisCompilation.tap(ImplicitDLLAssetPlugin.name, (compilation) => {
+      const { beforeAssetTagGeneration, alterAssetTags } = HtmlWebpackPlugin.getHooks(compilation);
 
-      // TODO find a better way
-      const hooks = HtmlWebpackPlugin.getHooks(compilation);
-
-      hooks.beforeAssetTagGeneration.tapPromise(ImplicitDLLAssetPlugin.name, async (htmlPluginData) => {
+      beforeAssetTagGeneration.tap(ImplicitDLLAssetPlugin.name, (htmlPluginData) => {
         for (const asset of this.assets) {
           const resolvedFilename = path.resolve(compilation.compiler.context, asset);
 
           const basename = path.basename(resolvedFilename);
 
-          compilation.fileDependencies.add(resolvedFilename);
-          if (!compilation.getAsset(basename)) {
-            const content = await new Promise((resolve, reject) => {
-              fs.readFile(resolvedFilename, "utf8", (read_err, read_ok) => {
-                if (!read_err) {
-                  resolve(read_ok);
-                } else {
-                  reject(read_err);
-                }
-                return;
-              });
-            });
-
-            const source = new compiler.webpack.sources.RawSource(content);
-
-            compilation.emitAsset(basename, source);
+          if (compilation.getAsset(basename)) {
+            continue;
           }
 
-          // TODO hackish kinda
+          const buffer = compiler.inputFileSystem.readFileSync(resolvedFilename);
+
+          compilation.emitAsset(basename, new compiler.webpack.sources.RawSource(buffer, false));
+
           const fullPath =
             compilation.outputOptions.publicPath +
-            compilation.outputOptions.chunkFilename.slice(0, compilation.outputOptions.chunkFilename.length - 13) +
-            basename;
+            compilation.outputOptions.chunkFilename.replace(/\[name\]/g, basename.replace(/(?:\.min)?\.js/g, ""));
 
           htmlPluginData.assets.js.unshift(fullPath);
 
@@ -53,7 +38,7 @@ class ImplicitDLLAssetPlugin {
         }
       });
 
-      hooks.alterAssetTags.tap(ImplicitDLLAssetPlugin.name, (htmlPluginData) => {
+      alterAssetTags.tap(ImplicitDLLAssetPlugin.name, (htmlPluginData) => {
         for (const script of htmlPluginData.assetTags.scripts) {
           if (!this.addedAssets.includes(script.attributes.src)) {
             continue;

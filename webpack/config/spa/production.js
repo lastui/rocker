@@ -20,14 +20,17 @@ const config = {
 const linariaBabel = babel.env.test;
 const webpackBabel = babel.env.production;
 
-config.output.clean = {
-  keep(asset) {
-    return !asset.startsWith("spa/");
-  },
-};
-
 config.output.filename = "spa/[name].min.js";
 config.output.assetModuleFilename = "spa/[name][ext][query]";
+
+config.output.clean = {
+  keep(asset) {
+    if (asset.startsWith("spa/")) {
+      return false;
+    }
+    return true;
+  },
+};
 
 config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
 
@@ -170,8 +173,8 @@ config.plugins.push(
       removeEmptyAttributes: true,
       removeStyleLinkTypeAttributes: false,
       keepClosingSlash: true,
-      minifyJS: false,
-      minofyCSS: false,
+      minifyJS: true,
+      minifyCSS: false,
       minifyURLs: false,
     },
     inject: "head",
@@ -181,7 +184,7 @@ config.plugins.push(
     patterns: [
       {
         from: path.resolve(process.env.INIT_CWD, "static"),
-        to: path.resolve(__dirname, "..", "..", "..", "..", "..", "..", "build", "spa"),
+        to: path.join(config.output.path, "spa"),
         async filter(resourcePath) {
           return !resourcePath.endsWith("index.html");
         },
