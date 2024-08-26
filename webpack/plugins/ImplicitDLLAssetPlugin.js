@@ -4,12 +4,13 @@ const path = require("path");
 class ImplicitDLLAssetPlugin {
   constructor(assets = []) {
     this.assets = assets;
-    this.addedAssets = [];
   }
 
   apply(compiler) {
     compiler.hooks.thisCompilation.tap(ImplicitDLLAssetPlugin.name, (compilation) => {
       const { beforeAssetTagGeneration, alterAssetTags } = HtmlWebpackPlugin.getHooks(compilation);
+
+      const addedAssets = [];
 
       beforeAssetTagGeneration.tap(ImplicitDLLAssetPlugin.name, (htmlPluginData) => {
         for (const asset of this.assets) {
@@ -34,13 +35,13 @@ class ImplicitDLLAssetPlugin {
           compilation.assets[fullPath] = compilation.assets[basename];
           delete compilation.assets[basename];
 
-          this.addedAssets.push(fullPath);
+          addedAssets.push(fullPath);
         }
       });
 
       alterAssetTags.tap(ImplicitDLLAssetPlugin.name, (htmlPluginData) => {
         for (const script of htmlPluginData.assetTags.scripts) {
-          if (!this.addedAssets.includes(script.attributes.src)) {
+          if (!addedAssets.includes(script.attributes.src)) {
             continue;
           }
           script.attributes.defer = true;

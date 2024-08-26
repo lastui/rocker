@@ -20,9 +20,6 @@ const config = {
 const linariaBabel = babel.env.test;
 const webpackBabel = babel.env.production;
 
-config.output.filename = "spa/[name].min.js";
-config.output.assetModuleFilename = "spa/[name][ext][query]";
-
 config.output.clean = {
   keep(asset) {
     if (asset.startsWith("spa/")) {
@@ -31,6 +28,9 @@ config.output.clean = {
     return true;
   },
 };
+
+config.output.filename = "spa/[name].min.js";
+config.output.assetModuleFilename = "spa/[name][ext][query]";
 
 config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
 
