@@ -1,4 +1,3 @@
-const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -8,6 +7,7 @@ const webpack = require("webpack");
 const dependenciesDlls = require("@lastui/dependencies");
 
 const babel = require("../../../babel");
+const ImplicitDLLAssetPlugin = require("../../plugins/ImplicitDLLAssetPlugin");
 const NormalizedModuleIdPlugin = require("../../plugins/NormalizedModuleIdPlugin");
 const SoftwareBillOfMaterialsPlugin = require("../../plugins/SoftwareBillOfMaterialsPlugin");
 const settings = require("../../settings");
@@ -22,7 +22,10 @@ const webpackBabel = babel.env.production;
 
 config.output.clean = {
   keep(asset) {
-    return !asset.startsWith("spa/");
+    if (asset.startsWith("spa/")) {
+      return false;
+    }
+    return true;
   },
 };
 
@@ -170,8 +173,8 @@ config.plugins.push(
       removeEmptyAttributes: true,
       removeStyleLinkTypeAttributes: false,
       keepClosingSlash: true,
-      minifyJS: false,
-      minofyCSS: false,
+      minifyJS: true,
+      minifyCSS: false,
       minifyURLs: false,
     },
     inject: "head",
@@ -181,41 +184,17 @@ config.plugins.push(
     patterns: [
       {
         from: path.resolve(process.env.INIT_CWD, "static"),
-        to: path.resolve(__dirname, "..", "..", "..", "..", "..", "..", "build", "spa"),
+        to: path.join(config.output.path, "spa"),
         async filter(resourcePath) {
           return !resourcePath.endsWith("index.html");
         },
       },
     ],
   }),
-  new AddAssetHtmlPlugin([
-    ...dependenciesDlls.map((item) => ({
-      filepath: require.resolve(`@lastui/dependencies/dll/${item}.dll.min.js`),
-      outputPath: "spa",
-      publicPath: `${settings.PROJECT_NAMESPACE}spa`,
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    })),
-    {
-      filepath: require.resolve("@lastui/rocker/platform/dll/platform.dll.min.js"),
-      outputPath: "spa",
-      publicPath: `${settings.PROJECT_NAMESPACE}spa`,
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    },
-    {
-      filepath: require.resolve("@lastui/rocker/bootstrap/dll/bootstrap.dll.min.js"),
-      outputPath: "spa",
-      publicPath: `${settings.PROJECT_NAMESPACE}spa`,
-      typeOfAsset: "js",
-      attributes: {
-        defer: true,
-      },
-    },
+  new ImplicitDLLAssetPlugin([
+    ...dependenciesDlls.map((item) => require.resolve(`@lastui/dependencies/dll/${item}.dll.min.js`)),
+    require.resolve("@lastui/rocker/platform/dll/platform.dll.min.js"),
+    require.resolve("@lastui/rocker/bootstrap/dll/bootstrap.dll.min.js"),
   ]),
   new NormalizedModuleIdPlugin(),
   new SoftwareBillOfMaterialsPlugin({

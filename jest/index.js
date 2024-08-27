@@ -5,8 +5,6 @@ process.env.TZ = "UTC";
 process.env.NODE_ENV = "test";
 process.env.BABEL_ENV = "test";
 
-const isTestingSelf = path.dirname(process.env.INIT_CWD) === path.resolve(__dirname, "..");
-
 const cacheDirectory = path.resolve(
   require.resolve("jest").split(path.join(path.sep, "node_modules", path.sep))[0],
   "node_modules",
@@ -14,9 +12,10 @@ const cacheDirectory = path.resolve(
   "jest-runner",
 );
 
-const node_modules = isTestingSelf
-  ? ["<rootDir>/../node_modules", "<rootDir>/../dependencies/node_modules", "node_modules"]
-  : ["node_modules"];
+const node_modules =
+  path.dirname(process.env.INIT_CWD) === path.dirname(__dirname)
+    ? ["../dependencies/node_modules", "../node_modules", "node_modules"]
+    : ["node_modules"];
 
 module.exports = {
   rootDir: process.env.INIT_CWD,
