@@ -28,7 +28,7 @@ class ImplicitDLLAssetPlugin {
 
           const fullPath =
             compilation.outputOptions.publicPath +
-            compilation.outputOptions.chunkFilename.replace(/\[name\]/g, basename.replace(/(?:\.min)?\.js/g, ""));
+            compilation.outputOptions.chunkFilename.replace(/\[(name|id)\]/g, basename.replace(/(?:\.min)?\.js/g, ""));
 
           htmlPluginData.assets.js.unshift(fullPath);
 

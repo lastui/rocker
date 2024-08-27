@@ -1,4 +1,5 @@
 const CopyPlugin = require("copy-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
@@ -201,5 +202,7 @@ config.plugins.push(
     filename: (_entrypoint) => "sbom-spa.json",
   }),
 );
+
+config.optimization.minimizer.push(new CssMinimizerPlugin({ parallel: true }));
 
 module.exports = config;
