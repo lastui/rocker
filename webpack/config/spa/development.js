@@ -30,7 +30,6 @@ config.devServer = {
     publicPath: "/",
     writeToDisk: false,
   },
-  https: false,
   allowedHosts: "all",
   historyApiFallback: true,
   compress: false,
