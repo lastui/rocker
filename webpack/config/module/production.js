@@ -32,6 +32,7 @@ config.output.clean = {
 config.output.filename = "module/[name]/main.min.js";
 config.output.assetModuleFilename = "module/[name][ext][query]";
 
+// TODO problem here
 config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
 
 config.module.rules.push(

@@ -1,4 +1,5 @@
 const HTMLWebpackPlugin = require("html-webpack-plugin");
+const { JSDOM } = require("jsdom");
 const path = require("path");
 const webpack = require("webpack");
 const { setLogLevel } = require("webpack/hot/log");
@@ -54,6 +55,7 @@ config.output.filename = "[name].js";
 config.resolve.alias["react-dom$"] = "react-dom/profiling";
 config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
 
+// TODO problem here
 config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
 
 config.module.rules.push(
@@ -179,7 +181,13 @@ config.plugins.push(
     context: process.env.INIT_CWD,
   }),
   new HTMLWebpackPlugin({
-    template: path.resolve(process.env.INIT_CWD, "static", "index.html"),
+    templateContent: (props) => {
+      const origin = path.dirname(props.compilation.entrypoints.entries().next().value[1].origins[0].request);
+      const data = props.compilation.compiler.inputFileSystem.readFileSync(path.resolve(origin, "index.html"));
+      const DOM = new JSDOM(data, { contentType: "text/html" });
+      DOM.window.document.head.innerHTML = props.htmlWebpackPlugin.tags.headTags.map((item) => item.toString()).join("");
+      return DOM.serialize();
+    },
     production: false,
     publicPath: "/",
     minify: false,

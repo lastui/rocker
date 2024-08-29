@@ -1,6 +1,6 @@
-const CopyPlugin = require("copy-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
+const { JSDOM } = require("jsdom");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 const webpack = require("webpack");
@@ -33,6 +33,7 @@ config.output.clean = {
 config.output.filename = "spa/[name].min.js";
 config.output.assetModuleFilename = "spa/[name][ext][query]";
 
+// TODO problem here
 config.resolve.alias["@lastui/rocker/platform"] = "@lastui/rocker/platform/kernel";
 
 config.module.rules.push(
@@ -162,7 +163,13 @@ config.plugins.push(
     context: process.env.INIT_CWD,
   }),
   new HTMLWebpackPlugin({
-    template: path.resolve(process.env.INIT_CWD, "static", "index.html"),
+    templateContent: (props) => {
+      const origin = path.dirname(props.compilation.entrypoints.entries().next().value[1].origins[0].request);
+      const data = props.compilation.compiler.inputFileSystem.readFileSync(path.resolve(origin, "index.html"));
+      const DOM = new JSDOM(data, { contentType: "text/html" });
+      DOM.window.document.head.innerHTML = props.htmlWebpackPlugin.tags.headTags.map((item) => item.toString()).join("");
+      return DOM.serialize();
+    },
     filename: "spa/index.html",
     production: true,
     publicPath: settings.PROJECT_NAMESPACE,
@@ -180,17 +187,6 @@ config.plugins.push(
     },
     inject: "head",
     scriptLoading: "defer",
-  }),
-  new CopyPlugin({
-    patterns: [
-      {
-        from: path.resolve(process.env.INIT_CWD, "static"),
-        to: path.join(config.output.path, "spa"),
-        async filter(resourcePath) {
-          return !resourcePath.endsWith("index.html");
-        },
-      },
-    ],
   }),
   new ImplicitDLLAssetPlugin([
     ...dependenciesDlls.map((item) => require.resolve(`@lastui/dependencies/dll/${item}.dll.min.js`)),

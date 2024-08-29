@@ -28,6 +28,8 @@ config.output.filename = (pathData) => (pathData.chunk.name === settings.BUILD_I
 
 config.resolve.alias["react-dom$"] = "react-dom/profiling";
 config.resolve.alias["scheduler/tracing"] = "scheduler/tracing-profiling";
+
+// TODO problem here
 config.resolve.alias["@lastui/rocker/platform/kernel"] = "@lastui/rocker/platform";
 
 config.devServer = {
