@@ -1,5 +1,3 @@
-const webpack = require("webpack");
-
 const settings = require("../settings");
 
 module.exports = {
@@ -26,51 +24,36 @@ module.exports = {
     errorStack: true,
   },
   devtool: "eval-cheap-module-source-map",
-  plugins: [
-    new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"],
-      process: ["process"],
-    }),
-    new webpack.DefinePlugin(
-      Object.entries(process.env).reduce(
-        (acc, [k, v]) => {
-          if (k.startsWith("npm_")) {
-            return acc;
-          }
-          if (acc[k] === undefined) {
-            switch (typeof v) {
-              case "boolean":
-              case "number": {
-                acc[`process.env.${k}`] = v;
-                break;
-              }
-              default: {
-                acc[`process.env.${k}`] = `"${v}"`;
-                break;
-              }
-            }
-          }
-          return acc;
-        },
-        {
-          process: {},
-          "process.env": {},
-          "process.env.NODE_ENV": `"development"`,
-          "process.env.NODE_DEBUG": false,
-          BUILD_ID: webpack.DefinePlugin.runtimeValue((context) => {
-            let name = null;
-            for (const entry of context.module.parser.state.compilation.entries) {
-              for (const dependency of entry[1].dependencies) {
-                if (dependency.request === context.module.resource) {
-                  name = entry[0];
-                }
-              }
-            }
-            return `"${settings.GET_COUPLING_ID(name)}"`;
-          }),
-        },
-      ),
-    ),
-  ],
   watch: true,
+  devServer: {
+    hot: false,
+    liveReload: true,
+    setupExitSignals: true,
+    server: "http",
+    static: {
+      publicPath: ["/"],
+    },
+    devMiddleware: {
+      publicPath: "/",
+      writeToDisk: false,
+    },
+    allowedHosts: "all",
+    historyApiFallback: true,
+    compress: false,
+    host: "0.0.0.0",
+    port: settings.DEV_SERVER_PORT,
+    client: {
+      overlay: {
+        errors: true,
+        runtimeErrors: true,
+        warnings: false,
+      },
+      logging: settings.LOG_LEVEL,
+      webSocketURL: {
+        hostname: "0.0.0.0",
+        pathname: "/ws",
+        port: settings.DEV_SERVER_PORT,
+      },
+    },
+  },
 };

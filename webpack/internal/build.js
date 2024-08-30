@@ -2,12 +2,14 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 
+const NormalizedModuleIdPlugin = require("../plugins/NormalizedModuleIdPlugin");
 const settings = require("../settings");
 
 module.exports = {
   bail: true,
   output: {
     iife: true,
+    clean: true,
     pathinfo: false,
     chunkLoadingGlobal: "lastuiJsonp",
     chunkLoading: "jsonp",
@@ -86,50 +88,7 @@ module.exports = {
         ],
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"],
-      process: ["process"],
-    }),
-    new webpack.DefinePlugin(
-      Object.entries(process.env).reduce(
-        (acc, [k, v]) => {
-          if (k.startsWith("npm_")) {
-            return acc;
-          }
-          if (acc[k] === undefined) {
-            switch (typeof v) {
-              case "boolean":
-              case "number": {
-                acc[`process.env.${k}`] = v;
-                break;
-              }
-              default: {
-                acc[`process.env.${k}`] = `"${v}"`;
-                break;
-              }
-            }
-          }
-          return acc;
-        },
-        {
-          process: {},
-          "process.env": {},
-          "process.env.NODE_ENV": `"development"`,
-          "process.env.NODE_DEBUG": false,
-          BUILD_ID: webpack.DefinePlugin.runtimeValue((context) => {
-            let name = null;
-            for (const entry of context.module.parser.state.compilation.entries) {
-              for (const dependency of entry[1].dependencies) {
-                if (dependency.request === context.module.resource) {
-                  name = entry[0];
-                }
-              }
-            }
-            return `"${settings.GET_COUPLING_ID(name)}"`;
-          }),
-        },
-      ),
-    ),
+    new NormalizedModuleIdPlugin(),
     ...(settings.PROGRESS
       ? [
           new webpack.ProgressPlugin({
