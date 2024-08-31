@@ -25,6 +25,14 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
   output: {
     filename: "spa/main.min.js",
     assetModuleFilename: "spa/[name][ext][query]",
+    clean: {
+      keep(asset) {
+        if (asset.startsWith("spa/")) {
+          return false;
+        }
+        return true;
+      },
+    },
   },
   optimization: {
     minimizer: [new CssMinimizerPlugin({ parallel: true })],

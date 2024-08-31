@@ -21,6 +21,14 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
   },
   output: {
     filename: "module/[name]/main.min.js",
+    clean: {
+      keep(asset) {
+        if (asset.startsWith("module/")) {
+          return false;
+        }
+        return true;
+      },
+    },
   },
   module: {
     rules: [
