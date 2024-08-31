@@ -33,6 +33,7 @@ function envelope(command) {
           process.env.INIT_CWD = requested;
         }
       }
+
       if (!process.env.INIT_CWD) {
         process.env.INIT_CWD = process.cwd();
       }
