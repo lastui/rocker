@@ -30,7 +30,7 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
   },
   output: {
     filename(pathData) {
-      return pathData.chunk.name === settings.BUILD_ID ? "[name].js" : "[name]/main.js";
+      return pathData.chunk.id === pathData.chunk.runtime ? "[name].js" : "[name]/main.js";
     },
   },
   optimization: {
