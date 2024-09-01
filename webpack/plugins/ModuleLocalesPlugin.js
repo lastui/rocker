@@ -34,8 +34,6 @@ class ModuleLocalesPlugin {
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
         },
         async (_assets) => {
-          const assetOutputDirectory = path.dirname(compilation.outputOptions.filename);
-
           const assetsToWatch = [];
 
           for (const entryPoint of compilation.entrypoints.values()) {
@@ -67,6 +65,12 @@ class ModuleLocalesPlugin {
               if (hasRuntimeChunk && chunk.id === chunk.runtime) {
                 continue;
               }
+
+              const assetOutputDirectory = path.dirname(
+                typeof compilation.outputOptions.filename === "function"
+                  ? compilation.outputOptions.filename({ chunk })
+                  : compilation.outputOptions.filename,
+              );
 
               for (const asset of this.paths_to_watch) {
                 const outputDir = assetOutputDirectory.replace(/\[(name|id)\]/g, chunk.id);
