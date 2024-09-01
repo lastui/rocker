@@ -35,14 +35,6 @@ module.exports = {
       {
         parser: { requireEnsure: false },
       },
-      {
-        test: /\.json5?$/,
-        type: "javascript/auto",
-        loader: "json5-loader",
-        options: {
-          esModule: false,
-        },
-      },
     ],
   },
   cache: {

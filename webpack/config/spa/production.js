@@ -114,8 +114,12 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
         ],
       },
       {
+        test: /\.json5?$/,
+        type: "asset/resource",
+      },
+      {
         test: /\.txt$/,
-        type: "asset/source",
+        type: "asset/resource",
       },
       {
         test: /\.css$/i,
@@ -134,7 +138,7 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
         ],
       },
       {
-        test: /\.(mp3|woff|woff2|svg|eot|otf|ttf|png|jpe?g|gif)(\?.*$|$)/,
+        test: /\.(mp3|woff|woff2|svg|eot|otf|ttf|png|jpe?g|gif|ico)(\?.*$|$)/,
         type: "asset/resource",
       },
     ],

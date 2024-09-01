@@ -97,6 +97,14 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
         ],
       },
       {
+        test: /\.json5?$/,
+        type: "javascript/auto",
+        loader: "json5-loader",
+        options: {
+          esModule: false,
+        },
+      },
+      {
         test: /\.txt$/,
         type: "asset/source",
       },
@@ -120,7 +128,7 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
         ],
       },
       {
-        test: /\.(png|jpe?g|gif)$/i,
+        test: /\.(png|jpe?g|gif|ico)$/i,
         dependency: { not: ["url"] },
         type: "asset/inline",
       },

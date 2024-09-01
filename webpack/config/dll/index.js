@@ -65,6 +65,14 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
         test: /\.txt$/,
         type: "asset/source",
       },
+      {
+        test: /\.json5?$/,
+        type: "javascript/auto",
+        loader: "json5-loader",
+        options: {
+          esModule: false,
+        },
+      },
     ],
   },
   plugins: [
