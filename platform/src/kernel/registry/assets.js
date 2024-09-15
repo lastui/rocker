@@ -186,17 +186,17 @@ async function downloadProgram(name, program, controller) {
     return {};
   }
 
-  const dllFragments = [];
+
+  const bootstrap = top.document.createElement('script');
+  bootstrap.innerHTML = 'self.lastuiJsonp=top.lastuiJsonp;';
+
   for (const dll in top) {
     if (dll.startsWith('rocker_so')) {
-      dllFragments.push(`self.${dll}=top.${dll}`);
+      bootstrap.innerHTML += `self.${dll}=top.${dll};`;
     }
   }
 
   const iframe = top.document.createElement('iframe');
-
-  const bootstrap = top.document.createElement('script');
-  bootstrap.innerHTML = `self.lastuiJsonp=top.lastuiJsonp;${dllFragments};`;
 
   const script = top.document.createElement('script');
 
