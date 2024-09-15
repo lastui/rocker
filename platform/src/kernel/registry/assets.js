@@ -186,10 +186,6 @@ async function downloadProgram(name, program, controller) {
     return {};
   }
 
-  const sandbox = {
-    __SANDBOX_SCOPE__: {},
-  };
-
   const dllFragments = [];
   for (const dll in top) {
     if (dll.startsWith('rocker_so')) {
@@ -199,51 +195,53 @@ async function downloadProgram(name, program, controller) {
 
   const bootstrap = `
     <script>
-      self.__SANDBOX_SCOPE__={};
       self.lastuiJsonp=top.lastuiJsonp;
-      ${dllFragments}
+      ${dllFragments};
     </script>
   `;
   const iframe = top.document.createElement('iframe');
-  //iframe.id = 'module-registration';
 
   const script = top.document.createElement('script');
 
   script.src = program.url;
-  //script.async = true;
-  //script.defer = true;
+  script.async = true;
+  script.defer = true;
 
   iframe.sandbox = 'allow-same-origin allow-scripts';
-  iframe.srcdoc = bootstrap+script.outerHTML;
-  //iframe.contentWindow.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
 
-  //iframe.appendChild(script);
-
-  //const check = '<script>console.log("loaded");</script>'
-
-  console.log('Downloading program', program);
+  const trap = {};
 
   try {
-    const promise = new Promise((resolve, reject) => {
-      script.onload = () => {
-        console.log('script loaded', program.url)
-        resolve();
-      }
-    })
-    
+
+    iframe.srcdoc = bootstrap+script.outerHTML;
+
     top.document.head.appendChild(iframe);
+    
+    const promise = new Promise((resolve, reject) => {
+      console.log('waiting on load inner');
+
+      Object.defineProperty(iframe.contentWindow, "__SANDBOX_SCOPE__", {
+        set(value) {
+          console.log('frame called set on __SANDBOX_SCOPE__', value);
+          Object.assign(trap, value);
+          resolve();
+        },
+        get() {
+          return trap;
+        }
+      });
+    })
+
     await promise;
   } finally {
-    console.log(iframe.contentWindow.__SANDBOX_SCOPE__)
-    //delete top.__SANDBOX_SCOPE__;
     top.document.head.removeChild(iframe);
   }
 
   console.log('Downloaded program', program);
 
-  console.log('Result is', sandbox.__SANDBOX_SCOPE__)
+  console.log('Result is', trap)
 
-  return sandbox.__SANDBOX_SCOPE__;
+  return trap;
 
   //const data = await downloadAsset(program.url, controller);
   //const content = await data.text();
