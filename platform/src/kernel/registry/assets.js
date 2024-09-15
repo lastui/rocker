@@ -185,9 +185,69 @@ async function downloadProgram(name, program, controller) {
   if (!program) {
     return {};
   }
-  const data = await downloadAsset(program.url, controller);
-  const content = await data.text();
-  return SequentialProgramEvaluator.compile(name, content);
+
+  const sandbox = {
+    __SANDBOX_SCOPE__: {},
+  };
+
+  const dllFragments = [];
+  for (const dll in top) {
+    if (dll.startsWith('rocker_so')) {
+      dllFragments.push(`self.${dll}=top.${dll}`);
+    }
+  }
+
+  const bootstrap = `
+    <script>
+      self.__SANDBOX_SCOPE__={};
+      self.lastuiJsonp=top.lastuiJsonp;
+      ${dllFragments}
+    </script>
+  `;
+  const iframe = top.document.createElement('iframe');
+  //iframe.id = 'module-registration';
+
+  const script = top.document.createElement('script');
+
+  script.src = program.url;
+  //script.async = true;
+  //script.defer = true;
+
+  iframe.sandbox = 'allow-same-origin allow-scripts';
+  iframe.srcdoc = bootstrap+script.outerHTML;
+  //iframe.contentWindow.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
+
+  //iframe.appendChild(script);
+
+  //const check = '<script>console.log("loaded");</script>'
+
+  console.log('Downloading program', program);
+
+  try {
+    const promise = new Promise((resolve, reject) => {
+      script.onload = () => {
+        console.log('script loaded', program.url)
+        resolve();
+      }
+    })
+    
+    top.document.head.appendChild(iframe);
+    await promise;
+  } finally {
+    console.log(iframe.contentWindow.__SANDBOX_SCOPE__)
+    //delete top.__SANDBOX_SCOPE__;
+    top.document.head.removeChild(iframe);
+  }
+
+  console.log('Downloaded program', program);
+
+  console.log('Result is', sandbox.__SANDBOX_SCOPE__)
+
+  return sandbox.__SANDBOX_SCOPE__;
+
+  //const data = await downloadAsset(program.url, controller);
+  //const content = await data.text();
+  //return SequentialProgramEvaluator.compile(name, content);
 }
 
 export { downloadAsset, downloadProgram };
