@@ -205,8 +205,8 @@ async function downloadProgram(name, program, controller) {
 
   script.src = program.url;
   script.async = true;
-  script.defer = true;
 
+  // INFO yields "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing."
   iframe.sandbox = 'allow-same-origin allow-scripts';
 
   const trap = {};
@@ -216,23 +216,22 @@ async function downloadProgram(name, program, controller) {
     iframe.srcdoc = bootstrap+script.outerHTML;
 
     top.document.head.appendChild(iframe);
-    
-    const promise = new Promise((resolve, reject) => {
-      console.log('waiting on load inner');
-
+      
+    // INFO handling errors plus timeout CLIENT_TIMEOUT
+    await new Promise((resolve, reject) => {
       Object.defineProperty(iframe.contentWindow, "__SANDBOX_SCOPE__", {
         set(value) {
           console.log('frame called set on __SANDBOX_SCOPE__', value);
           Object.assign(trap, value);
+          delete iframe.contentWindow.__SANDBOX_SCOPE__;
           resolve();
         },
         get() {
           return trap;
         }
       });
-    })
+    });
 
-    await promise;
   } finally {
     top.document.head.removeChild(iframe);
   }
