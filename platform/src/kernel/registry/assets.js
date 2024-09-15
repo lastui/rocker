@@ -193,13 +193,10 @@ async function downloadProgram(name, program, controller) {
     }
   }
 
-  const bootstrap = `
-    <script>
-      self.lastuiJsonp=top.lastuiJsonp;
-      ${dllFragments};
-    </script>
-  `;
   const iframe = top.document.createElement('iframe');
+
+  const bootstrap = top.document.createElement('script');
+  bootstrap.innerHTML = `self.lastuiJsonp=top.lastuiJsonp;${dllFragments};`;
 
   const script = top.document.createElement('script');
 
@@ -207,31 +204,41 @@ async function downloadProgram(name, program, controller) {
   script.async = true;
 
   // INFO yields "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing."
-  iframe.sandbox = 'allow-same-origin allow-scripts';
+  //iframe.sandbox = 'allow-same-origin allow-scripts';
 
   const trap = {};
 
   try {
 
-    iframe.srcdoc = bootstrap+script.outerHTML;
+    iframe.src = "about:blank";
+
+    //iframe.srcdoc = bootstrap+script.outerHTML;
 
     top.document.head.appendChild(iframe);
-      
+    
+    iframe.contentDocument.head.appendChild(bootstrap);
+    iframe.contentDocument.head.appendChild(script);
+
     // INFO handling errors plus timeout CLIENT_TIMEOUT
     await new Promise((resolve, reject) => {
+      let wasSet = false;
       Object.defineProperty(iframe.contentWindow, "__SANDBOX_SCOPE__", {
         set(value) {
+          if (wasSet) {
+            return false;
+          }
           console.log('frame called set on __SANDBOX_SCOPE__', value);
           Object.assign(trap, value);
-          delete iframe.contentWindow.__SANDBOX_SCOPE__;
           resolve();
+          return true;
         },
         get() {
           return trap;
         }
       });
     });
-
+  } catch (error) {
+    console.log('frame error', error);
   } finally {
     top.document.head.removeChild(iframe);
   }
