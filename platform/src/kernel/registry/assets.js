@@ -193,7 +193,7 @@ self.${dll} = top.${dll};`;
       // maybe hoisting?
       Object.defineProperty(this, "__SANDBOX_SCOPE__", {
         set(value) {
-          console.log('frame called set on __SANDBOX_SCOPE__', value, 'for program', program);
+          console.log('frame called set on __SANDBOX_SCOPE__', value, 'for program', program, 'wasSet', wasSet);
           if (wasSet) {
             return false;
           }
