@@ -7,7 +7,7 @@ function isFunction(val) {
 }
 
 module.exports = function (scope) {
-  const result = {}
+  const result = { BUILD_ID }
 
   if (!scope) {
     return;
@@ -18,8 +18,6 @@ module.exports = function (scope) {
   if (scope.constructor.toString() !== objectConstructor) {
     throw new Error(`registerModule accepts only plain object, was called with ${typeof scope}`);
   }
-
-  result.BUILD_ID = BUILD_ID;
 
   if (scope.component) {
     if (!isFunction(scope.component)) {
