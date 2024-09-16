@@ -137,9 +137,12 @@ async function downloadProgram(name, program, controller) {
   console.log('Downloading program', program);
 
   const pre = top.document.createElement('script');
+  pre.defer = true;
   pre.innerHTML = `
+self.name = "registration-${name}";
 self.lastuiJsonp = top.lastuiJsonp;
 self.onerror = function(_message, _file, _line, _col, error) {
+  console.log(self.name, "caught uncaught error", error);
   self.__SANDBOX_SCOPE__ = {
     component() {
       throw error;
@@ -157,11 +160,16 @@ self.${dll} = top.${dll};`;
 
   const script = top.document.createElement('script');
 
+  // INFO in dev mode the module script tries to connect to webpack's websocket server and overlay, this should not happen
   script.src = program.url;
   script.async = false;
+  script.defer = true;
 
   const post = top.document.createElement('script');
-  post.innerHTML = 'self.__SANDBOX_SCOPE__ = {};';
+  post.defer = true;
+  post.innerHTML = `
+console.log("Done", self);
+  `;
 
   const iframe = top.document.createElement('iframe');
 
@@ -177,37 +185,47 @@ self.${dll} = top.${dll};`;
     //iframe.srcdoc = bootstrap.outerHTML + script.outerHTML;
 
     top.document.head.appendChild(iframe);
-    
-    iframe.contentDocument.head.appendChild(pre);
-    iframe.contentDocument.head.appendChild(script);
-    iframe.contentDocument.head.appendChild(post);
 
     console.log('Waiting for program', program);
 
-    const callback = function(resolve, _reject) {
+    //.bind(iframe.contentWindow); // INFO browser possibly recycles frame window references
+
+    // INFO not ideal because its non blocking e.g. POST script executes before SCRIPT script
+    const registration = await new Promise(function(resolve, _reject) {
       let wasSet = false;
 
-      console.log('defining  __SANDBOX_SCOPE__ property for program', program, 'in scope', this);
+      //const ref = iframe.contentWindow;
+
+      console.log('defining  property for program', program, 'in scope', iframe.contentWindow);
 
       // INFO for some reason this property is always defined on a firstly inserted iframe
       // maybe hoisting?
-      Object.defineProperty(this, "__SANDBOX_SCOPE__", {
+      Object.defineProperty(iframe.contentWindow, "__SANDBOX_SCOPE__", {
         set(value) {
-          console.log('frame called set on __SANDBOX_SCOPE__', value, 'for program', program, 'wasSet', wasSet);
-          if (wasSet) {
-            return false;
-          }
-          Object.assign(trap, value);
-          resolve();
+          console.log('frame called set on __SANDBOX_SCOPE__ for program', program, value, 'wasSet', wasSet);
+          //if (wasSet) {
+            //return false;
+          //}
+          //wasSet = true;
+          //delete iframe.contentWindow.__SANDBOX_SCOPE__;
+          //resolve(value);
           return true;
         },
         get() {
           return trap;
         }
       });
-    }.bind(iframe.contentWindow); // INFO browser possibly recycles frame window references
 
-    await new Promise(callback);
+      // TODO need a serial execution here
+      iframe.contentDocument.head.appendChild(pre);
+      iframe.contentDocument.head.appendChild(script);
+      iframe.contentDocument.head.appendChild(post);
+    });
+
+    console.log('Checking the contents of __SANDBOX_SCOPE__ for', program, 'is', registration);
+
+    Object.assign(trap, registration);
+
     console.log('Done for program', program);
 
     // INFO now need to move implicitely injected styles from frame into main frame
