@@ -10,6 +10,7 @@ const { merge } = require("webpack-merge");
 const dependenciesDlls = require("@lastui/dependencies");
 
 const babel = require("../../../babel");
+const RegisterModuleInjectBuildId = require("../../../babel/plugins/RegisterModuleInjectBuildId");
 const ImplicitDLLAssetPlugin = require("../../plugins/ImplicitDLLAssetPlugin");
 const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const settings = require("../../settings");
@@ -58,7 +59,7 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
                   return [preset[0], preset[1], `babel-${preset[0]}`];
                 }
               }),
-              plugins: webpackBabel.plugins.map((plugin) => {
+              plugins: [RegisterModuleInjectBuildId, ...webpackBabel.plugins].map((plugin) => {
                 if (!Array.isArray(plugin)) {
                   return [plugin, {}, `babel-${plugin.name || plugin}`];
                 } else {

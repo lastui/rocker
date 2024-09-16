@@ -7,7 +7,7 @@ function isFunction(val) {
 }
 
 module.exports = function (scope) {
-  const result = { BUILD_ID }
+  const result = {}
 
   if (!scope) {
     return;
@@ -19,6 +19,13 @@ module.exports = function (scope) {
     throw new Error(`registerModule accepts only plain object, was called with ${typeof scope}`);
   }
 
+  if (scope.BUILD_ID) {
+    if (typeof scope.BUILD_ID !== "string") {
+      console.error(`implicit attribute "BUILD_ID" provided in registerModule is not string`);
+    } else {
+      result.BUILD_ID = scope.BUILD_ID;
+    }
+  }
   if (scope.component) {
     if (!isFunction(scope.component)) {
       console.error(`attribute "component" provided in registerModule is not function`);

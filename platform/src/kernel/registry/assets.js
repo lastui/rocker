@@ -4,58 +4,6 @@ import { warning } from "../../utils";
 
 const CLIENT_TIMEOUT = 30 * 1000;
 
-export class SequentialProgramEvaluator {
-  static queue = [];
-  static compiling = false;
-
-  static compile(name, data) {
-    return new Promise((resolve) => {
-      this.queue.push({
-        data,
-        name,
-        resolve,
-      });
-      this.tick();
-    });
-  }
-
-  static tick() {
-    /* istanbul ignore next */
-    if (this.compiling) {
-      return;
-    }
-    const item = this.queue.shift();
-    if (!item) {
-      this.compiling = false;
-      return;
-    }
-    this.compiling = true;
-    const sandbox = {
-      __SANDBOX_SCOPE__: {},
-    };
-    try {
-      top.__SANDBOX_SCOPE__ = sandbox.__SANDBOX_SCOPE__;
-
-      new Function("", item.data)({});
-    } catch (error) {
-      if (!(item.data.startsWith("!") || item.data.startsWith("/*"))) {
-        warning(`asset for module ${item.name} is not a module`);
-      } else {
-        warning(`module ${item.name} failed to adapt`);
-      }
-      sandbox.__SANDBOX_SCOPE__.component = () => {
-        throw error;
-      };
-    } finally {
-      delete top.__SANDBOX_SCOPE__;
-    }
-    item.resolve(sandbox.__SANDBOX_SCOPE__);
-    this.compiling = false;
-    this.tick();
-    return;
-  }
-}
-
 /* istanbul ignore next */
 async function clientCache(name) {
   try {
@@ -186,6 +134,8 @@ async function downloadProgram(name, program, controller) {
     return {};
   }
 
+  console.log('Downloading program', program);
+
   const pre = top.document.createElement('script');
   pre.innerHTML = `
 self.lastuiJsonp = top.lastuiJsonp;
@@ -232,15 +182,21 @@ self.${dll} = top.${dll};`;
     iframe.contentDocument.head.appendChild(script);
     iframe.contentDocument.head.appendChild(post);
 
-    // INFO handling errors plus timeout CLIENT_TIMEOUT
-    await new Promise((resolve, reject) => {
+    console.log('Waiting for program', program);
+
+    const callback = function(resolve, _reject) {
       let wasSet = false;
-      Object.defineProperty(iframe.contentWindow, "__SANDBOX_SCOPE__", {
+
+      console.log('defining  __SANDBOX_SCOPE__ property for program', program, 'in scope', this);
+
+      // INFO for some reason this property is always defined on a firstly inserted iframe
+      // maybe hoisting?
+      Object.defineProperty(this, "__SANDBOX_SCOPE__", {
         set(value) {
+          console.log('frame called set on __SANDBOX_SCOPE__', value, 'for program', program);
           if (wasSet) {
             return false;
           }
-          console.log('frame called set on __SANDBOX_SCOPE__', value);
           Object.assign(trap, value);
           resolve();
           return true;
@@ -249,7 +205,12 @@ self.${dll} = top.${dll};`;
           return trap;
         }
       });
-    });
+    }.bind(iframe.contentWindow); // INFO browser possibly recycles frame window references
+
+    await new Promise(callback);
+    console.log('Done for program', program);
+
+    // INFO now need to move implicitely injected styles from frame into main frame
   } catch (error) {
     console.log('frame error', error);
   } finally {
@@ -261,10 +222,6 @@ self.${dll} = top.${dll};`;
   console.log('Result is', trap)
 
   return trap;
-
-  //const data = await downloadAsset(program.url, controller);
-  //const content = await data.text();
-  //return SequentialProgramEvaluator.compile(name, content);
 }
 
 export { downloadAsset, downloadProgram };
