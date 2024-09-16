@@ -186,22 +186,34 @@ async function downloadProgram(name, program, controller) {
     return {};
   }
 
-
-  const bootstrap = top.document.createElement('script');
-  bootstrap.innerHTML = 'self.lastuiJsonp=top.lastuiJsonp;';
+  const pre = top.document.createElement('script');
+  pre.innerHTML = `
+self.lastuiJsonp = top.lastuiJsonp;
+self.onerror = function(_message, _file, _line, _col, error) {
+  self.__SANDBOX_SCOPE__ = {
+    component() {
+      throw error;
+    },
+  };
+  return false;
+}`;
 
   for (const dll in top) {
     if (dll.startsWith('rocker_so')) {
-      bootstrap.innerHTML += `self.${dll}=top.${dll};`;
+      pre.innerHTML += `
+self.${dll} = top.${dll};`;
     }
   }
-
-  const iframe = top.document.createElement('iframe');
 
   const script = top.document.createElement('script');
 
   script.src = program.url;
-  script.async = true;
+  script.async = false;
+
+  const post = top.document.createElement('script');
+  post.innerHTML = 'self.__SANDBOX_SCOPE__ = {};';
+
+  const iframe = top.document.createElement('iframe');
 
   // INFO yields "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing."
   //iframe.sandbox = 'allow-same-origin allow-scripts';
@@ -212,12 +224,13 @@ async function downloadProgram(name, program, controller) {
 
     iframe.src = "about:blank";
 
-    //iframe.srcdoc = bootstrap+script.outerHTML;
+    //iframe.srcdoc = bootstrap.outerHTML + script.outerHTML;
 
     top.document.head.appendChild(iframe);
     
-    iframe.contentDocument.head.appendChild(bootstrap);
+    iframe.contentDocument.head.appendChild(pre);
     iframe.contentDocument.head.appendChild(script);
+    iframe.contentDocument.head.appendChild(post);
 
     // INFO handling errors plus timeout CLIENT_TIMEOUT
     await new Promise((resolve, reject) => {
