@@ -137,10 +137,29 @@ async function downloadProgram(name, program, controller) {
   console.log('Downloading program', program);
 
   const pre = top.document.createElement('script');
-  pre.defer = true;
+  pre.async = false;
+  pre.defer = false;
   pre.innerHTML = `
+
+  function callback(data) {
+
+    console.log('lastuiJsonp.push called', data);
+    //const volatile = [];
+
+    //for (const item in data[1]) {
+      //console.log(item);
+    //}
+
+    //top.lastuiJsonp.push(data);
+
+    data[2]();
+
+  }
+
 self.name = "registration-${name}";
-self.lastuiJsonp = top.lastuiJsonp;
+self.lastuiJsonp = [];
+self.lastuiJsonp.push = callback.bind(null)
+
 self.onerror = function(_message, _file, _line, _col, error) {
   console.log(self.name, "caught uncaught error", error);
   self.__SANDBOX_SCOPE__ = {
@@ -163,12 +182,14 @@ self.${dll} = top.${dll};`;
   // INFO in dev mode the module script tries to connect to webpack's websocket server and overlay, this should not happen
   script.src = program.url;
   script.async = false;
-  script.defer = true;
+  script.defer = false;
 
   const post = top.document.createElement('script');
-  post.defer = true;
+  post.async = false;
+  post.defer = false;
   post.innerHTML = `
 console.log("Done", self);
+self.__SANDBOX_SCOPE__ = {};
   `;
 
   const iframe = top.document.createElement('iframe');
@@ -196,7 +217,7 @@ console.log("Done", self);
 
       //const ref = iframe.contentWindow;
 
-      console.log('defining  property for program', program, 'in scope', iframe.contentWindow);
+      console.log('defining property for program', program, 'in scope', iframe.contentWindow);
 
       // INFO for some reason this property is always defined on a firstly inserted iframe
       // maybe hoisting?
