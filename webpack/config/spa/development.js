@@ -159,10 +159,11 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
     }),
     new HTMLWebpackPlugin({
       templateContent: (props) => {
-        const origin = path.dirname(props.compilation.entrypoints.entries().next().value[1].origins[0].request);
-        const data = props.compilation.compiler.inputFileSystem.readFileSync(path.resolve(origin, "index.html"));
+        const origins = props.compilation.entrypoints.entries().next().value[1].origins;
+        const data = props.compilation.compiler.inputFileSystem.readFileSync(
+          path.resolve(origins[origins.length - 1].request, "..", "index.html"),
+        );
         const DOM = new JSDOM(data, { contentType: "text/html" });
-        DOM.window.document.head.innerHTML = props.htmlWebpackPlugin.tags.headTags.map((item) => item.toString()).join("");
         return DOM.serialize();
       },
       production: false,
