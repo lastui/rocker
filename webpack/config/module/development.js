@@ -26,6 +26,7 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
       "react-dom$": "react-dom/profiling",
       "scheduler/tracing": "scheduler/tracing-profiling",
       "@lastui/rocker/platform/kernel": "@lastui/rocker/platform",
+      "@lastui/rocker/register": path.resolve(__dirname, "..", "..", "loaders", "ModuleRegistration", "runtime.js"),
     },
   },
   output: {

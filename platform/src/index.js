@@ -2,7 +2,6 @@ import "regenerator-runtime/runtime";
 
 import Module from "./component/Module";
 import { SET_LANGUAGE, REFRESH, SET_SHARED, CLEAR_SHARED } from "./constants";
-import registerModule from "./register";
 
 function setLanguage(language) {
   return {
@@ -42,10 +41,9 @@ const actions = {
   refresh,
 };
 
-export { Module, actions, registerModule };
+export { Module, actions };
 
 export default {
   Module,
   actions,
-  registerModule,
 };
