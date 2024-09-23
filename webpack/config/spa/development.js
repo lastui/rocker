@@ -160,7 +160,9 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
     new HTMLWebpackPlugin({
       templateContent: (props) => {
         const origins = props.compilation.entrypoints.entries().next().value[1].origins;
-        const data = props.compilation.compiler.inputFileSystem.readFileSync(path.resolve(origins[origins.length - 1].request, "..", "index.html"));
+        const data = props.compilation.compiler.inputFileSystem.readFileSync(
+          path.resolve(origins[origins.length - 1].request, "..", "index.html"),
+        );
         const DOM = new JSDOM(data, { contentType: "text/html" });
         return DOM.serialize();
       },
