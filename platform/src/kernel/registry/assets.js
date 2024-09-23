@@ -144,6 +144,7 @@ async function downloadProgram(name, program, controller) {
   function callback(data) {
 
     console.log('lastuiJsonp.push called', data);
+
     //const volatile = [];
 
     //for (const item in data[1]) {
