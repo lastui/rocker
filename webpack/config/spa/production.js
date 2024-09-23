@@ -23,7 +23,7 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
     },
   },
   output: {
-    filename: "spa/main.min.js",
+    filename: "spa/[name].min.js",
     assetModuleFilename: "spa/[name][ext][query]",
     clean: {
       keep(asset) {
@@ -173,7 +173,6 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
         const origin = path.dirname(props.compilation.entrypoints.entries().next().value[1].origins[0].request);
         const data = props.compilation.compiler.inputFileSystem.readFileSync(path.resolve(origin, "index.html"));
         const DOM = new JSDOM(data, { contentType: "text/html" });
-        DOM.window.document.head.innerHTML = props.htmlWebpackPlugin.tags.headTags.map((item) => item.toString()).join("");
         return DOM.serialize();
       },
       filename: "spa/index.html",
