@@ -1,7 +1,7 @@
 class NormalizedModuleIdPlugin {
   constructor() {
     this.volatileDir = new RegExp(/\/(dist|esm?|cjs|lib|unpkg)\//);
-    this.volatileExt = new RegExp(/\.(esm\.|cjs\.|m)js$/);
+    this.volatileExt = new RegExp(/\.(esm\.|es\.|cjs\.|m|c)js$/);
   }
 
   apply(compiler) {
