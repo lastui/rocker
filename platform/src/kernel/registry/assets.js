@@ -134,7 +134,7 @@ function downloadAsset(resource, parentController) {
           if (assetEntry) {
             return assetEntry.clone();
           }
-        } catch (error) {
+        } catch (_error) {
           /* silence the cache error */
         }
         resources.delete(`${resource}_${currentEtag}`);
