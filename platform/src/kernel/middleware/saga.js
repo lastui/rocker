@@ -68,10 +68,11 @@ const createSagaMiddleware = (options = {}) => {
                     type: effect.type,
                   });
                 }
-                /* istanbul ignore next */
+                /* v8 ignore start */
                 if (process.env.NODE_ENV === "development") {
                   warning("Saga TAKE pattern function is not supported", effect);
                 }
+                /* v8 ignore stop */
                 return;
               }
               case "PUT": {

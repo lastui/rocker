@@ -26,7 +26,7 @@ const Module = forwardRef((props, ref) => {
   useEffect(() => {
     const controller = new AbortController();
 
-    /* istanbul ignore next */
+    // v8 ignore next 9
     moduleLoader.loadModule(props.name, controller).then((changed) => {
       if (controller.signal.aborted) {
         return;

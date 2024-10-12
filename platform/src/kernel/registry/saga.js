@@ -5,6 +5,7 @@ import { warning } from "../../utils";
 
 const sagas = {};
 
+
 const defaultSagaRunner = () => {
   warning("Sagas runnner is not provided!");
 };

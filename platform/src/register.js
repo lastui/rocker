@@ -2,12 +2,10 @@ import React from "react";
 
 import { warning } from "./utils";
 
-/* istanbul ignore next */
 function isGenerator(val) {
   return /\[object Generator|GeneratorFunction\]/.test(Object.prototype.toString.call(val));
 }
 
-/* istanbul ignore next */
 function isFunction(val) {
   return /\[object Function|AsyncFunction\]/.test(Object.prototype.toString.call(val));
 }
