@@ -11,6 +11,7 @@ const createDynamicMiddlewares = () => {
   const injectMiddleware = async (name, middleware) => {
     const index = keys.indexOf(name);
     const instance = await middleware();
+    // v8 ignore next 3
     if (!instance) {
       return false;
     }

@@ -24,8 +24,28 @@ module.exports = {
   collectCoverage: true,
   testEnvironment: "jsdom",
   coverageDirectory: "<rootDir>/reports",
-  coverageReporters: ["text", "json", "lcov", "clover"],
+  coverageProvider: 'v8',
+  coverageReporters: ["none"],
   collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
+  reporters: ['default', ['jest-monocart-coverage', {
+    name: 'Jest Coverage Report',
+    outputDir: path.join('.', 'reports', 'test'),
+    entryFilter: {
+      '**/node_modules/**': false,
+      '**/*': true
+    },
+    sourceFilter: {
+      '**/node_modules/**': false,
+      '**/**': true
+    },
+    sourcePath: (filePath, info)=> {
+      if (!filePath.includes('/') && info.distFile) {
+        return path.join(path.dirname(info.distFile), filePath);
+      }
+      return filePath;
+    },
+    reports: ['text', 'v8', 'raw'],
+  }]],
   moduleFileExtensions: ["js", "ts", "jsx", "tsx"],
   transform: {
     "\\.[t|j]sx?$": [

@@ -41,6 +41,7 @@ describe("css registry", () => {
 
     it("expected DOM node exists", () => {
       removeStyles("my-feature");
+      removeStyles("my-feature");
 
       expect(document.querySelector('style[data-module="my-feature"]')).toEqual(null);
     });

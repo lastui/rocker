@@ -41,7 +41,7 @@ function createEnvReducer() {
       }
     }
   };
-}
+};
 
 export { initialState };
 

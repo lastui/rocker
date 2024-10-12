@@ -80,6 +80,7 @@
     "html-webpack-plugin": "5.6.3",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
+    "jest-monocart-coverage": "1.1.1",
     "json5-loader": "4.0.1",
     "mini-css-extract-plugin": "2.9.2",
     "npm-registry-fetch": "18.0.2",
