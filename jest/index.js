@@ -40,9 +40,10 @@ module.exports = {
     },
     sourcePath: (filePath, info)=> {
       if (!filePath.includes('/') && info.distFile) {
-        return path.join(path.dirname(info.distFile), filePath);
+        const distFile = info.distFile.slice(process.env.INIT_CWD.length + 1);
+        return path.resolve('.', path.dirname(distFile), filePath);
       }
-      return filePath;
+      return path.resolve(process.env.INIT_CWD, filePath);
     },
     reports: ['text', 'v8', 'raw'],
   }]],
