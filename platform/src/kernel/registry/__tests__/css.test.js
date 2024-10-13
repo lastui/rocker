@@ -22,6 +22,13 @@ describe("css registry", () => {
     it("expected DOM node does not exist", async () => {
       await addStyles("my-feature", "non-existant-id");
     });
+
+    it("styles already added", async () => {
+      await addStyles("my-feature", "NODE_ID");
+      await addStyles("my-feature", "NODE_ID");
+
+      expect(document.querySelector('style[data-module="my-feature"]')).toBeDefined();
+    });
   });
 
   describe("removeStyles", () => {

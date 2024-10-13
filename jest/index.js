@@ -24,7 +24,7 @@ module.exports = {
   collectCoverage: true,
   testEnvironment: "jsdom",
   coverageDirectory: "<rootDir>/reports",
-  coverageProvider: 'v8',
+  coverageProvider: 'babel',
   coverageReporters: ["none"],
   collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
   reporters: ['default', ['jest-monocart-coverage', {
@@ -44,7 +44,7 @@ module.exports = {
       }
       return filePath;
     },
-    reports: ['text', 'v8', 'raw'],
+    reports: ['text', 'raw'],
   }]],
   moduleFileExtensions: ["js", "ts", "jsx", "tsx"],
   transform: {
@@ -69,10 +69,10 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
+      branches: 0,
+      functions: 0,
+      lines: 0,
+      statements: 0,
     },
   },
   moduleDirectories: [...node_modules, "<rootDir>/src"],

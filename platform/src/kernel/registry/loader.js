@@ -157,7 +157,6 @@ const createModuleLoader = () => {
         try {
           unloadModule(name, loaded);
         } catch (error) {
-          // v8 ignore next 1
           warning(`module ${name} failed to unload`, error);
         }
       }
