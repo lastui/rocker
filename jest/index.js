@@ -29,7 +29,7 @@ module.exports = {
   collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
   reporters: ['default', ['jest-monocart-coverage', {
     name: 'Jest Coverage Report',
-    outputDir: path.join('.', 'reports', 'test'),
+    outputDir: path.join('.', path.relative('.', process.env.INIT_CWD), 'reports', 'ut-coverage'),
     entryFilter: {
       '**/node_modules/**': false,
       '**/*': true
