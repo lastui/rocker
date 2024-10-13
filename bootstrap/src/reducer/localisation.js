@@ -1,9 +1,11 @@
+/* c8 ignore start */
 import * as constants from "../constants";
 
 const initialState = {
   language: null,
   messages: {},
 };
+/* c8 ignore stop */
 
 function createLocalisationReducer() {
   const localeMapping = {};
@@ -80,6 +82,8 @@ function createLocalisationReducer() {
   };
 }
 
+/* c8 ignore start */
 export { initialState };
 
 export default createLocalisationReducer();
+/* c8 ignore stop */

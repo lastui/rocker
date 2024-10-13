@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import { combineReducers } from "redux";
 
 import * as constants from "../../constants";
@@ -5,6 +6,7 @@ import { warning } from "../../utils";
 import { modulesReducers } from "../reducer/modules";
 
 const emptydict = {};
+/* c8 ignore stop */
 
 function removeReducer(name) {
   if (!modulesReducers[name]) {
