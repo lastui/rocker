@@ -1,6 +1,8 @@
+/* c8 ignore start */
 import * as constants from "../../constants";
 
 const initialState = {};
+/* c8 ignore stop */
 
 function createView(globalShared, localShared) {
   const result = {};
@@ -121,6 +123,8 @@ function createSharedReducer() {
   };
 }
 
+/* c8 ignore start */
 export { initialState };
 
 export default createSharedReducer();
+/* c8 ignore stop */

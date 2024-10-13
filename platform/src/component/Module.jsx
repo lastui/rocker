@@ -27,10 +27,12 @@ const Module = forwardRef((props, ref) => {
     const controller = new AbortController();
 
     moduleLoader.loadModule(props.name, controller).then((changed) => {
+      /* c8 ignore next 3 */
       if (controller.signal.aborted) {
         return;
       }
 
+      /* c8 ignore next 3 */
       if (changed) {
         setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
       }

@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import { cancel, spawn, select, take } from "redux-saga/effects";
 
 import * as constants from "../../constants";
@@ -5,12 +6,12 @@ import { warning } from "../../utils";
 
 const sagas = {};
 
-
 const defaultSagaRunner = () => {
   warning("Sagas runnner is not provided!");
 };
 
 let sagaRunner = defaultSagaRunner;
+/* c8 ignore stop */
 
 function setSagaRunner(nextSagaRunner) {
   if (nextSagaRunner) {
