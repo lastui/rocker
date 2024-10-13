@@ -87,7 +87,6 @@ jobs:
         with:
           fail_ci_if_error: true
           flags: unittests
-          file: platform/coverage/clover.xml
       - name: Test package bootstrap
         working-directory: bootstrap
         run: node ../cli/index.js test
@@ -98,7 +97,6 @@ jobs:
         with:
           fail_ci_if_error: true
           flags: unittests
-          file: bootstrap/coverage/clover.xml
 
   lint:
     name: Lint
