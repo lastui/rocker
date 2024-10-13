@@ -39,13 +39,9 @@ module.exports = {
       '**/**': true
     },
     sourcePath: (filePath, info)=> {
-      if (!filePath.includes('/') && info.distFile) {
-        const distFile = info.distFile.slice(process.env.INIT_CWD.length + 1);
-        return path.resolve('.', path.dirname(distFile), filePath);
-      }
-      return path.resolve(process.env.INIT_CWD, filePath);
+      return info.distFile ?? filePath;
     },
-    reports: ['text', 'v8', 'raw', 'clover'],
+    reports: ['text', 'v8', 'raw'],
   }]],
   moduleFileExtensions: ["js", "ts", "jsx", "tsx"],
   transform: {
