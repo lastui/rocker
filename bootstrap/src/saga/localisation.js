@@ -54,7 +54,6 @@ export function* watchModules() {
     const action = yield take(backlog);
 
     if (action.type === constants.SET_AVAILABLE_MODULES) {
-      // v8 ignore next 3
       for (const key in availableLocales) {
         delete availableLocales[key];
       }
@@ -103,7 +102,6 @@ export function* watchChangeLanguage() {
 
     const missing = [];
 
-    // v8 ignore next 6
     for (const name in loadedLocales) {
       if (loadedLocales[name][language]) {
         continue;

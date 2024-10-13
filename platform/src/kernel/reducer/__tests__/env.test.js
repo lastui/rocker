@@ -3,10 +3,14 @@ import reducer, { initialState } from "../env";
 
 describe("env reducer", () => {
   describe("is reducer", () => {
+    it("is function", () => {
+      expect(typeof reducer).toEqual("function");
+    });
     it("has initial state", () => {
       const action = {
         type: "non-handled",
       };
+      expect(initialState).toBeDefined();
       expect(reducer(undefined, action)).toEqual(initialState);
     });
     it("has default case", () => {
