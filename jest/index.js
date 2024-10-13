@@ -45,7 +45,7 @@ module.exports = {
       }
       return path.resolve(process.env.INIT_CWD, filePath);
     },
-    reports: ['text', 'v8', 'raw'],
+    reports: ['text', 'v8', 'raw', 'clover'],
   }]],
   moduleFileExtensions: ["js", "ts", "jsx", "tsx"],
   transform: {
