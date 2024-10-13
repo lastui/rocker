@@ -64,7 +64,9 @@ async function clientCache(name) {
       async match() {
         return null;
       },
+      /* c8 ignore next 1 */
       delete() {},
+      /* c8 ignore next 1 */
       put() {},
     };
   }
