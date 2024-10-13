@@ -80,25 +80,9 @@ jobs:
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
-      - name: Collect coverage for platform
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        with:
-          fail_ci_if_error: true
-          flags: unittests
-          file: platform/reports/ut-coverage/clover.xml
       - name: Test package bootstrap
         working-directory: bootstrap
         run: node ../cli/index.js test
-      - name: Collect coverage for bootstrap
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        with:
-          fail_ci_if_error: true
-          flags: unittests
-          file: bootstrap/reports/ut-coverage/clover.xml
 
   lint:
     name: Lint
