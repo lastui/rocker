@@ -1,6 +1,5 @@
 /* c8 ignore start */
 import * as constants from "../../constants";
-
 import { warning } from "../../utils";
 
 const RUNE = "$";

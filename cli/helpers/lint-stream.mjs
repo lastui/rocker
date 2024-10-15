@@ -36,8 +36,7 @@ export async function run(options) {
           "**/*.min.js",
           "**/*.dll.js",
           "**/*-lock.json",
-          "**/lint-final.json",
-          "**/coverage-final.json",
+          "**/reports/**/*",
         ],
       },
       (error, files) => {

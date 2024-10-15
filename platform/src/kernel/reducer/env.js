@@ -43,7 +43,7 @@ function createEnvReducer() {
       }
     }
   };
-};
+}
 
 /* c8 ignore start */
 export { initialState };
