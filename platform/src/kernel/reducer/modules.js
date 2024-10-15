@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import * as constants from "../../constants";
 import { warning } from "../../utils";
 
@@ -59,6 +60,8 @@ const handler = {
 const modulesReducers = new Proxy(initial, handler);
 
 const initialState = {};
+
+/* c8 ignore stop */
 
 function createModulesReducer() {
   return (state = initialState, action) => {
@@ -138,6 +141,8 @@ function createModulesReducer() {
   };
 }
 
+/* c8 ignore start */
 export { modulesReducers, initialState };
 
 export default createModulesReducer();
+/* c8 ignore stop */

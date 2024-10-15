@@ -1,6 +1,5 @@
 import "regenerator-runtime/runtime";
 
-/* istanbul ignore file */
 import Module from "../component/Module";
 import * as constants from "../constants";
 import registerModule from "../register";

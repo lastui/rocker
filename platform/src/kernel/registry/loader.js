@@ -154,12 +154,13 @@ const createModuleLoader = () => {
       const name = obsoleteModules[i];
       const loaded = loadedModules[name];
       if (loaded) {
+        /* c8 ignore start */
         try {
           unloadModule(name, loaded);
         } catch (error) {
-          /* istanbul ignore next */
           warning(`module ${name} failed to unload`, error);
         }
+        /* c8 ignore stop */
       }
     }
   };

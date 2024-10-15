@@ -1,9 +1,11 @@
+/* c8 ignore start */
 import * as constants from "../../constants";
 
 const initialState = {
   readyModules: {},
   lastUpdate: 0,
 };
+/* c8 ignore stop */
 
 function createEnvReducer() {
   return (state = initialState, action) => {
@@ -43,6 +45,8 @@ function createEnvReducer() {
   };
 }
 
+/* c8 ignore start */
 export { initialState };
 
 export default createEnvReducer();
+/* c8 ignore stop */

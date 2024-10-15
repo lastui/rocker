@@ -38,6 +38,8 @@ function envelope(command) {
         process.env.INIT_CWD = process.cwd();
       }
 
+      process.cwd = () => process.env.INIT_CWD;
+
       const cleanupHooks = [];
 
       cleanupHooks.push(() => process.exit(process.exitCode || 0));

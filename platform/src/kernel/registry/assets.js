@@ -20,7 +20,7 @@ export class SequentialProgramEvaluator {
   }
 
   static tick() {
-    /* istanbul ignore next */
+    /* c8 ignore next 3 */
     if (this.compiling) {
       return;
     }
@@ -56,7 +56,6 @@ export class SequentialProgramEvaluator {
   }
 }
 
-/* istanbul ignore next */
 async function clientCache(name) {
   try {
     return await top.caches.open(`rocker/${name}`);
@@ -65,7 +64,9 @@ async function clientCache(name) {
       async match() {
         return null;
       },
+      /* c8 ignore next 1 */
       delete() {},
+      /* c8 ignore next 1 */
       put() {},
     };
   }
@@ -86,7 +87,7 @@ function downloadAsset(resource, parentController) {
       fetchController.abort(parentController.signal.reason);
     }
     parentController.signal.addEventListener("abort", parentAbort);
-    /* istanbul ignore next */
+    /* c8 ignore next 3 */
     if (parentController.signal.aborted) {
       parentAbort();
     }
@@ -98,7 +99,7 @@ function downloadAsset(resource, parentController) {
       reject(fetchController.signal.reason);
     }
     fetchController.signal.addEventListener("abort", timeoutAbort);
-    /* istanbul ignore next */
+    /* c8 ignore next 3 */
     if (fetchController.signal.aborted) {
       timeoutAbort();
     }
@@ -107,7 +108,7 @@ function downloadAsset(resource, parentController) {
   async function fetcher() {
     const etags = await clientCache("etags");
     const etagEntry = await etags.match(resource);
-    /* istanbul ignore next */
+    /* c8 ignore next 1 */
     const currentEtag = etagEntry ? await etagEntry.clone().text() : null;
 
     const options = {
@@ -119,14 +120,15 @@ function downloadAsset(resource, parentController) {
       headers: new Headers(),
     };
 
-    /* istanbul ignore next */
+    /* c8 ignore next 3 */
     if (currentEtag) {
       options.headers.set("If-None-Match", currentEtag);
     }
+
     const response = await fetch(resource, options);
     const resources = await clientCache("assets");
 
-    /* istanbul ignore next */
+    /* c8 ignore next 16 */
     if (response.status === 304) {
       if (currentEtag) {
         try {
@@ -150,19 +152,22 @@ function downloadAsset(resource, parentController) {
       throw new Error(String(response.status));
     }
 
-    /* istanbul ignore next */
+    /* c8 ignore next 4 */
     if (currentEtag) {
       etags.delete(resource);
       resources.delete(`${resource}_${currentEtag}`);
     }
+
     const latestEtag = response.headers.get("Etag");
     const blob = await response.blob();
     const cleaned = new Response(blob, { status: 200, statusText: "OK" });
-    /* istanbul ignore next */
+
+    /* c8 ignore next 4 */
     if (latestEtag) {
       resources.put(`${resource}_${latestEtag}`, cleaned.clone());
       etags.put(resource, new Response(latestEtag, { status: 200, statusText: "OK" }));
     }
+
     return cleaned;
   }
 

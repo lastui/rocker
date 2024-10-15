@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.11.0
+          node-version: 20.18.0
           cache: 'npm'
           cache-dependency-path: |
             dependencies/package-lock.json
@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.11.0
+          node-version: 20.18.0
           cache: 'npm'
           cache-dependency-path: |
             dependencies/package-lock.json
@@ -70,7 +70,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.11.0
+          node-version: 20.18.0
           cache: 'npm'
           cache-dependency-path: |
             dependencies/package-lock.json
@@ -80,25 +80,9 @@ jobs:
       - name: Test package platform
         working-directory: platform
         run: node ../cli/index.js test
-      - name: Collect coverage for platform
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        with:
-          fail_ci_if_error: true
-          flags: unittests
-          file: platform/coverage/clover.xml
       - name: Test package bootstrap
         working-directory: bootstrap
         run: node ../cli/index.js test
-      - name: Collect coverage for bootstrap
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        with:
-          fail_ci_if_error: true
-          flags: unittests
-          file: bootstrap/coverage/clover.xml
 
   lint:
     name: Lint
@@ -108,7 +92,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.11.0
+          node-version: 20.18.0
           cache: 'npm'
           cache-dependency-path: |
             dependencies/package-lock.json
