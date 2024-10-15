@@ -31,12 +31,11 @@ export async function run(options) {
           "**/*.git*/**",
           "**/*node_modules/**",
           "**/*build/**",
+          "**/reports/**",
           "**/*dist/**",
-          "**/*lcov-report/**",
           "**/*.min.js",
           "**/*.dll.js",
           "**/*-lock.json",
-          "**/reports/**/*",
         ],
       },
       (error, files) => {
