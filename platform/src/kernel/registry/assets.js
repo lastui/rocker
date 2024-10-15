@@ -161,7 +161,7 @@ function downloadAsset(resource, parentController) {
     const latestEtag = response.headers.get("Etag");
     const blob = await response.blob();
     const cleaned = new Response(blob, { status: 200, statusText: "OK" });
-    
+
     /* c8 ignore next 4 */
     if (latestEtag) {
       resources.put(`${resource}_${latestEtag}`, cleaned.clone());
