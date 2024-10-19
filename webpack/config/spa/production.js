@@ -175,6 +175,15 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
           path.resolve(origins[origins.length - 1].request, "..", "index.html"),
         );
         const DOM = new JSDOM(data, { contentType: "text/html" });
+        let preloadTags = "";
+        let headTags = "";
+        for (const tag of props.htmlWebpackPlugin.tags.headTags) {
+          if (tag.tagName === "link" && tag.attributes.rel === "stylesheet") {
+            preloadTags += `<link href="${tag.attributes.href}" rel="preload" as="style">`;
+          }
+          headTags += tag.toString();
+        }
+        DOM.window.document.head.innerHTML = preloadTags + headTags;
         return DOM.serialize();
       },
       filename: "spa/index.html",
@@ -187,12 +196,12 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
         useShortDoctype: true,
         removeEmptyAttributes: true,
         removeStyleLinkTypeAttributes: false,
-        keepClosingSlash: true,
+        keepClosingSlash: false,
         minifyJS: true,
         minifyCSS: false,
         minifyURLs: false,
       },
-      inject: "head",
+      inject: false,
       scriptLoading: "defer",
     }),
     new ImplicitDLLAssetPlugin([
