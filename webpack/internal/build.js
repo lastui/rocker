@@ -2,7 +2,6 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 
-const NormalizedModuleIdPlugin = require("../plugins/NormalizedModuleIdPlugin");
 const settings = require("../settings");
 
 module.exports = {
@@ -88,7 +87,6 @@ module.exports = {
         ],
   },
   plugins: [
-    new NormalizedModuleIdPlugin(),
     ...(settings.PROGRESS
       ? [
           new webpack.ProgressPlugin({
