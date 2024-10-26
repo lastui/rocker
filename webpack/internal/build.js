@@ -60,11 +60,9 @@ module.exports = {
               sourceMap: false,
               toplevel: false,
               parse: {
-                ecma: 2023,
                 html5_comments: false,
               },
               compress: {
-                ecma: 2023,
                 warnings: false,
                 comparisons: false,
                 inline: 2,
@@ -74,8 +72,7 @@ module.exports = {
                 dead_code: true,
                 drop_debugger: true,
               },
-              output: {
-                ecma: 2023,
+              format: {
                 comments: false,
                 ascii_only: true,
                 indent_level: 0,
