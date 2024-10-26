@@ -31,10 +31,10 @@ module.exports = {
     "\\.[t|j]sx?$": [
       "babel-jest",
       {
+        ...require("../babel").env.test,
         cwd: process.env.INIT_CWD,
         babelrc: false,
         sourceMaps: "inline",
-        ...require("../babel").env.test,
       },
     ],
     "\\.css$": path.resolve(__dirname, "transform", "css.js"),
