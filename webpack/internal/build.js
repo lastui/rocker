@@ -2,7 +2,6 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 
-const NormalizedModuleIdPlugin = require("../plugins/NormalizedModuleIdPlugin");
 const settings = require("../settings");
 
 module.exports = {
@@ -61,11 +60,9 @@ module.exports = {
               sourceMap: false,
               toplevel: false,
               parse: {
-                ecma: 2023,
                 html5_comments: false,
               },
               compress: {
-                ecma: 2023,
                 warnings: false,
                 comparisons: false,
                 inline: 2,
@@ -75,8 +72,7 @@ module.exports = {
                 dead_code: true,
                 drop_debugger: true,
               },
-              output: {
-                ecma: 2023,
+              format: {
                 comments: false,
                 ascii_only: true,
                 indent_level: 0,
@@ -88,7 +84,6 @@ module.exports = {
         ],
   },
   plugins: [
-    new NormalizedModuleIdPlugin(),
     ...(settings.PROGRESS
       ? [
           new webpack.ProgressPlugin({

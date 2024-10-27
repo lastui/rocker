@@ -10,8 +10,8 @@ const ModuleLocalesPlugin = require("../../plugins/ModuleLocalesPlugin");
 const SoftwareBillOfMaterialsPlugin = require("../../plugins/SoftwareBillOfMaterialsPlugin");
 const settings = require("../../settings");
 
+const linariaBabel = babel.env.development;
 const webpackBabel = babel.env.production;
-const linariaBabel = babel.env.test;
 
 module.exports = merge(require("../../internal/base.js"), require("../../internal/build.js"), {
   resolve: {

@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 
+const NormalizedModuleIdPlugin = require("../plugins/NormalizedModuleIdPlugin");
 const settings = require("../settings");
 
 module.exports = {
@@ -44,6 +45,7 @@ module.exports = {
     managedPaths: [path.resolve(process.env.INIT_CWD, "node_modules")],
   },
   plugins: [
+    new NormalizedModuleIdPlugin(),
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
       process: ["process"],

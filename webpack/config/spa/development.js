@@ -12,8 +12,8 @@ const ImplicitDLLAssetPlugin = require("../../plugins/ImplicitDLLAssetPlugin");
 
 setLogLevel("none");
 
+const linariaBabel = babel.env.development;
 const webpackBabel = babel.env.development;
-const linariaBabel = babel.env.test;
 
 module.exports = merge(require("../../internal/base.js"), require("../../internal/development.js"), {
   resolve: {

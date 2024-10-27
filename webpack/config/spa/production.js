@@ -13,7 +13,7 @@ const ImplicitDLLAssetPlugin = require("../../plugins/ImplicitDLLAssetPlugin");
 const SoftwareBillOfMaterialsPlugin = require("../../plugins/SoftwareBillOfMaterialsPlugin");
 const settings = require("../../settings");
 
-const linariaBabel = babel.env.test;
+const linariaBabel = babel.env.development;
 const webpackBabel = babel.env.production;
 
 module.exports = merge(require("../../internal/base.js"), require("../../internal/build.js"), {
