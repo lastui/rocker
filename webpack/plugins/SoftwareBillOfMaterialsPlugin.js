@@ -1,11 +1,13 @@
 const path = require("path");
 
 const DEFAULT_FILENAME = (_entrypoint) => "sbom.json";
+const DEFAULT_OMIT = (_dependency) => false;
 
 class SoftwareBillOfMaterialsPlugin {
   constructor(options = {}) {
     this.options = {};
     this.options.filename = options.filename ?? DEFAULT_FILENAME;
+    this.options.omit = options.omit ?? DEFAULT_OMIT;
   }
 
   apply(compiler) {
@@ -60,11 +62,15 @@ class SoftwareBillOfMaterialsPlugin {
                     if (!reason.resolvedModuleId) {
                       continue;
                     }
-                    if (!reason.resolvedModuleId.startsWith("./node_modules/")) {
+                    let moduleId = reason.resolvedModuleId;
+                    if (moduleId.startsWith('@rocker/')) {
+                      moduleId = './node_modules/@lastui/rocker';
+                    }
+                    if (!moduleId.startsWith("./node_modules/")) {
                       continue;
                     }
-                    if (candidates.indexOf(reason.resolvedModuleId) === -1) {
-                      candidates.push(reason.resolvedModuleId);
+                    if (candidates.indexOf(moduleId) === -1) {
+                      candidates.push(moduleId);
                     }
                   }
                 }
@@ -74,6 +80,7 @@ class SoftwareBillOfMaterialsPlugin {
             const report = {};
 
             for (const candidate of candidates) {
+
               const parts = candidate.substring(15).split("/");
               const item = candidate[15] === "@" ? parts[0] + "/" + parts[1] : parts[0];
 
@@ -85,12 +92,20 @@ class SoftwareBillOfMaterialsPlugin {
             }
 
             for (const item in report) {
+              if (item.startsWith('@lastui/') || this.options.omit(item)) {
+                delete report[item];
+                continue;
+              }
               const entry = lockfile.packages["node_modules/" + item];
               if (!entry) {
                 delete report[item];
-              } else {
-                report[item] = entry.version;
+                continue;
               }
+              report[item] = entry.version;
+            }
+
+            if (!this.options.omit('@lastui/dependencies')) {
+              Object.assign(report, shared);
             }
 
             const outputPath = path.join("..", "reports", this.options.filename(entrypoint));

@@ -179,6 +179,15 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
       filename(entrypoint) {
         return `sbom-module-${entrypoint}.json`;
       },
+      omit(dependency) {
+        switch (dependency) {
+          case '@lastui/dependencies':
+          case '@lastui/rocker':
+            return true;
+          default:
+            return false;
+        }
+      }
     }),
   ],
 });
