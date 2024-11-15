@@ -31,6 +31,7 @@ export async function run(options) {
           "**/*.git*/**",
           "**/*node_modules/**",
           "**/*build/**",
+          "**/*reports/ut-coverage/**",
           "**/*dist/**",
           "**/*lcov-report/**",
           "**/*.min.js",
@@ -134,7 +135,7 @@ export async function run(options) {
       }
 
       for (const issue of issues) {
-        formattedResults.push({
+        const chunk = {
           ruleId: issue.ruleId || "formatting",
           engineId: issue.engineId,
           severity: ["INFO", "MINOR", "CRITICAL", "BLOCKER"][issue.severity],
@@ -142,16 +143,19 @@ export async function run(options) {
           primaryLocation: {
             message: issue.message,
             filePath: filePath,
-            textRange: issue.line
-              ? {
-                  startLine: issue.line,
-                  endLine: issue.endLine,
-                  startColumn: issue.column - 1,
-                  endColumn: issue.endColumn - 1,
-                }
-              : undefined,
           },
-        });
+        };
+
+        if (issue.line) {
+          chunk.primaryLocation.textRange = { startLine: issue.line };
+          if (issue.endLine !== undefined && issue.column !== undefined && issue.endColumn !== undefined) {
+            chunk.primaryLocation.textRange.startColumn = issue.column;
+            chunk.primaryLocation.textRange.endColumn = issue.endColumn;
+            chunk.primaryLocation.textRange.endLine = issue.endLine;
+          }
+        }
+
+        formattedResults.push(chunk);
       }
     }
 
