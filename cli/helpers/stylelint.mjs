@@ -88,22 +88,38 @@ export async function createEngine(options) {
       }
 
       info.issues.push(
-        ...results.parseErrors.map((item) => ({
-          engineId: "stylelint",
-          message: item.text,
-          ruleId: item.rule,
-          ...item,
-          severity: 2,
-        })),
+        ...results.parseErrors.map((item) => {
+          const chunk = Object.assign({
+            engineId: "stylelint",
+            message: item.text,
+            ruleId: item.rule,
+          }, item);
+
+          delete chunk.column;
+          delete chunk.endLine;
+          delete chunk.endColumn;
+
+          chunk.severity = 2;
+
+          return chunk;
+        }),
       );
       info.issues.push(
-        ...results.warnings.map((item) => ({
-          engineId: "stylelint",
-          message: item.text,
-          ruleId: item.rule,
-          ...item,
-          severity: 1,
-        })),
+        ...results.warnings.map((item) => {
+          const chunk = Object.assign({
+            engineId: "stylelint",
+            message: item.text,
+            ruleId: item.rule,
+          }, item);
+
+          delete chunk.column;
+          delete chunk.endLine;
+          delete chunk.endColumn;
+
+          chunk.severity = 1;
+
+          return chunk;
+        }),
       );
     } catch (error) {
       info.issues.push({

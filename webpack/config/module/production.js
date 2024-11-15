@@ -119,7 +119,7 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
         type: "asset/source",
       },
       {
-        test: /\.(mp3|png|jpe?g|gif|ico)$/i,
+        test: /\.(mp3|png|jpe?g|gif|ico|svg)$/i,
         dependency: { not: ["url"] },
         type: "asset/inline",
       },
