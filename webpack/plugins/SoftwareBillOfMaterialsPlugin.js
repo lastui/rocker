@@ -63,8 +63,8 @@ class SoftwareBillOfMaterialsPlugin {
                       continue;
                     }
                     let moduleId = reason.resolvedModuleId;
-                    if (moduleId.startsWith('@rocker/')) {
-                      moduleId = './node_modules/@lastui/rocker';
+                    if (moduleId.startsWith("@rocker/")) {
+                      moduleId = "./node_modules/@lastui/rocker";
                     }
                     if (!moduleId.startsWith("./node_modules/")) {
                       continue;
@@ -80,7 +80,6 @@ class SoftwareBillOfMaterialsPlugin {
             const report = {};
 
             for (const candidate of candidates) {
-
               const parts = candidate.substring(15).split("/");
               const item = candidate[15] === "@" ? parts[0] + "/" + parts[1] : parts[0];
 
@@ -92,7 +91,7 @@ class SoftwareBillOfMaterialsPlugin {
             }
 
             for (const item in report) {
-              if (item.startsWith('@lastui/') || this.options.omit(item)) {
+              if (item.startsWith("@lastui/") || this.options.omit(item)) {
                 delete report[item];
                 continue;
               }
@@ -104,7 +103,7 @@ class SoftwareBillOfMaterialsPlugin {
               report[item] = entry.version;
             }
 
-            if (!this.options.omit('@lastui/dependencies')) {
+            if (!this.options.omit("@lastui/dependencies")) {
               Object.assign(report, shared);
             }
 

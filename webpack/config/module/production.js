@@ -181,13 +181,13 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
       },
       omit(dependency) {
         switch (dependency) {
-          case '@lastui/dependencies':
-          case '@lastui/rocker':
+          case "@lastui/dependencies":
+          case "@lastui/rocker":
             return true;
           default:
             return false;
         }
-      }
+      },
     }),
   ],
 });
