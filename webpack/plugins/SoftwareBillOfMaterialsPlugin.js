@@ -1,6 +1,6 @@
 const path = require("path");
 
-const DEFAULT_FILENAME = (_entrypoint) => "sbom/report.json";
+const DEFAULT_FILENAME = (_entrypoint) => "sbom.json";
 const DEFAULT_OMIT = (_dependency) => false;
 
 class SoftwareBillOfMaterialsPlugin {
