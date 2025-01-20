@@ -10,10 +10,27 @@ import babelParser from "@babel/eslint-parser";
 import pluginImport from "eslint-plugin-import";
 import pluginReact from "eslint-plugin-react";
 
+import { config as prettierConfig } from "./prettier.mjs";
+
 export const config = [
   {
     languageOptions: {
       sourceType: "module",
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.jest,
+        BUILD_ID: true,
+      },
+    },
+    plugins: {
+      import: pluginImport,
+      react: pluginReact,
+    },
+  },
+  {
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    languageOptions: {
       parser: babelParser,
       parserOptions: {
         ecmaFeatures: {
@@ -22,20 +39,8 @@ export const config = [
         requireConfigFile: false,
         babelOptions: babelConfig.env.development,
       },
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-        ...globals.jest,
-      },
-    },
-    linterOptions: {},
-    plugins: {
-      react: pluginReact,
-      import: pluginImport,
     },
     rules: {
-      "react/jsx-uses-react": "error",
-      "react/jsx-uses-vars": "error",
       "no-debugger": "error",
       "no-undef": "error",
       "no-unused-vars": [
@@ -86,7 +91,7 @@ export const config = [
     },
   },
   {
-    files: ["**/*.jsx"],
+    files: ["**/*.{jsx,tsx}"],
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
@@ -94,17 +99,55 @@ export const config = [
         },
       },
     },
+    settings: {
+      react: {
+        pragma: "React",
+        version: "18.3.1",
+      },
+    },
+    rules: {
+      "react/jsx-uses-react": "error",
+      "react/jsx-uses-vars": "error",
+    },
+  },
+  {
+    files: ["**/*.test.*", "**/__tests__/*"],
+    settings: {
+      jest: {
+        version: "29.7.0",
+      },
+    },
   },
 ];
+
+function serializeConfig(data) {
+  const result = [];
+  for (const section of data) {
+    const { languageOptions, ...rest } = section;
+    if ("plugins" in rest) {
+      rest.plugins = Object.keys(rest.plugins);
+    }
+    result.push(rest);
+  }
+  return result;
+}
 
 export async function createEngine(options) {
   const engine = new eslint.ESLint({
     cwd: process.env.INIT_CWD,
     overrideConfigFile: true,
     allowInlineConfig: true,
+    warnIgnored: true,
     fix: options.fix,
     baseConfig: config,
   });
+
+  if (options.debug) {
+    const colors = (await import("ansi-colors")).default;
+    console.log(colors.dim("Eslint Configuration"));
+    console.log(JSON.stringify(serializeConfig(config), null, prettierConfig.tabWidth));
+    console.log();
+  }
 
   async function processFile(info) {
     if (!/\.[t|j]sx?$/.test(info.filePath)) {
@@ -116,13 +159,21 @@ export async function createEngine(options) {
 
     try {
       start = process.hrtime();
-      const results = await engine.lintText(info.data, { filePath: info.filePath, warnIgnored: true });
+      const results = await engine.lintText(info.data, { filePath: info.filePath });
       end = process.hrtime(start);
       if (options.fix && results[0].output) {
         info.changed = true;
         info.data = results[0].output;
       }
-      info.issues.push(...results[0].messages.map((item) => ({ engineId: "eslint", ...item })));
+      for (const item of results[0].messages) {
+        const chunk = Object.assign(
+          {
+            engineId: "eslint",
+          },
+          item,
+        );
+        info.issues.push(chunk);
+      }
     } catch (error) {
       info.issues.push({
         engineId: "eslint",

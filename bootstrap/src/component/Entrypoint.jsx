@@ -6,6 +6,18 @@ import { Module } from "@lastui/rocker/platform";
 
 import { getEntrypoint } from "../selector";
 
+const BROWSER_ROUTER_FUTURE_OPTIONS = {
+  v7_relativeSplatPath: true,
+  v7_skipActionErrorRevalidation: true,
+  v7_partialHydration: true,
+  v7_fetcherPersist: true,
+  v7_normalizeFormMethod: true,
+};
+
+const ROUTER_PROVIDER_FUTURE_OPTIONS = {
+  v7_startTransition: true,
+};
+
 const Hatch = createContext({});
 
 const Yank = () => {
@@ -19,7 +31,10 @@ const Sink = () => {
   return <Module name={entrypoint}>{children}</Module>;
 };
 
-export const router = createBrowserRouter([{ path: "*", element: <Sink />, errorElement: <Yank /> }], { basename: "/" });
+export const router = createBrowserRouter([{ path: "*", element: <Sink />, errorElement: <Yank /> }], {
+  basename: "/",
+  future: BROWSER_ROUTER_FUTURE_OPTIONS,
+});
 
 const Entrypoint = (props) => {
   const entrypoint = useSelector(getEntrypoint);
@@ -32,7 +47,7 @@ const Entrypoint = (props) => {
 
   return (
     <Hatch.Provider value={value}>
-      <RouterProvider router={router} />
+      <RouterProvider router={router} future={ROUTER_PROVIDER_FUTURE_OPTIONS} />
     </Hatch.Provider>
   );
 };

@@ -6,6 +6,13 @@ import path from "node:path";
 export async function run(options) {
   const config = path.resolve(fileURLToPath(import.meta.url), "..", "..", "..", "jest", "index.js");
 
+  if (options.debug) {
+    process.env.DEBUG_PRINT_LIMIT = Number.MAX_SAFE_INTEGER;
+
+    const colors = (await import("ansi-colors")).default;
+    console.log(colors.dim("Jest Configuration"));
+  }
+
   await jest.run([
     ...(process.stdout.isTTY ? ["--colors"] : []),
     "--passWithNoTests",
