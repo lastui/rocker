@@ -88,6 +88,7 @@ export async function run(options) {
               colors.red(`${info.filePath}:${issue.line ?? 1}:${issue.column ? issue.column - 1 : 0}`),
               colors.bold.red(issue.message),
               colors.dim(duration),
+              colors.dim(issue.ruleId ? issue.ruleId : ""),
             );
           } else if (!options.quiet) {
             console.log(
@@ -95,6 +96,7 @@ export async function run(options) {
               colors.yellow(`${info.filePath}:${issue.line ?? 1}:${issue.column ? issue.column - 1 : 0}`),
               colors.bold.yellow(issue.message),
               colors.dim(duration),
+              colors.dim(issue.ruleId ? issue.ruleId : ""),
             );
           }
         }

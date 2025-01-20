@@ -32,6 +32,13 @@ export const config = {
 
 export async function createEngine(options) {
 
+  if (options.debug) {
+    const colors = (await import('ansi-colors')).default;
+    console.log(colors.dim('Stylelint Configuration'));
+    console.log(JSON.stringify(config, null, prettierConfig.tabWidth));
+    console.log();
+  }
+
   async function processFile(info) {
     if (info.filePath.endsWith(".json")) {
       return;

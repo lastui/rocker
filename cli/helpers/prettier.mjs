@@ -17,6 +17,13 @@ export const config = {
 
 export async function createEngine(options) {
 
+  if (options.debug) {
+    const colors = (await import('ansi-colors')).default;
+    console.log(colors.dim('Prettier Configuration'));
+    console.log(JSON.stringify(config, null, config.tabWidth));
+    console.log();
+  }
+
   async function processFile(info) {
     if (!/\.m?[t|j]sx?$/.test(info.filePath)) {
       return;
