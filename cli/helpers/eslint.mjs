@@ -102,7 +102,7 @@ export const config = [
     settings: {
       react: {
         pragma: "React",
-        version: "18.2.0",
+        version: "18.3.1",
       },
     },
     rules: {
