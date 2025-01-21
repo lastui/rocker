@@ -23,6 +23,9 @@ export const config = [
         BUILD_ID: true,
       },
     },
+    plugins: {
+      import: pluginImport,
+    },
   },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
@@ -37,7 +40,6 @@ export const config = [
       },
     },
     plugins: {
-      import: pluginImport,
       react: pluginReact,
     },
     rules: {
