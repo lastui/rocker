@@ -23,10 +23,6 @@ export const config = [
         BUILD_ID: true,
       },
     },
-    plugins: {
-      import: pluginImport,
-      react: pluginReact,
-    },
   },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
@@ -39,6 +35,10 @@ export const config = [
         requireConfigFile: false,
         babelOptions: babelConfig.env.development,
       },
+    },
+    plugins: {
+      import: pluginImport,
+      react: pluginReact,
     },
     rules: {
       "no-debugger": "error",
@@ -60,7 +60,6 @@ export const config = [
       "import/default": "warn",
       "import/named": "warn",
       "import/namespace": "warn",
-      "import/no-cycle": "error",
       "import/no-duplicates": "error",
       "import/no-amd": "error",
       "import/no-mutable-exports": "error",
@@ -195,5 +194,10 @@ export async function createEngine(options) {
     }
   }
 
-  return processFile;
+  return async function* pipe(source) {
+    for await (const info of source) {
+      await processFile(info);
+      yield info;
+    }
+  };
 }

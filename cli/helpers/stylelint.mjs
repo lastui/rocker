@@ -149,5 +149,10 @@ export async function createEngine(options) {
     }
   }
 
-  return processFile;
+  return async function* pipe(source) {
+    for await (const info of source) {
+      await processFile(info);
+      yield info;
+    }
+  };
 };

@@ -95,6 +95,5 @@ require("yargs")
   .command(envelope(require("./commands/start.js")))
   .command(envelope(require("./commands/test.js")))
   .command(envelope(require("./commands/lint.js")))
-  .showHelpOnFail(false)
-  .strict()
-  .help(true).argv;
+  .demandCommand()
+  .help(false).argv;
