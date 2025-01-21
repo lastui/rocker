@@ -15,7 +15,7 @@ export const config = {
   trailingComma: "all",
 };
 
-export async function createEngine(options) {
+export async function createStream(options) {
 
   if (options.debug) {
     const colors = (await import('ansi-colors')).default;

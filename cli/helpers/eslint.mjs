@@ -133,7 +133,7 @@ function serializeConfig(data) {
   return result;
 }
 
-export async function createEngine(options) {
+export async function createStream(options) {
   const engine = new eslint.ESLint({
     cwd: process.env.INIT_CWD,
     overrideConfigFile: true,

@@ -7,7 +7,7 @@ export const config = {
   useTabs: Boolean(prettierConfig.useTabs),
 };
 
-export async function createEngine(options) {
+export async function createStream(options) {
   async function processFile(info) {
     if (!info.filePath.endsWith("package.json")) {
       return;

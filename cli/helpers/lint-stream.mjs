@@ -6,10 +6,10 @@ import { Readable } from "node:stream";
 import colors from "ansi-colors";
 import { globStream } from "glob";
 import { ensureDirectory, writeFile, readFile } from "./io.mjs";
-import { createEngine as createEnginePrettierPackageJson } from "./prettier-package-json.mjs";
-import { createEngine as createEngineEslint } from "./eslint.mjs";
-import { createEngine as createEngineStylelint } from "./stylelint.mjs";
-import { createEngine as createEnginePrettier } from "./prettier.mjs";
+import { createStream as createStreamPrettierPackageJson } from "./prettier-package-json.mjs";
+import { createStream as createStreamEslint } from "./eslint.mjs";
+import { createStream as createStreamStylelint } from "./stylelint.mjs";
+import { createStream as createStreamPrettier } from "./prettier.mjs";
 
 export async function run(options) {
   const patterns = options._.length > 0 ? options._ : ["**/*.+(js|jsx|ts|tsx|mjs|json|scss|css)"];
@@ -35,10 +35,10 @@ export async function run(options) {
   });
 
   const workflow = await Promise.all([
-    createEnginePrettierPackageJson(options),
-    createEngineStylelint(options),
-    createEngineEslint(options),
-    createEnginePrettier(options),
+    createStreamPrettierPackageJson(options),
+    createStreamStylelint(options),
+    createStreamEslint(options),
+    createStreamPrettier(options),
   ]);
 
   async function* filter(source) {
