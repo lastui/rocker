@@ -149,6 +149,7 @@ export async function createStream(options) {
     }
   }
 
+  // TODO fix stylent reports reporting ruleId as part of text in "description (ruleId)" format
   return async function* pipe(source) {
     for await (const info of source) {
       await processFile(info);
