@@ -109,7 +109,7 @@ export async function run(options) {
     });
   } else {
     workflow.push(async function* (source) {
-      for await (const { timing, issues } of source) {
+      for await (const { filePath, timing, issues } of source) {
         if (timing.length > 0) {
           numberTotal++;
         }
@@ -122,7 +122,7 @@ export async function run(options) {
             type: issue.severity > 1 ? "BUG" : "CODE_SMELL",
             primaryLocation: {
               message: issue.message,
-              filePath: filePath,
+              filePath,
             },
           };
 
