@@ -1,22 +1,10 @@
 import { createContext, useContext, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { RouterProvider, createBrowserRouter, useRouteError } from "react-router-dom";
+import { RouterProvider, createBrowserRouter, useRouteError } from "react-router";
 
 import { Module } from "@lastui/rocker/platform";
 
 import { getEntrypoint } from "../selector";
-
-const BROWSER_ROUTER_FUTURE_OPTIONS = {
-  v7_relativeSplatPath: true,
-  v7_skipActionErrorRevalidation: true,
-  v7_partialHydration: true,
-  v7_fetcherPersist: true,
-  v7_normalizeFormMethod: true,
-};
-
-const ROUTER_PROVIDER_FUTURE_OPTIONS = {
-  v7_startTransition: true,
-};
 
 const Hatch = createContext({});
 
@@ -31,10 +19,7 @@ const Sink = () => {
   return <Module name={entrypoint}>{children}</Module>;
 };
 
-export const router = createBrowserRouter([{ path: "*", element: <Sink />, errorElement: <Yank /> }], {
-  basename: "/",
-  future: BROWSER_ROUTER_FUTURE_OPTIONS,
-});
+export const router = createBrowserRouter([{ path: "*", element: <Sink />, errorElement: <Yank /> }], { basename: "/" });
 
 const Entrypoint = (props) => {
   const entrypoint = useSelector(getEntrypoint);
@@ -47,7 +32,7 @@ const Entrypoint = (props) => {
 
   return (
     <Hatch.Provider value={value}>
-      <RouterProvider router={router} future={ROUTER_PROVIDER_FUTURE_OPTIONS} />
+      <RouterProvider router={router} />
     </Hatch.Provider>
   );
 };

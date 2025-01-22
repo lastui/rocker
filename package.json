@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.20.48",
+  "version": "0.20.49",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -46,8 +46,8 @@
     "postbuild:platform:prod": "node --no-deprecation ./platform/scripts/unlink.mjs",
     "lint": "node --no-deprecation ./cli/index.js lint",
     "test": "npm run test:platform && npm run test:bootstrap",
-    "test:bootstrap": "node --no-deprecation ./cli/index.js test --cwd=bootstrap --debug",
-    "test:platform": "node --no-deprecation ./cli/index.js test --cwd=platform --debug"
+    "test:bootstrap": "node --no-deprecation ./cli/index.js test --cwd=bootstrap",
+    "test:platform": "node --no-deprecation ./cli/index.js test --cwd=platform"
   },
   "dependencies": {
     "@babel/core": "7.26.0",
