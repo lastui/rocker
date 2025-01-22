@@ -14,7 +14,6 @@ const DEFAULT_LOCALE = "en-US";
 const FullyInitializedGate = (props) => {
   const initialized = useSelector(getIsInitialized);
   const locale = useSelector(getLanguage);
-  /* istanbul ignore next */
   if (!initialized || !locale) {
     return null;
   }

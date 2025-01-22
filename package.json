@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.20.46",
+  "version": "0.20.47",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -46,8 +46,8 @@
     "postbuild:platform:prod": "node --no-deprecation ./platform/scripts/unlink.mjs",
     "lint": "node --no-deprecation ./cli/index.js lint",
     "test": "npm run test:platform && npm run test:bootstrap",
-    "test:bootstrap": "node --no-deprecation ./cli/index.js test --cwd=bootstrap --debug",
-    "test:platform": "node --no-deprecation ./cli/index.js test --cwd=platform --debug"
+    "test:bootstrap": "node --no-deprecation ./cli/index.js test --cwd=bootstrap",
+    "test:platform": "node --no-deprecation ./cli/index.js test --cwd=platform"
   },
   "dependencies": {
     "@babel/core": "7.26.0",
@@ -80,6 +80,7 @@
     "html-webpack-plugin": "5.6.3",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
+    "jest-monocart-coverage": "1.1.1",
     "json5-loader": "4.0.1",
     "mini-css-extract-plugin": "2.9.2",
     "npm-registry-fetch": "18.0.2",

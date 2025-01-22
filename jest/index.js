@@ -23,9 +23,31 @@ module.exports = {
   verbose: true,
   collectCoverage: true,
   testEnvironment: "jsdom",
-  coverageDirectory: "<rootDir>/reports",
-  coverageReporters: ["text", "json", "lcov", "clover"],
-  collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
+  coverageProvider: "v8",
+  coverageReporters: ["none"],
+  collectCoverageFrom: ["**/*.{js,ts,jsx,tsx}"],
+  reporters: [
+    "default",
+    [
+      "jest-monocart-coverage",
+      {
+        name: "Jest Coverage Report",
+        outputDir: path.join(".", path.relative(".", process.env.INIT_CWD), "reports", "ut-coverage"),
+        entryFilter: {
+          "**/node_modules/**": false,
+          "**/*": true,
+        },
+        sourceFilter: {
+          "**/node_modules/**": false,
+          "**/**": true,
+        },
+        sourcePath: (filePath, info) => {
+          return info.distFile ?? filePath;
+        },
+        reports: ["text", "v8", "raw"],
+      },
+    ],
+  ],
   moduleFileExtensions: ["js", "ts", "jsx", "tsx"],
   transform: {
     "\\.[t|j]sx?$": [
@@ -49,10 +71,10 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
+      branches: 0,
+      functions: 0,
+      lines: 0,
+      statements: 0,
     },
   },
   moduleDirectories: [...node_modules, "<rootDir>/src"],

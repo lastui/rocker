@@ -1,3 +1,4 @@
+/* c8 ignore start */
 import { cancel, spawn, select, take } from "redux-saga/effects";
 
 import * as constants from "../../constants";
@@ -10,6 +11,7 @@ const defaultSagaRunner = () => {
 };
 
 let sagaRunner = defaultSagaRunner;
+/* c8 ignore stop */
 
 function setSagaRunner(nextSagaRunner) {
   if (nextSagaRunner) {

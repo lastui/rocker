@@ -9,7 +9,6 @@ import { getLanguage } from "../selector";
 const availableLocales = {};
 const loadedLocales = {};
 
-/* istanbul ignore next */
 export async function downloadBatchLocales(names, language) {
   const scheduledAssets = [];
   for (const name of names) {
@@ -55,7 +54,6 @@ export function* watchModules() {
     const action = yield take(backlog);
 
     if (action.type === constants.SET_AVAILABLE_MODULES) {
-      /* istanbul ignore next */
       for (const key in availableLocales) {
         delete availableLocales[key];
       }
@@ -103,7 +101,7 @@ export function* watchChangeLanguage() {
     const language = action.payload.language;
 
     const missing = [];
-    /* istanbul ignore next */
+
     for (const name in loadedLocales) {
       if (loadedLocales[name][language]) {
         continue;

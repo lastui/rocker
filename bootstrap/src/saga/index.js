@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import { watchBootstrap } from "./bootstrap";
 import { watchRefresh, watchFetchContext } from "./context";
 import { watchModules, watchChangeLanguage } from "./localisation";
