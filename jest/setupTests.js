@@ -1,7 +1,10 @@
 import matchers from "@testing-library/jest-dom/matchers";
+import { TextEncoder, TextDecoder } from "util";
 import "whatwg-fetch";
 
 global.IS_REACT_ACT_ENVIRONMENT = true;
+
+Object.assign(global, { TextDecoder, TextEncoder });
 
 global.expect.extend(matchers);
 

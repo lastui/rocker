@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router";
 import configureStore from "redux-mock-store";
 
 import { withRedux } from "@lastui/rocker/test";
@@ -82,7 +82,9 @@ describe("<Entrypoint />", () => {
             <Routes>
               <Route path="/grand">
                 <Route path="parent">
-                  <Route path="child" element={<span data-testid="RouteMatchLeft" />} />
+                  <Route path="child">
+                    <Route index element={<span data-testid="RouteMatchLeft" />} />
+                  </Route>
                 </Route>
               </Route>
               <Route path="/sibling" element={<span data-testid="RouteMatchRight" />} />
