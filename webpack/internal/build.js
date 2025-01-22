@@ -46,7 +46,7 @@ module.exports = {
     chunkIds: "named",
     moduleIds: "named",
     usedExports: true,
-    sideEffects: false,
+    sideEffects: true,
     emitOnErrors: true,
     concatenateModules: true,
     runtimeChunk: false,
