@@ -14,25 +14,20 @@ class ImplicitDLLAssetPlugin {
         for (const asset of this.assets) {
           const resolvedFilename = path.resolve(compilation.compiler.context, asset);
 
-          const basename = path.basename(resolvedFilename);
+          const fullPath = compilation.outputOptions.chunkFilename.replace(
+            /\[(name|id)\]/g,
+            path.basename(resolvedFilename).replace(/(?:\.min)?\.js/g, ""),
+          );
 
-          if (compilation.getAsset(basename)) {
+          if (compilation.getAsset(fullPath)) {
             continue;
           }
 
           const buffer = compiler.inputFileSystem.readFileSync(resolvedFilename);
 
-          compilation.emitAsset(basename, new compiler.webpack.sources.RawSource(buffer, false));
-
-          const fullPath = compilation.outputOptions.chunkFilename.replace(
-            /\[(name|id)\]/g,
-            basename.replace(/(?:\.min)?\.js/g, ""),
-          );
+          compilation.emitAsset(fullPath, new compiler.webpack.sources.RawSource(buffer, false));
 
           htmlPluginData.assets.js.unshift(compilation.outputOptions.publicPath + fullPath);
-
-          compilation.assets[fullPath] = compilation.assets[basename];
-          delete compilation.assets[basename];
         }
       });
     });
