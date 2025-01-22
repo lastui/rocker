@@ -1,30 +1,14 @@
 import { fileURLToPath } from "node:url";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { Readable } from "node:stream";
-import glob from "glob";
+import { globStream } from "glob";
 
-async function verifyManifests(workspace) {
-  const fileStream = new Readable({ objectMode: true });
-  fileStream._read = () => {};
-
-  glob(
-    workspace + "*-manifest.json",
-    {
-      cwd: path.resolve(fileURLToPath(import.meta.url), "..", "..", workspace, "dll"),
-      ignore: [],
-    },
-    (error, files) => {
-      if (error) {
-        fileStream.emit("error", error);
-        return;
-      }
-      files.forEach((file) => {
-        fileStream.push(file);
-      });
-      fileStream.push(null);
-    },
-  );
+async function verifyManifests(pattern) {
+  const files = globStream(pattern + "*-manifest.json", {
+    cwd: path.resolve(fileURLToPath(import.meta.url), "..", "..", pattern, "dll"),
+    nodir: true,
+    ignore: [],
+  });
 
   const polyfills = [
     "./node_modules/regenerator-runtime/",
@@ -33,8 +17,8 @@ async function verifyManifests(workspace) {
     "./node_modules/tslib",
   ];
 
-  for await (const filePath of fileStream) {
-    const manifestFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", workspace, "dll", filePath);
+  for await (const filePath of files) {
+    const manifestFile = path.resolve(fileURLToPath(import.meta.url), "..", "..", pattern, "dll", filePath);
     const manifest = JSON.parse(await fs.readFile(manifestFile, { encoding: "utf8" }));
 
     for (const entry in manifest.content) {
@@ -47,7 +31,7 @@ async function verifyManifests(workspace) {
       }
     }
 
-    if (!filePath.startsWith(workspace + "-")) {
+    if (!filePath.startsWith(pattern + "-")) {
       continue;
     }
 

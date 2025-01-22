@@ -16,7 +16,6 @@ export const config = {
 };
 
 export async function createStream(options) {
-
   if (options.debug) {
     const colors = (await import('ansi-colors')).default;
     console.log(colors.dim('Prettier Configuration'));
