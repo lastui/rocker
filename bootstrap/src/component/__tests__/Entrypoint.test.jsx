@@ -8,39 +8,39 @@ import { withRedux } from "@lastui/rocker/test";
 
 import Entrypoint from "../Entrypoint";
 
-const initialState = {
-  runtime: {
-    entrypoint: null,
-  },
-  localisation: {},
-};
+describe("<Entrypoint />", () => {
+  const initialState = {
+    runtime: {
+      entrypoint: null,
+    },
+    localisation: {},
+  };
 
-const mockStore = configureStore([]);
+  const mockStore = configureStore([]);
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = false;
-  }
+  class ErrorBoundary extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = false;
+    }
 
-  static getDerivedStateFromError(_error) {
-    return true;
-  }
+    static getDerivedStateFromError(_error) {
+      return true;
+    }
 
-  render() {
-    if (this.state) {
-      return <span data-testid="EntrypointErrorBoundaries" />;
-    } else {
-      return React.Children.only(this.props.children);
+    render() {
+      if (this.state) {
+        return <span data-testid="EntrypointErrorBoundaries" />;
+      } else {
+        return React.Children.only(this.props.children);
+      }
     }
   }
-}
 
-const BrokenComponent = () => {
-  throw new Error("failure");
-};
+  const BrokenComponent = () => {
+    throw new Error("failure");
+  };
 
-describe("<Entrypoint />", () => {
   beforeEach(() => {
     top.history.pushState(null, document.title, "/");
   });
@@ -135,11 +135,8 @@ describe("<Entrypoint />", () => {
         withRedux(
           <ErrorBoundary>
             <Entrypoint>
-              <Link to="/parent/child">Navigate</Link>
               <Routes>
-                <Route path="parent">
-                  <Route path="child" element={<BrokenComponent />} />
-                </Route>
+                <Route path="*" element={<BrokenComponent />} />
               </Routes>
             </Entrypoint>
           </ErrorBoundary>,
@@ -147,11 +144,7 @@ describe("<Entrypoint />", () => {
         ),
       );
 
-      await userEvent.click(screen.getByText("Navigate"));
-
-      await waitFor(() => {
-        expect(screen.getByTestId("EntrypointErrorBoundaries")).toBeInTheDocument();
-      });
+      expect(screen.getByTestId("EntrypointErrorBoundaries")).toBeInTheDocument();
 
       spy.mockRestore();
     });

@@ -1,5 +1,3 @@
-const path = require("path");
-
 module.exports = {
   process(src, filename) {
     if (filename === undefined) {
@@ -8,7 +6,7 @@ module.exports = {
       };
     }
     return {
-      code: `module.exports = "${path.basename(filename)}";`,
+      code: `module.exports = "${src}<->${filename}";`,
     };
   },
 };
