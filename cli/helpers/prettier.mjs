@@ -15,8 +15,7 @@ export const config = {
   trailingComma: "all",
 };
 
-export async function createEngine(options) {
-
+export async function createStream(options) {
   if (options.debug) {
     const colors = (await import('ansi-colors')).default;
     console.log(colors.dim('Prettier Configuration'));
@@ -69,5 +68,10 @@ export async function createEngine(options) {
     }
   }
 
-  return processFile;
+  return async function* pipe(source) {
+    for await (const info of source) {
+      await processFile(info);
+      yield info;
+    }
+  };
 };

@@ -25,7 +25,6 @@ export const config = [
     },
     plugins: {
       import: pluginImport,
-      react: pluginReact,
     },
   },
   {
@@ -39,6 +38,9 @@ export const config = [
         requireConfigFile: false,
         babelOptions: babelConfig.env.development,
       },
+    },
+    plugins: {
+      react: pluginReact,
     },
     rules: {
       "no-debugger": "error",
@@ -60,7 +62,6 @@ export const config = [
       "import/default": "warn",
       "import/named": "warn",
       "import/namespace": "warn",
-      "import/no-cycle": "error",
       "import/no-duplicates": "error",
       "import/no-amd": "error",
       "import/no-mutable-exports": "error",
@@ -132,7 +133,7 @@ function serializeConfig(data) {
   return result;
 }
 
-export async function createEngine(options) {
+export async function createStream(options) {
   const engine = new eslint.ESLint({
     cwd: process.env.INIT_CWD,
     overrideConfigFile: true,
@@ -195,5 +196,10 @@ export async function createEngine(options) {
     }
   }
 
-  return processFile;
+  return async function* pipe(source) {
+    for await (const info of source) {
+      await processFile(info);
+      yield info;
+    }
+  };
 }

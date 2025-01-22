@@ -30,8 +30,7 @@ export const config = {
   },
 };
 
-export async function createEngine(options) {
-
+export async function createStream(options) {
   if (options.debug) {
     const colors = (await import('ansi-colors')).default;
     console.log(colors.dim('Stylelint Configuration'));
@@ -94,40 +93,38 @@ export async function createEngine(options) {
         info.data = data;
       }
 
-      info.issues.push(
-        ...results.parseErrors.map((item) => {
-          const chunk = Object.assign({
-            engineId: "stylelint",
-            message: item.text,
-            ruleId: item.rule,
-          }, item);
+      for (const issue of results.parseErrors) {
+        const chunk = Object.assign({
+          engineId: "stylelint",
+          message: issue.text.replaceAll(` (${issue.rule})`, ''),
+          ruleId: issue.rule,
+        }, issue);
 
-          delete chunk.column;
-          delete chunk.endLine;
-          delete chunk.endColumn;
+        delete chunk.column;
+        delete chunk.endLine;
+        delete chunk.endColumn;
 
-          chunk.severity = 2;
+        chunk.severity = 2;
 
-          return chunk;
-        }),
-      );
-      info.issues.push(
-        ...results.warnings.map((item) => {
-          const chunk = Object.assign({
-            engineId: "stylelint",
-            message: item.text,
-            ruleId: item.rule,
-          }, item);
+        info.issues.push(chunk);
+      }
 
-          delete chunk.column;
-          delete chunk.endLine;
-          delete chunk.endColumn;
+      for (const issue of results.warnings) {
+        const chunk = Object.assign({
+          engineId: "stylelint",
+          message: issue.text.replaceAll(` (${issue.rule})`, ''),
+          ruleId: issue.rule,
+        }, issue);
 
-          chunk.severity = 1;
+        delete chunk.column;
+        delete chunk.endLine;
+        delete chunk.endColumn;
 
-          return chunk;
-        }),
-      );
+        chunk.severity = 1;
+
+        info.issues.push(chunk)
+      }
+
     } catch (error) {
       info.issues.push({
         engineId: "stylelint",
@@ -149,5 +146,10 @@ export async function createEngine(options) {
     }
   }
 
-  return processFile;
+  return async function* pipe(source) {
+    for await (const info of source) {
+      await processFile(info);
+      yield info;
+    }
+  };
 };
