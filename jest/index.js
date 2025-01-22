@@ -23,10 +23,9 @@ module.exports = {
   verbose: true,
   collectCoverage: true,
   testEnvironment: "jsdom",
-  coverageDirectory: "<rootDir>/reports",
   coverageProvider: "v8",
   coverageReporters: ["none"],
-  collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
+  collectCoverageFrom: ["**/*.{js,ts,jsx,tsx}"],
   reporters: [
     "default",
     [
