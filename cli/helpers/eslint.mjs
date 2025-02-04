@@ -15,13 +15,13 @@ import { config as prettierConfig } from "./prettier.mjs";
 export const config = [
   {
     languageOptions: {
-      sourceType: "module",
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.jest,
         BUILD_ID: true,
       },
+      ecmaVersion: "latest",
+      sourceType: "module",
     },
     plugins: {
       import: pluginImport,
@@ -34,6 +34,7 @@ export const config = [
       parserOptions: {
         ecmaFeatures: {
           globalReturn: false,
+          jsx: true,
         },
         requireConfigFile: false,
         babelOptions: babelConfig.env.development,
@@ -41,6 +42,12 @@ export const config = [
     },
     plugins: {
       react: pluginReact,
+    },
+    settings: {
+      react: {
+        pragma: "React",
+        version: "18.3.1",
+      },
     },
     rules: {
       "no-debugger": "error",
@@ -52,6 +59,7 @@ export const config = [
           varsIgnorePattern: "^_",
           argsIgnorePattern: "^_",
           caughtErrorsIgnorePattern: "^_",
+          reportUsedIgnorePattern: true,
           ignoreRestSiblings: true,
         },
       ],
@@ -89,30 +97,17 @@ export const config = [
           distinctGroup: false,
         },
       ],
-    },
-  },
-  {
-    files: ["**/*.{jsx,tsx}"],
-    languageOptions: {
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
-    settings: {
-      react: {
-        pragma: "React",
-        version: "18.3.1",
-      },
-    },
-    rules: {
       "react/jsx-uses-react": "error",
       "react/jsx-uses-vars": "error",
     },
   },
   {
-    files: ["**/*.test.*", "**/__tests__/*"],
+    files: ["**/*.test.*", "**/__tests__/*", "**/setupTests.*"],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
     settings: {
       jest: {
         version: "29.7.0",
