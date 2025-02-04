@@ -27,7 +27,7 @@ export async function downloadBatchLocales(names, language) {
     const promise = downloadAsset(uri)
       .then((data) => data.json())
       .then((data) => {
-        for (const _prop in data) {
+        for (const prop in data) {
           return { module: name, data };
         }
         return null;
