@@ -3,6 +3,7 @@ const HTMLWebpackPlugin = require("html-webpack-plugin");
 const { JSDOM } = require("jsdom");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
+const { minify_sync } = require("terser");
 const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 
@@ -169,21 +170,48 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
       context: process.env.INIT_CWD,
     }),
     new HTMLWebpackPlugin({
-      templateContent: (props) => {
+      templateContent(props) {
         const origins = props.compilation.entrypoints.entries().next().value[1].origins;
         const data = props.compilation.compiler.inputFileSystem.readFileSync(
           path.resolve(origins[origins.length - 1].request, "..", "index.html"),
         );
         const DOM = new JSDOM(data, { contentType: "text/html" });
+        let preTags = "";
         let preloadTags = "";
         let headTags = "";
+
+        for (const meta of DOM.window.document.head.querySelectorAll("meta")) {
+          preTags += meta.outerHTML;
+        }
+        for (const link of DOM.window.document.head.querySelectorAll("link")) {
+          if (link.getAttribute("rel") === "manifest") {
+            preTags += link.outerHTML;
+          }
+        }
+
+        if (DOM.window.document.title) {
+          preTags += `<title>${DOM.window.document.title}</title>`;
+        }
+        for (const script of DOM.window.document.head.querySelectorAll("script")) {
+          if (script.innerHTML) {
+            script.innerHTML = minify_sync(script.innerHTML).code;
+          }
+          headTags += script.outerHTML;
+        }
+        if (props.compilation.getAsset("spa/static/media/images/favicon.svg")) {
+          headTags += `<link rel="icon" type="image/svg+xml" href="${settings.PUBLIC_PATH}spa/static/media/images/favicon.svg">`;
+        }
+        if (props.compilation.getAsset("spa/static/media/images/favicon.png")) {
+          headTags += `<link rel="icon" type="image/png" href="${settings.PUBLIC_PATH}spa/static/media/images/favicon.png">`;
+        }
         for (const tag of props.htmlWebpackPlugin.tags.headTags) {
           if (tag.tagName === "link" && tag.attributes.rel === "stylesheet") {
             preloadTags += `<link href="${tag.attributes.href}" rel="preload" as="style">`;
           }
           headTags += tag.toString();
         }
-        DOM.window.document.head.innerHTML = preloadTags + headTags;
+
+        DOM.window.document.head.innerHTML = preTags + preloadTags + headTags;
         return DOM.serialize();
       },
       filename: "spa/index.html",
