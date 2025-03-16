@@ -198,11 +198,11 @@ module.exports = merge(require("../../internal/base.js"), require("../../interna
           }
           headTags += script.outerHTML;
         }
-        if (props.compilation.getAsset("spa/static/media/images/favicon.svg")) {
-          headTags += `<link rel="icon" type="image/svg+xml" href="${settings.PUBLIC_PATH}spa/static/media/images/favicon.svg">`;
+        if (props.compilation.getAsset("spa/favicon.svg")) {
+          headTags += `<link rel="icon" type="image/svg+xml" href="${settings.PROJECT_NAMESPACE}spa/favicon.svg">`;
         }
-        if (props.compilation.getAsset("spa/static/media/images/favicon.png")) {
-          headTags += `<link rel="icon" type="image/png" href="${settings.PUBLIC_PATH}spa/static/media/images/favicon.png">`;
+        if (props.compilation.getAsset("spa/favicon.png")) {
+          headTags += `<link rel="icon" type="image/png" href="${settings.PROJECT_NAMESPACE}spa/favicon.png">`;
         }
         for (const tag of props.htmlWebpackPlugin.tags.headTags) {
           if (tag.tagName === "link" && tag.attributes.rel === "stylesheet") {
