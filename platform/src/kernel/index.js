@@ -3,7 +3,6 @@ import "regenerator-runtime/runtime";
 /* istanbul ignore file */
 import Module from "../component/Module";
 import * as constants from "../constants";
-import registerModule from "../register";
 
 import createDynamicMiddleware from "./middleware/dynamic";
 import createLoaderMiddleware from "./middleware/loader";
@@ -24,7 +23,6 @@ export {
   modulesReducer,
   createDynamicMiddleware,
   createSagaMiddleware,
-  registerModule,
   getStore,
   setStore,
   manualCleanup,
@@ -40,7 +38,6 @@ export default {
   modulesReducer,
   createDynamicMiddleware,
   createSagaMiddleware,
-  registerModule,
   getStore,
   setStore,
   manualCleanup,

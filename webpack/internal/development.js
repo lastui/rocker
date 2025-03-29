@@ -23,7 +23,7 @@ module.exports = {
     errorDetails: true,
     errorStack: true,
   },
-  devtool: "eval-cheap-module-source-map",
+  devtool: "cheap-module-source-map",
   watch: true,
   devServer: {
     hot: false,
@@ -43,6 +43,7 @@ module.exports = {
     host: "0.0.0.0",
     port: settings.DEV_SERVER_PORT,
     client: {
+      reconnect: 2,
       overlay: {
         errors: true,
         runtimeErrors: true,
