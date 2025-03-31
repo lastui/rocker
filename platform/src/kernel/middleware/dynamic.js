@@ -1,6 +1,5 @@
 import { compose } from "redux";
 
-import { warning } from "../../utils";
 import { getStore } from "../registry/store";
 
 const createDynamicMiddlewares = () => {
@@ -41,7 +40,7 @@ const createDynamicMiddlewares = () => {
         return composition(next)(action);
       } catch (error) {
         // TODO try to do "module {name} dynamic middleware errored"
-        warning("dynamic middleware errored", error);
+        console.error("dynamic middleware errored", error);
         return next(action);
       }
     },

@@ -5,19 +5,6 @@ import { constants } from "@lastui/rocker/platform";
 import { watchRefresh, watchFetchContext, refreshContext, fetchContext } from "../context";
 
 describe("context", () => {
-  const debugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
-  const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
-
-  beforeEach(() => {
-    debugSpy.mockClear();
-    warnSpy.mockClear();
-  });
-
-  afterAll(() => {
-    debugSpy.mockRestore();
-    warnSpy.mockRestore();
-  });
-
   describe("watchRefresh", () => {
     it("should be defined", () => {
       expect(watchRefresh).toBeDefined();
@@ -88,13 +75,16 @@ describe("context", () => {
     });
 
     it("error path", () => {
+      const spyError = jest.spyOn(console, "error");
+      spyError.mockImplementation(() => {});
+
       const error = new Error("fail");
 
       const gen = fetchContext();
       expect(gen.next().value.payload).toEqual("fetchContext");
       expect(gen.throw(error).done).toEqual(true);
 
-      expect(warnSpy).toHaveBeenCalledWith("failed to obtain context", error);
+      expect(spyError).toHaveBeenCalledWith("failed to obtain context", error);
     });
   });
 });

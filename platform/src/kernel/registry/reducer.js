@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 
 import * as constants from "../../constants";
-import { warning } from "../../utils";
 import { modulesReducers } from "../reducer/modules";
 
 const emptydict = {};
@@ -20,13 +19,17 @@ async function addReducer(name, reducer) {
   try {
     const composedReducer = combineReducers({
       ...reducer,
-      env: (_state, _action) => emptydict,
-      shared: (_state, _action) => emptydict,
+      env(_state, _action) {
+        return emptydict;
+      },
+      shared(_state, _action) {
+        return emptydict;
+      },
     });
     composedReducer(undefined, { type: constants.MODULE_INIT, module: name });
     modulesReducers[name] = composedReducer;
   } catch (error) {
-    warning(`module ${name} wanted to register invalid reducer`, error);
+    console.error(`module ${name} wanted to register invalid reducer`, error);
   }
 }
 

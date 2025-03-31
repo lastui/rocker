@@ -1,5 +1,4 @@
 import * as constants from "../../constants";
-import { warning } from "../../utils";
 import loader from "../registry/loader";
 
 const createLoaderMiddleware = () => (_store) => (next) => (action) => {
@@ -18,7 +17,7 @@ const createLoaderMiddleware = () => (_store) => (next) => (action) => {
       }
     }
   } catch (error) {
-    warning("loader middleware errored", error);
+    console.error("loader middleware errored", error);
     return next(action);
   }
 };

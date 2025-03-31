@@ -1,5 +1,4 @@
 import * as constants from "../../constants";
-import { warning } from "../../utils";
 import Scoped from "../component/Scoped";
 
 import { downloadProgram } from "./assets";
@@ -108,7 +107,7 @@ const createModuleLoader = () => {
       })
       .catch((error) => {
         if (error.name !== "AbortError") {
-          warning(`module ${name} failed to load`, error);
+          console.error(`module ${name} failed to load`, error);
         }
         return Promise.resolve(false);
       })
@@ -158,7 +157,7 @@ const createModuleLoader = () => {
           unloadModule(name, loaded);
         } catch (error) {
           /* istanbul ignore next */
-          warning(`module ${name} failed to unload`, error);
+          console.error(`module ${name} failed to unload`, error);
         }
       }
     }

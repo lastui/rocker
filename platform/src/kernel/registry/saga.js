@@ -1,12 +1,11 @@
 import { cancel, spawn, select, take } from "redux-saga/effects";
 
 import * as constants from "../../constants";
-import { warning } from "../../utils";
 
 const sagas = {};
 
 const defaultSagaRunner = () => {
-  warning("Sagas runnner is not provided!");
+  console.error("Sagas runnner is not provided!");
 };
 
 let sagaRunner = defaultSagaRunner;
@@ -53,7 +52,7 @@ async function addSaga(name, preferentialStore, saga) {
       try {
         yield saga();
       } catch (error) {
-        warning(`module ${name} saga crashed`, error);
+        console.error(`module ${name} saga crashed`, error);
       }
     });
   });
