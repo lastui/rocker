@@ -9,9 +9,6 @@ export function* watchBootstrap() {
 export function* runRefresher(action) {
   const interval = isNaN(action.payload.contextRefreshInterval) ? 0 : Number(action.payload.contextRefreshInterval);
   const predicate = interval > 0 && process.env.NODE_ENV !== "development";
-  if (predicate) {
-    console.debug(`context will refresh automatically each ${interval} ms.`);
-  }
   do {
     yield put({ type: constants.FETCH_CONTEXT });
     let waiting = interval > 0;
@@ -22,8 +19,6 @@ export function* runRefresher(action) {
       });
       if (timeout) {
         waiting = false;
-      } else {
-        console.debug(`context manually refreshed, will refresh automatically after ${interval} ms.`);
       }
     }
   } while (predicate);

@@ -1,7 +1,5 @@
 import { CANCEL } from "redux-saga";
 
-import { warning } from "../../utils";
-
 const CLIENT_TIMEOUT = 30 * 1000;
 
 export class SequentialProgramEvaluator {
@@ -39,9 +37,9 @@ export class SequentialProgramEvaluator {
       new Function("", item.data)({});
     } catch (error) {
       if (!(item.data.startsWith("!") || item.data.startsWith("/*"))) {
-        warning(`asset for module ${item.name} is not a module`);
+        console.error(`asset for module ${item.name} is not a module`);
       } else {
-        warning(`module ${item.name} failed to adapt`);
+        console.error(`module ${item.name} failed to adapt`);
       }
       sandbox.__SANDBOX_SCOPE__.component = () => {
         throw error;

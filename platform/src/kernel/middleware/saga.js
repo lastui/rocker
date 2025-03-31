@@ -1,7 +1,6 @@
 import { IO, SAGA_ACTION } from "@redux-saga/symbols";
 import { runSaga as runSagaInternal, stdChannel } from "redux-saga";
 
-import { warning } from "../../utils";
 import { setSagaRunner } from "../registry/saga";
 
 const createSagaMiddleware = (options = {}) => {
@@ -70,7 +69,7 @@ const createSagaMiddleware = (options = {}) => {
                 }
                 /* istanbul ignore next */
                 if (process.env.NODE_ENV === "development") {
-                  warning("Saga TAKE pattern function is not supported", effect);
+                  console.error("Saga TAKE pattern function is not supported", effect);
                 }
                 return;
               }

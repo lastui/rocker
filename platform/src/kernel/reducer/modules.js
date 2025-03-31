@@ -1,5 +1,4 @@
 import * as constants from "../../constants";
-import { warning } from "../../utils";
 
 const RUNE = "$";
 const BROADCAST_ACTION_PREFIX = "@@";
@@ -67,6 +66,7 @@ function createModulesReducer() {
       case constants.REFRESH:
       case constants.FETCH_CONTEXT:
       case constants.MODULE_LOADED:
+      case constants.MODULE_READY:
       case constants.SET_AVAILABLE_MODULES: {
         return state;
       }
@@ -82,18 +82,12 @@ function createModulesReducer() {
             [name]: reducer(state[name], action),
           };
         } catch (error) {
-          warning(`module ${name} reducer failed to reduce on action ${action.type}`, error);
+          console.error(`module ${name} reducer failed to reduce on action ${action.type}`, error);
         }
-        return state;
-      }
-      case constants.MODULE_READY: {
-        const name = action.payload.module;
-        console.info(`+ module ${name}`);
         return state;
       }
       case constants.MODULE_UNLOADED: {
         const name = action.payload.module;
-        console.info(`- module ${name}`);
         if (name in state) {
           const nextState = { ...state };
           delete nextState[name];
@@ -126,7 +120,7 @@ function createModulesReducer() {
               nextState[name] = fragment;
             }
           } catch (error) {
-            warning(`module ${name} reducer failed to reduce`, error);
+            console.error(`module ${name} reducer failed to reduce`, error);
           }
         }
         if (nextState) {

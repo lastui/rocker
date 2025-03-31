@@ -18,7 +18,6 @@ export function* fetchContext() {
   try {
     const fetcher = yield getContext("fetchContext");
     const context = yield call(fetcher);
-    console.debug("using context", context);
     yield put({
       type: constants.SET_AVAILABLE_MODULES,
       payload: {
@@ -38,6 +37,6 @@ export function* fetchContext() {
       },
     });
   } catch (error) {
-    console.warn("failed to obtain context", error);
+    console.error("failed to obtain context", error);
   }
 }
