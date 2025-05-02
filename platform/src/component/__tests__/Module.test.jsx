@@ -1,3 +1,4 @@
+import React from "react";
 import { render, screen, cleanup, act } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 
@@ -20,7 +21,9 @@ jest.mock("../../kernel/registry/loader", () => ({
       return undefined;
     }
     return {
-      view: (props) => <div data-testid="view-probe">{props.children}</div>,
+      view: (props) => {
+        return <div ref={props.ref} data-testid="view-probe">{props.children}</div>
+      },
     };
   },
   isAvailable: (id) => {
@@ -207,4 +210,29 @@ describe("<Module />", () => {
 
     unmount();
   });
+
+  it("properly passes ref", () => {
+    const ref = React.createRef();
+
+    const store = configureStore([])({
+      env: {
+        readyModules: {
+          "my-feature": true,
+        },
+      },
+      shared: {},
+    });
+
+    const { unmount } = render(
+      withRedux(
+        <Module name="my-feature" ref={ref} />,
+        store,
+      ),
+    );
+
+    expect(ref.current).toEqual(screen.getByTestId("view-probe"));
+
+    unmount();
+
+  })
 });
