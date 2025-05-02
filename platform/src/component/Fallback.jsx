@@ -4,10 +4,19 @@ const Fallback = (props) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisible(true);
-    }, 1000);
-    return () => clearTimeout(timer);
+    const startTime = top.document.timeline.currentTime;
+    let frameID;
+    const checkTime = (currentTime) => {
+      if (currentTime - startTime >= 1000) {
+        setVisible(true);
+      } else {
+        frameID = requestAnimationFrame(checkTime);
+      }
+    };
+    frameID = requestAnimationFrame(checkTime);
+    return () => {
+      cancelAnimationFrame(frameID);
+    };
   }, [setVisible]);
 
   if (!visible) {

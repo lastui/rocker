@@ -8,6 +8,8 @@ Object.assign(global, { TextDecoder, TextEncoder });
 
 global.expect.extend(matchers);
 
+top.document.timeline = { currentTime: 0 };
+
 jest.mock("@linaria/react", () => {
   function styled(tag) {
     return jest.fn(() => tag);

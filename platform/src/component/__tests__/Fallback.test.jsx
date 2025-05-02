@@ -3,12 +3,22 @@ import { render, screen, cleanup, act } from "@testing-library/react";
 import Fallback from "../Fallback";
 
 describe("<Fallback />", () => {
+  let requestAnimationFrameSpy;
+
   beforeEach(() => {
     jest.useFakeTimers();
+    let time = 0;
+    requestAnimationFrameSpy = jest.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+      setTimeout(() => {
+        time = time + 16;
+        cb(time);
+      }, 0);
+    });
   });
 
   afterEach(() => {
     jest.useRealTimers();
+    requestAnimationFrameSpy.mockRestore();
     cleanup();
   });
 
