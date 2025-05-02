@@ -1,5 +1,5 @@
-import React from "react";
 import { render, screen, cleanup, act } from "@testing-library/react";
+import React from "react";
 import configureStore from "redux-mock-store";
 
 import { withRedux } from "@lastui/rocker/test";
@@ -22,7 +22,11 @@ jest.mock("../../kernel/registry/loader", () => ({
     }
     return {
       view: (props) => {
-        return <div ref={props.ref} data-testid="view-probe">{props.children}</div>
+        return (
+          <div ref={props.ref} data-testid="view-probe">
+            {props.children}
+          </div>
+        );
       },
     };
   },
@@ -223,16 +227,10 @@ describe("<Module />", () => {
       shared: {},
     });
 
-    const { unmount } = render(
-      withRedux(
-        <Module name="my-feature" ref={ref} />,
-        store,
-      ),
-    );
+    const { unmount } = render(withRedux(<Module name="my-feature" ref={ref} />, store));
 
     expect(ref.current).toEqual(screen.getByTestId("view-probe"));
 
     unmount();
-
-  })
+  });
 });

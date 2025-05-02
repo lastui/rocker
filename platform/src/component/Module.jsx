@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo, useEffect, createElement } from "react";
+import { useState, useMemo, useEffect, createElement } from "react";
 import { useSelector } from "react-redux";
 
 import moduleLoader from "../kernel/registry/loader";
@@ -6,7 +6,6 @@ import moduleLoader from "../kernel/registry/loader";
 import Fallback from "./Fallback";
 
 const Module = (props) => {
-
   const isReady = useSelector((state) => props.name in state.env.readyModules);
 
   const lastUpdate = useSelector((state) => state.env.lastUpdate);
@@ -27,7 +26,7 @@ const Module = (props) => {
       /* istanbul ignore next */
       moduleLoader.loadModule(props.name, controller).then((changed) => {
         if (controller.aborted) {
-          return
+          return;
         }
         if (changed) {
           setLastLocalUpdate((tick) => (tick + 1) % Number.MAX_SAFE_INTEGER);
@@ -37,8 +36,8 @@ const Module = (props) => {
 
     return () => {
       controller.abort();
-    }
-  }, [setLastLocalUpdate, props.name, available])
+    };
+  }, [setLastLocalUpdate, props.name, available]);
 
   if (!props.name || !available) {
     return null;

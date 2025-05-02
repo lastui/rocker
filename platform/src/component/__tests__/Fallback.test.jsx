@@ -8,11 +8,11 @@ describe("<Fallback />", () => {
   beforeEach(() => {
     jest.useFakeTimers();
     let time = 0;
-    requestAnimationFrameSpy = jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+    requestAnimationFrameSpy = jest.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
       setTimeout(() => {
-        time = time + 16
+        time = time + 16;
         cb(time);
-      }, 0)
+      }, 0);
     });
   });
 
