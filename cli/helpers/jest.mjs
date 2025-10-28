@@ -1,6 +1,6 @@
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import jest from "jest";
+import { run as runJest } from "jest-cli";
 import path from "node:path";
 
 export async function run(options) {
@@ -13,7 +13,7 @@ export async function run(options) {
     console.log(colors.dim("Jest Configuration"));
   }
 
-  await jest.run([
+  await runJest([
     ...(process.stdout.isTTY ? ["--colors"] : []),
     "--passWithNoTests",
     "--injectGlobals",

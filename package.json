@@ -1,6 +1,6 @@
 {
   "name": "@lastui/rocker",
-  "version": "0.21.6",
+  "version": "0.21.7",
   "license": "Apache-2.0",
   "author": "jan.cajthaml@gmail.com",
   "homepage": "https://github.com/lastui/rocker#readme",
@@ -58,6 +58,7 @@
     "@babel/preset-react": "7.28.5",
     "@babel/preset-typescript": "7.28.5",
     "@babel/register": "7.28.3",
+    "@dotenvx/dotenvx": "1.51.0",
     "@linaria/core": "6.3.0",
     "@linaria/postcss-linaria": "6.3.0",
     "@linaria/react": "6.3.0",
@@ -71,7 +72,6 @@
     "buffer": "6.0.3",
     "css-loader": "7.1.2",
     "css-minimizer-webpack-plugin": "7.0.2",
-    "dotenv": "17.2.3",
     "eslint": "9.38.0",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-react": "7.37.5",
@@ -99,7 +99,7 @@
     "webpack-dev-server": "5.2.2",
     "webpack-merge": "6.0.1",
     "whatwg-fetch": "3.6.20",
-    "yargs": "18.0.0"
+    "yargs": "17.7.2"
   },
   "engines": {
     "node": ">=22.0.0",

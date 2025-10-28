@@ -1,13 +1,6 @@
+require("@dotenvx/dotenvx").config({ debug: process.env.DEBUG, ignore: ["MISSING_ENV_FILE"], quiet: !process.env.DEBUG });
 const { randomUUID } = require("crypto");
-const envConfig = require("dotenv").config({ debug: process.env.DEBUG });
 const path = require("path");
-
-for (const k in envConfig) {
-  if (k === "npm_config_argv") {
-    continue;
-  }
-  process.env[k] = envConfig[k];
-}
 
 function namespace(value) {
   if (!value || value === "") {
